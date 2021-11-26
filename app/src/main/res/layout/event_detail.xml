@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/program_details_close"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentStart="true"
+            android:paddingStart="6dp"
+            android:paddingEnd="16dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:contentInsetStartWithNavigation="0dp"
+            app:navigationIcon="@drawable/ic_close"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/program_details_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/program_details_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Superbowl LV at Tampa, Florida, USA"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/program_details_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="08.02.2020 00.30 AM UTC+2"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/program_details_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="The AFC campions ar playing against the NFC campions to win the championchip of the NFL."
+            android:textStyle="italic" />
+
+    </LinearLayout>
+
+</LinearLayout>

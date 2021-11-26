@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="table" type="id" />
+    <item name="maps_fragment" type="id" />
+    <item name="diashow_previous" type="id" />
+    <item name="diashow_next" type="id" />
+    <item name="diashow_description" type="id" />
+    <item name="diashow_image" type="id" />
+    <item name="numberpicker" type="id" />
+    <item name="txt_amount" type="id" />
+    <item name="txt_description" type="id" />
+    <item name="link_name" type="id"/>
+    <item name="link_url" type="id" />
+    <item name="program" type="id" />
+    <item name="greeting" type="id" />
+    <item name="news" type="id" />
+    <item name="chargen" type="id" />
+    <item name="row2first" type="id" />
+    <item name="login" type="id" />
+</resources>

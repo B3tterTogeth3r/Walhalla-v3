@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Custom.Button"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp">
+
+    <ImageView
+        android:id="@+id/plus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:contentDescription="@string/remove_paragraph"
+        android:src="@drawable/ic_delete"
+        app:tint="@color/background" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toEndOf="@id/plus"
+        android:gravity="center_vertical"
+        android:text="@string/remove_paragraph"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button"
+        android:textColor="@color/background" />
+</RelativeLayout>

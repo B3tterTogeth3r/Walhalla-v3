@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/black" />
+
+    <item>
+        <bitmap
+            android:layout_width="400px"
+            android:layout_height="400px"
+            android:gravity="center"
+            android:src="@drawable/wappen_2017_v2" />
+    </item>
+
+</layer-list>

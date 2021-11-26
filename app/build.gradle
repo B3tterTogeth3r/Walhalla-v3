@@ -1,0 +1,70 @@
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services' // Google services Gradle Plugin
+    id 'com.google.firebase.crashlytics' // Firebase Crashlytics Gradle plugin
+}
+
+android {
+    compileSdk 30
+
+    defaultConfig {
+        applicationId "de.b3ttertogeth3r.walhalla"
+        minSdk 26
+        targetSdk 30
+        versionCode 12
+        versionName "1.11"
+        multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation 'com.android.support:multidex:1.0.3' // Flutter Multidex
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0-beta03' // Firebase AppCheck
+    implementation 'org.jetbrains:annotations:15.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation 'com.xw.repo:bubbleseekbar:3.20' // BubbleSeekBar
+    implementation 'de.hdodenhof:circleimageview:3.1.0' // CircleImageView
+    implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0' // Image Slide Show
+
+    implementation 'com.github.smarteist:autoimageslider:1.3.9' // automatic image slide view
+    implementation 'com.twitter.sdk.android:twitter:3.0.0' // Twitter login
+
+    // Firebase imports
+    implementation 'com.firebaseui:firebase-ui-auth:7.2.0' // Firebase authentication ui
+    implementation platform('com.google.firebase:firebase-bom:28.4.1')
+    implementation 'com.google.firebase:firebase-config' // Remote Configuration
+    implementation 'com.google.firebase:firebase-crashlytics' // Crashlytics
+    implementation 'com.google.firebase:firebase-dynamic-links' // Dynamic links
+    implementation 'com.google.firebase:firebase-analytics' // Analytics
+    implementation 'com.google.firebase:firebase-messaging' // Cloud Messaging
+    implementation 'com.google.firebase:firebase-perf' // Performance Monitoring
+    implementation 'com.google.firebase:firebase-auth' // Authentication
+    implementation 'com.google.firebase:firebase-firestore' // Cloud Firestore
+    implementation 'com.google.firebase:firebase-database' // Realtime Database
+    implementation 'com.google.firebase:firebase-storage' // Storage Bucket
+    implementation 'com.google.firebase:firebase-inappmessaging' // In-App Messaging
+    implementation 'com.google.firebase:firebase-inappmessaging-display' // In-App Messaging Display
+    implementation 'com.google.android.gms:play-services-auth:19.2.0' // Google Auth
+}

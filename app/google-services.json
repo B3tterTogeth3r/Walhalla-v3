@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "456221124895",
+    "firebase_url": "https://walhalla-adfc5-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "walhalla-adfc5",
+    "storage_bucket": "walhalla-adfc5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:456221124895:android:3cfd33354bcf2be49a282a",
+        "android_client_info": {
+          "package_name": "de.b3ttertogeth3r.walhalla"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "456221124895-jjhv97lsl2eckfoggqd7phj95s7u05ti.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXpqO1WpGL58lt21UZvLEeu-0dhHiIpAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "456221124895-jjhv97lsl2eckfoggqd7phj95s7u05ti.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "456221124895-42fqbio123e565heibcdaq76cd3494tl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "de.b3ttertogeth3r.Walhalla"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:456221124895:android:b0537dce706f3a989a282a",
+        "android_client_info": {
+          "package_name": "de.walhalla.app2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "456221124895-jjhv97lsl2eckfoggqd7phj95s7u05ti.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXpqO1WpGL58lt21UZvLEeu-0dhHiIpAQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "456221124895-jjhv97lsl2eckfoggqd7phj95s7u05ti.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "456221124895-42fqbio123e565heibcdaq76cd3494tl.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "de.b3ttertogeth3r.Walhalla"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

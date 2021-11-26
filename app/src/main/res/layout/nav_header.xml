@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="176dp"
+    android:background="@color/colorPrimary"
+    android:foregroundGravity="bottom"
+    android:gravity="start"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_height="70dp"
+        android:id="@+id/nav_headder"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/image_description"
+        android:src="@drawable/wappen_2017_v2"
+        app:civ_border_color="@color/black"
+        app:civ_border_overlay="false"
+        app:civ_border_width="1dp"
+        android:layout_width="70dp"
+        app:civ_circle_background_color="@color/black" />
+
+    <TextView
+        android:id="@+id/nav_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:text="@string/frat_name"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/whiteish" />
+
+    <TextView
+        android:id="@+id/nav_street"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:text="@string/frat_address"
+        android:textColor="@color/whiteish" />
+
+    <TextView
+        android:id="@+id/nav_city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/frat_city"
+        android:textColor="@color/whiteish" />
+
+</LinearLayout>
