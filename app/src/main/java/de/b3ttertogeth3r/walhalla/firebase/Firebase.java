@@ -12,7 +12,10 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -24,8 +27,10 @@ import com.google.firebase.appcheck.safetynet.SafetyNetAppCheckProviderFactory;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.OAuthProvider;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,6 +46,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -62,6 +68,7 @@ import de.b3ttertogeth3r.walhalla.models.Account;
 import de.b3ttertogeth3r.walhalla.models.Image;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
+import de.b3ttertogeth3r.walhalla.models.Semester;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
 import de.b3ttertogeth3r.walhalla.utils.Format;
 
@@ -222,6 +229,24 @@ public class Firebase {
                             " " + imageName + " failed.", e));
         }
 
+        public static void uploadImage(Bitmap imageBitmap, String name, OnGetDataListener listener) {
+            String imageName = Format.imageName(name);
+            REFERENCE.child("image/" + imageName)
+                    .putBytes(compressImage(imageBitmap))
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess (@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                            listener.onSuccess(taskSnapshot.getUploadSessionUri());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure (@NonNull Exception e) {
+
+                        }
+                    });
+        }
+
         // region private functions
         @NonNull
         private static byte[] compressImage (@NonNull Bitmap original) {
@@ -300,6 +325,19 @@ public class Firebase {
             return FIRESTORE.collection("Semester").document(String.valueOf(semesterID));
         }
 
+        public static void getSemester(int semesterID, OnGetDataListener listener){
+            getSemester(semesterID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete (@NonNull Task<DocumentSnapshot> task) {
+                    DocumentSnapshot ds = task.getResult();
+                    if(!ds.exists()){
+                        listener.onFailure(task.getException());
+                    }
+                    listener.onSuccess(ds);
+                }
+            });
+        }
+
         @NonNull
         public static Task<DocumentReference> upload (CollectionReference collectionReference,
                                                       Object uploadObject)
@@ -371,6 +409,20 @@ public class Firebase {
                     .collection("Events");
         }
 
+        public static void uploadPerson(@NonNull Person person){
+            if(person.getId() != null){
+                FIRESTORE.collection("Person").document(person.getId())
+                        .set(person)
+                        .addOnCompleteListener(task -> Log.d(TAG, "userUpdate: success"))
+                        .addOnFailureListener(e -> Firebase.Crashlytics.log(TAG, "onFailure: " +
+                                "update user did not work", e));
+            } else {
+                FIRESTORE.collection("Person").document().set(person)
+                        .addOnCompleteListener(task -> Log.d(TAG, "userUpdate: success"))
+                        .addOnFailureListener(e -> Firebase.Crashlytics.log(TAG, "onFailure: " +
+                                "update user did not work", e));
+            }
+        }
 
     }
     // endregion
@@ -490,14 +542,11 @@ public class Firebase {
      */
     public static class Crashlytics {
         private static final String TAG = "Firebase.Crashlytics";
-        private static MyToast toast = new MyToast(App.getContext());
 
         public static void log (String message) {
             try {
                 Log.e(TAG, "recordException: " + message);
                 CRASHLYTICS.log(message);
-                toast.setText(message);
-                toast.show();
             } catch (Exception ignored) {
             }
         }
@@ -507,13 +556,11 @@ public class Firebase {
                 Log.e(TAG, "recordException: " + message, e);
                 CRASHLYTICS.log(message);
                 CRASHLYTICS.recordException(e);
-                toast.setText(message);
-                toast.show();
             } catch (Exception ignored) {
             }
         }
 
-        public static void log(String TAG, int resid){
+        public static void log (String TAG, int resid) {
             log(TAG, App.getContext().getString(resid));
         }
 
@@ -522,8 +569,6 @@ public class Firebase {
                 String error = "recordException: " + TAG + ":" + message;
                 Log.e(TAG, error);
                 CRASHLYTICS.log(error);
-                toast.setText(message);
-                toast.show();
             } catch (Exception ignored) {
             }
         }
@@ -534,8 +579,6 @@ public class Firebase {
                 Log.e(TAG, error, e);
                 CRASHLYTICS.log(error);
                 CRASHLYTICS.recordException(e);
-                toast.setText(message);
-                toast.show();
             } catch (Exception ignored) {
             }
         }
@@ -556,8 +599,8 @@ public class Firebase {
      * @see <a href="">Firebase Authentication</a>
      */
     public static class Authentication {
-        private static final String TAG = "Auth";
         public static final String PROFILE_DATA = "Missing profile data";
+        private static final String TAG = "Auth";
         // TODO Add Firebase Email-Link auth for android and web apps
 
         /**
@@ -614,7 +657,13 @@ public class Firebase {
                     });
         }
 
-        protected static void firebaseCustomAuth(Activity activity, OAuthProvider.Builder provider){
+        public static void firebaseAuthWithTwitter (Activity activity,
+                                                    OAuthProvider.Builder provider) {
+            firebaseCustomAuth(activity, provider);
+        }
+
+        protected static void firebaseCustomAuth (Activity activity,
+                                                  OAuthProvider.Builder provider) {
             Task<AuthResult> pendingResultTask = Firebase.AUTH.getPendingAuthResult();
             if (pendingResultTask != null) {
                 // There's something already here! Finish the sign-in for your user.
@@ -654,36 +703,38 @@ public class Firebase {
             }
         }
 
-        public static void firebaseAuthWithTwitter (Activity activity, OAuthProvider.Builder provider){
-            firebaseCustomAuth(activity, provider);
-        }
-        public static void firebaseAuthWithGithub (Activity activity, OAuthProvider.Builder provider){
+        public static void firebaseAuthWithGithub (Activity activity, OAuthProvider.Builder provider) {
             firebaseCustomAuth(activity, provider);
         }
 
         /**
          * log user out of the app
+         *
          * @see <a href="https://firebase.google.com/docs/auth/android/password-auth">Authentication
          * for Android</a>
          */
         public static void signOut () {
             Firebase.onlineStatus(AUTH.getUid(), false);
             AUTH.signOut();
-            changeLoggingData(false);
+            changeLoggingData();
         }
 
         /**
          * Change Analytics and Crashlytics values used in the Console for logging errors, analytics
          * data and ad-mob data.
          */
-        public static void changeLoggingData (boolean isInit) {
+        public static void changeLoggingData(){
+            changeLoggingData(false);
+        }
+
+        private static void changeLoggingData (boolean isInit) {
             try {
                 if (AUTH == null || AUTH.getCurrentUser() == null || AUTH.getUid() == null) {
                     // if no user is signed in, write "not signed in"
                     CRASHLYTICS.setUserId(NOT_SIGNED_IN);
                     ANALYTICS.setUserId(NOT_SIGNED_IN);
                     Analytics.setRank(Rank.NONE.toString());
-                    if(isInit) {
+                    if (isInit) {
                         StartActivity.newDone.firebaseDone();
                     }
                 } else {
@@ -692,7 +743,7 @@ public class Firebase {
                     Firestore.findUserById(uid, new OnGetDataListener() {
                         @Override
                         public void onSuccess (DocumentSnapshot documentSnapshot) {
-                            if(documentSnapshot.exists()) {
+                            if (documentSnapshot.exists()) {
                                 try {
                                     Person user = documentSnapshot.toObject(Person.class);
                                     CRASHLYTICS.setUserId(uid);
@@ -702,37 +753,40 @@ public class Firebase {
                                     Realtime.internet(uid);
                                     //noinspection ConstantConditions
                                     Analytics.setRank(user.getRank());
-                                    //TODO Save user in cache
+                                    //Save user in cache
                                     user.setId(documentSnapshot.getId());
                                     CacheData.saveUser(user);
                                     try {
                                         CacheData.getUser();
-                                    } catch (PersonException pe){
+                                    } catch (PersonException pe) {
                                         CacheData.setProfileError(new ProfileError(R.string.menu_profile, true, "profile incomplete"));
                                     }
                                 } catch (Exception e) {
                                     Crashlytics.log(TAG, "Person could not be parsed", e);
-                                    //TODO Users profile is incomplete or has some errors.
+                                    //Users profile is incomplete or has some errors.
                                     CacheData.setProfileError(new ProfileError(R.string.menu_profile, true, "person values contain errors"));
                                     CRASHLYTICS.setUserId(PROFILE_DATA);
                                     ANALYTICS.setUserId(PROFILE_DATA);
                                     Analytics.setRank(Rank.ERROR.toString());
                                 }
-                                if(isInit)
+                                if (isInit) {
                                     StartActivity.newDone.firebaseDone();
+                                }
                             }
                         }
 
                         @Override
-                        public void onFailure(){
+                        public void onFailure () {
                             Log.e(TAG, "onFailure: No profile exists for that user.");
                             //TODO User profile does not exist.
-                            CacheData.setProfileError(new ProfileError(R.string.menu_profile, true, "person has no profile"));
+                            CacheData.setProfileError(new ProfileError(R.string.menu_profile,
+                                    true, "person has no profile"));
                             CRASHLYTICS.setUserId(PROFILE_DATA);
                             ANALYTICS.setUserId(PROFILE_DATA);
                             Analytics.setRank(Rank.ERROR.toString());
-                            if(isInit)
+                            if (isInit) {
                                 StartActivity.newDone.firebaseDone();
+                            }
                         }
                     });
                 }
@@ -743,6 +797,22 @@ public class Firebase {
 
         public static boolean isSignIn () {
             return AUTH.getUid() != null;
+        }
+
+        public static void updateProfileData (Uri imageUri, String name, String email) {
+            FirebaseUser user = AUTH.getCurrentUser();
+            if(user == null) {
+                return;
+            }
+            UserProfileChangeRequest.Builder profileUpdates = new UserProfileChangeRequest.Builder();
+            profileUpdates.setDisplayName(name);
+            if (imageUri != null) {
+                profileUpdates.setPhotoUri(imageUri);
+            }
+            user.updateEmail(email).addOnCompleteListener(task ->
+                    user.updateProfile(profileUpdates.build())
+                            .addOnCompleteListener(task2 ->
+                                    Authentication.changeLoggingData()));
         }
 
         public interface SignInListener {
@@ -758,7 +828,7 @@ public class Firebase {
 
             default void successful () {
                 Log.d(TAG, "successful: true");
-                changeLoggingData(false);
+                changeLoggingData();
                 statusChange(true);
             }
         }

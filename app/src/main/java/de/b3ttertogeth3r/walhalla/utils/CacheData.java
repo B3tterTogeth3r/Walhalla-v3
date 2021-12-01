@@ -7,11 +7,18 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.firebase.ui.auth.data.model.User;
+import com.google.firebase.Timestamp;
 import com.google.firebase.database.annotations.NotNull;
 
 import org.jetbrains.annotations.Contract;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import de.b3ttertogeth3r.walhalla.R;
+import de.b3ttertogeth3r.walhalla.enums.Address;
 import de.b3ttertogeth3r.walhalla.exceptions.PersonException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.models.Person;
@@ -175,12 +182,70 @@ public class CacheData {
     }
 
     public static void saveUser (@NonNull Person user) {
-        SP.edit().putStringSet(USER_DATA, user.getSet()).apply();
+        Map<String, Object> address = user.getAddress();
+        SharedPreferences.Editor editor = SP.edit();
+        try{
+            editor.putString(USER_DATA + Person.ADDRESS_CITY, address.get(Address.CITY.toString()).toString());
+        } catch (Exception ignored){}
+        try{
+            editor.putString(USER_DATA + Person.ADDRESS_NUMBER, address.get(Address.NUMBER.toString()).toString());
+        } catch (Exception ignored){}
+        try{
+            editor.putString(USER_DATA + Person.ADDRESS_STREET, address.get(Address.STREET.toString()).toString());
+        } catch (Exception ignored){}
+        try{
+            editor.putString(USER_DATA + Person.ADDRESS_ZIP_CODE, address.get(Address.CITY.toString()).toString());
+        } catch (Exception ignored){}
+
+        //TODO RankSettings
+
+        editor.putFloat(USER_DATA + Person.BALANCE, user.getBalance())
+                .putLong(USER_DATA + Person.DOB, user.getDoB().getSeconds())
+                .putString(USER_DATA + Person.FIRST_NAME, user.getFirst_Name())
+                .putString(USER_DATA + Person.FCM_TOKEN, user.getFcm_token())
+                .putString(USER_DATA + Person.ID, user.getId())
+                .putInt(USER_DATA + Person.JOINED, user.getJoined())
+                .putString(USER_DATA + Person.LAST_NAME, user.getLast_Name())
+                .putString(USER_DATA + Person.MAIL, user.getMail())
+                .putString(USER_DATA + Person.MAJOR, user.getMajor())
+                .putString(USER_DATA + Person.MOBILE, user.getMobile())
+                .putString(USER_DATA + Person.PICTURE_PATH, user.getPicture_path())
+                .putString(USER_DATA + Person.POB, user.getPoB())
+                .putString(USER_DATA + Person.RANK, user.getRank())
+                .putString(USER_DATA + Person.UID, user.getUid())
+                .apply();
     }
 
     @NonNull
     @Contract(" -> new")
     public static Person getUser() throws PersonException {
-        return new Person(SP.getStringSet(USER_DATA, null));
+        Person person = new Person();
+        person.setBalance(SP.getFloat(USER_DATA + Person.BALANCE, 0.0f));
+        person.setDoB(new Timestamp(SP.getLong(USER_DATA + Person.DOB, new Date().getTime()), 0));
+        person.setFirst_Name(SP.getString(USER_DATA + Person.FIRST_NAME, ""));
+        person.setFcm_token(SP.getString(USER_DATA + Person.FCM_TOKEN, ""));
+        person.setId(SP.getString(USER_DATA + Person.ID, ""));
+        person.setJoined(SP.getInt(USER_DATA + Person.JOINED, 0));
+        person.setLast_Name(SP.getString(USER_DATA + Person.LAST_NAME, ""));
+        person.setMail(SP.getString(USER_DATA + Person.MAIL, ""));
+        person.setMajor(SP.getString(USER_DATA + Person.MAJOR, ""));
+        person.setMobile(SP.getString(USER_DATA+ Person.MOBILE, ""));
+        person.setPicture_path(SP.getString(USER_DATA + Person.PICTURE_PATH, ""));
+        person.setPoB(SP.getString(USER_DATA + Person.POB, ""));
+        person.setRank(SP.getString(USER_DATA + Person.RANK, ""));
+        person.setUid(SP.getString(USER_DATA+Person.UID, ""));
+
+        Map<String, Object> address = new HashMap<>();
+        address.put(Address.CITY.toString(), SP.getString(USER_DATA + Person.ADDRESS_CITY, ""));
+        address.put(Address.NUMBER.toString(), SP.getString(USER_DATA + Person.ADDRESS_NUMBER, ""));
+        address.put(Address.STREET.toString(), SP.getString(USER_DATA + Person.ADDRESS_STREET, ""));
+        address.put(Address.ZIP.toString(), SP.getString(Person.ADDRESS_ZIP_CODE, ""));
+        person.setAddress(address);
+
+        Map<String, Object> rankSettings = new HashMap<>();
+
+        person.setRankSettings(rankSettings);
+
+        return person;
     }
 }

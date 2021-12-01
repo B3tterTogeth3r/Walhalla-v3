@@ -26,7 +26,8 @@ import java.util.Calendar;
 import de.b3ttertogeth3r.walhalla.MainActivity;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.enums.Kind;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase.*;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase.Crashlytics;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.interfaces.SemesterChangeListener;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.Semester;
@@ -36,8 +37,8 @@ public class ChangeSemesterDialog extends DialogFragment implements DialogInterf
     private final Kind kind;
     private final SemesterChangeListener listener;
     private final int start_id;
-    private NumberPicker np_right, np_center;
     private final Semester semester;
+    private NumberPicker np_right, np_center;
 
     public ChangeSemesterDialog (Kind kind, SemesterChangeListener listener, Semester semester) {
         this.kind = kind;
@@ -46,7 +47,8 @@ public class ChangeSemesterDialog extends DialogFragment implements DialogInterf
         this.start_id = semester.getId();
     }
 
-    public static void display(FragmentManager fragmentManager, Kind kind, SemesterChangeListener listener, Semester semester){
+    public static void display (FragmentManager fragmentManager, Kind kind,
+                                SemesterChangeListener listener, Semester semester) {
         try {
             ChangeSemesterDialog dialog = new ChangeSemesterDialog(kind, listener, semester);
             dialog.show(fragmentManager, TAG);
@@ -61,14 +63,16 @@ public class ChangeSemesterDialog extends DialogFragment implements DialogInterf
         Activity activity = requireActivity();
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         LayoutInflater inflater = activity.getLayoutInflater();
-        RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.dialog_change_semester, null);
+        RelativeLayout view = (RelativeLayout) inflater.inflate(R.layout.dialog_change_semester,
+                null);
 
         RelativeLayout layout = view.findViewById(R.id.dialog_layout);
         layout.removeAllViewsInLayout();
         Toolbar toolbar = view.findViewById(R.id.dialog_toolbar);
         toolbar.setNavigationOnClickListener(v -> dismiss());
         @SuppressLint("InflateParams")
-        RelativeLayout numberPickers = (RelativeLayout) inflater.inflate(R.layout.dialog_item_sem_change, null);
+        RelativeLayout numberPickers =
+                (RelativeLayout) inflater.inflate(R.layout.dialog_item_sem_change, null);
         numberPickers.findViewById(R.id.np_left).setVisibility(View.GONE);
 
         np_center = numberPickers.findViewById(R.id.np_center);
@@ -79,7 +83,11 @@ public class ChangeSemesterDialog extends DialogFragment implements DialogInterf
         np_center.setMaxValue(1);
         np_center.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         layout.addView(numberPickers);
-        toolbar.setTitle(R.string.dialog_semester_change);
+        if (kind != Kind.JOINED) {
+            toolbar.setTitle(R.string.dialog_semester_change);
+        } else {
+            toolbar.setTitle(R.string.dialog_semester_select);
+        }
         String[] year = createYears();
         np_right.setMinValue(0);
         np_right.setMaxValue(year.length - 1);
@@ -130,7 +138,7 @@ public class ChangeSemesterDialog extends DialogFragment implements DialogInterf
     }
 
     @NonNull
-    private String[] createYears() {
+    public static String[] createYears () {
         ArrayList<String> years = new ArrayList<>();
         Calendar date = Calendar.getInstance();
         int year = date.get(Calendar.YEAR) + 1;
@@ -141,7 +149,7 @@ public class ChangeSemesterDialog extends DialogFragment implements DialogInterf
     }
 
     @NonNull
-    private String[] createYearsWS() {
+    private String[] createYearsWS () {
         ArrayList<String> years = new ArrayList<>();
         Calendar date = Calendar.getInstance();
         int year = date.get(Calendar.YEAR) + 1;
@@ -167,7 +175,7 @@ public class ChangeSemesterDialog extends DialogFragment implements DialogInterf
             int semesterID = (int) ((timeInt + yearInt) * 2 - 1); // starting with semester number 0
 
             // only load new semester, if user changed something.
-            if(semesterID != semester.getId()) {
+            if (semesterID != semester.getId()) {
                 Firestore.getSemester(semesterID)
                         .get()
                         .addOnSuccessListener(documentSnapshot -> {
@@ -176,7 +184,7 @@ public class ChangeSemesterDialog extends DialogFragment implements DialogInterf
                                     Semester s = documentSnapshot.toObject(Semester.class);
                                     s.setId(semesterID);
                                     try {
-                                        if (kind.equals(Person.JOINED)) {
+                                        if (kind.equals(Kind.JOINED)) {
                                             listener.joinedDone(s);
                                         } else {
                                             listener.selectorDone(s);
@@ -185,12 +193,16 @@ public class ChangeSemesterDialog extends DialogFragment implements DialogInterf
                                         Crashlytics.log(TAG, "onClick: if-else", e);
                                     }
                                 } catch (Exception error) {
-                                    Crashlytics.log(TAG, "onSuccess: selected semester does not exist", error);
-                                    Snackbar.make(MainActivity.parentLayout, R.string.error_semester_not_exist, Snackbar.LENGTH_LONG).show();
+                                    Crashlytics.log(TAG, "onSuccess: selected semester does not " +
+                                            "exist", error);
+                                    Snackbar.make(MainActivity.parentLayout,
+                                            R.string.error_semester_not_exist,
+                                            Snackbar.LENGTH_LONG).show();
                                 }
                             } else {
                                 Crashlytics.log(TAG, "onSuccess: selected semester does not exist");
-                                Snackbar.make(MainActivity.parentLayout, R.string.error_semester_not_exist, Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(MainActivity.parentLayout,
+                                        R.string.error_semester_not_exist, Snackbar.LENGTH_LONG).show();
                             }
                         });
             }

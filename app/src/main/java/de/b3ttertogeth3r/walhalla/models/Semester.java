@@ -81,6 +81,10 @@ public class Semester {
         this.end = end;
     }
 
+    /**
+     * long value of the semester. not i.e. <code>SS21</code>
+     * @return the long name
+     */
     public String getName_long () {
         return name_long;
     }
@@ -89,6 +93,10 @@ public class Semester {
         this.name_long = name_long;
     }
 
+    /**
+     * the short value of the semester, like i.e. <code>SS21</code>
+     * @return the short name
+     */
     public String getName_short () {
         return name_short;
     }

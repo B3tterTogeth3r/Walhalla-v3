@@ -12,11 +12,17 @@ public enum Editable {
     MOBILE("Mobile number"),
     MAIL("Email address"),
     MAJOR("Major or occupation"),
-    JOINED("joined semester"),
-    PICTURE("picture or just its path"),
+    JOINED("Joined semester"),
+    PICTURE("Picture or just its path"),
     CONNECTED_SERVICES("Don't know yet"),
-    EMPTY("no field to edit");
-
+    EMPTY("No field to edit"),
+    STREET("Street"),
+    NUMBER("Number"),
+    ZIP("Zip"),
+    CITY("City"),
+    DAY("Day"),
+    MONTH("Month"),
+    YEAR("Year");
     private final String description;
 
     Editable (String description) {

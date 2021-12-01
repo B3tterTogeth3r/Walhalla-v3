@@ -66,6 +66,7 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
             Log.e(TAG, "onCreate: app has internet and is not first start");
             updateProgressbar();
             settings.edit().putBoolean("my_first_time", false).apply();
+            new App();
             App.init();
         }
     }

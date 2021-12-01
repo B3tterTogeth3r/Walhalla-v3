@@ -29,6 +29,7 @@ import java.util.EmptyStackException;
 
 import de.b3ttertogeth3r.walhalla.enums.Walhalla;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.fragments.profile.Fragment;
 import de.b3ttertogeth3r.walhalla.interfaces.OpenExternal;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;

@@ -124,6 +124,12 @@
     <string name="rank">Rang</string>
     <string name="first_name">Vorname</string>
     <string name="last_name">Nachname</string>
+    <string name="saved">Gespeichert</string>
+    <string name="error_pob">Für die Chragenseite ist ein Herkunftsort notwendig.</string>
+    <string name="error_mobile">Bitte gib eine gültige Handynummer ein</string>
+    <string name="dialog_semester_select">Semester wählen</string>
+    <string name="error_address">Bitte gib eine vollständige Adresse ein</string>
+    <string name="error_major">Bitte gib einen Wert ein</string>
 
 
 </resources>

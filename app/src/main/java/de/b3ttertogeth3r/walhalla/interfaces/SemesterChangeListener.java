@@ -4,12 +4,14 @@ import de.b3ttertogeth3r.walhalla.models.Semester;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
 
 public interface SemesterChangeListener {
-    void saveDone();
-
-    default void selectorDone(Semester chosenSemester){
+    default void selectorDone (Semester chosenSemester) {
         CacheData.setChosenSemester(chosenSemester);
         saveDone();
     }
 
-    default void joinedDone(Semester semester){}
+    default void saveDone () {
+    }
+
+    default void joinedDone (Semester semester) {
+    }
 }

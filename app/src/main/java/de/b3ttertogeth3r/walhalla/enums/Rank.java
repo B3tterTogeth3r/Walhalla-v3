@@ -3,16 +3,18 @@ package de.b3ttertogeth3r.walhalla.enums;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+
 import de.b3ttertogeth3r.walhalla.models.Semester;
 
 
 public enum Rank {
-    ACTIVE("Bursch", 20f),
     ACTIVE_FUX("Fux", 10f),
-    ACTIVE_FRIEND("Korporationsfreund_Aktiv", 20f),
-    PHILISTINES("Philister", 400f),
-    PHILISTINES_B("Philister_B", 100f),
-    PHILISTINES_FRIEND("Korporationsfreund_AH", 100f),
+    ACTIVE("Bursch", 20f),
+    PHILISTINES("A-Philister", 400f),
+    PHILISTINES_B("B-Philister", 100f),
+    ACTIVE_FRIEND("Korporationsfreund Aktiver", 20f),
+    PHILISTINES_FRIEND("Korporationsfreund Alter Herr", 100f),
     PHILISTINES_HONOR("Ehrenphilister"),
     HONOR_MEMBER("Ehrenmitglied"),
     GUEST("Gast"),

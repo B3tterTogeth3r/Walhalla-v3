@@ -32,6 +32,7 @@ public class App extends Application {
     private static FragmentManager fm;
 
     public App () {
+        App.ctx = getContext();
     }
 
     public static void init () {

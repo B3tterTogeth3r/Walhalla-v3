@@ -14,17 +14,21 @@ import java.util.Map;
 import java.util.Set;
 
 import de.b3ttertogeth3r.walhalla.enums.Address;
-import de.b3ttertogeth3r.walhalla.exceptions.PersonException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 
 public class Person implements Cloneable {
     //region static Variables
     public static final String ADDRESS = "address";
+    public static final String ADDRESS_CITY = Address.CITY.toString();
+    public static final String ADDRESS_NUMBER = Address.NUMBER.toString();
+    public static final String ADDRESS_STREET = Address.STREET.toString();
+    public static final String ADDRESS_ZIP_CODE = Address.ZIP.toString();
     public static final String ADDRESS_2 = "address_2";
     public static final String BALANCE = "balance";
     public static final String DOB = "doB";
     public static final String FIRST_NAME = "first_Name";
     public static final String FCM_TOKEN = "fcm_token";
+    public static final String ID = "ID";
     public static final String JOINED = "joined";
     public static final String LAST_NAME = "last_Name";
     public static final String MAIL = "mail";
@@ -35,10 +39,6 @@ public class Person implements Cloneable {
     public static final String RANK = "rank";
     public static final String RANK_SETTINGS = "rankSettings";
     public static final String UID = "uid";
-    public static final String ADDRESS_CITY = Address.CITY.toString();
-    public static final String ADDRESS_NUMBER = Address.NUMBER.toString();
-    public static final String ADDRESS_STREET = Address.STREET.toString();
-    public static final String ADDRESS_ZIP_CODE = Address.ZIP.toString();
     private static final String TAG = "Person";
     //endregion
 
@@ -135,15 +135,6 @@ public class Person implements Cloneable {
         this.picture_path = picture_path;
         this.rankSettings = rankSettings;
     }
-
-    public Person (Set<String> set) throws PersonException {
-        //TODO format set into person
-        if (set != null && set.size() == 16) {
-            Log.d("Person", set.toString());
-        } else {
-            throw new PersonException("given set too small or empty");
-        }
-    }
     //endregion
 
     //region Getter and Setter
@@ -195,6 +186,55 @@ public class Person implements Cloneable {
 
     public void setLast_Name (String last_Name) {
         this.last_Name = last_Name;
+    }
+
+    /**
+     * @return a cloned instance of this class.
+     * @throws CloneNotSupportedException
+     *         Thrown to indicate that the <code>clone</code> method in class
+     *         <code>Object</code> has been called to clone an object, but that
+     *         the object's class does not implement the <code>Cloneable</code>
+     *         interface.
+     * @throws UnsupportedOperationException
+     *         Thrown if any of the sub functions throw this error
+     * @see CloneNotSupportedException
+     * @see UnsupportedOperationException
+     * @see Cloneable
+     * @see Object#clone()
+     * @since 1.7
+     */
+    @Exclude
+    @NotNull
+    public Object clone () throws CloneNotSupportedException, UnsupportedOperationException {
+        return super.clone();
+    }
+
+    /**
+     * needed because update of custom classes to firebase is impossible
+     *
+     * @return mapped values of the {@link #Person()}
+     */
+    @Exclude
+    public Map<String, Object> toMap () {
+        Map<String, Object> data = new HashMap<>();
+
+        data.put(ADDRESS, getAddress());
+        data.put(BALANCE, getBalance());
+        data.put(DOB, getDoB());
+        data.put(FIRST_NAME, getFirst_Name());
+        data.put(JOINED, getJoined());
+        data.put(LAST_NAME, getLast_Name());
+        data.put(MAIL, getMail());
+        data.put(MAJOR, getMajor());
+        data.put(MOBILE, getMobile());
+        data.put(PICTURE_PATH, getPicture_path());
+        data.put(POB, getPoB());
+        data.put(RANK, getRank());
+        data.put(RANK_SETTINGS, getRankSettings());
+        data.put(UID, getUid());
+        data.put(FCM_TOKEN, getFcm_token());
+
+        return data;
     }
 
     public Map<String, Object> getAddress () {
@@ -289,10 +329,11 @@ public class Person implements Cloneable {
         this.major = major;
     }
 
-
     public void setJoined (int joined) {
         this.joined = joined;
     }
+
+    //endregion
 
     public void setDoB (Timestamp doB) {
         DoB = doB;
@@ -300,57 +341,6 @@ public class Person implements Cloneable {
 
     public void setBalance (float balance) {
         this.balance = balance;
-    }
-
-    //endregion
-
-    /**
-     * @return a cloned instance of this class.
-     * @throws CloneNotSupportedException
-     *         Thrown to indicate that the <code>clone</code> method in class
-     *         <code>Object</code> has been called to clone an object, but that
-     *         the object's class does not implement the <code>Cloneable</code>
-     *         interface.
-     * @throws UnsupportedOperationException
-     *         Thrown if any of the sub functions throw this error
-     * @see CloneNotSupportedException
-     * @see UnsupportedOperationException
-     * @see Cloneable
-     * @see Object#clone()
-     * @since 1.7
-     */
-    @Exclude
-    @NotNull
-    public Object clone () throws CloneNotSupportedException, UnsupportedOperationException {
-        return super.clone();
-    }
-
-    /**
-     * needed because update of custom classes to firebase is impossible
-     *
-     * @return mapped values of the {@link #Person()}
-     */
-    @Exclude
-    public Map<String, Object> toMap () {
-        Map<String, Object> data = new HashMap<>();
-
-        data.put(ADDRESS, getAddress());
-        data.put(BALANCE, getBalance());
-        data.put(DOB, getDoB());
-        data.put(FIRST_NAME, getFirst_Name());
-        data.put(JOINED, getJoined());
-        data.put(LAST_NAME, getLast_Name());
-        data.put(MAIL, getMail());
-        data.put(MAJOR, getMajor());
-        data.put(MOBILE, getMobile());
-        data.put(PICTURE_PATH, getPicture_path());
-        data.put(POB, getPoB());
-        data.put(RANK, getRank());
-        data.put(RANK_SETTINGS, getRankSettings());
-        data.put(UID, getUid());
-        data.put(FCM_TOKEN, getFcm_token());
-
-        return data;
     }
 
     /**
@@ -370,9 +360,9 @@ public class Person implements Cloneable {
             Date date = getDoB().toDate();
             Calendar c = Calendar.getInstance();
             c.setTime(date);
-            return c.get(Calendar.DAY_OF_MONTH) + "." + c.get(Calendar.MONTH) + "." + c.get(Calendar.YEAR);
-        } catch (Exception e){
-            Firebase.Crashlytics.log(TAG, "Date invalid",  e);
+            return c.get(Calendar.DAY_OF_MONTH) + "." + (c.get(Calendar.MONTH) + 1) + "." + c.get(Calendar.YEAR);
+        } catch (Exception e) {
+            Firebase.Crashlytics.log(TAG, "Date invalid", e);
             return null;
         }
     }
@@ -413,14 +403,31 @@ public class Person implements Cloneable {
      */
     @NotNull
     @Exclude
-    public String getAddressString (){
+    public String getAddressString () {
         String result = "";
         try {
             result = address.get(Person.ADDRESS_STREET).toString() + " " +
                     address.get(Person.ADDRESS_NUMBER).toString() + "\n" +
                     address.get(Person.ADDRESS_ZIP_CODE).toString() + " " +
                     address.get(Person.ADDRESS_CITY).toString();
-        } catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
         return result;
+    }
+
+    public boolean isValid () {
+        try {
+            return !this.PoB.isEmpty() &&
+                    !first_Name.isEmpty() &&
+                    !last_Name.isEmpty() &&
+                    !mobile.isEmpty() &&
+                    !major.isEmpty() &&
+                    !address.isEmpty() &&
+                    //TODO add rank into profile
+                    this.DoB != null;
+        } catch (Exception e) {
+            Log.e(TAG, "isValid: ", e);
+            return false;
+        }
     }
 }

@@ -2,16 +2,15 @@ package de.b3ttertogeth3r.walhalla.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.HashMap;
@@ -25,18 +24,34 @@ import de.b3ttertogeth3r.walhalla.enums.Editable;
 import de.b3ttertogeth3r.walhalla.interfaces.EditListener;
 import de.b3ttertogeth3r.walhalla.models.Person;
 
+/**
+ * @author B3tterTogether
+ * @see DialogFragment
+ * @since 1.11
+ */
 public class EditDialog extends DialogFragment implements DialogInterface.OnClickListener {
     private static final String TAG = "EditDialog";
     private final Editable editable;
     private final EditListener listener;
     private MyEditText field_0, field_1, field_2, field_3;
+    private Object value;
 
-    public EditDialog (@NonNull Editable editable,
+    /**
+     * default constructor
+     *
+     * @param editable
+     *         Editable for more than one field
+     * @param listener
+     *         EditListener to check for changes
+     */
+    public EditDialog (@NonNull Editable editable, Object value,
                        @NonNull EditListener listener) {
         this.listener = listener;
         this.editable = editable;
+        this.value = value;
     }
 
+    @SuppressWarnings("unchecked")
     @NonNull
     @Override
     public Dialog onCreateDialog (@Nullable Bundle savedInstanceState) {
@@ -50,8 +65,8 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
         MyLinearLayout layout = new MyLinearLayout(getContext());
         field_0 = new MyEditText(getContext(), listener);
         field_1 = new MyEditText(getContext(), listener);
-        field_2 = new MyEditText(getContext());
-        field_3 = new MyEditText(getContext());
+        field_2 = new MyEditText(getContext(), listener);
+        field_3 = new MyEditText(getContext(), listener);
 
         switch (editable) {
             case NAME:
@@ -60,37 +75,72 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
                 field_1.setHint(R.string.last_name);
                 field_0.setEditable(Editable.FIRST_NAME);
                 field_1.setEditable(Editable.LAST_NAME);
+                Map<String, String> names = (Map<String, String>) value;
+                field_0.setText(names.get(Person.FIRST_NAME));
+                field_1.setText(names.get(Person.LAST_NAME));
                 layout.addView(field_0);
                 layout.addView(field_1);
                 view.addView(layout);
                 break;
             case ADDRESS:
                 builder.setTitle(R.string.address);
-                break;
-            case DOB:
-                builder.setTitle(R.string.dob);
+                field_0.setHint(R.string.street);
+                field_1.setHint(R.string.number);
+                field_1.setInputType(InputType.TYPE_CLASS_TEXT);
+                field_2.setHint(R.string.zip);
+                field_2.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_CLASS_TEXT);
+                field_3.setHint(R.string.city);
+                Map<String, String> address = (Map<String, String>) value;
+                field_0.setText(address.get(Address.STREET.toString()));
+                field_1.setText(address.get(Address.NUMBER.toString()));
+                field_2.setText(address.get(Address.ZIP.toString()));
+                field_3.setText(address.get(Address.CITY.toString()));
+                layout.addView(field_0);
+                layout.addView(field_1);
+                layout.addView(field_2);
+                layout.addView(field_3);
+                view.addView(layout);
                 break;
             case POB:
+                field_0.setHint(R.string.pob);
+                field_0.setText(value.toString());
+                layout.addView(field_0);
+                view.addView(layout);
                 builder.setTitle(R.string.pob);
                 break;
             case MOBILE:
+                field_0.setHint(R.string.mobile);
+                field_0.setText(value.toString());
+                field_0.setInputType(InputType.TYPE_CLASS_PHONE);
+                layout.addView(field_0);
+                view.addView(layout);
                 builder.setTitle(R.string.mobile);
                 break;
             case MAJOR:
+                field_0.setHint(R.string.major);
+                field_0.setText(value.toString());
+                layout.addView(field_0);
+                view.addView(layout);
                 builder.setTitle(R.string.major);
-            case JOINED:
-                builder.setTitle(R.string.joined);
                 break;
             case MAIL:
                 builder.setTitle(R.string.mail);
+                field_0.setText(value.toString());
+                field_0.setHint(R.string.fui_email_hint);
+                field_0.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                layout.addView(field_0);
+                view.addView(layout);
+                break;
             case PICTURE:
             case CONNECTED_SERVICES:
-                break;
             case LAST_NAME:
             case FIRST_NAME:
+            case DOB:
+            case JOINED:
             default:
                 this.dismiss();
         }
+
         builder.setIcon(R.drawable.ic_edit);
         builder.setView(view);
         builder.setPositiveButton(R.string.save, this);
@@ -100,52 +150,64 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
     }
 
     @Override
-    public void onCancel (@NonNull DialogInterface dialog) {
-        listener.abort();
-        super.onCancel(dialog);
-    }
-
-    @Override
-    public void onDismiss (@NonNull DialogInterface dialog) {
-        listener.abort();
-        super.onDismiss(dialog);
-    }
-
-    @Override
     public void onClick (DialogInterface dialog, int which) {
         if (which != AlertDialog.BUTTON_POSITIVE) {
             listener.abort();
             this.dismiss();
+            return;
         }
         Object result = new Object();
+        String error;
+
         switch (editable) {
             case ADDRESS:
+                //region ADDRESS
                 /* all 4 edit text fields */
+                error = getString(R.string.error_address);
                 Map<String, Object> address = new HashMap<>();
-                address.put(Address.STREET.toString(), null);
-                address.put(Address.NUMBER.toString(), null);
-                address.put(Address.ZIP.toString(), null);
-                address.put(Address.CITY.toString(), null);
+                if (field_0.getText() != null && field_0.getText().length() > 1) {
+                    address.put(Address.STREET.toString(), field_0.getText().toString());
+                } else {
+                    listener.sendError(editable, error);
+                    return;
+                }
+                if (field_1.getText() != null) {
+                    address.put(Address.NUMBER.toString(), field_1.getText().toString());
+                } else {
+                    listener.sendError(editable, error);
+                    return;
+                }
+                if (field_2.getText() != null && field_2.getText().length() >= 3) {
+                    address.put(Address.ZIP.toString(), field_2.getText().toString());
+                } else {
+                    listener.sendError(editable, error);
+                    return;
+                }
+                if (field_3.getText() != null) {
+                    address.put(Address.CITY.toString(), field_3.getText().toString());
+                } else {
+                    listener.sendError(editable, error);
+                    return;
+                }
                 result = address;
                 break;
-            case DOB:
-                /* timestamp
-                 * maybe with 3 number pickers
-                 */
+            //endregion
             case NAME:
                 /* map with first and last name in it */
                 String first_name = "";
                 String last_name = "";
-                String error = getString(R.string.fui_missing_first_and_last_name);
+                error = getString(R.string.fui_missing_first_and_last_name);
                 if (field_0.getText() != null && field_0.getText().length() > 3) {
                     first_name = field_0.getText().toString();
                 } else {
                     listener.sendError(editable, error);
+                    return;
                 }
                 if (field_1.getText() != null && field_1.getText().length() > 3) {
                     last_name = field_1.getText().toString();
                 } else {
                     listener.sendError(editable, error);
+                    return;
                 }
 
                 Map<String, String> name = new HashMap<>();
@@ -155,14 +217,52 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
                 break;
             case POB:
                 /* string */
+                error = getString(R.string.error_pob);
+                if (field_0.getText() != null && field_0.getText().length() > 3) {
+                    result = field_0.getText().toString();
+                } else {
+                    listener.sendError(editable, error);
+                    return;
+                }
+                break;
             case MOBILE:
                 /* string */
+                //TODO Format number into +XX number format without blanks
+                error = getString(R.string.error_mobile);
+                if (field_0.getText() != null && field_0.getText().length() > 3) {
+                    String field = field_0.getText().toString();
+                    if (field.startsWith("+")) {
+                        result = field;
+                    } else if (field.startsWith("0")) {
+                        result = field.replaceFirst("0", "+49");
+                    }
+                } else {
+                    listener.sendError(editable, error);
+                    return;
+                }
+                break;
             case MAIL:
                 /* string */
+                error = getString(R.string.fui_invalid_email_address);
+                if (field_0.getText() != null && field_0.getText().length() > 3) {
+                    result = field_0.getText().toString();
+                } else {
+                    listener.sendError(editable, error);
+                    return;
+                }
+                break;
             case MAJOR:
                 /* string */
+                error = getString(R.string.error_major);
+                if (field_0.getText() != null && field_0.getText().length() > 0) {
+                    result = field_0.getText().toString();
+                } else {
+                    listener.sendError(editable, error);
+                    return;
+                }
                 break;
         }
+
         listener.saveEdit(result, editable);
         /* only dismiss dialog if result has no exception */
         dialog.dismiss();

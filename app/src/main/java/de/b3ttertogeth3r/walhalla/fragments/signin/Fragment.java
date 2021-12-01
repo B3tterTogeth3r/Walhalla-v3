@@ -176,10 +176,10 @@ public class Fragment extends CustomFragment implements View.OnClickListener, Si
     @Override
     public void statusChange (boolean success) {
         if (success) {
-            //TODO switch back to home site
+            //switch back to home site
             Firebase.Analytics.screenChange(R.string.menu_home, getString(R.string.menu_home));
             getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new de.b3ttertogeth3r.walhalla.fragments.program.Fragment()).commit();
+                    new de.b3ttertogeth3r.walhalla.fragments.home.Fragment()).commit();
         }
     }
 }
