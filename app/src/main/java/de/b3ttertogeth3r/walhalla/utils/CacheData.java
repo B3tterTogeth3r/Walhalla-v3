@@ -2,12 +2,10 @@ package de.b3ttertogeth3r.walhalla.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.firebase.ui.auth.data.model.User;
 import com.google.firebase.Timestamp;
 import com.google.firebase.database.annotations.NotNull;
 
@@ -37,8 +35,9 @@ public class CacheData {
     public static final String CHOSEN_SEMESTER = "chosen_semester";
     public static final String PROFILE_ERROR = "profile_error";
     public static final String PROFILE_ERROR_EXISTS = "profile_error_exists";
-    private static final String TAG = "CacheData";
     public static final String USER_DATA = "user_data";
+    private static final String TAG = "CacheData";
+    private static final String INTENT_START_PAGE = "intent_start_page";
     private static SharedPreferences SP;
 
     public CacheData () {
@@ -76,6 +75,12 @@ public class CacheData {
         return SP.getBoolean(Firebase.Analytics.TAG, true);
     }
 
+    public static int getIntentStartPage () {
+        int result = SP.getInt(INTENT_START_PAGE, getStartPage());
+        SP.edit().remove(INTENT_START_PAGE).apply();
+        return result;
+    }
+
     /**
      * The user can choose a custom page the app can start to. It doesn't have to be the "home"
      * page. If no page is selected, the {@link de.b3ttertogeth3r.walhalla.fragments.home.Fragment
@@ -97,6 +102,10 @@ public class CacheData {
     public static void setStartPage (int page_id) {
         SP.edit().putInt(START_PAGE, page_id).apply();
         Firebase.Analytics.changeStartPage();
+    }
+
+    public static void setIntentStartPage (int page_id) {
+        SP.edit().putInt(INTENT_START_PAGE, page_id).apply();
     }
 
     /**
@@ -184,18 +193,26 @@ public class CacheData {
     public static void saveUser (@NonNull Person user) {
         Map<String, Object> address = user.getAddress();
         SharedPreferences.Editor editor = SP.edit();
-        try{
-            editor.putString(USER_DATA + Person.ADDRESS_CITY, address.get(Address.CITY.toString()).toString());
-        } catch (Exception ignored){}
-        try{
-            editor.putString(USER_DATA + Person.ADDRESS_NUMBER, address.get(Address.NUMBER.toString()).toString());
-        } catch (Exception ignored){}
-        try{
-            editor.putString(USER_DATA + Person.ADDRESS_STREET, address.get(Address.STREET.toString()).toString());
-        } catch (Exception ignored){}
-        try{
-            editor.putString(USER_DATA + Person.ADDRESS_ZIP_CODE, address.get(Address.CITY.toString()).toString());
-        } catch (Exception ignored){}
+        try {
+            editor.putString(USER_DATA + Person.ADDRESS_CITY,
+                    address.get(Address.CITY.toString()).toString());
+        } catch (Exception ignored) {
+        }
+        try {
+            editor.putString(USER_DATA + Person.ADDRESS_NUMBER,
+                    address.get(Address.NUMBER.toString()).toString());
+        } catch (Exception ignored) {
+        }
+        try {
+            editor.putString(USER_DATA + Person.ADDRESS_STREET,
+                    address.get(Address.STREET.toString()).toString());
+        } catch (Exception ignored) {
+        }
+        try {
+            editor.putString(USER_DATA + Person.ADDRESS_ZIP_CODE,
+                    address.get(Address.CITY.toString()).toString());
+        } catch (Exception ignored) {
+        }
 
         //TODO RankSettings
 
@@ -218,7 +235,7 @@ public class CacheData {
 
     @NonNull
     @Contract(" -> new")
-    public static Person getUser() throws PersonException {
+    public static Person getUser () throws PersonException {
         Person person = new Person();
         person.setBalance(SP.getFloat(USER_DATA + Person.BALANCE, 0.0f));
         person.setDoB(new Timestamp(SP.getLong(USER_DATA + Person.DOB, new Date().getTime()), 0));
@@ -229,11 +246,11 @@ public class CacheData {
         person.setLast_Name(SP.getString(USER_DATA + Person.LAST_NAME, ""));
         person.setMail(SP.getString(USER_DATA + Person.MAIL, ""));
         person.setMajor(SP.getString(USER_DATA + Person.MAJOR, ""));
-        person.setMobile(SP.getString(USER_DATA+ Person.MOBILE, ""));
+        person.setMobile(SP.getString(USER_DATA + Person.MOBILE, ""));
         person.setPicture_path(SP.getString(USER_DATA + Person.PICTURE_PATH, ""));
         person.setPoB(SP.getString(USER_DATA + Person.POB, ""));
         person.setRank(SP.getString(USER_DATA + Person.RANK, ""));
-        person.setUid(SP.getString(USER_DATA+Person.UID, ""));
+        person.setUid(SP.getString(USER_DATA + Person.UID, ""));
 
         Map<String, Object> address = new HashMap<>();
         address.put(Address.CITY.toString(), SP.getString(USER_DATA + Person.ADDRESS_CITY, ""));
@@ -248,4 +265,5 @@ public class CacheData {
 
         return person;
     }
+
 }

@@ -12,9 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -42,6 +40,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.storage.FirebaseStorage;
@@ -57,7 +56,6 @@ import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.MainActivity;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.StartActivity;
-import de.b3ttertogeth3r.walhalla.design.MyToast;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.exceptions.InvalidFirestorePathException;
 import de.b3ttertogeth3r.walhalla.exceptions.NoUploadDataException;
@@ -68,7 +66,6 @@ import de.b3ttertogeth3r.walhalla.models.Account;
 import de.b3ttertogeth3r.walhalla.models.Image;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
-import de.b3ttertogeth3r.walhalla.models.Semester;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
 import de.b3ttertogeth3r.walhalla.utils.Format;
 
@@ -112,6 +109,7 @@ public class Firebase {
     private static FirebaseAnalytics ANALYTICS;
     private static FirebaseDatabase REALTIME_DB;
     private static FirebaseStorage STORAGE;
+    private static FirebaseMessaging MESSAGING;
 
     public static void init (@NonNull @NotNull Context ctx) {
         Log.e(TAG, "init: Firebase");
@@ -125,7 +123,6 @@ public class Firebase {
         REALTIME_DB = FirebaseDatabase
                 .getInstance("https://walhalla-adfc5-default-rtdb.europe-west1.firebasedatabase" +
                         ".app/");
-        REALTIME_DB.setPersistenceEnabled(true);
         FIRESTORE = FirebaseFirestore.getInstance();
         REMOTE_CONFIG = FirebaseRemoteConfig.getInstance();
         //TODO remove before publishing
@@ -146,8 +143,9 @@ public class Firebase {
         });
         STORAGE = FirebaseStorage.getInstance("gs://walhalla-adfc5.appspot.com");
 
-        Authentication.changeLoggingData(true);
+        MESSAGING = FirebaseMessaging.getInstance();
 
+        Authentication.changeLoggingData(true);
     }
 
     /**
@@ -229,7 +227,16 @@ public class Firebase {
                             " " + imageName + " failed.", e));
         }
 
-        public static void uploadImage(Bitmap imageBitmap, String name, OnGetDataListener listener) {
+        // region private functions
+        @NonNull
+        private static byte[] compressImage (@NonNull Bitmap original) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            original.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            return baos.toByteArray();
+        }
+
+        public static void uploadImage (Bitmap imageBitmap, String name,
+                                        OnGetDataListener listener) {
             String imageName = Format.imageName(name);
             REFERENCE.child("image/" + imageName)
                     .putBytes(compressImage(imageBitmap))
@@ -245,14 +252,6 @@ public class Firebase {
 
                         }
                     });
-        }
-
-        // region private functions
-        @NonNull
-        private static byte[] compressImage (@NonNull Bitmap original) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            original.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            return baos.toByteArray();
         }
 
         /**
@@ -316,6 +315,19 @@ public class Firebase {
             return FIRESTORE.collection("pictures");
         }
 
+        public static void getSemester (int semesterID, OnGetDataListener listener) {
+            getSemester(semesterID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete (@NonNull Task<DocumentSnapshot> task) {
+                    DocumentSnapshot ds = task.getResult();
+                    if (!ds.exists()) {
+                        listener.onFailure(task.getException());
+                    }
+                    listener.onSuccess(ds);
+                }
+            });
+        }
+
         @NonNull
         public static DocumentReference getSemester (int semesterID) {
             if (semesterID < 0) {
@@ -323,19 +335,6 @@ public class Firebase {
             }
             Log.d(TAG, "getSemester: " + semesterID);
             return FIRESTORE.collection("Semester").document(String.valueOf(semesterID));
-        }
-
-        public static void getSemester(int semesterID, OnGetDataListener listener){
-            getSemester(semesterID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete (@NonNull Task<DocumentSnapshot> task) {
-                    DocumentSnapshot ds = task.getResult();
-                    if(!ds.exists()){
-                        listener.onFailure(task.getException());
-                    }
-                    listener.onSuccess(ds);
-                }
-            });
         }
 
         @NonNull
@@ -409,8 +408,8 @@ public class Firebase {
                     .collection("Events");
         }
 
-        public static void uploadPerson(@NonNull Person person){
-            if(person.getId() != null){
+        public static void uploadPerson (@NonNull Person person) {
+            if (person.getId() != null) {
                 FIRESTORE.collection("Person").document(person.getId())
                         .set(person)
                         .addOnCompleteListener(task -> Log.d(TAG, "userUpdate: success"))
@@ -525,6 +524,7 @@ public class Firebase {
         public static void changeDataCollection () {
             boolean value = CacheData.getAnalyticsCollection();
             CacheData.ChangeAnalyticsCollection(value);
+            MESSAGING.setAutoInitEnabled(value);
             ANALYTICS.setUserProperty(ALLOW_AD_PERSONALIZATION_SIGNALS, "" + value);
             ANALYTICS.setAnalyticsCollectionEnabled(value);
         }
@@ -598,6 +598,7 @@ public class Firebase {
     /**
      * @see <a href="">Firebase Authentication</a>
      */
+    @SuppressWarnings("ConstantConditions")
     public static class Authentication {
         public static final String PROFILE_DATA = "Missing profile data";
         private static final String TAG = "Auth";
@@ -703,7 +704,8 @@ public class Firebase {
             }
         }
 
-        public static void firebaseAuthWithGithub (Activity activity, OAuthProvider.Builder provider) {
+        public static void firebaseAuthWithGithub (Activity activity,
+                                                   OAuthProvider.Builder provider) {
             firebaseCustomAuth(activity, provider);
         }
 
@@ -723,7 +725,7 @@ public class Firebase {
          * Change Analytics and Crashlytics values used in the Console for logging errors, analytics
          * data and ad-mob data.
          */
-        public static void changeLoggingData(){
+        public static void changeLoggingData () {
             changeLoggingData(false);
         }
 
@@ -746,12 +748,17 @@ public class Firebase {
                             if (documentSnapshot.exists()) {
                                 try {
                                     Person user = documentSnapshot.toObject(Person.class);
+                                    Messaging.getFCMToken(new OnGetDataListener() {
+                                        @Override
+                                        public void onSuccess (String string) {
+                                            user.setFcm_token(string);
+                                        }
+                                    });
                                     CRASHLYTICS.setUserId(uid);
                                     ANALYTICS.setUserId(uid);
                                     REALTIME_DB.getReference("/online_users/" + uid).setValue(true);
                                     REALTIME_DB.getReference("/online_users/" + uid).onDisconnect().setValue(false);
                                     Realtime.internet(uid);
-                                    //noinspection ConstantConditions
                                     Analytics.setRank(user.getRank());
                                     //Save user in cache
                                     user.setId(documentSnapshot.getId());
@@ -801,10 +808,11 @@ public class Firebase {
 
         public static void updateProfileData (Uri imageUri, String name, String email) {
             FirebaseUser user = AUTH.getCurrentUser();
-            if(user == null) {
+            if (user == null) {
                 return;
             }
-            UserProfileChangeRequest.Builder profileUpdates = new UserProfileChangeRequest.Builder();
+            UserProfileChangeRequest.Builder profileUpdates =
+                    new UserProfileChangeRequest.Builder();
             profileUpdates.setDisplayName(name);
             if (imageUri != null) {
                 profileUpdates.setPhotoUri(imageUri);
@@ -834,4 +842,30 @@ public class Firebase {
         }
     }
     // endregion
+
+    //region Firebase Messaging
+    public static class Messaging {
+        private static final String TAG = "Messaging";
+
+        public static void getFCMToken (OnGetDataListener listener) {
+            MESSAGING.getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+                @Override
+                public void onComplete (@NonNull Task<String> task) {
+                    if (!task.isSuccessful()) {
+                        listener.onFailure(task.getException());
+                        return;
+                    }
+
+                    // Get new FCM registration token
+                    String token = task.getResult();
+
+                    // Log and toast
+                    Log.d(TAG, token);
+
+                    listener.onSuccess(token);
+                }
+            });
+        }
+    }
+    //endregion
 }

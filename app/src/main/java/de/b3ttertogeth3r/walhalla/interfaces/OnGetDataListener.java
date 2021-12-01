@@ -46,6 +46,15 @@ public interface OnGetDataListener {
     }
 
     /**
+     * returns a string value through the listener.
+     *
+     * @param string
+     *         text value
+     */
+    default void onSuccess (String string) {
+    }
+
+    /**
      * No data to be send, just notify of done download. Mostly used to notify a completed upload.
      */
     default void onSuccess () {

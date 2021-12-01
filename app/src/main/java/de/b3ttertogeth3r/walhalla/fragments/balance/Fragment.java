@@ -41,7 +41,7 @@ public class Fragment extends CustomFragment {
 
     @Override
     public void toolbarContent () {
-        toolbar.setTitle(R.string.menu_chargen);
+        toolbar.setTitle(R.string.menu_balance);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class Fragment extends CustomFragment {
                             @NonNull @NotNull LayoutInflater inflater) {
         LinearLayout layout = view.findViewById(R.id.fragment_container);
         TextView title = new TextView(requireContext());
-        title.setText(R.string.menu_chargen);
+        title.setText(R.string.menu_balance);
         layout.addView(title);
     }
 }

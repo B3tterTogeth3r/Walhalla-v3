@@ -29,7 +29,6 @@ import java.util.EmptyStackException;
 
 import de.b3ttertogeth3r.walhalla.enums.Walhalla;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
-import de.b3ttertogeth3r.walhalla.fragments.profile.Fragment;
 import de.b3ttertogeth3r.walhalla.interfaces.OpenExternal;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
@@ -43,12 +42,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private DrawerLayout drawerlayout;
     private NavigationView navigationView;
     private boolean doubleBackToExitPressedOnce = false;
+    public static InAppMessage inAppMessage;
+
+    public interface InAppMessage {
+        void displayMessage(String title, String message, String page);
+    }
+
+    private void openInAppMessageDialog(String title, String message, String page){
+        AlertDialog.Builder builder = new AlertDialog.Builder(App.getContext());
+        builder.setTitle(title)
+                .setMessage(message)
+                .setNegativeButton(R.string.later, null)
+                .setCancelable(true)
+                .setIcon(R.drawable.ic_error_outline);
+
+        switch (page) {
+            case "balance":
+                builder
+                    .setPositiveButton(R.string.yes,
+                            (dialog, which) -> switchPage(R.string.menu_balance));
+                break;
+            case "program":
+                builder
+                        .setPositiveButton(R.string.yes,
+                                (dialog, which) -> switchPage(R.string.menu_program));
+                break;
+            case "news":
+                builder
+                        .setPositiveButton(R.string.yes,
+                                (dialog, which) -> switchPage(R.string.menu_messages));
+                break;
+        }
+
+        runOnUiThread(() -> {
+            AlertDialog dialog1 = builder.create();
+            dialog1.show();
+        });
+    }
 
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         externalListener = this;
+        inAppMessage = this::openInAppMessageDialog;
         de.b3ttertogeth3r.walhalla.App.setContext(MainActivity.this);
         de.b3ttertogeth3r.walhalla.App.setFragmentManager(getFragmentManager());
 
@@ -91,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 AlertDialog dialog1 = builder.create();
                 dialog1.show();
             } else {
-                switchPage(CacheData.getStartPage());
+                switchPage(CacheData.getIntentStartPage());
             }
             /* backup to copy
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
@@ -223,6 +260,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Firebase.Analytics.screenChange(item, getString(R.string.menu_profile));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new de.b3ttertogeth3r.walhalla.fragments.profile.Fragment()).commit();
+            case R.string.menu_balance:
+                Firebase.Analytics.screenChange(item, getString(R.string.menu_balance));
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new de.b3ttertogeth3r.walhalla.fragments.balance.Fragment()).commit();
             case R.string.menu_logout:
                 break;
             default:

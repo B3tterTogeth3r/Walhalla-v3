@@ -130,6 +130,7 @@
     <string name="dialog_semester_select">Semester wählen</string>
     <string name="error_address">Bitte gib eine vollständige Adresse ein</string>
     <string name="error_major">Bitte gib einen Wert ein</string>
+    <string name="later">Später</string>
 
 
 </resources>
