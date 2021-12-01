@@ -2,40 +2,51 @@ package de.b3ttertogeth3r.walhalla.enums;
 
 import androidx.annotation.NonNull;
 
-import com.google.firebase.database.annotations.NotNull;
-
 public enum Charge {
-    X("Senior", "all"),
-    VX("Consenior", "all"),
-    FM("Fuxmajor", "all"),
-    XX("Schriftführer", "some"),
-    XXX("Kassier", "some"),
-    AH_X("Philistersenior", "all"),
-    AH_XX("Philisterschriftführer", "none"),
-    AH_XXX("Philisterkassier", "none"),
-    AH_HW1("Hausverwalter", "none"),
-    AH_HW2("Hausverwalter", "none");
-    private final String name, canEditPages;
+    ADMIN("Admin"),
+    X("Senior"),
+    VX("Consenior"),
+    FM("Fuxmajor"),
+    XX("Schriftführer"),
+    XXX("Kassier"),
+    AH_X("Philistersenior"),
+    AH_XX("Philisterschriftführer"),
+    AH_XXX("Philisterkassier"),
+    AH_HW("Hausverwalter"),
+    NONE("Chargenlos");
 
-    Charge (String name, String canEditPages) {
+    private final String name;
+
+    Charge (String name) {
         this.name = name;
-        this.canEditPages = canEditPages;
     }
 
-    public boolean getCanEditPages (@NotNull Rank rank) {
-        if (rank.toString().equals(Rank.ACTIVE.toString()) && canEditPages.equals("some")) {
-            return true;
-        } else if (canEditPages.equals("all")) {
-            return true;
-        } else if (canEditPages.equals("some")) {
-            return false;
+    public static Charge find (String name) {
+        if(name == null) {
+            return NONE;
+        } else if (name.equals(X.getName())) {
+            return X;
+        } else if (name.equals(VX.getName())) {
+            return VX;
+        } else if (name.equals(ADMIN.getName())){
+            return ADMIN;
+        } else if(name.equals(FM.getName())){
+            return FM;
+        } else if (name.equals(XX.getName())){
+            return XX;
+        } else if (name.equals(XXX.getName())){
+            return XXX;
+        } else if (name.equals(AH_X.getName())){
+            return AH_X;
+        } else if (name.equals(AH_XX.getName())){
+            return AH_XX;
+        } else if (name.equals(AH_XXX.getName())){
+            return AH_XXX;
+        } else if (name.equals(AH_HW.getName())){
+            return AH_HW;
         } else {
-            return false;
+            return NONE;
         }
-    }
-
-    public boolean canEdit (Page page) {
-        return true;
     }
 
     public String getName () {
@@ -45,6 +56,6 @@ public enum Charge {
     @NonNull
     @Override
     public String toString () {
-        return "Charge";
+        return super.toString();
     }
 }

@@ -2,6 +2,8 @@ package de.b3ttertogeth3r.walhalla.models;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.Exclude;
@@ -203,6 +205,7 @@ public class Person implements Cloneable {
      * @see Object#clone()
      * @since 1.7
      */
+    @NonNull
     @Exclude
     @NotNull
     public Object clone () throws CloneNotSupportedException, UnsupportedOperationException {
@@ -333,7 +336,6 @@ public class Person implements Cloneable {
         this.joined = joined;
     }
 
-    //endregion
 
     public void setDoB (Timestamp doB) {
         DoB = doB;
@@ -342,6 +344,7 @@ public class Person implements Cloneable {
     public void setBalance (float balance) {
         this.balance = balance;
     }
+    //endregion
 
     /**
      * formatted into a string in german format. Example:

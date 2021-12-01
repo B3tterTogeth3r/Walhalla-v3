@@ -17,7 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 
+import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.interfaces.OnGetDataListener;
 import de.b3ttertogeth3r.walhalla.interfaces.SplashInterface;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
 
@@ -63,7 +65,6 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
                     .setOnDismissListener(dialog -> finish())
                     .show();
         } else {
-            Log.e(TAG, "onCreate: app has internet and is not first start");
             updateProgressbar();
             settings.edit().putBoolean("my_first_time", false).apply();
             new App();
@@ -88,7 +89,6 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
         } else {
             counter++;
             progress = progress + (100 / total);
-            //Log.d(TAG, "updateProgressbar: counter: " + progress);
             progressBar.setProgress(progress, true);
         }
     }
@@ -106,7 +106,6 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
 
     @Override
     public void firebaseDone () {
-        Log.e(TAG, "firebaseDone");
         // fetch dynamic links and push message intents
         updateProgressbar();
         dynamicLink();
@@ -134,7 +133,30 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
 
     void goOn () {
         // Go to start Activity after fetching dynamic links and intents from push messages
-        Log.e(TAG, "goOn");
-        updateProgressbar();
+        getCharge(new OnGetDataListener(){
+            @Override
+            public void onSuccess () {
+                updateProgressbar();
+            }
+        });
+    }
+
+    private void getCharge (OnGetDataListener listener) {
+        if(Firebase.Authentication.isSignIn()){
+            Firebase.Firestore.findUserCharge(new OnGetDataListener(){
+                @Override
+                public void onSuccess (String string) {
+                    Charge charge = Charge.find(string);
+                    CacheData.putCharge(charge);
+
+                    listener.onSuccess();
+                }
+
+                @Override
+                public void onFailure () {
+                    listener.onSuccess();
+                }
+            });
+        }
     }
 }

@@ -39,7 +39,7 @@ public enum Rank {
         if(rankName.equals(description)){
             return this;
         } else {
-            return null;
+            return ERROR;
         }
     }
 

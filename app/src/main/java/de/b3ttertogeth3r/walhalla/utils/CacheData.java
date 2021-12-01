@@ -17,6 +17,7 @@ import java.util.Map;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.enums.Address;
+import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.exceptions.PersonException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.models.Person;
@@ -38,6 +39,7 @@ public class CacheData {
     public static final String USER_DATA = "user_data";
     private static final String TAG = "CacheData";
     private static final String INTENT_START_PAGE = "intent_start_page";
+    private static final String USER_CHARGE = "Charge";
     private static SharedPreferences SP;
 
     public CacheData () {
@@ -266,4 +268,11 @@ public class CacheData {
         return person;
     }
 
+    public static void putCharge (@NonNull Charge charge) {
+        SP.edit().putString(USER_CHARGE, charge.getName()).apply();
+    }
+
+    public static Charge getCharge(){
+        return Charge.find(SP.getString(USER_CHARGE, Charge.NONE.toString()));
+    }
 }

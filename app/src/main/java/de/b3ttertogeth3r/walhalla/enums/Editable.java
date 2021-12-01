@@ -19,10 +19,7 @@ public enum Editable {
     STREET("Street"),
     NUMBER("Number"),
     ZIP("Zip"),
-    CITY("City"),
-    DAY("Day"),
-    MONTH("Month"),
-    YEAR("Year");
+    CITY("City");
     private final String description;
 
     Editable (String description) {

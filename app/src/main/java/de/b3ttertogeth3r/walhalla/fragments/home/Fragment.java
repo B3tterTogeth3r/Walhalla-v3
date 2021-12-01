@@ -31,9 +31,11 @@ import java.util.Calendar;
 import de.b3ttertogeth3r.walhalla.abstraction.CustomFragment;
 import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.R;
+import de.b3ttertogeth3r.walhalla.enums.Page;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase.Authentication;
 import de.b3ttertogeth3r.walhalla.models.Event;
+import de.b3ttertogeth3r.walhalla.utils.CacheData;
 
 /**
  * Created by B3tterTogeth3r on 27.07.2021.
@@ -281,6 +283,9 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
     public void toolbarContent () {
         toolbar.getMenu().clear();
         toolbar.setTitle(R.string.app_name);
+        if(Page.HOME.canEditPage(CacheData.getCharge())){
+            toolbar.setTitle(R.string.fui_welcome_back_email_header);
+        }
     }
 
     @Override

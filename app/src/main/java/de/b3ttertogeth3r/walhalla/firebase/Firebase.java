@@ -40,6 +40,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
@@ -56,6 +58,7 @@ import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.MainActivity;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.StartActivity;
+import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.exceptions.InvalidFirestorePathException;
 import de.b3ttertogeth3r.walhalla.exceptions.NoUploadDataException;
@@ -423,6 +426,29 @@ public class Firebase {
             }
         }
 
+        public static void findUserCharge (OnGetDataListener listener) {
+            if(AUTH.getUid() == null || AUTH.getUid().isEmpty()){
+                listener.onFailure();
+            }
+            FIRESTORE.collection("Current")
+                    .whereArrayContains("UID", AUTH.getUid())
+                    .get()
+                    .addOnSuccessListener(documentSnapshots -> {
+                        if(documentSnapshots.isEmpty()){
+                            listener.onFailure();
+                            return;
+                        }
+                        for(QueryDocumentSnapshot qds : documentSnapshots){
+                            String id = qds.getId();
+                            if(id.equals(Charge.ADMIN.getName())) {
+                                listener.onSuccess(id);
+                                break;
+                            } else {
+                                listener.onSuccess(id);
+                            }
+                        }
+                    });
+        }
     }
     // endregion
 
@@ -752,6 +778,7 @@ public class Firebase {
                                         @Override
                                         public void onSuccess (String string) {
                                             user.setFcm_token(string);
+                                            Firebase.Firestore.uploadPerson(user);
                                         }
                                     });
                                     CRASHLYTICS.setUserId(uid);
@@ -821,6 +848,10 @@ public class Firebase {
                     user.updateProfile(profileUpdates.build())
                             .addOnCompleteListener(task2 ->
                                     Authentication.changeLoggingData()));
+        }
+
+        public static FirebaseUser getUser () {
+            return AUTH.getCurrentUser();
         }
 
         public interface SignInListener {

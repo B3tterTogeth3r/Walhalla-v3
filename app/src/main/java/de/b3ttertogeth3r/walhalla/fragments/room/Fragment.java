@@ -16,10 +16,13 @@ import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstraction.CustomFragment;
+import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.enums.Display;
+import de.b3ttertogeth3r.walhalla.enums.Page;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.models.Paragraph;
+import de.b3ttertogeth3r.walhalla.utils.CacheData;
 import de.b3ttertogeth3r.walhalla.utils.Site;
 
 /**
@@ -33,7 +36,7 @@ import de.b3ttertogeth3r.walhalla.utils.Site;
 public class Fragment extends CustomFragment {
     private static final String TAG = "room.Fragment";
     int paragraphNumber = 1;
-    private ArrayList<ArrayList<Paragraph>> paragraphs = new ArrayList<>();
+    private final ArrayList<ArrayList<Paragraph>> paragraphs = new ArrayList<>();
     private LinearLayout layout;
     private boolean edit = false;
     private Display display = Display.SHOW;
@@ -105,8 +108,8 @@ public class Fragment extends CustomFragment {
     public void toolbarContent () {
         toolbar.setTitle(R.string.menu_rooms);
         toolbar.getMenu().clear();
-        if (Firebase.Authentication.isSignIn()) {
-            // TODO: 10.08.21 make only visible if signed in user is charge or super-admin
+        if (Page.ROOM.canEditPage(CacheData.getCharge())) {
+            // only visible if signed in user is charge or super-admin
             toolbar.inflateMenu(R.menu.default_edit_only);
             toolbar.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.edit) {
