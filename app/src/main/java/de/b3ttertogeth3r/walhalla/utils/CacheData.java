@@ -240,7 +240,7 @@ public class CacheData {
     public static Person getUser () throws PersonException {
         Person person = new Person();
         person.setBalance(SP.getFloat(USER_DATA + Person.BALANCE, 0.0f));
-        person.setDoB(new Timestamp(SP.getLong(USER_DATA + Person.DOB, new Date().getTime()), 0));
+        person.setDoB(new Timestamp(new Date(SP.getLong(USER_DATA + Person.DOB, new Date().getTime()))));
         person.setFirst_Name(SP.getString(USER_DATA + Person.FIRST_NAME, ""));
         person.setFcm_token(SP.getString(USER_DATA + Person.FCM_TOKEN, ""));
         person.setId(SP.getString(USER_DATA + Person.ID, ""));

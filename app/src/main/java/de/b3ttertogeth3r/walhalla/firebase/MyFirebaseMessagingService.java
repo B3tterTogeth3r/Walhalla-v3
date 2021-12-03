@@ -34,7 +34,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onNewToken (@NonNull @NotNull String token) {
-        FirebaseUser user = Firebase.AUTH.getCurrentUser();
+        FirebaseUser user = Firebase.Authentication.getUser();
 
         //send token to Firestore
         try {

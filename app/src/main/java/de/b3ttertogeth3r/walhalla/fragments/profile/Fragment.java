@@ -68,7 +68,6 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
 
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
     public void stop () {
         //Update changes and set values in users auth too
@@ -78,7 +77,7 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
          */
         if (user.isValid()) {
             try {
-                FirebaseUser firebaseUser = Firebase.AUTH.getCurrentUser();
+                FirebaseUser firebaseUser = Firebase.Authentication.getUser();
                 user.setUid(firebaseUser.getUid());
                 //if image selected upload otherwise skip
                 if (imageBitmap != null) {
@@ -101,9 +100,8 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
     }
 
     private void upload (@NonNull Person user, @Nullable Uri imageUri) {
-        Firestore.uploadPerson(user);
-
         Authentication.updateProfileData(imageUri, user.getFullName(), user.getMail());
+        Firestore.uploadPerson(user);
     }
 
     @Override

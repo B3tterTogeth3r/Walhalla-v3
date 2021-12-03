@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * A custom listener to make a notification on firebase download results more easy.
@@ -34,6 +35,9 @@ public interface OnGetDataListener {
      *         list of downloaded data
      */
     default void onSuccess (QueryDocumentSnapshot queryDocumentSnapshot) {
+    }
+
+    default void onSuccess(QuerySnapshot querySnapshot){
     }
 
     /**

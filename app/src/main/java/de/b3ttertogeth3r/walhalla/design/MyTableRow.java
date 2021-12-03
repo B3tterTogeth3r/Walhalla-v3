@@ -36,12 +36,6 @@ public class MyTableRow extends TableLayout {
     }
 
     private void design (@NonNull Context context) {
-
-        int padding = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                1f,
-                context.getResources().getDisplayMetrics()
-        );
         LayoutParams params = new LayoutParams(
                 LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);

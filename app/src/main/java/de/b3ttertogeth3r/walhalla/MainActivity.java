@@ -264,6 +264,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Firebase.Analytics.screenChange(item, getString(R.string.menu_balance));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new de.b3ttertogeth3r.walhalla.fragments.balance.Fragment()).commit();
+            case R.string.menu_chargen:
+                Firebase.Analytics.screenChange(item, getString(R.string.menu_chargen));
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new de.b3ttertogeth3r.walhalla.fragments.chargen.Fragment()).commit();
+            case R.string.menu_chargen_phil:
+                Firebase.Analytics.screenChange(item, getString(R.string.menu_chargen_phil));
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new de.b3ttertogeth3r.walhalla.fragments.chargen_phil.Fragment()).commit();
             case R.string.menu_logout:
                 break;
             default:

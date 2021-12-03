@@ -28,10 +28,35 @@ public enum Page {
         this.editableByWhom = editableByWhom;
     }
 
-    public boolean canEditPage (Charge charge) {
-        if(charge == Charge.ADMIN) {
+    public static boolean canEditPage (Charge charge) {
+        if(charge == Charge.ADMIN)
             return true;
-        }
+        if(BALANCE.inEditable(charge))
+            return true;
+        if(BEER.inEditable(charge))
+            return true;
+        if(CHARGEN.inEditable(charge))
+            return true;
+        if(GREETING.inEditable(charge))
+            return true;
+        if(HOME.inEditable(charge))
+            return true;
+        if(NEWS.inEditable(charge))
+            return true;
+        if(PROGRAM.inEditable(charge))
+            return true;
+        if(OWN_HISTORY.inEditable(charge))
+            return true;
+        if(ROOM.inEditable(charge))
+            return true;
+        if(SIGN_IN.inEditable(charge))
+            return true;
+        if(TRANSCRIPT.inEditable(charge))
+            return true;
+        return false;
+    }
+
+    private boolean inEditable (Charge charge) {
         for (Charge c : editableByWhom) {
             if (c == charge) {
                 return true;

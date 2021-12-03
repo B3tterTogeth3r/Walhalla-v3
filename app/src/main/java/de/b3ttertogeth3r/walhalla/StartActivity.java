@@ -133,30 +133,11 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
 
     void goOn () {
         // Go to start Activity after fetching dynamic links and intents from push messages
-        getCharge(new OnGetDataListener(){
+        Firebase.Firestore.getUserCharge(new OnGetDataListener(){
             @Override
             public void onSuccess () {
                 updateProgressbar();
             }
         });
-    }
-
-    private void getCharge (OnGetDataListener listener) {
-        if(Firebase.Authentication.isSignIn()){
-            Firebase.Firestore.findUserCharge(new OnGetDataListener(){
-                @Override
-                public void onSuccess (String string) {
-                    Charge charge = Charge.find(string);
-                    CacheData.putCharge(charge);
-
-                    listener.onSuccess();
-                }
-
-                @Override
-                public void onFailure () {
-                    listener.onSuccess();
-                }
-            });
-        }
     }
 }

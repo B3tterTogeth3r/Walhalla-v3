@@ -66,9 +66,9 @@ import de.b3ttertogeth3r.walhalla.exceptions.PersonException;
 import de.b3ttertogeth3r.walhalla.fragments.signin.Fragment;
 import de.b3ttertogeth3r.walhalla.interfaces.OnGetDataListener;
 import de.b3ttertogeth3r.walhalla.models.Account;
-import de.b3ttertogeth3r.walhalla.models.Image;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
+import de.b3ttertogeth3r.walhalla.models.Semester;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
 import de.b3ttertogeth3r.walhalla.utils.Format;
 
@@ -92,8 +92,8 @@ public class Firebase {
     private static final String TAG = "Firebase";
     private static final String NOT_SIGNED_IN = "not signed in";
     public static FirebaseFirestore FIRESTORE;
-    public static FirebaseRemoteConfig REMOTE_CONFIG;
-    public static FirebaseAuth AUTH;
+    private static FirebaseRemoteConfig REMOTE_CONFIG;
+    private static FirebaseAuth AUTH;
     private static FirebaseCrashlytics CRASHLYTICS;
     /**
      * to activate analytics debug write in terminal with only one device connected:
@@ -114,6 +114,12 @@ public class Firebase {
     private static FirebaseStorage STORAGE;
     private static FirebaseMessaging MESSAGING;
 
+    /**
+     * Initialize Firebase Services
+     *
+     * @param ctx
+     *         Context needed
+     */
     public static void init (@NonNull @NotNull Context ctx) {
         Log.e(TAG, "init: Firebase");
         FirebaseApp.initializeApp(ctx);
@@ -202,14 +208,16 @@ public class Firebase {
         /**
          * Download an image from the {@link Storage Image Storage Bukket}
          *
-         * @param image
-         *         Image value to download from
-         * @return Bitmap of the image
+         * @param reference_path
+         *         path to put into the storage reference
+         * @return reference to put into firebase glide
+         * @see
+         * <a href="https://firebase.google.com/docs/storage/android/download-files#downloading_images_with_firebaseui">Downloading
+         * Images with FirebaseU</a>
          */
         @NonNull
-        public static Task<byte[]> downloadImage (@NonNull Image image) {
-            String path = image.getLarge_path();
-            return REFERENCE.child(path).getBytes(ONE_MEGABYTE);
+        public static StorageReference downloadImage (String reference_path) {
+            return REFERENCE.child(reference_path);
         }
 
         /**
@@ -427,20 +435,20 @@ public class Firebase {
         }
 
         public static void findUserCharge (OnGetDataListener listener) {
-            if(AUTH.getUid() == null || AUTH.getUid().isEmpty()){
+            if (AUTH.getUid() == null || AUTH.getUid().isEmpty()) {
                 listener.onFailure();
             }
             FIRESTORE.collection("Current")
                     .whereArrayContains("UID", AUTH.getUid())
                     .get()
                     .addOnSuccessListener(documentSnapshots -> {
-                        if(documentSnapshots.isEmpty()){
+                        if (documentSnapshots.isEmpty()) {
                             listener.onFailure();
                             return;
                         }
-                        for(QueryDocumentSnapshot qds : documentSnapshots){
+                        for (QueryDocumentSnapshot qds : documentSnapshots) {
                             String id = qds.getId();
-                            if(id.equals(Charge.ADMIN.getName())) {
+                            if (id.equals(Charge.ADMIN.getName())) {
                                 listener.onSuccess(id);
                                 break;
                             } else {
@@ -448,6 +456,55 @@ public class Firebase {
                             }
                         }
                     });
+        }
+
+        public static void getChargen (Semester semester, OnGetDataListener listener) {
+            FIRESTORE.collection("Semester")
+                    .document(semester.getId() + "")
+                    .collection("Board_Students")
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess (@NonNull QuerySnapshot documentSnapshots) {
+                            listener.onSuccess(documentSnapshots);
+                        }
+                    })
+                    .addOnFailureListener(listener::onFailure);
+        }
+
+        public static void getPhilChargen (Semester semester, OnGetDataListener listener) {
+            FIRESTORE.collection("Semester")
+                    .document(semester.getId() + "")
+                    .collection("Board_union")
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess (@NonNull QuerySnapshot documentSnapshots) {
+                            listener.onSuccess(documentSnapshots);
+                        }
+                    })
+                    .addOnFailureListener(listener::onFailure);
+        }
+
+        public static void getUserCharge (OnGetDataListener listener) {
+            if(Firebase.Authentication.isSignIn()){
+                Firebase.Firestore.findUserCharge(new OnGetDataListener(){
+                    @Override
+                    public void onSuccess (String string) {
+                        Charge charge = Charge.find(string);
+                        CacheData.putCharge(charge);
+
+                        listener.onSuccess();
+                    }
+
+                    @Override
+                    public void onFailure () {
+                        listener.onSuccess();
+                    }
+                });
+            } else {
+                listener.onSuccess();
+            }
         }
     }
     // endregion
@@ -622,7 +679,7 @@ public class Firebase {
     // region Google Authentication via Firebase
 
     /**
-     * @see <a href="">Firebase Authentication</a>
+     * @see <a href="https://firebase.google.com/docs/auth">Firebase Authentication</a>
      */
     @SuppressWarnings("ConstantConditions")
     public static class Authentication {
@@ -875,6 +932,10 @@ public class Firebase {
     // endregion
 
     //region Firebase Messaging
+
+    /**
+     * @see <a href="https://firebase.google.com/docs/cloud-messaging">Firebase Cloud Messaging</a>
+     */
     public static class Messaging {
         private static final String TAG = "Messaging";
 
