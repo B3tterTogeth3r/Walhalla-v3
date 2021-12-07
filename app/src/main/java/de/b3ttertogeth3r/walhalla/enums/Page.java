@@ -17,19 +17,37 @@ public enum Page {
     HOME(new Charge[0]),
     NEWS(new Charge[]{X, VX, FM, XX, XXX, AH_XXX, AH_X, AH_XX}),
     PROGRAM(new Charge[]{X, VX, FM, XX, XXX, AH_XXX, AH_X, AH_XX}),
-    OWN_HISTORY(new Charge[0]),
-    ROOM(new Charge[]{X}),
+    OWN_HISTORY("history_short"),
+    FRAT_WUE("fraternity_wuerzburg"),
+    FRAT_GER("fraternity_germany"),
+    ROOM("rooms"),
+    ABOUT_US("about_us"),
+    SEMESTER_NOTES("semester_notes"),
     SIGN_IN(new Charge[0]),
     TRANSCRIPT(new Charge[]{X, VX, FM, XX, XXX, AH_X, AH_XX, AH_XXX});
 
-    private final Charge[] editableByWhom;
+    private Charge[] editableByWhom = new Charge[0];
+    private String name = "";
+    Page (String name){
+        this.name = name;
+    }
 
     Page (Charge[] editableByWhom) {
         this.editableByWhom = editableByWhom;
     }
 
-    public static boolean canEditPage (Charge charge) {
+    public String getName(){
+        return name;
+    }
+
+    public boolean canEditPage (Charge charge) {
         if(charge == Charge.ADMIN)
+            return true;
+        if(FRAT_GER.inEditable(charge))
+            return true;
+        if(FRAT_WUE.inEditable(charge))
+            return true;
+        if(ABOUT_US.inEditable(charge))
             return true;
         if(BALANCE.inEditable(charge))
             return true;

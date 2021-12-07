@@ -81,7 +81,7 @@ public class Fragment extends CustomFragment {
     public void toolbarContent () {
         toolbar.setTitle(R.string.menu_chargen);
         toolbar.getMenu().clear();
-        if (Page.canEditPage(CacheData.getCharge())) {
+        if (Page.CHARGEN.canEditPage(CacheData.getCharge())) {
             toolbar.inflateMenu(R.menu.default_edit_only);
             toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                 @Override

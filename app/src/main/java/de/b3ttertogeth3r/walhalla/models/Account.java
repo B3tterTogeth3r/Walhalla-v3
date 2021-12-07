@@ -1,12 +1,16 @@
 package de.b3ttertogeth3r.walhalla.models;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.Timestamp;
+
+import java.util.Date;
 
 public class Account {
     private float income = 0f;
     private float expense = 0f;
     private String eventID, purpose, add, recipe_path;
-    private Timestamp timestamp;
+    private Timestamp date = new Timestamp(new Date());
 
     public Account () {
     }
@@ -19,6 +23,14 @@ public class Account {
         this.purpose = purpose;
         this.add = add;
         this.recipe_path = recipe_path;
+    }
+
+    public Account (@NonNull Drink drink) {
+        this.expense = drink.getAmount() * drink.getPrice();
+        this.eventID = "beer";
+        this.add = drink.getKind();
+        this.date = drink.getDate();
+        this.purpose = drink.getUid();
     }
 
     public float getIncome () {
@@ -69,11 +81,11 @@ public class Account {
         this.recipe_path = recipe_path;
     }
 
-    public Timestamp getTimestamp () {
-        return timestamp;
+    public Timestamp getDate () {
+        return date;
     }
 
-    public void setTimestamp (Timestamp timestamp) {
-        this.timestamp = timestamp;
+    public void setDate (Timestamp date) {
+        this.date = date;
     }
 }

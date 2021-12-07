@@ -10,10 +10,12 @@ public enum Design {
     BUTTON("button"),
     IMAGE("image"),
     LINK("link"),
-    TABLE("table"),
+    TABLE_TITLE("table_title"),
+    TABLE_ROW("table_row"),
     LIST_CHECKED("list_checked"),
     LIST_BULLET("list_bullet"),
     LIST_CHECKABLE("list_checkable");
+
     private final String description;
 
     Design (String description) {

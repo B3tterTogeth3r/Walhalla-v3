@@ -1,4 +1,4 @@
-package de.b3ttertogeth3r.walhalla.fragments.own_history;
+package de.b3ttertogeth3r.walhalla.fragments.account;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +11,6 @@ import com.google.firebase.database.annotations.NotNull;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstraction.CustomFragment;
-import de.b3ttertogeth3r.walhalla.utils.Site;
-import de.b3ttertogeth3r.walhalla.utils.SiteData;
 
 /**
  * @author B3tterToegth3r
@@ -20,8 +18,7 @@ import de.b3ttertogeth3r.walhalla.utils.SiteData;
  * @since 1.0
  */
 public class Fragment extends CustomFragment {
-    private static final String TAG = "room.own_history";
-    private LinearLayout layout;
+    private static final String TAG = "account.Fragment";
 
     @Override
     public void start () {
@@ -34,26 +31,26 @@ public class Fragment extends CustomFragment {
     }
 
     @Override
-    public void createView (@NonNull @NotNull View view,
-                            @NonNull @NotNull LayoutInflater inflater) {
-        layout = view.findViewById(R.id.fragment_container);
+    public void stop () {
+
     }
 
     @Override
     public void viewCreated () {
-        try {
-            new Site(getContext(), layout, SiteData.own_history);
-        } catch (Exception ignored) {
-        }
+
     }
 
     @Override
     public void toolbarContent () {
-        toolbar.setTitle(R.string.menu_more_history);
+        toolbar.setTitle(R.string.menu_account);
     }
 
     @Override
-    public void stop () {
-
+    public void createView (@NonNull @NotNull View view,
+                            @NonNull @NotNull LayoutInflater inflater) {
+        LinearLayout layout = view.findViewById(R.id.fragment_container);
+        TextView title = new TextView(requireContext());
+        title.setText(R.string.menu_account);
+        layout.addView(title);
     }
 }

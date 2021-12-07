@@ -1,0 +1,81 @@
+{
+  "version": {
+    "versionNumber": 0
+  },
+  "paragraph_1": {
+    "0": {
+      "kind": "title",
+      "position": 0,
+      "value": [
+        "Wer wir sind"
+      ]
+    },
+    "1": {
+      "kind": "text",
+      "position": 1,
+      "value": [
+        "Wir sind eine 1864 in Würzburg gegründete katholische Studentenverbindung aller Fachrichtungen. Wir haben uns zusammengefunden, um gemeinsam zu lernen, zu studieren und zu feiern. Auf dem Walhallahaus in der Mergentheimer Straße 32 hören wir Vorträge, treffen uns zu Federweißerabenden oder traditionellen Kneipen, spielen Tennis und feiern Feste."
+      ]
+    },
+    "2": {
+      "kind": "text",
+      "position": 2,
+      "value": [
+        "Uns verbindet die Orientierung an den Grundsätzen Religion, Wissenschaft und Freundschaft. Deshalb haben wir uns in einem starken Dachverband zusammengeschlossen: dem Kartellverband katholischer deutscher Studentenvereine (KV). Diesem gehören über 80 aktive Vereine an mehr als 40 Hochschulen in ganz Deutschland an. Aus unserer christlichen Tradition heraus lehnen wir das Schlagen von Mensuren ab. Wir sind also unpolitisch, nicht schlagend und nicht farbentragend."
+      ]
+    },
+    "3": {
+      "kind": "image",
+      "position": 3,
+      "value": [
+        "zEc49CAiRUKdhjYaqUAV",
+        "uHDYIDXu7LTeolNzHFc8"
+      ]
+    },
+    "4": {
+      "kind": "text",
+      "position": 4,
+      "value": [
+        "Unsere Mitglieder unterteilen sich in Aktivitas und Altherrenschaft. Die Aktivitas besteht ausschließlich aus Studierenden an den Würzburger Hochschulen. Als lebendiges „Herz“ der Verbindung übernimmt sie die Gestaltung des Verbindungslebens, inklusive der Planung verschiedenster Veranstaltungen. Auf Basis eines „umgekehrten Generationenvertrags“ unterstützt die Altherrenschaft die Verbindung finanziell und kümmert sich um den Erhalt und die Verwaltung unseres Hauses. Darüber hinaus bereichert sie mit ihrer Erfahrung das Verbindungsleben und steht der Aktivitas stets mit Rat und Tat zur Seite. Im Mittelpunkt des Verbindungslebens stehen generationenübergreifende Freundschaft und Zusammenhalt, die weit über das eigene Studium hinaus Bestand haben."
+      ]
+    }
+  },
+  "paragraph_2": {
+    "0": {
+      "kind": "title",
+      "position": 0,
+      "value": [
+        "Wen wir suchen"
+      ]
+    },
+    "1": {
+      "kind": "text",
+      "position": 1,
+      "value": [
+        "Neugierig geworden? Dann solltest du nicht lange zögern! Kontaktiere uns und lerne uns auf einer unserer Veranstaltungen oder auch bei einem gemütlichen Beisammensein näher kennen. Wer sich bei uns in der Gemeinschaft engagiert und auch bereit ist Verantwortung zu übernehmen, erhält nicht nur die Chance sich persönlich weiterzuentwickeln, sondern auch viele neue Freundschaften zu schließen und eine Menge Spaß zu haben. Ein gegenseitiges, unverbindliches Kennenlernen sichert ab, das du auch zu uns passt. Entscheidend sind für uns dabei ausschließlich der Mensch und der Wille, sich in der Gemeinschaft einzubringen."
+      ]
+    }
+  },
+  "paragraph_3": {
+    "0": {
+      "kind": "title",
+      "position": 0,
+      "value": [
+        "Kurz und knapp: Das findest du bei uns"
+      ]
+    },
+    "1": {
+      "kind": "list_checked",
+      "position": 1,
+      "value": [
+        "Aktive Unterstützung im Studium durch Ältere",
+        "Generationenübergreifende Freundschaft, die ein Leben lang hält",
+        "Traditionelle und kulturelle Veranstaltungen rund um das Studententum",
+        "Geräumige Zimmer zu studentenfreundlichen Preisen in Nähe zur Uni",
+        "Erlernen von Soft Skills durch aktives Einbringen in die Gemeinschaft und das Übernehmen von Vorstandsämtern",
+        "Ein altehrwürdiges und gemütliches Haus unterhalb des Würzburger Käppele mit Garten und Tennisplatz",
+        "Lerne mit uns Würzburg mit all seinen Facetten kennen!"
+      ]
+    }
+  }
+}

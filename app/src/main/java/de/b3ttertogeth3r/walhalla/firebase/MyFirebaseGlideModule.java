@@ -14,7 +14,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.InputStream;
 
 @GlideModule
-public class MyAppGlideModule extends AppGlideModule {
+public class MyFirebaseGlideModule extends AppGlideModule {
     @Override
     public void registerComponents (@NonNull Context context, @NonNull Glide glide, @NonNull Registry registry) {
         registry.append(StorageReference.class, InputStream.class, new FirebaseImageLoader.Factory());

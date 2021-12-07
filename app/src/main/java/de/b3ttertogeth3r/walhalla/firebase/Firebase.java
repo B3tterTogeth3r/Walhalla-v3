@@ -50,18 +50,14 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.MainActivity;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.StartActivity;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
+import de.b3ttertogeth3r.walhalla.enums.Page;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
-import de.b3ttertogeth3r.walhalla.exceptions.InvalidFirestorePathException;
-import de.b3ttertogeth3r.walhalla.exceptions.NoUploadDataException;
 import de.b3ttertogeth3r.walhalla.exceptions.PersonException;
 import de.b3ttertogeth3r.walhalla.fragments.signin.Fragment;
 import de.b3ttertogeth3r.walhalla.interfaces.OnGetDataListener;
@@ -71,6 +67,7 @@ import de.b3ttertogeth3r.walhalla.models.ProfileError;
 import de.b3ttertogeth3r.walhalla.models.Semester;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
 import de.b3ttertogeth3r.walhalla.utils.Format;
+import de.b3ttertogeth3r.walhalla.utils.FormatJSON;
 
 /**
  * A collection of all the uses Firebase services and the functions used in this android app.
@@ -141,15 +138,7 @@ public class Firebase {
                 .build();
         REMOTE_CONFIG.setConfigSettingsAsync(configSettings);
         REMOTE_CONFIG.setDefaultsAsync(R.xml.remote_config_defaults);
-        REMOTE_CONFIG.fetchAndActivate().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                boolean updated = task.getResult();
-                Log.d(TAG, "init: Config params updated: " + updated);
-                CacheData.setCurrentSemester((int) REMOTE_CONFIG.getDouble("current_semester_id"));
-            } else {
-                Crashlytics.log("Fetching remote config data failed", task.getException());
-            }
-        });
+        RemoteConfig.update();
         STORAGE = FirebaseStorage.getInstance("gs://walhalla-adfc5.appspot.com");
 
         MESSAGING = FirebaseMessaging.getInstance();
@@ -177,12 +166,60 @@ public class Firebase {
      * Config</a>
      */
     public static class RemoteConfig {
+        private static final String TAG = "RemoteConfig";
+
+        /**
+         * load the remote config data in the background after the app already has started.
+         */
         public static void apply () {
-            REMOTE_CONFIG.fetchAndActivate();
+            REMOTE_CONFIG.activate().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    boolean updated = task.getResult();
+                    Log.d(TAG, "init: Config params updated: " + updated);
+                    CacheData.setCurrentSemester((int) REMOTE_CONFIG.getDouble(
+                            "current_semester_id"));
+
+                    Thread[] threadList = new Thread[6];
+                    threadList[0] = new Thread(
+                            new FormatJSON(Page.ROOM, REMOTE_CONFIG.getString(Page.ROOM.getName())));
+                    threadList[0].setName("download_rooms");
+
+                    threadList[1] = new Thread(
+                            new FormatJSON(Page.OWN_HISTORY, REMOTE_CONFIG.getString(Page.OWN_HISTORY.getName())));
+                    threadList[1].setName("download_short_history");
+
+                    threadList[2] = new Thread(
+                            new FormatJSON(Page.ABOUT_US, REMOTE_CONFIG.getString(Page.ABOUT_US.getName())));
+                    threadList[2].setName("download_about_us");
+
+                    threadList[3] = new Thread(
+                            new FormatJSON(Page.FRAT_GER, REMOTE_CONFIG.getString(Page.FRAT_GER.getName())));
+                    threadList[3].setName("download_about_us");
+
+                    threadList[4] = new Thread(
+                            new FormatJSON(Page.FRAT_WUE, REMOTE_CONFIG.getString(Page.FRAT_WUE.getName())));
+                    threadList[4].setName("download_about_us");
+
+                    threadList[5] = new Thread(
+                            new FormatJSON(Page.SEMESTER_NOTES, REMOTE_CONFIG.getString(Page.SEMESTER_NOTES.getName())));
+                    threadList[5].setName("download_semester_notes");
+
+                    for (Thread t : threadList) {
+                        try {
+                            //Log.e(TAG, "thread: starting " + t.getName());
+                            t.start();
+                        } catch (Exception e) {
+                            Crashlytics.log(TAG, "starting remote config thread unable to start", e);
+                        }
+                    }
+                } else {
+                    Crashlytics.log(TAG, "Fetching remote config data failed", task.getException());
+                }
+            });
         }
 
         public static void update () {
-            REMOTE_CONFIG.fetchAndActivate();
+            REMOTE_CONFIG.fetch();
         }
     }
     // endregion
@@ -308,7 +345,7 @@ public class Firebase {
     }
     // endregion
 
-    // region Firebase Cloud Firestore
+    // region Firebase Firestore
 
     /**
      * @see <a href="https://firebase.google.com/docs/firestore/quickstart">Cloud Firestore</a>
@@ -344,41 +381,8 @@ public class Firebase {
             if (semesterID < 0) {
                 semesterID = semesterID * (-1);
             }
-            Log.d(TAG, "getSemester: " + semesterID);
+            // Log.d(TAG, "getSemester: " + semesterID);
             return FIRESTORE.collection("Semester").document(String.valueOf(semesterID));
-        }
-
-        @NonNull
-        public static Task<DocumentReference> upload (CollectionReference collectionReference,
-                                                      Object uploadObject)
-                throws InvalidFirestorePathException, NoUploadDataException {
-            if (collectionReference == null || collectionReference.getPath().isEmpty()) {
-                throw new InvalidFirestorePathException(collectionReference);
-            }
-            if (uploadObject == null) {
-                throw new NoUploadDataException();
-            }
-            return collectionReference.add(uploadObject);
-        }
-
-        @NonNull
-        public static Task<Void> upload (DocumentReference documentReference,
-                                         ArrayList<Map<String, Object>> uploadData)
-                throws InvalidFirestorePathException, NoUploadDataException {
-            if (documentReference == null || documentReference.getPath().isEmpty()) {
-                throw new InvalidFirestorePathException(documentReference);
-            }
-            if (uploadData == null || uploadData.isEmpty()) {
-                throw new NoUploadDataException();
-            }
-            // format arraylist into map
-            Map<String, Object> data = new HashMap<>();
-            for (int i = 0; i < uploadData.size(); i++) {
-                if (!uploadData.get(i).isEmpty()) {
-                    data.put(String.valueOf(i), uploadData.get(i));
-                }
-            }
-            return documentReference.set(data);
         }
 
         public static void findUserById (String uid, OnGetDataListener listener) {
@@ -434,6 +438,57 @@ public class Firebase {
             }
         }
 
+        public static void getChargen (@NonNull Semester semester,
+                                       @NonNull OnGetDataListener listener) {
+            FIRESTORE.collection("Semester")
+                    .document(semester.getId() + "")
+                    .collection("Board_Students")
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess (@NonNull QuerySnapshot documentSnapshots) {
+                            listener.onSuccess(documentSnapshots);
+                        }
+                    })
+                    .addOnFailureListener(listener::onFailure);
+        }
+
+        public static void getPhilChargen (@NonNull Semester semester,
+                                           @NonNull OnGetDataListener listener) {
+            FIRESTORE.collection("Semester")
+                    .document(semester.getId() + "")
+                    .collection("Board_union")
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                        @Override
+                        public void onSuccess (@NonNull QuerySnapshot documentSnapshots) {
+                            listener.onSuccess(documentSnapshots);
+                        }
+                    })
+                    .addOnFailureListener(listener::onFailure);
+        }
+
+        public static void getUserCharge (OnGetDataListener listener) {
+            if (Firebase.Authentication.isSignIn()) {
+                Firebase.Firestore.findUserCharge(new OnGetDataListener() {
+                    @Override
+                    public void onSuccess (String string) {
+                        Charge charge = Charge.find(string);
+                        CacheData.putCharge(charge);
+
+                        listener.onSuccess();
+                    }
+
+                    @Override
+                    public void onFailure () {
+                        listener.onSuccess();
+                    }
+                });
+            } else {
+                listener.onSuccess();
+            }
+        }
+
         public static void findUserCharge (OnGetDataListener listener) {
             if (AUTH.getUid() == null || AUTH.getUid().isEmpty()) {
                 listener.onFailure();
@@ -458,53 +513,44 @@ public class Firebase {
                     });
         }
 
-        public static void getChargen (Semester semester, OnGetDataListener listener) {
-            FIRESTORE.collection("Semester")
-                    .document(semester.getId() + "")
-                    .collection("Board_Students")
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess (@NonNull QuerySnapshot documentSnapshots) {
-                            listener.onSuccess(documentSnapshots);
-                        }
-                    })
-                    .addOnFailureListener(listener::onFailure);
-        }
+        /**
+         * Listening to the last 10 drinks the signed in user drank
+         *
+         * @param listener
+         *         OnGetDataListener to send the data back to the fragment
+         */
+        public static void getUserDrinks (OnGetDataListener listener) {
+            if (Authentication.isSignIn()) {
+                String uid = Authentication.getUser().getUid();
+                FIRESTORE.collection("Drinks")
+                        .whereEqualTo("uid", uid)
+                        .orderBy("Date")
+                        .limit(10)
+                        .addSnapshotListener((value, error) -> {
+                            if (error != null) {
+                                Crashlytics.log(Firebase.TAG, "listening to realtime changes " +
+                                        "of drinks did not work, mostly because user has no " +
+                                        "drinks");
+                                listener.onFailure();
+                                return;
+                            }
+                            if (value != null && !value.isEmpty()) {
+                                listener.onSuccess(value);
+                            }
+                        });
 
-        public static void getPhilChargen (Semester semester, OnGetDataListener listener) {
-            FIRESTORE.collection("Semester")
-                    .document(semester.getId() + "")
-                    .collection("Board_union")
-                    .get()
-                    .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                        @Override
-                        public void onSuccess (@NonNull QuerySnapshot documentSnapshots) {
-                            listener.onSuccess(documentSnapshots);
-                        }
-                    })
-                    .addOnFailureListener(listener::onFailure);
-        }
-
-        public static void getUserCharge (OnGetDataListener listener) {
-            if(Firebase.Authentication.isSignIn()){
-                Firebase.Firestore.findUserCharge(new OnGetDataListener(){
-                    @Override
-                    public void onSuccess (String string) {
-                        Charge charge = Charge.find(string);
-                        CacheData.putCharge(charge);
-
-                        listener.onSuccess();
-                    }
-
-                    @Override
-                    public void onFailure () {
-                        listener.onSuccess();
-                    }
-                });
-            } else {
-                listener.onSuccess();
             }
+        }
+
+        public static void getDrinkValues (OnGetDataListener listener) {
+            FIRESTORE.collection("Enums/rKnY7Tv2NpmTuMGvwPPW/Drink")
+                    .get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    listener.onSuccess(task.getResult());
+                    return;
+                }
+                listener.onFailure();
+            });
         }
     }
     // endregion
@@ -527,11 +573,11 @@ public class Firebase {
          * @since 1.0
          */
         public static void internet (String uid) {
-            REALTIME_DB.getReference("/checker/internet").onDisconnect().setValue("true", (error,
-                                                                                           ref) -> {
-                // set value of Person/{userID}/online to false
-                Firebase.onlineStatus(uid, false);
-            });
+            REALTIME_DB.getReference("/online_users").onDisconnect().setValue(null,
+                    (error, ref) -> {
+                        // set value of Person/{userID}/online to false
+                        //Firebase.onlineStatus(uid, false);
+                    });
 
             DatabaseReference connectedRef = REALTIME_DB.getReference(".info/connected");
             connectedRef.addValueEventListener(new ValueEventListener() {

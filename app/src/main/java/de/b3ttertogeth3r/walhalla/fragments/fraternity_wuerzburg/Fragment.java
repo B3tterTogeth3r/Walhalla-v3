@@ -1,9 +1,8 @@
-package de.b3ttertogeth3r.walhalla.fragments.own_history;
+package de.b3ttertogeth3r.walhalla.fragments.fraternity_wuerzburg;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -20,7 +19,7 @@ import de.b3ttertogeth3r.walhalla.utils.SiteData;
  * @since 1.0
  */
 public class Fragment extends CustomFragment {
-    private static final String TAG = "room.own_history";
+    private static final String TAG = "room.fraternity_wuerzburg";
     private LinearLayout layout;
 
     @Override
@@ -34,26 +33,26 @@ public class Fragment extends CustomFragment {
     }
 
     @Override
-    public void createView (@NonNull @NotNull View view,
-                            @NonNull @NotNull LayoutInflater inflater) {
-        layout = view.findViewById(R.id.fragment_container);
+    public void stop () {
+
     }
 
     @Override
     public void viewCreated () {
         try {
-            new Site(getContext(), layout, SiteData.own_history);
+            new Site(getContext(), layout, SiteData.frat_wuerzburg);
         } catch (Exception ignored) {
         }
     }
 
     @Override
     public void toolbarContent () {
-        toolbar.setTitle(R.string.menu_more_history);
+        toolbar.setTitle(R.string.menu_more_wuerzburg_frat);
     }
 
     @Override
-    public void stop () {
-
+    public void createView (@NonNull @NotNull View view,
+                            @NonNull @NotNull LayoutInflater inflater) {
+        layout = view.findViewById(R.id.fragment_container);
     }
 }

@@ -1,0 +1,116 @@
+{
+  "version": {
+    "versionNumber": 0
+  },
+  "paragraph_1": {
+    "0": {
+      "kind": "title",
+      "position": 0,
+      "value": [
+        "Die wichtigsten studentischen Verbände"
+      ]
+    },
+    "1": {
+      "kind": "text",
+      "position": 0,
+      "value": [
+        "Ein Dachverband vereint mehrere Vereine/Verbindungen unter gemeinsamen Prinzipien. Er soll sowohl einen besseren Austausch untereinander als auch eine gebündelte Interessensvertretung nach außen ermöglichen."
+      ]
+    },
+    "2": {
+      "kind": "text",
+      "position": 2,
+      "value": [
+        "Die Bildung der meisten Verbände geht auf das 19. Jahrhundert zurück. Im 20. Jahrhundert fusionierten jedoch einige Verbände, bzw. begannen in wieder übergeordneten Verbänden zusammenzuarbeiten. Die wichtigsten Verbände innerhalb Deutschlands sind im Folgenden aufgeführt:"
+      ]
+    },
+    "3": {
+      "kind": "table_title",
+      "position": 3,
+      "value": [
+        "Kürzel",
+        "Dachverband",
+        "Gründung",
+        "Mitglieder",
+        "Verbindungen"
+      ]
+    },
+    "4": {
+      "kind": "table_row",
+      "position": 4,
+      "value": [
+        "ATB",
+        "Akademischer Turnerbund",
+        1883,
+        5000,
+        44
+      ]
+    },
+    "5": {
+      "kind": "table_row",
+      "position": 5,
+      "value": [
+        "CC",
+        "Coburger Convent",
+        1951,
+        12000,
+        104
+      ]
+    },
+    "6": {
+      "kind": "table_row",
+      "position": 6,
+      "value": [
+        "CV",
+        "Cartellverband katholischer deutscher Studentenverbindungen",
+        1867,
+        30000,
+        126
+      ]
+    },
+    "7": {
+      "kind": "table_row",
+      "position": 7,
+      "value": [
+        "DB",
+        "Deutsche Burschenschaft",
+        1902,
+        15000,
+        121
+      ]
+    },
+    "8": {
+      "kind": "table_row",
+      "position": 8,
+      "value": [
+        "KV",
+        "Kartellverband katholischer deutscher Studentenvereine",
+        1865,
+        20000,
+        137
+      ]
+    },
+    "9": {
+      "kind": "table_row",
+      "position": 9,
+      "value": [
+        "KSCV",
+        "Kösener Senioren-Convents-Verband",
+        1848,
+        17000,
+        104
+      ]
+    },
+    "10": {
+      "kind": "table_row",
+      "position": 10,
+      "value": [
+        "NDB",
+        "Neue Deutsche Burschenschaft",
+        1996,
+        4000,
+        22
+      ]
+    }
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "version": {
+    "versionNumber": 0
+  },
+  "paragraph_1": {
+    "0": {
+      "kind": "text",
+      "position": 0,
+      "value": [
+        "Überall in Würzburg gibt es Studentenverbindungen. Sie gehören verschiedenen Dachverbänden an und vertreten unterschiedliche Prinzipien. Hier bei Walhalla sind uns besonders unsere drei Prinzipien wichtig: Religion – Wissenschaft – Freundschaft."
+      ]
+    },
+    "1": {
+      "kind": "text",
+      "position": 1,
+      "value": [
+        "Aus unserer christlichen Weltanschauung heraus lehnen wir das studentische Fechten strikt ab. Walhalla ist demnach ein nicht-schlagender Bund von Studenten."
+      ]
+    },
+    "2": {
+      "kind": "text",
+      "position": 2,
+      "value": [
+        "Darüber hinaus stellen wir den ältesten katholischen Studentenverein Würzburgs."
+      ]
+    },
+    "3": {
+      "kind": "text",
+      "position": 3,
+      "value": [
+        "Auf dem folgenden Bild kannst du dir einen Überblick darüber verschaffen, wo die Verbindungen in Würzburg ihre Häuser haben und welche Prinzipien sie vertreten. "
+      ]
+    },
+    "4": {
+      "kind": "image",
+      "position": 4,
+      "value": [
+        ""
+      ]
+    },
+    "5": {
+      "kind": "link",
+      "position": 5,
+      "value": [
+        "Herunterladen (Dropbox.com)",
+        "https://www.dropbox.com/s/pwswcbkdzls3xg7/Couleurkarte%20W%C3%BCrzburg.pdf"
+      ]
+    }
+  },
+  "paragraph_2": {
+    "0": {
+      "kind": "title",
+      "position": 0,
+      "value": [
+        "Auflistung Würzburger Studentenvereine"
+      ]
+    },
+    "1": {
+      "kind": "table_title",
+      "position": 1,
+      "value": [
+        "Dachverband",
+        "Name",
+        "Farben",
+        "Gründung",
+        "schlagend",
+        "Farbenprinzip"
+      ]
+    },
+    "2": {
+      "kind": "table_row",
+      "position": 2,
+      "value": [
+        "KV",
+        "K.St.V. Walhalla",
+        "weinrot-weiß-schwarz",
+        1864,
+        "nein",
+        "farbenführend"
+      ]
+    },
+    "3": {
+      "kind": "table_row",
+      "position": 3,
+      "value": [
+        "KV",
+        "K.St.V. Normannia",
+        "rot-weiß-grün",
+        1876,
+        "nein",
+        "farbenführend"
+      ]
+    },
+    "4": {
+      "kind": "table_row",
+      "position": 4,
+      "value": [
+        "KV",
+        "K.St.V. Rheno-Frankonia",
+        "grün-weiß-gold",
+        1892,
+        "nein",
+        "farbenführend"
+      ]
+    },
+    "5": {
+      "kind": "table_row",
+      "position": 5,
+      "value": [
+        "CV",
+        "K.D.St.V. Markomannia",
+        "blau-gold-grün auf gold",
+        1871,
+        "nein",
+        "farbentragend"
+      ]
+    },
+    "6": {
+      "kind": "table_row",
+      "position": 6,
+      "value": [
+        "CV",
+        "K.D.St.V. Cheruskia",
+        "rosa-weiß-hellblau",
+        1893,
+        "nein",
+        "farbentragend"
+      ]
+    },
+    "7": {
+      "kind": "table_row",
+      "position": 7,
+      "value": [
+        "CV",
+        "K.D.St.V. Gothia",
+        "schwarz-gold-grün auf grün-schwarz",
+        1895,
+        "nein",
+        "farbentragend"
+      ]
+    }
+  }
+}

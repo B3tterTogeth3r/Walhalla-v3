@@ -1,0 +1,153 @@
+{
+  "version": {
+    "versionNumber": -1
+  },
+  "paragraph_1": {
+    "0": {
+      "kind": "text",
+      "position": 0,
+      "value": [
+        "Zum kommenden Semester werden wieder Zimmer auf unserem Haus frei! Im Folgenden bekommst du einen kurzen Überblick:"
+      ]
+    },
+    "1": {
+      "kind": "text",
+      "position": 1,
+      "value": [
+        "Unser Haus in der Mergentheimer Straße 32 dient als Zentrum unseres Verbindungslebens und liegt in in bester Mainlage nahe der Universitätsgebäude. Hier wird Gemeinschaft gelebt und gefeiert. In einer neuen Studienstadt wie Würzburg tut es zweifellos gut, solch einen Ort sein Zuhause nennen zu dürfen. Über das Studium hinaus bleibt das Walhallahaus für uns alle stets ein gemütlicher Treffpunkt für Feste, Gespräche und ein gemeinsames Bier an der Bar."
+      ]
+    },
+    "2": {
+      "kind": "image",
+      "position": 2,
+      "value": [
+        "zEc49CAiRUKdhjYaqUAV",
+        "uHDYIDXu7LTeolNzHFc8"
+      ]
+    },
+    "3": {
+      "kind": "button",
+      "position": 3,
+      "value": [
+        "Kontakt",
+        "link",
+        "http://walhalla-wuerzburg.de/kontakt"
+      ]
+    },
+    "4": {
+      "kind": "text",
+      "position": 4,
+      "value": [
+        "Auf 2 Stockwerken stehen der Aktivitas insgesamt 6 möblierte Zimmer zu günstigen Preisen zur Verfügung. Im Erdgeschoss des Hauses locken eine große Küche und unsere Bar, im 1.Stock laden ein Fernsehzimmer und ein Billardzimmer zum Verweilen ein. Zusätzlich kannst du dich auf dem Tennisplatz sportlich austoben und in unserem großen Garten sonnen. Die Zimmer werden an männliche und christlich getaufte Studenten, aller in Würzburg ansässigen tertiären Bildungseinrichtungen (Universitäten, Fachhochschulen, etc.) vermietet. Deine Nationalität spielt keine Rolle."
+      ]
+    }
+  },
+  "paragraph_2": {
+    "0": {
+      "kind": "title",
+      "position": 0,
+      "value": [
+        "Die Lage ist optimal für angehende Studenten:"
+      ]
+    },
+    "1": {
+      "kind": "block",
+      "position": 1,
+      "value": [
+        "Neue Universität (Sanderring)",
+        "(u.a. wirtschaftswiss. Fakultät)",
+        "5 Minuten mit der Straßenbahn"
+      ]
+    },
+    "2": {
+      "kind": "block",
+      "position": 2,
+      "value": [
+        "Hubland",
+        "(u.a. naturwiss.-techn. Fakultät)",
+        "15 Minuten mit dem Bus"
+      ]
+    },
+    "3": {
+      "kind": "block",
+      "position": 3,
+      "value": [
+        "Universität am Röntgenring",
+        "(u.a. med. Fakultät)",
+        "15 Minuten mit der Straßenbahn"
+      ]
+    },
+    "4": {
+      "kind": "block",
+      "position": 4,
+      "value": [
+        "Wittelsbacher Platz",
+        "(u.a. phil. Fakultät)",
+        "10 Minuten mit dem Bus"
+      ]
+    }
+  },
+  "paragraph_3": {
+    "0": {
+      "kind": "title",
+      "position": 0,
+      "value": [
+        "Detaillierte Fotos der Zimmer"
+      ]
+    },
+    "1": {
+      "kind": "image",
+      "position": 1,
+      "value": [
+        "uHDYIDXu7LTeolNzHFc8",
+        "zEc49CAiRUKdhjYaqUAV"
+      ]
+    },
+    "2": {
+      "kind": "text",
+      "position": 2,
+      "value": [
+        "Wir freuen uns, von dir zu hören!"
+      ]
+    },
+    "3": {
+      "kind": "text",
+      "position": 3,
+      "value": [
+        "In deiner Bewerbung solltest du uns gleich einen ersten Eindruck über dich vermitteln. Wir melden uns dann bei dir. Unsere Veranstaltungen oder ein gemütliches Beisammensein bieten sich für ein ungezwungenes Kennenlernen an."
+      ]
+    },
+    "4": {
+      "kind": "button",
+      "position": 4,
+      "value": [
+        "Walhalla bei WG-Gesucht (Erdgeschoss)",
+        "link",
+        "https://www.wg-gesucht.de/7479261.html"
+      ]
+    },
+    "5": {
+      "kind": "link",
+      "position": 5,
+      "value": [
+        "Walhalla bei WG-Gesucht (Obergeschoss)",
+        "Walhalla bei WG-Gesucht (Dachgeschoss)"
+      ]
+    },
+    "6": {
+      "kind": "link",
+      "position": 6,
+      "value": [
+        "Walhalla WG in der Sanderstraße",
+        "https://www.wg-gesucht.de/6969828.html"
+      ]
+    },
+    "7": {
+      "kind": "button",
+      "position": 7,
+      "value": [
+        "Direkt eine E-Mail schreiben"
+      ]
+    }
+  }
+}

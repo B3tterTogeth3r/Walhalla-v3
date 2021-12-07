@@ -1,4 +1,4 @@
-package de.b3ttertogeth3r.walhalla.fragments.own_history;
+package de.b3ttertogeth3r.walhalla.fragments.fraternity_germany;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +20,7 @@ import de.b3ttertogeth3r.walhalla.utils.SiteData;
  * @since 1.0
  */
 public class Fragment extends CustomFragment {
-    private static final String TAG = "room.own_history";
+    private static final String TAG = "room.fraternity_germany";
     private LinearLayout layout;
 
     @Override
@@ -42,14 +42,14 @@ public class Fragment extends CustomFragment {
     @Override
     public void viewCreated () {
         try {
-            new Site(getContext(), layout, SiteData.own_history);
+            new Site(getContext(), layout, SiteData.frat_germany);
         } catch (Exception ignored) {
         }
     }
 
     @Override
     public void toolbarContent () {
-        toolbar.setTitle(R.string.menu_more_history);
+        toolbar.setTitle(R.string.menu_more_germany_frat);
     }
 
     @Override

@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         inAppMessage = this::openInAppMessageDialog;
         de.b3ttertogeth3r.walhalla.App.setContext(MainActivity.this);
         de.b3ttertogeth3r.walhalla.App.setFragmentManager(getFragmentManager());
+        Firebase.RemoteConfig.apply();
 
 
         // region the default ui
@@ -218,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @SuppressLint("NonConstantResourceId")
     private void switchPage (@NonNull Integer item) {
-        System.out.println(item);
+        //System.out.println(item);
         switch (item) {
             case R.string.menu_home:
                 Firebase.Analytics.screenChange(item, getString(R.string.menu_home));
@@ -235,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (Firebase.Authentication.isSignIn()) {
                     Firebase.Analytics.screenChange(item, getString(R.string.menu_balance));
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            new de.b3ttertogeth3r.walhalla.fragments.beer.Fragment()).commit();
+                            new de.b3ttertogeth3r.walhalla.fragments.drinks.Fragment()).commit();
                 } else {
                     Firebase.Analytics.screenChange(item, getString(R.string.menu_rooms));
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
@@ -256,23 +257,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Firebase.Analytics.screenChange(item, getString(R.string.menu_greeting));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new de.b3ttertogeth3r.walhalla.fragments.greeting.Fragment()).commit();
+                break;
             case R.string.menu_profile:
                 Firebase.Analytics.screenChange(item, getString(R.string.menu_profile));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new de.b3ttertogeth3r.walhalla.fragments.profile.Fragment()).commit();
+                break;
             case R.string.menu_balance:
                 Firebase.Analytics.screenChange(item, getString(R.string.menu_balance));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new de.b3ttertogeth3r.walhalla.fragments.balance.Fragment()).commit();
+                break;
             case R.string.menu_chargen:
                 Firebase.Analytics.screenChange(item, getString(R.string.menu_chargen));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new de.b3ttertogeth3r.walhalla.fragments.chargen.Fragment()).commit();
+                break;
             case R.string.menu_chargen_phil:
                 Firebase.Analytics.screenChange(item, getString(R.string.menu_chargen_phil));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                         new de.b3ttertogeth3r.walhalla.fragments.chargen_phil.Fragment()).commit();
+                break;
+            case R.string.menu_drinks:
+                Firebase.Analytics.screenChange(item, getString(R.string.menu_drinks));
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new de.b3ttertogeth3r.walhalla.fragments.drinks.Fragment()).commit();
+                break;
+            case R.string.menu_about_us:
+                Firebase.Analytics.screenChange(item, getString(R.string.menu_about_us));
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new de.b3ttertogeth3r.walhalla.fragments.about_us.Fragment()).commit();
+                break;
+            case R.string.menu_more_history:
+                Firebase.Analytics.screenChange(item, getString(R.string.menu_more_history));
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new de.b3ttertogeth3r.walhalla.fragments.own_history.Fragment()).commit();
+                break;
+            case R.string.menu_more_frat_wue:
+                Firebase.Analytics.screenChange(item, getString(R.string.menu_more_frat_wue));
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new de.b3ttertogeth3r.walhalla.fragments.fraternity_germany.Fragment()).commit();
+                break;
+            case R.string.menu_more_frat_organisation:
+                Firebase.Analytics.screenChange(item, getString(R.string.menu_more_frat_organisation));
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                        new de.b3ttertogeth3r.walhalla.fragments.fraternity_germany.Fragment()).commit();
+                break;
             case R.string.menu_logout:
+                fillSideNav();
                 break;
             default:
                 Firebase.Crashlytics.log(TAG, "page with id " + item + "doesn't exist");
@@ -295,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         try {
             App.lastSiteId.pop();
         } catch (EmptyStackException ese) {
-            Log.e(TAG, "onBackPressed: EmptyStackException", ese);
+            // Log.e(TAG, "onBackPressed: EmptyStackException", ese);
         }
         if (App.lastSiteId.isEmpty()) {
             //If drawer is open, show possibility to close the app via the back-button.

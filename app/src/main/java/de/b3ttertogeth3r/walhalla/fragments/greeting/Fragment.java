@@ -59,7 +59,7 @@ public class Fragment extends CustomFragment {
             }
             greetingList.add(0, paragraphList);
             try {
-                new Site(requireContext(), layout, greetingList, display);
+                new Site(requireContext(), layout, greetingList);
             } catch (SiteNotActiveException exception) {
                 exception.printStackTrace();
             }
@@ -79,7 +79,7 @@ public class Fragment extends CustomFragment {
     @Override
     public void viewCreated () {
         try {
-            new Site(requireContext(), layout, greetingList, display);
+            new Site(requireContext(), layout, greetingList);
         } catch (Exception ignored) {
         }
     }
@@ -105,8 +105,7 @@ public class Fragment extends CustomFragment {
                                             toolbar.getMenu().clear();
                                             toolbar.inflateMenu(R.menu.default_save_abort);
                                             display = Display.EDIT;
-                                            new Site(requireContext(), layout, greetingList,
-                                                    display);
+                                            new Site(requireContext(), layout, greetingList);
                                         } catch (Exception exception) {
                                             Log.e(TAG, "toolbarContent: trying to edit fragment " +
                                                     "content", exception);

@@ -34,17 +34,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onNewToken (@NonNull @NotNull String token) {
-        FirebaseUser user = Firebase.Authentication.getUser();
+        if(Firebase.Authentication.isSignIn()) {
+            FirebaseUser user = Firebase.Authentication.getUser();
 
-        //send token to Firestore
-        try {
-            Person p = CacheData.getUser();
-            if (user != null && p.getUid().equals(user.getUid())) {
-                p.setFcm_token(token);
-                Firebase.Firestore.uploadPerson(p);
+            //send token to Firestore
+            try {
+                Person p = CacheData.getUser();
+                if (user != null && p.getUid().equals(user.getUid())) {
+                    p.setFcm_token(token);
+                    Firebase.Firestore.uploadPerson(p);
+                }
+            } catch (PersonException e) {
+                Firebase.Crashlytics.log(TAG, "getting fcm token did not work.", e);
             }
-        } catch (PersonException e) {
-            Firebase.Crashlytics.log(TAG, "getting fcm token did not work.", e);
         }
     }
 

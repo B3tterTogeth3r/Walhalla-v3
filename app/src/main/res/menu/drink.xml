@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_send_reminder"
+        android:icon="@drawable/ic_baseline_announcement_24"
+        android:iconTint="@color/background"
+        android:title="@string/menu_send_reminder"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_drink_invoice"
+        android:title="@string/menu_drink_invoice"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_drink_payment"
+        android:title="@string/menu_drink_payment"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_drink_fine"
+        android:title="@string/menu_drink_fine"
+        app:showAsAction="never" />
+
+</menu>

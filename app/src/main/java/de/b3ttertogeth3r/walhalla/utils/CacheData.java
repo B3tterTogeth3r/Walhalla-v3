@@ -2,6 +2,7 @@ package de.b3ttertogeth3r.walhalla.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -211,15 +212,16 @@ public class CacheData {
         } catch (Exception ignored) {
         }
         try {
-            editor.putString(USER_DATA + Person.ADDRESS_ZIP_CODE,
-                    address.get(Address.CITY.toString()).toString());
+            String zip = address.get(Address.ZIP.toString()).toString();
+            // Log.e(TAG, "saveUser: " + zip);
+            editor.putString(USER_DATA + Person.ADDRESS_ZIP_CODE, zip);
         } catch (Exception ignored) {
         }
 
         //TODO RankSettings
 
         editor.putFloat(USER_DATA + Person.BALANCE, user.getBalance())
-                .putLong(USER_DATA + Person.DOB, user.getDoB().getSeconds())
+                .putLong(USER_DATA + Person.DOB, user.getDoB().toDate().getTime())
                 .putString(USER_DATA + Person.FIRST_NAME, user.getFirst_Name())
                 .putString(USER_DATA + Person.FCM_TOKEN, user.getFcm_token())
                 .putString(USER_DATA + Person.ID, user.getId())
@@ -240,7 +242,9 @@ public class CacheData {
     public static Person getUser () throws PersonException {
         Person person = new Person();
         person.setBalance(SP.getFloat(USER_DATA + Person.BALANCE, 0.0f));
-        person.setDoB(new Timestamp(new Date(SP.getLong(USER_DATA + Person.DOB, new Date().getTime()))));
+        long date = SP.getLong(USER_DATA + Person.DOB, new Date().getTime());
+        // Log.e(TAG, "getUser: dob time" + date);
+        person.setDoB(new Timestamp(new Date(date)));
         person.setFirst_Name(SP.getString(USER_DATA + Person.FIRST_NAME, ""));
         person.setFcm_token(SP.getString(USER_DATA + Person.FCM_TOKEN, ""));
         person.setId(SP.getString(USER_DATA + Person.ID, ""));
@@ -258,7 +262,7 @@ public class CacheData {
         address.put(Address.CITY.toString(), SP.getString(USER_DATA + Person.ADDRESS_CITY, ""));
         address.put(Address.NUMBER.toString(), SP.getString(USER_DATA + Person.ADDRESS_NUMBER, ""));
         address.put(Address.STREET.toString(), SP.getString(USER_DATA + Person.ADDRESS_STREET, ""));
-        address.put(Address.ZIP.toString(), SP.getString(Person.ADDRESS_ZIP_CODE, ""));
+        address.put(Address.ZIP.toString(), SP.getString(USER_DATA + Person.ADDRESS_ZIP_CODE, ""));
         person.setAddress(address);
 
         Map<String, Object> rankSettings = new HashMap<>();

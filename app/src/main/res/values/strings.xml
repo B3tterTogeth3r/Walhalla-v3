@@ -133,6 +133,17 @@
     <string name="later">Später</string>
     <string name="balance_title">Dein aktueller Kassenstand beträgt:</string>
     <string name="balance_description">Dieser Beträg enthält die Bierabrechnungen, vom Convent verhängten Strafen und den Semesterbeitrag. Er aktuallierst sich in echtzeit, sollte dieser vom Kassier verändert werden.</string>
+    <string name="drink_date">Datum</string>
+    <string name="drink_amount">Anzahl</string>
+    <string name="drink_value">Preis</string>
+    <string name="drink_name">Name</string>
+    <string name="menu_account">Kasse</string>
+    <string name="menu_send_reminder">Zahlungserinnerung</string>
+    <string name="menu_drink_invoice">Abrechnung</string>
+    <string name="menu_drink_payment">Einzahlung</string>
+    <string name="menu_drink_fine">Strafe</string>
+    <string name="menu_more_wuerzburg_frat">Würzburgs Verbindungen</string>
+    <string name="menu_more_germany_frat">Studentische Verbände</string>
 
 
 </resources>
