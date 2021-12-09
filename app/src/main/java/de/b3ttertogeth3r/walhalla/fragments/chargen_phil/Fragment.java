@@ -55,6 +55,10 @@ public class Fragment extends CustomFragment {
                 }
                 updateList();
             }
+
+            @Override
+            public void onFailure (Exception e) {
+            }
         });
     }
 

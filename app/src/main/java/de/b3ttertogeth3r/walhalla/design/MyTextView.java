@@ -4,14 +4,30 @@ import android.content.Context;
 import android.util.TypedValue;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import de.b3ttertogeth3r.walhalla.R;
 
 public class MyTextView extends androidx.appcompat.widget.AppCompatTextView {
 
-    public MyTextView (Context context) {
+    public MyTextView (@NonNull Context context) {
         super(context);
+        design(context);
+    }
+
+    public MyTextView (@NonNull Context context, String text) {
+        super(context);
+        design(context);
+        setText(text);
+        setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.border_round));
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        setLayoutParams(params);
+    }
+
+    private void design (@NonNull Context context) {
         int padding = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 16f,

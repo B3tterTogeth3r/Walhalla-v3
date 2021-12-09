@@ -24,6 +24,7 @@ public enum Page {
     ABOUT_US("about_us"),
     SEMESTER_NOTES("semester_notes"),
     SIGN_IN(new Charge[0]),
+    PROFILE(new Charge[]{X, VX, FM, XX, AH_X, AH_XX, AH_XXX}),
     TRANSCRIPT(new Charge[]{X, VX, FM, XX, XXX, AH_X, AH_XX, AH_XXX});
 
     private Charge[] editableByWhom = new Charge[0];

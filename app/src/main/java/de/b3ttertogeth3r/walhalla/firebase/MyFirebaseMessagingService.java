@@ -81,7 +81,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             } else {
                 String title = extras.getString("gcm.notification.title");
                 String message = extras.getString("gcm.notification.body");
-                MainActivity.inAppMessage.displayMessage(title, message, page);
+                try {
+                    MainActivity.inAppMessage.displayMessage(title, message, page);
+                } catch (Exception ignored){
+                }
             }
 
         }

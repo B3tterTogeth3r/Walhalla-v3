@@ -6,7 +6,8 @@
     <color name="background">#fff</color>
     <color name="colorPrimary">#6b0000</color>
     <color name="colorPrimaryDark">#7f000f</color>
-    <color name="colorAccent">#DAB020</color>
+    <color name="colorAccent">#AC8910</color>
+    <color name="colorAccentLight">#DAB020</color>
     <color name="text">#000</color>
     <color name="whiteish">#bbb</color>
 </resources>

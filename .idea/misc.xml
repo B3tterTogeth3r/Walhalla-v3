@@ -13,7 +13,10 @@
         <entry key="../../.gradle/caches/transforms-3/a3f41d7d27190c846f1169b055d627c8/transformed/jetified-firebase-ui-auth-7.2.0/res/layout/fui_register_email_layout.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/drawable-v24/background_button.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable-v24/background_image_description.xml" value="0.24427083333333333" />
+        <entry key="app/src/main/res/drawable-v24/border_round.xml" value="0.20572916666666666" />
         <entry key="app/src/main/res/drawable-v24/ic_baseline_announcement_24.xml" value="0.24427083333333333" />
+        <entry key="app/src/main/res/drawable/background_overlay.xml" value="0.20572916666666666" />
+        <entry key="app/src/main/res/drawable/checkbox_selector.xml" value="0.20572916666666666" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/activity_start.xml" value="0.25" />
         <entry key="app/src/main/res/layout/auto_image_slider.xml" value="0.228125" />
@@ -26,7 +29,9 @@
         <entry key="app/src/main/res/layout/custom_image_button.xml" value="0.1828774062816616" />
         <entry key="app/src/main/res/layout/custom_image_edit.xml" value="0.1828774062816616" />
         <entry key="app/src/main/res/layout/custom_image_slider.xml" value="0.2015625" />
+        <entry key="app/src/main/res/layout/custom_slider_view.xml" value="0.18958333333333333" />
         <entry key="app/src/main/res/layout/custom_slideview.xml" value="0.1828774062816616" />
+        <entry key="app/src/main/res/layout/designtest.xml" value="0.67" />
         <entry key="app/src/main/res/layout/dialog_change_semester.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/dialog_item_sem_change.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/dialog_sign_in_mail.xml" value="0.1824074074074074" />
@@ -34,8 +39,10 @@
         <entry key="app/src/main/res/layout/event_item.xml" value="0.5" />
         <entry key="app/src/main/res/layout/event_list.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment.xml" value="0.2125" />
+        <entry key="app/src/main/res/layout/image_slider_layout_item.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/slider_item.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/slider_layout.xml" value="0.228125" />
+        <entry key="app/src/main/res/layout/test.xml" value="0.25" />
         <entry key="app/src/main/res/menu/default_edit_only.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/menu/drink.xml" value="0.3287037037037037" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.3921875" />

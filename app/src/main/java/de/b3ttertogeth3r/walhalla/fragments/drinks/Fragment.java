@@ -58,6 +58,10 @@ public class Fragment extends CustomFragment {
                 drinkList.sort(Comparator.comparing(Drink::getDate));
                 fillTable();
             }
+
+            @Override
+            public void onFailure (Exception e) {
+            }
         });
 
         Firebase.Firestore.getDrinkValues(new OnGetDataListener() {
@@ -75,6 +79,10 @@ public class Fragment extends CustomFragment {
                         Log.e(TAG, "onSuccess: not really successful", e);
                     }
                 }
+            }
+
+            @Override
+            public void onFailure (Exception e) {
             }
 
             @Override

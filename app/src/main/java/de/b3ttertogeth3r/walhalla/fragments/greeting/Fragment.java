@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstraction.CustomFragment;
 import de.b3ttertogeth3r.walhalla.enums.Display;
-import de.b3ttertogeth3r.walhalla.exceptions.SiteNotActiveException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.models.Paragraph;
 import de.b3ttertogeth3r.walhalla.utils.Site;
@@ -58,11 +57,7 @@ public class Fragment extends CustomFragment {
                 }
             }
             greetingList.add(0, paragraphList);
-            try {
-                new Site(requireContext(), layout, greetingList);
-            } catch (SiteNotActiveException exception) {
-                exception.printStackTrace();
-            }
+            new Site(requireContext(), layout, greetingList);
         }).addOnFailureListener(e -> Log.d(TAG, "findGreeting: invalid semester"));
     }
 

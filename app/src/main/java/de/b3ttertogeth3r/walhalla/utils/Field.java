@@ -1,30 +1,46 @@
 package de.b3ttertogeth3r.walhalla.utils;
 
+import static de.b3ttertogeth3r.walhalla.enums.Design.TABLE_TITLE;
+
+import android.content.Context;
 import android.os.OperationCanceledException;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.database.annotations.NotNull;
-import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType;
-import com.smarteist.autoimageslider.SliderAnimations;
-import com.smarteist.autoimageslider.SliderView;
 
+import org.jetbrains.annotations.Contract;
+
+import java.util.List;
 import java.util.Map;
 
+import de.b3ttertogeth3r.walhalla.MainActivity;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.annos.Designer;
+import de.b3ttertogeth3r.walhalla.design.MyBulletItem;
+import de.b3ttertogeth3r.walhalla.design.MyButton;
+import de.b3ttertogeth3r.walhalla.design.MySliderView;
 import de.b3ttertogeth3r.walhalla.design.MySubtitle;
 import de.b3ttertogeth3r.walhalla.design.MySubtitle2;
+import de.b3ttertogeth3r.walhalla.design.MyTable;
 import de.b3ttertogeth3r.walhalla.design.MyTextView;
 import de.b3ttertogeth3r.walhalla.design.MyTitle;
 import de.b3ttertogeth3r.walhalla.enums.Design;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.models.Image;
 import de.b3ttertogeth3r.walhalla.models.Paragraph;
 
@@ -38,38 +54,51 @@ import de.b3ttertogeth3r.walhalla.models.Paragraph;
  */
 public class Field {
     private static final String TAG = "Field";
-    private final LayoutInflater inflater;
+    private final Context context;
     private Paragraph paragraph;
+    private List<Paragraph> paragraphList;
 
-    public Field (LayoutInflater inflater, Paragraph paragraph) {
-        this.inflater = inflater;
+    public Field (Context context, Paragraph paragraph) {
         this.paragraph = paragraph;
+        this.context = context;
     }
 
-    public View design (@NonNull @NotNull @Designer Design design) throws OperationCanceledException {
-        switch (design) {
-            case TEXT:
-                return text();
-            case IMAGE:
-                return image();
-            case TABLE_TITLE:
-                return table();
-            case TITLE:
-                return title();
-            case BUTTON:
-                return button();
-            case SUBTITLE1:
-                return subtitle1();
-            case SUBTITLE2:
-                return subtitle2();
-            case LIST_BULLET:
-                return listBullet();
-            case LIST_CHECKED:
-                return listChecked();
-            case LIST_CHECKABLE:
-                return listCheckable();
-            default:
-                return null;
+    public Field (Context context, List<Paragraph> paragraphList) {
+        this.context = context;
+        this.paragraphList = paragraphList;
+    }
+
+    public View design (@Designer Design design) {
+        try {
+            switch (design) {
+                case TEXT:
+                    return text();
+                case IMAGE:
+                    return image();
+                case TABLE:
+                    return table();
+                case TITLE:
+                    return title();
+                case BUTTON:
+                    return button();
+                case SUBTITLE1:
+                    return subtitle1();
+                case SUBTITLE2:
+                    return subtitle2();
+                case LIST_BULLET:
+                    return listBullet();
+                case LIST_CHECKED:
+                    return listChecked();
+                case LINK:
+                    return link();
+                case BLOCK:
+                    return block();
+                default:
+                    return null;
+            }
+        } catch (Exception e) {
+            Firebase.Crashlytics.log(TAG, "design error", e);
+            return null;
         }
     }
 
@@ -78,80 +107,89 @@ public class Field {
      * <p>
      * {@code {text: (String)value}}
      * <p>
-     * Two previous determent cases are possible:
-     * <ol>
-     *     <li><code>isEdit == false</code><br>
-     *         Displays a textview the the formatted style for a text.
-     *     </li>
-     *     <li><code>isEdit == true</code><br>
-     *         Importing relative layout <tt>custom_edit_text</tt>. After setting its title to
-     *         {@code text} and adding a {@code onClickListener} on the save button to save the text
-     *         written into the EditText field named {@code content}. The button {@code delete}
-     *         removes the field from {@link #paragraph}.
-     *         TODO find a way to move the field up and down
-     *     </li>
-     * </ol>
+     * Displays a textview the the formatted style for a text.
      *
      * @return the created view.
      * @see TextView
-     * @see EditText
-     * @see #isEdit
      * @since 1.0
      */
     @NonNull
     private View text () {
-        TextView text = new MyTextView(inflater.getContext());
-        text.setText(paragraph.getValue().get(0));
-        return text;
+        LinearLayout layout = new LinearLayout(context);
+        layout.removeAllViewsInLayout();
+        layout.removeAllViews();
+        for (String s : paragraph.getValue()) {
+            TextView text = new MyTextView(context);
+            text.setText(s);
+            layout.addView(text);
+        }
+        return layout;
     }
 
     /**
-     * !isEdit:<br>
      * in a slide show show all the images. the images uid are saved in the array of the {@link
      * #paragraph}, so the function has to load the image from the "Images" collection, where the
      * "isVisible" boolean is "true".
-     * <p>
-     * isEdit<br>
-     * In the displayed multi check dialog the image description and a small icon shall be
-     * displayed.
      *
      * @return the created view
      * @throws OperationCanceledException
      *         If given object list is not formatted properly
      * @see Image
+     * @see Firebase.Firestore Firebase Cloud Firestore
      * @see de.b3ttertogeth3r.walhalla.firebase.Firebase.Storage Firebase Storage
-     * @see <a href="https://github.com/denzcoskun/ImageSlideshow">Image Slide Show</a>
+     * @see <a href="https://github.com/smarteist/Android-Image-Slider">Android Image Slide</a>
      * @since 1.0
      */
     @NonNull
-    private View image () throws OperationCanceledException {
-        //ForEach load Image.class from Images/"paragraph.values().get(i)" into a list for the
+    @Contract(" -> new")
+    private View image () {
         // ImageSlideView
-        try {
-            View view = inflater.inflate(R.layout.custom_slideview, null);
-            SliderView sliderView = view.findViewById(R.id.image_slider);
-            SliderAdapter adapter = new SliderAdapter(paragraph.getValue());
-            sliderView.setSliderAdapter(adapter);
-            sliderView.setIndicatorAnimation(IndicatorAnimationType.WORM);
-            sliderView.setSliderTransformAnimation(SliderAnimations.DEPTHTRANSFORMATION);
-            sliderView.setScrollTimeInSec(10);
-            sliderView.startAutoCycle();
-            view.setMinimumHeight(300);
-            return view;
-        } catch (Exception e) {
-            Log.e(TAG, "image: error", e);
-            throw new NullPointerException("look at the error above /\\");
-        }
+        // The values is a list of uids of the images in Firestore / Images / uid
+        Log.e(TAG, "image: " + paragraph.getValue());
+        MySliderView sliderView = new MySliderView(context);
+        sliderView.design(paragraph.getValue());
+        return sliderView;
     }
 
     /**
+     * TODO create design and format all its values
+     *
      * @return the created view.
      * @since 1.0
      */
     @NonNull
-    private View table () throws OperationCanceledException {
-        throw new OperationCanceledException("Diplay of tables not yet created.");
-
+    private View table () {
+        HorizontalScrollView hcv = new HorizontalScrollView(context);
+        TableLayout table = new TableLayout(context);
+        table.removeAllViews();
+        table.removeAllViewsInLayout();
+        for (Paragraph p : paragraphList) {
+            TableRow row = new TableRow(context);
+            row.setBackground(ContextCompat.getDrawable(context, R.drawable.border_bottom_black));
+            for (String s : p.getValue()) {
+                TextView title = new TextView(context);
+                int padding = (int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        8f,
+                        context.getResources().getDisplayMetrics()
+                );
+                if (p.getKind().equals(TABLE_TITLE.toString())) {
+                    title.setPadding(/*left*/padding*2,
+                            /*top*/padding,
+                            /*right*/padding,
+                            /*bottom*/padding);
+                    title.setTextAppearance(R.style.TextAppearance_AppCompat_Subhead);
+                } else {
+                    title.setPadding(padding, (int) (0.5 * padding), padding, padding);
+                    title.setTextAppearance(R.style.TextAppearance_AppCompat_Body1);
+                }
+                title.setText(s);
+                row.addView(title);
+            }
+            table.addView(row);
+        }
+        hcv.addView(table);
+        return hcv;
     }
 
     /**
@@ -159,27 +197,21 @@ public class Field {
      * <p>
      * {@code {title: "value"}}
      * <p>
-     * Two previous determent cases are possible:
-     * <ol>
-     *     <li><code>isEdit == false</code><br>
-     *         Displays a textview the the formatted style for a title.
-     *     </li>
-     *     <li><code>isEdit == true</code><br>
-     *         TODO create the design and its functions
-     *     </li>
-     * </ol>
+     * Displays a textview the the formatted style for a title.
      *
      * @return the created view.
      * @since 1.0
      */
     @NonNull
     private View title () {
-        MyTitle title = new MyTitle(inflater.getContext());
+        MyTitle title = new MyTitle(context);
         title.setText(paragraph.getValue().get(0));
         return title;
     }
 
     /**
+     * TODO create design and format all its values
+     *
      * @return The created view.
      * @see Button
      * @see ImageButton
@@ -187,8 +219,17 @@ public class Field {
      */
     @NonNull
     private View button () throws OperationCanceledException {
-        throw new OperationCanceledException("Display of buttons not yet created.");
-
+        MyButton button = new MyButton(context);
+        button.setText(paragraph.getValue().get(0));
+        button.setTextColor(ContextCompat.getColor(context, R.color.white));
+        int padding = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                16f,
+                context.getResources().getDisplayMetrics()
+        );
+        button.setPadding(padding, padding, padding, padding);
+        button.setOnClickListener(v -> MainActivity.externalListener.email());
+        return button;
     }
 
     /**
@@ -197,15 +238,7 @@ public class Field {
      * <p>
      * {@code {subtitle1: "value"}}
      * <p>
-     * Two previous determent cases are possible:
-     * <ol>
-     *     <li><code>isEdit == false</code><br>
-     *         Displays a textview the the formatted style for a first subtitle.
-     *     </li>
-     *     <li><code>isEdit == true</code><br>
-     *         TODO create the design and its functions
-     *     </li>
-     * </ol>
+     * Displays a textview the the formatted style for a first subtitle.
      *
      * @return the created view.
      * @since 1.0
@@ -213,7 +246,7 @@ public class Field {
     @NonNull
     @NotNull
     private View subtitle1 () {
-        TextView sub1 = new MySubtitle(inflater.getContext());
+        TextView sub1 = new MySubtitle(context);
         sub1.setText(paragraph.getValue().get(0));
         return sub1;
 
@@ -225,22 +258,14 @@ public class Field {
      * <p>
      * {@code {subtitle2: "value"}}
      * <p>
-     * Two previous determent cases are possible:
-     * <ol>
-     *     <li><code>isEdit == false</code><br>
-     *         Displays a textview the the formatted style for a second subtitle.
-     *     </li>
-     *     <li><code>isEdit == true</code><br>
-     *         TODO create the design and its functions
-     *     </li>
-     * </ol>
+     * Displays a textview the the formatted style for a second subtitle.
      *
      * @return the created view.
      * @since 1.0
      */
     @NonNull
     private View subtitle2 () {
-        TextView sub2 = new MySubtitle2(inflater.getContext());
+        TextView sub2 = new MySubtitle2(context);
         sub2.setText(paragraph.getValue().get(0));
         return sub2;
 
@@ -250,17 +275,9 @@ public class Field {
      * The pre-checked object has a key called {@code list_bullet}, which should be formatted in
      * this way:
      * <p>
-     * {@code {list_bullet: (Array<String>)"values"}}
+     * {@code {list_bullet: (List<String>)"values"}}
      * <p>
-     * Two previous determent cases are possible:
-     * <ol>
-     *     <li><code>isEdit == false</code><br>
-     *         TODO create the design and its inner functions
-     *     </li>
-     *     <li><code>isEdit == true</code><br>
-     *         TODO create the design and its functions
-     *     </li>
-     * </ol>
+     * TODO create the design and its inner functions
      *
      * @return the created view.
      * @since 1.0
@@ -271,21 +288,85 @@ public class Field {
     }
 
     /**
+     * The pre-checked object has a key called {@code listChecked}, which should be formatted in
+     * this way:
+     * {@code {listChecked: (List<String>)"values"}}
+     * <p>
+     * TODO create the design and its inner functions
+     *
      * @return the created view.
      * @since 1.0
      */
+    @NonNull
     private View listChecked () throws OperationCanceledException {
-        throw new OperationCanceledException("Function not yet initialized");
-
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        List<String> list = paragraph.getValue();
+        MyBulletItem item;
+        for (String text : list) {
+            item = new MyBulletItem(context);
+            item.setText(text);
+            layout.addView(item);
+        }
+        return layout;
     }
 
-    /**
-     * @return the created view.
-     * @since 1.0
-     */
-    private View listCheckable () {
-        throw new NullPointerException("Function not yet initialized");
+    @NonNull
+    private View link () {
+        List<String> values = paragraph.getValue();
+        String link = "";
+        String name = "";
+        for (String s : values) {
+            if (s.contains("://")) {
+                link = s;
+            } else {
+                name = s;
+            }
+        }
+        MyButton button = new MyButton(context);
+        button.setText(name);
+        String finalLink = link;
+        button.setOnClickListener(v -> {
+            if (finalLink.isEmpty()) {
+                MainActivity.externalListener.browser();
+            } else {
+                MainActivity.externalListener.browser(finalLink);
+            }
+        });
+        int padding = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                16f,
+                context.getResources().getDisplayMetrics()
+        );
+        button.setPadding(padding, padding, padding, padding);
+        button.setTextColor(ContextCompat.getColor(context, R.color.white));
 
+        return button;
+    }
+
+    @NonNull
+    private View block () {
+        List<String> values = paragraph.getValue();
+        MyTable table = new MyTable(context);
+        MySubtitle title = new MySubtitle(context);
+        title.setText(values.get(0));
+        table.addView(title);
+        try {
+            MyTextView area = new MyTextView(context);
+            area.setText(values.get(1));
+            area.setPadding(area.getPaddingLeft(), 0, 0, 0);
+            table.addView(area);
+        } catch (Exception ignored) {
+        }
+        try {
+            MyTextView distance = new MyTextView(context);
+            distance.setText(values.get(2));
+            distance.setPadding(distance.getPaddingLeft(), 0, 0, 0);
+            table.addView(distance);
+        } catch (Exception ignored) {
+        }
+
+        return table;
     }
 
 

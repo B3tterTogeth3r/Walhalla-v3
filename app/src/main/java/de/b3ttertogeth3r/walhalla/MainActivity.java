@@ -22,19 +22,22 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.NotNull;
 
 import java.util.EmptyStackException;
 
 import de.b3ttertogeth3r.walhalla.enums.Walhalla;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.interfaces.AuthListener;
 import de.b3ttertogeth3r.walhalla.interfaces.OpenExternal;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        OpenExternal {
+        OpenExternal, AuthListener {
     private static final String TAG = "MainActivity";
     @SuppressLint("StaticFieldLeak")
     public static View parentLayout;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private boolean doubleBackToExitPressedOnce = false;
     public static InAppMessage inAppMessage;
+    public static AuthListener authListener;
 
     public interface InAppMessage {
         void displayMessage(String title, String message, String page);
@@ -81,10 +85,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    public void statusChange () {
+        fillSideNav();
+    }
+
+    @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         externalListener = this;
+        authListener = this;
         inAppMessage = this::openInAppMessageDialog;
         de.b3ttertogeth3r.walhalla.App.setContext(MainActivity.this);
         de.b3ttertogeth3r.walhalla.App.setFragmentManager(getFragmentManager());
@@ -149,10 +159,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TextView title = view.findViewById(R.id.nav_title);
         TextView street = view.findViewById(R.id.nav_street);
         TextView city = view.findViewById(R.id.nav_city);
-        image.setImageResource(R.drawable.wappen_2017);
-        title.setText(Walhalla.NAME.toString());
-        street.setText(Walhalla.ADH.toString());
-        city.setVisibility(View.GONE);
+        if(Firebase.Authentication.isSignIn()){
+            FirebaseUser user = Firebase.Authentication.getUser();
+            try {
+                Glide.with(this)
+                        .load(user.getPhotoUrl())
+                        .fitCenter()
+                        .placeholder(R.drawable.wappen_2017_v2)
+                        .into(image);
+            } catch(Exception ignored){}
+            title.setText(user.getDisplayName());
+            street.setText(user.getEmail());
+            city.setText(user.getPhoneNumber());
+        }
+        else {
+            image.setImageResource(R.drawable.wappen_2017);
+            title.setText(Walhalla.NAME.toString());
+            street.setText(Walhalla.ADH.toString());
+            city.setVisibility(View.GONE);
+        }
 
         //Navigation Body
         navigationView.getMenu().clear();
@@ -296,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.string.menu_more_frat_wue:
                 Firebase.Analytics.screenChange(item, getString(R.string.menu_more_frat_wue));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.fraternity_germany.Fragment()).commit();
+                        new de.b3ttertogeth3r.walhalla.fragments.fraternity_wuerzburg.Fragment()).commit();
                 break;
             case R.string.menu_more_frat_organisation:
                 Firebase.Analytics.screenChange(item, getString(R.string.menu_more_frat_organisation));
@@ -304,7 +329,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         new de.b3ttertogeth3r.walhalla.fragments.fraternity_germany.Fragment()).commit();
                 break;
             case R.string.menu_logout:
-                fillSideNav();
+                Firebase.Authentication.signOut();
                 break;
             default:
                 Firebase.Crashlytics.log(TAG, "page with id " + item + "doesn't exist");
@@ -366,6 +391,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (!link.startsWith("http://") && !link.startsWith("https://")) {
                 link = "http://" + link;
             }
+        } else {
+            browser();
         }
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
         if (browserIntent.resolveActivity(getPackageManager()) != null) {

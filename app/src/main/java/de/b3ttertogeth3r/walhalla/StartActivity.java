@@ -138,6 +138,11 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
             public void onSuccess () {
                 updateProgressbar();
             }
+
+            @Override
+            public void onFailure (Exception exception) {
+
+            }
         });
     }
 }

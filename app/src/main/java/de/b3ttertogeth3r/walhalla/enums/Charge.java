@@ -22,7 +22,7 @@ public enum Charge {
     }
 
     public static Charge find (String name) {
-        if(name == null) {
+        if(name == null || name.isEmpty()) {
             return NONE;
         } else if (name.equals(X.getName())) {
             return X;

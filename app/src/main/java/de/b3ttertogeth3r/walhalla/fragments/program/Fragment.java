@@ -22,6 +22,7 @@ import java.util.Map;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstraction.CustomFragment;
+import de.b3ttertogeth3r.walhalla.design.MyTitle;
 import de.b3ttertogeth3r.walhalla.dialog.ChangeSemesterDialog;
 import de.b3ttertogeth3r.walhalla.dialog.DetailsDialog;
 import de.b3ttertogeth3r.walhalla.enums.Kind;
@@ -106,7 +107,7 @@ public class Fragment extends CustomFragment implements SemesterChangeListener {
         if (groupByMonth.isEmpty()) {
             Log.d(TAG, "updateList: groupByMonth list empty");
             //TODO show text with message, that no data could be found or loaded.
-            TextView noData = (TextView) getLayoutInflater().inflate(R.layout.custom_title, null);
+            TextView noData = new MyTitle(getContext());
             noData.setText("Es konnte keine Veranstaltung geladen werden.");
             layout.addView(noData);
             return;
@@ -115,8 +116,7 @@ public class Fragment extends CustomFragment implements SemesterChangeListener {
             Log.d(TAG, "month:size = " + month.size());
             if (1 <= month.size()) {
                 String title = (String) month.get("title");
-                TextView titleTV = (TextView) getLayoutInflater().inflate(R.layout.custom_title,
-                        null);
+                TextView titleTV = new MyTitle(getContext());
                 titleTV.setText(title);
                 layout.addView(titleTV);
                 List<String> keys = new ArrayList<>(month.keySet());

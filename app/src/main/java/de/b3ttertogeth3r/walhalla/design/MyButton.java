@@ -1,6 +1,7 @@
 package de.b3ttertogeth3r.walhalla.design;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.TypedValue;
 import android.view.ViewGroup;
 
@@ -19,7 +20,7 @@ public class MyButton extends androidx.appcompat.widget.AppCompatButton {
                 context.getResources().getDisplayMetrics()
         );
         setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.background_button));
-        setTextColor(ContextCompat.getColor(context, R.color.whiteish));
+        setTextColor(Color.WHITE);
         setPadding(padding, padding, padding, padding);
         setTextAppearance(context, R.style.TextAppearance_AppCompat_Body2);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(

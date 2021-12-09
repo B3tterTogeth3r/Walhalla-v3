@@ -30,6 +30,7 @@ import com.twitter.sdk.android.core.TwitterConfig;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstraction.CustomFragment;
+import de.b3ttertogeth3r.walhalla.design.MyButton;
 import de.b3ttertogeth3r.walhalla.dialog.SignInDialogMail;
 import de.b3ttertogeth3r.walhalla.enums.LoginKinds;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
@@ -99,7 +100,7 @@ public class Fragment extends CustomFragment implements View.OnClickListener, Si
                 .debug(true).build());
 
         // register
-        register = (Button) inflater.inflate(R.layout.custom_button, null);
+        register = new MyButton(getContext());
         register.setText(R.string.fui_title_register_email);
         // or log in with google, facebook, etc.
         email = (SupportVectorDrawablesButton) inflater.inflate(R.layout.fui_provider_button_email, null);

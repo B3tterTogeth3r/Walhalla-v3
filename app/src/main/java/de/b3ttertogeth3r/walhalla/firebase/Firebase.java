@@ -50,6 +50,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.MainActivity;
@@ -62,6 +64,7 @@ import de.b3ttertogeth3r.walhalla.exceptions.PersonException;
 import de.b3ttertogeth3r.walhalla.fragments.signin.Fragment;
 import de.b3ttertogeth3r.walhalla.interfaces.OnGetDataListener;
 import de.b3ttertogeth3r.walhalla.models.Account;
+import de.b3ttertogeth3r.walhalla.models.Image;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
 import de.b3ttertogeth3r.walhalla.models.Semester;
@@ -358,21 +361,35 @@ public class Firebase {
             return FIRESTORE.collection("Sites").document(documentName);
         }
 
-        @NonNull
-        public static CollectionReference getImages () {
-            return FIRESTORE.collection("pictures");
+        public static void getImage (@NonNull String uid, OnGetDataListener listener) {
+            try {
+                FIRESTORE.collection("Images")
+                        .document(uid)
+                        .get()
+                        .addOnSuccessListener(documentSnapshot -> {
+                            try {
+                                Image image = documentSnapshot.toObject(Image.class);
+                                if (image != null) {
+                                    listener.onSuccess(image);
+                                } else {
+                                    listener.onFailure(new NullPointerException("Image not found"));
+                                }
+                            } catch (Exception e) {
+                                listener.onFailure(e);
+                            }
+                        });
+            } catch (Exception e) {
+                Crashlytics.log(TAG, "loading image did not work.", e);
+            }
         }
 
         public static void getSemester (int semesterID, OnGetDataListener listener) {
-            getSemester(semesterID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete (@NonNull Task<DocumentSnapshot> task) {
-                    DocumentSnapshot ds = task.getResult();
-                    if (!ds.exists()) {
-                        listener.onFailure(task.getException());
-                    }
-                    listener.onSuccess(ds);
+            getSemester(semesterID).get().addOnCompleteListener(task -> {
+                DocumentSnapshot ds = task.getResult();
+                if (!ds.exists()) {
+                    listener.onFailure(task.getException());
                 }
+                listener.onSuccess(ds);
             });
         }
 
@@ -480,7 +497,7 @@ public class Firebase {
                     }
 
                     @Override
-                    public void onFailure () {
+                    public void onFailure (Exception e) {
                         listener.onSuccess();
                     }
                 });
@@ -883,6 +900,10 @@ public class Firebase {
                                             user.setFcm_token(string);
                                             Firebase.Firestore.uploadPerson(user);
                                         }
+
+                                        @Override
+                                        public void onFailure (Exception e) {
+                                        }
                                     });
                                     CRASHLYTICS.setUserId(uid);
                                     ANALYTICS.setUserId(uid);
@@ -913,7 +934,7 @@ public class Firebase {
                         }
 
                         @Override
-                        public void onFailure () {
+                        public void onFailure (Exception e) {
                             Log.e(TAG, "onFailure: No profile exists for that user.");
                             //TODO User profile does not exist.
                             CacheData.setProfileError(new ProfileError(R.string.menu_profile,
@@ -929,6 +950,9 @@ public class Firebase {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "changeLoggingData: ", e);
+            }
+            if(!isInit) {
+                MainActivity.authListener.statusChange();
             }
         }
 

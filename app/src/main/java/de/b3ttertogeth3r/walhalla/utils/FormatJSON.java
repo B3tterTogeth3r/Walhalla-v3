@@ -54,6 +54,34 @@ public class FormatJSON implements Runnable {
         }
     }
 
+    private void room (String assetData) {
+        try {
+            JSONObject config = new JSONObject(configData);
+            JSONObject local = new JSONObject(assetData);
+            JSONObject configVersion = config.getJSONObject("version");
+            JSONObject localVersion = local.getJSONObject("version");
+            SiteData.roomsList.clear();
+            if (localVersion.getLong("versionNumber") < configVersion.getLong("versionNumber")) {
+                for (int i = 1; i < config.length(); i++) {
+                    JSONObject paragraph_list = config.getJSONObject("paragraph_" + i);
+                    if (paragraph_list.length() != 0) {
+                        SiteData.roomsList.add(toList(paragraph_list, page));
+                    }
+                }
+            } else {
+                Log.d(TAG, "room: local version");
+                for (int i = 1; i < local.length(); i++) {
+                    JSONObject paragraph_list = local.getJSONObject("paragraph_" + i);
+                    if (paragraph_list.length() != 0) {
+                        SiteData.roomsList.add(toList(paragraph_list, page));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "room: ", e);
+        }
+    }
+
     @Nullable
     private String loadJSONFromAsset (@NonNull String name) {
         String result;
@@ -73,85 +101,28 @@ public class FormatJSON implements Runnable {
         return result;
     }
 
-    private void room (String assetData) {
-        try {
-            JSONObject config = new JSONObject(configData);
-            JSONObject local = new JSONObject(assetData);
-            JSONObject configVersion = config.getJSONObject("version");
-            JSONObject localVersion = local.getJSONObject("version");
-            if (localVersion.getLong("versionNumber") != configVersion.getLong("versionNumber")) {
-                SiteData.roomsList.clear();
-                ArrayList<Paragraph> paragraphs;
-                Log.e(TAG, "room: " + config.length());
-                for (int i = 1; i < config.length(); i++) {
-                    paragraphs = new ArrayList<>();
-                    JSONObject paragraph_list = config.getJSONObject("paragraph_" + i);
-                    if (paragraph_list.length() != 0) {
-                        for (int j = 0; j < paragraph_list.length(); j++) {
-                            try {
-                                JSONObject content =
-                                        paragraph_list.getJSONObject(String.valueOf(j));
-                                Paragraph p = new Paragraph();
-                                p.setKind(content.getString("kind"));
-                                p.setPosition(content.getInt("position"));
-                                JSONArray array = content.getJSONArray("value");
-                                List<String> value = new ArrayList<>();
-                                for (int a = 0; a < array.length(); a++) {
-                                    value.add(array.getString(a));
-                                }
-                                p.setValue(value);
-                                paragraphs.add(p);
-                            } catch (Exception e) {
-                                Log.e(TAG, "room: ", e);
-                            }
-                        }
-                        SiteData.roomsList.add(paragraphs);
-                    }
-                }
-            }
-            //Log.d(TAG, "room: roomsList.size() = " + SiteData.roomsList.size());
-        } catch (Exception e) {
-            Log.e(TAG, "room: ", e);
-        }
-    }
-
     private void own_history (String localData) {
         try {
             JSONObject config = new JSONObject(configData);
             JSONObject local = new JSONObject(localData);
             JSONObject configVersion = config.getJSONObject("version");
             JSONObject localVersion = local.getJSONObject("version");
+            SiteData.own_history.clear();
             if (localVersion.getLong("versionNumber") < configVersion.getLong("versionNumber")) {
-                SiteData.own_history.clear();
-                ArrayList<Paragraph> paragraphs;
-                Log.e(TAG, "own_history: " + config.length());
                 for (int i = 1; i < config.length(); i++) {
-                    paragraphs = new ArrayList<>();
                     JSONObject paragraph_list = config.getJSONObject("paragraph_" + i);
                     if (paragraph_list.length() != 0) {
-                        for (int j = 0; j < paragraph_list.length(); j++) {
-                            try {
-                                JSONObject content =
-                                        paragraph_list.getJSONObject(String.valueOf(j));
-                                Paragraph p = new Paragraph();
-                                p.setKind(content.getString("kind"));
-                                p.setPosition(content.getInt("position"));
-                                JSONArray array = content.getJSONArray("value");
-                                List<String> value = new ArrayList<>();
-                                for (int a = 0; a < array.length(); a++) {
-                                    value.add(array.getString(a));
-                                }
-                                p.setValue(value);
-                                paragraphs.add(p);
-                            } catch (Exception e) {
-                                Log.e(TAG, "own_history: ", e);
-                            }
-                        }
-                        SiteData.own_history.add(paragraphs);
+                        SiteData.own_history.add(toList(paragraph_list, page));
+                    }
+                }
+            } else {
+                for (int i = 1; i < local.length(); i++) {
+                    JSONObject paragraph_list = local.getJSONObject("paragraph_" + i);
+                    if (paragraph_list.length() != 0) {
+                        SiteData.own_history.add(toList(paragraph_list, page));
                     }
                 }
             }
-            // Log.d(TAG, "room: roomsList.size() = " + SiteData.roomsList.size());
         } catch (Exception e) {
             Log.e(TAG, "own_history: ", e);
         }
@@ -163,37 +134,22 @@ public class FormatJSON implements Runnable {
             JSONObject local = new JSONObject(localData);
             JSONObject configVersion = config.getJSONObject("version");
             JSONObject localVersion = local.getJSONObject("version");
+            SiteData.about_us.clear();
             if (localVersion.getLong("versionNumber") < configVersion.getLong("versionNumber")) {
-                SiteData.about_us.clear();
-                ArrayList<Paragraph> paragraphs;
-                Log.e(TAG, "about_us: " + config.length());
                 for (int i = 1; i < config.length(); i++) {
-                    paragraphs = new ArrayList<>();
                     JSONObject paragraph_list = config.getJSONObject("paragraph_" + i);
                     if (paragraph_list.length() != 0) {
-                        for (int j = 0; j < paragraph_list.length(); j++) {
-                            try {
-                                JSONObject content =
-                                        paragraph_list.getJSONObject(String.valueOf(j));
-                                Paragraph p = new Paragraph();
-                                p.setKind(content.getString("kind"));
-                                p.setPosition(content.getInt("position"));
-                                JSONArray array = content.getJSONArray("value");
-                                List<String> value = new ArrayList<>();
-                                for (int a = 0; a < array.length(); a++) {
-                                    value.add(array.getString(a));
-                                }
-                                p.setValue(value);
-                                paragraphs.add(p);
-                            } catch (Exception e) {
-                                Log.e(TAG, "about_us: ", e);
-                            }
-                        }
-                        SiteData.about_us.add(paragraphs);
+                        SiteData.about_us.add(toList(paragraph_list, page));
+                    }
+                }
+            } else {
+                for (int i = 1; i < local.length(); i++) {
+                    JSONObject paragraph_list = local.getJSONObject("paragraph_" + i);
+                    if (paragraph_list.length() != 0) {
+                        SiteData.about_us.add(toList(paragraph_list, page));
                     }
                 }
             }
-            // Log.d(TAG, "room: roomsList.size() = " + SiteData.roomsList.size());
         } catch (Exception e) {
             Log.e(TAG, "about_us: ", e);
         }
@@ -205,37 +161,22 @@ public class FormatJSON implements Runnable {
             JSONObject local = new JSONObject(localData);
             JSONObject configVersion = config.getJSONObject("version");
             JSONObject localVersion = local.getJSONObject("version");
+            SiteData.frat_germany.clear();
             if (localVersion.getLong("versionNumber") < configVersion.getLong("versionNumber")) {
-                SiteData.frat_germany.clear();
-                ArrayList<Paragraph> paragraphs;
-                Log.e(TAG, "frat_germany: " + config.length());
                 for (int i = 1; i < config.length(); i++) {
-                    paragraphs = new ArrayList<>();
                     JSONObject paragraph_list = config.getJSONObject("paragraph_" + i);
                     if (paragraph_list.length() != 0) {
-                        for (int j = 0; j < paragraph_list.length(); j++) {
-                            try {
-                                JSONObject content =
-                                        paragraph_list.getJSONObject(String.valueOf(j));
-                                Paragraph p = new Paragraph();
-                                p.setKind(content.getString("kind"));
-                                p.setPosition(content.getInt("position"));
-                                JSONArray array = content.getJSONArray("value");
-                                List<String> value = new ArrayList<>();
-                                for (int a = 0; a < array.length(); a++) {
-                                    value.add(array.getString(a));
-                                }
-                                p.setValue(value);
-                                paragraphs.add(p);
-                            } catch (Exception e) {
-                                Log.e(TAG, "frat_germany: ", e);
-                            }
-                        }
-                        SiteData.frat_germany.add(paragraphs);
+                        SiteData.frat_germany.add(toList(paragraph_list, page));
+                    }
+                }
+            } else {
+                for (int i = 1; i < local.length(); i++) {
+                    JSONObject paragraph_list = local.getJSONObject("paragraph_" + i);
+                    if (paragraph_list.length() != 0) {
+                        SiteData.frat_germany.add(toList(paragraph_list, page));
                     }
                 }
             }
-            // Log.d(TAG, "room: roomsList.size() = " + SiteData.roomsList.size());
         } catch (Exception e) {
             Log.e(TAG, "frat_germany: ", e);
         }
@@ -247,37 +188,22 @@ public class FormatJSON implements Runnable {
             JSONObject local = new JSONObject(localData);
             JSONObject configVersion = config.getJSONObject("version");
             JSONObject localVersion = local.getJSONObject("version");
+            SiteData.frat_wuerzburg.clear();
             if (localVersion.getLong("versionNumber") < configVersion.getLong("versionNumber")) {
-                SiteData.frat_wuerzburg.clear();
-                ArrayList<Paragraph> paragraphs;
-                Log.e(TAG, "frat_wuerzburg: " + config.length());
                 for (int i = 1; i < config.length(); i++) {
-                    paragraphs = new ArrayList<>();
                     JSONObject paragraph_list = config.getJSONObject("paragraph_" + i);
                     if (paragraph_list.length() != 0) {
-                        for (int j = 0; j < paragraph_list.length(); j++) {
-                            try {
-                                JSONObject content =
-                                        paragraph_list.getJSONObject(String.valueOf(j));
-                                Paragraph p = new Paragraph();
-                                p.setKind(content.getString("kind"));
-                                p.setPosition(content.getInt("position"));
-                                JSONArray array = content.getJSONArray("value");
-                                List<String> value = new ArrayList<>();
-                                for (int a = 0; a < array.length(); a++) {
-                                    value.add(array.getString(a));
-                                }
-                                p.setValue(value);
-                                paragraphs.add(p);
-                            } catch (Exception e) {
-                                Log.e(TAG, "frat_wuerzburg: " + j, e);
-                            }
-                        }
-                        SiteData.frat_wuerzburg.add(paragraphs);
+                        SiteData.frat_wuerzburg.add(toList(paragraph_list, page));
+                    }
+                }
+            } else {
+                for (int i = 1; i < local.length(); i++) {
+                    JSONObject paragraph_list = local.getJSONObject("paragraph_" + i);
+                    if (paragraph_list.length() != 0) {
+                        SiteData.frat_wuerzburg.add(toList(paragraph_list, page));
                     }
                 }
             }
-            // Log.d(TAG, "room: roomsList.size() = " + SiteData.roomsList.size());
         } catch (Exception e) {
             Log.e(TAG, "frat_wuerzburg: ", e);
         }
@@ -289,19 +215,47 @@ public class FormatJSON implements Runnable {
             JSONObject local = new JSONObject(localData);
             JSONObject configVersion = config.getJSONObject("version");
             JSONObject localVersion = local.getJSONObject("version");
+            SiteData.semester_notes.clear();
             if (localVersion.getLong("versionNumber") < configVersion.getLong("versionNumber")) {
-                SiteData.semester_notes.clear();
-                Log.e(TAG, "semester_notes: " + config.length());
                 JSONArray paragraph_list = config.getJSONArray("list");
                 int size = paragraph_list.length();
-                for(int i =0;i<size;i++) {
+                for (int i = 0; i < size; i++) {
+                    SiteData.semester_notes.add(paragraph_list.getString(i));
+                }
+            } else {
+                JSONArray paragraph_list = local.getJSONArray("list");
+                int size = paragraph_list.length();
+                for (int i = 0; i < size; i++) {
                     SiteData.semester_notes.add(paragraph_list.getString(i));
                 }
             }
-            // Log.d(TAG, "room: roomsList.size() = " + SiteData.roomsList.size());
         } catch (Exception e) {
             Log.e(TAG, "semester_notes: ", e);
         }
+    }
+
+    @NonNull
+    private ArrayList<Paragraph> toList (@NonNull JSONObject paragraph_list, Page page) {
+        ArrayList<Paragraph> paragraphs = new ArrayList<>();
+        for (int j = 0; j < paragraph_list.length(); j++) {
+            try {
+                JSONObject content =
+                        paragraph_list.getJSONObject(String.valueOf(j));
+                Paragraph p = new Paragraph();
+                p.setKind(content.getString("kind"));
+                p.setPosition(content.getInt("position"));
+                JSONArray array = content.getJSONArray("value");
+                List<String> value = new ArrayList<>();
+                for (int a = 0; a < array.length(); a++) {
+                    value.add(array.getString(a));
+                }
+                p.setValue(value);
+                paragraphs.add(p);
+            } catch (Exception e) {
+                Log.e(TAG, page.getName() + ": ", e);
+            }
+        }
+        return paragraphs;
     }
 
 }

@@ -1,6 +1,6 @@
 {
   "version": {
-    "versionNumber": -1
+    "versionNumber": 0
   },
   "paragraph_1": {
     "0": {
@@ -26,11 +26,10 @@
       ]
     },
     "3": {
-      "kind": "button",
+      "kind": "link",
       "position": 3,
       "value": [
         "Kontakt",
-        "link",
         "http://walhalla-wuerzburg.de/kontakt"
       ]
     },
@@ -118,11 +117,10 @@
       ]
     },
     "4": {
-      "kind": "button",
+      "kind": "link",
       "position": 4,
       "value": [
         "Walhalla bei WG-Gesucht (Erdgeschoss)",
-        "link",
         "https://www.wg-gesucht.de/7479261.html"
       ]
     },
@@ -130,8 +128,8 @@
       "kind": "link",
       "position": 5,
       "value": [
-        "Walhalla bei WG-Gesucht (Obergeschoss)",
-        "Walhalla bei WG-Gesucht (Dachgeschoss)"
+        "Walhalla bei WG-Gesucht (Dachgeschoss)",
+        "https://www.wg-gesucht.de/2874162.html"
       ]
     },
     "6": {

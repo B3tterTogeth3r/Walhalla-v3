@@ -1,5 +1,7 @@
 package de.b3ttertogeth3r.walhalla.fragments.profile;
 
+import static de.b3ttertogeth3r.walhalla.enums.Page.PROFILE;
+
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -86,6 +88,10 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
                         public void onSuccess (Uri imageUri) {
                             user.setPicture_path(imageUri.getPath());
                             upload(user, imageUri);
+                        }
+
+                        @Override
+                        public void onFailure (Exception e) {
                         }
                     });
                 } else {
@@ -196,6 +202,10 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
                 Semester semester = documentSnapshot.toObject(Semester.class);
                 assert semester != null;
                 joined.setValueText(semester.getName_long());
+            }
+
+            @Override
+            public void onFailure (Exception e) {
             }
         });
 
@@ -495,9 +505,16 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
     @NonNull
     private CharSequence[] getRanks () {
         Rank[] list = Rank.values();
-        //TODO if user == super-admin set all ranks into the list.
-        CharSequence[] ranks = new CharSequence[9];
-        for (int i = 0; i < 9; i++) {
+        int size;
+        CharSequence[] ranks;
+        if (PROFILE.canEditPage(CacheData.getCharge())) {
+            size = list.length;
+            ranks = new CharSequence[size];
+        } else {
+            size = 9;
+            ranks = new CharSequence[9];
+        }
+        for (int i = 0; i < size; i++) {
             ranks[i] = list[i].toString();
         }
         return ranks;

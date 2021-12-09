@@ -6,6 +6,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import de.b3ttertogeth3r.walhalla.models.Image;
+
 /**
  * A custom listener to make a notification on firebase download results more easy.
  *
@@ -59,6 +61,15 @@ public interface OnGetDataListener {
     }
 
     /**
+     * returns an image object through the listener.
+     *
+     * @param image
+     *          image object
+     */
+    default void onSuccess (Image image) {
+    }
+
+    /**
      * No data to be send, just notify of done download. Mostly used to notify a completed upload.
      */
     default void onSuccess () {
@@ -68,6 +79,7 @@ public interface OnGetDataListener {
      * The loading failed (No error send)
      */
     default void onFailure () {
+        onFailure(null);
     }
 
     /**
@@ -82,6 +94,5 @@ public interface OnGetDataListener {
      * @param exception
      *         Error exception
      */
-    default void onFailure (Exception exception) {
-    }
+    void onFailure (Exception exception);
 }
