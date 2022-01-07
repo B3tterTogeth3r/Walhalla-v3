@@ -25,10 +25,9 @@ import de.b3ttertogeth3r.walhalla.utils.CacheData;
 @SuppressLint("StaticFieldLeak")
 public class App extends Application {
     private static final String TAG = "App";
-    public static Stack<Integer> lastSiteId;
     private static Context ctx;
     private static Toolbar toolbar;
-    private static boolean internetConnection = false;
+    private static boolean internetConnection = true;
     private static FragmentManager fm;
 
     public App () {
@@ -36,17 +35,11 @@ public class App extends Application {
     }
 
     public static void init () {
-        lastSiteId = new Stack<>();
         try {
             StartActivity.newDone.appDone();
         } catch (Exception e) {
             Log.e(TAG, "init: error", e);
         }
-    }
-
-    public static void clearStack () {
-        lastSiteId = new Stack<>();
-        lastSiteId.push(CacheData.getStartPage());
     }
 
     public static Context getContext () {

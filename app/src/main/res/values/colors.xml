@@ -10,4 +10,9 @@
     <color name="colorAccentLight">#DAB020</color>
     <color name="text">#000</color>
     <color name="whiteish">#bbb</color>
+    <color name="red">#F00</color>
+    <color name="strong">#80007D00</color>
+    <color name="very_strong">#00FF00</color>
+    <color name="medium">#DA5520</color>
+    <color name="green">#0f0</color>
 </resources>

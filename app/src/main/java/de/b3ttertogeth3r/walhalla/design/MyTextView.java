@@ -20,11 +20,11 @@ public class MyTextView extends androidx.appcompat.widget.AppCompatTextView {
         super(context);
         design(context);
         setText(text);
-        setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.border_round));
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        setLayoutParams(params);
+    }
+
+    @Override
+    public String getText () {
+        return super.getText().toString();
     }
 
     private void design (@NonNull Context context) {
@@ -40,7 +40,6 @@ public class MyTextView extends androidx.appcompat.widget.AppCompatTextView {
         setTextAppearance(context, R.style.TextAppearance_AppCompat_Body1);
         setLayoutParams(params);
         //TODO Autolink web
-        //TODO links clickable true
         setLinksClickable(true);
         setLinkTextColor(ContextCompat.getColor(context, R.color.colorAccent));
     }

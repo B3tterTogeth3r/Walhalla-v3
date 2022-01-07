@@ -1,7 +1,11 @@
 package de.b3ttertogeth3r.walhalla;
 
+import static de.b3ttertogeth3r.walhalla.utils.Variables.SIGN_IN;
+
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,16 +25,29 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.NotNull;
 
-import java.util.EmptyStackException;
-
 import de.b3ttertogeth3r.walhalla.enums.Walhalla;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.firebase.Analytics;
+import de.b3ttertogeth3r.walhalla.firebase.Authentication;
+import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
+import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
+import de.b3ttertogeth3r.walhalla.fragments_main.RoomFragment;
+import de.b3ttertogeth3r.walhalla.fragments_main.AboutUsFragment;
+import de.b3ttertogeth3r.walhalla.fragments_main.BalanceFragment;
+import de.b3ttertogeth3r.walhalla.fragments_main.ChargenFragment;
+import de.b3ttertogeth3r.walhalla.fragments_main.ChargenPhilFragment;
+import de.b3ttertogeth3r.walhalla.fragments_main.FratGermanyFragment;
+import de.b3ttertogeth3r.walhalla.fragments_main.FratWueFragment;
+import de.b3ttertogeth3r.walhalla.fragments_main.GreetingFragment;
+import de.b3ttertogeth3r.walhalla.fragments_main.HomeFragment;
+import de.b3ttertogeth3r.walhalla.fragments_main.HistoryFragment;
 import de.b3ttertogeth3r.walhalla.interfaces.AuthListener;
 import de.b3ttertogeth3r.walhalla.interfaces.OpenExternal;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
@@ -38,50 +55,24 @@ import de.b3ttertogeth3r.walhalla.utils.CacheData;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         OpenExternal, AuthListener {
-    private static final String TAG = "MainActivity";
+    public static final String TAG = "MainActivity";
+    /** For easier access to this view for Toast and SnackBar messages */
     @SuppressLint("StaticFieldLeak")
     public static View parentLayout;
     public static OpenExternal externalListener;
+    public static InAppMessage inAppMessage;
+    public static AuthListener authListener;
     private DrawerLayout drawerlayout;
     private NavigationView navigationView;
     private boolean doubleBackToExitPressedOnce = false;
-    public static InAppMessage inAppMessage;
-    public static AuthListener authListener;
+    private FragmentManager fragmentManager;
 
-    public interface InAppMessage {
-        void displayMessage(String title, String message, String page);
-    }
 
-    private void openInAppMessageDialog(String title, String message, String page){
-        AlertDialog.Builder builder = new AlertDialog.Builder(App.getContext());
-        builder.setTitle(title)
-                .setMessage(message)
-                .setNegativeButton(R.string.later, null)
-                .setCancelable(true)
-                .setIcon(R.drawable.ic_error_outline);
-
-        switch (page) {
-            case "balance":
-                builder
-                    .setPositiveButton(R.string.yes,
-                            (dialog, which) -> switchPage(R.string.menu_balance));
-                break;
-            case "program":
-                builder
-                        .setPositiveButton(R.string.yes,
-                                (dialog, which) -> switchPage(R.string.menu_program));
-                break;
-            case "news":
-                builder
-                        .setPositiveButton(R.string.yes,
-                                (dialog, which) -> switchPage(R.string.menu_messages));
-                break;
-        }
-
-        runOnUiThread(() -> {
-            AlertDialog dialog1 = builder.create();
-            dialog1.show();
-        });
+    @Override
+    protected void onStop () {
+        //save, that the app has been started before
+        CacheData.firstStart();
+        super.onStop();
     }
 
     @Override
@@ -89,24 +80,114 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fillSideNav();
     }
 
+    /**
+     * Filling the left side nav with data
+     */
+    private void fillSideNav () {
+        View view = navigationView.getHeaderView(0);
+        ImageView image = view.findViewById(R.id.nav_headder);
+        TextView title = view.findViewById(R.id.nav_title);
+        TextView street = view.findViewById(R.id.nav_street);
+        TextView city = view.findViewById(R.id.nav_city);
+        if (Authentication.isSignIn()) {
+            FirebaseUser user = Authentication.getUser();
+            try {
+                Glide.with(this)
+                        .load(user.getPhotoUrl())
+                        .fitCenter()
+                        .placeholder(R.drawable.wappen_2017_v2)
+                        .into(image);
+            } catch (Exception ignored) {
+            }
+            title.setText(user.getDisplayName());
+            street.setText(user.getEmail());
+            city.setText(user.getPhoneNumber());
+        } else {
+            image.setImageResource(R.drawable.wappen_2017);
+            title.setText(Walhalla.NAME.toString());
+            street.setText(Walhalla.ADH.toString());
+            city.setVisibility(View.GONE);
+        }
+
+        //Navigation Body
+        navigationView.getMenu().clear();
+        Menu menu = navigationView.getMenu();
+        //Public area
+        menu.add(0, R.string.menu_home, 0, R.string.menu_home)
+                //.setChecked(true)
+                .setIcon(R.drawable.ic_home);
+        menu.add(0, R.string.menu_about_us, 0, R.string.menu_about_us).setIcon(R.drawable.ic_info);
+        menu.add(0, R.string.menu_rooms, 0, R.string.menu_rooms).setIcon(R.drawable.ic_rooms);
+        menu.add(0, R.string.menu_program, 0, R.string.menu_program).setIcon(R.drawable.ic_calendar);
+        menu.add(0, R.string.menu_messages, 0, R.string.menu_messages).setIcon(R.drawable.ic_message);
+        menu.add(0, R.string.menu_chargen, 0, R.string.menu_chargen).setIcon(R.drawable.ic_group);
+        menu.add(0, R.string.menu_chargen_phil, 0, R.string.menu_chargen_phil).setIcon(R.drawable.ic_group_line);
+
+        /* Login/Sign up, Logout */
+        Menu loginMenu = menu.addSubMenu(R.string.menu_user_editing);
+        if (Authentication.isSignIn()) {
+            loginMenu.add(1, R.string.menu_logout, 0, R.string.menu_logout).setIcon(R.drawable.ic_exit).setCheckable(false);
+            loginMenu.add(0, R.string.menu_profile, 0, R.string.menu_profile).setIcon(R.drawable.ic_person);
+
+            loginMenu.add(0, R.string.menu_drinks, 0, R.string.menu_drinks) //Change appearance
+                    // depending on who is logged in
+                    .setIcon(R.drawable.ic_beer);
+            loginMenu.add(0, R.string.menu_balance, 0, R.string.menu_balance);
+
+            //Only visible to members of the fraternity
+            Menu menuLogin = menu.addSubMenu(R.string.menu_intern);
+            menuLogin.add(0, R.string.menu_transcript, 0, R.string.menu_transcript).setIcon(R.drawable.ic_scriptor);
+            menuLogin.add(0, R.string.menu_kartei, 0, R.string.menu_kartei).setIcon(R.drawable.ic_contacts);
+
+            //Only visible to a active board member of the current semester
+            if (!CacheData.getCharge().getName().isEmpty()) {
+                Menu menuCharge = menu.addSubMenu(R.string.menu_board_only);
+                //menuCharge.add(0, R.string.menu_new_person, 0, R.string.menu_new_person)
+                // .setIcon(R.drawable.ic_person_add);
+                //menuCharge.add(0, R.string.menu_user, 0, R.string.menu_user)
+                //        .setIcon(R.drawable.ic_user_add);*/
+                menuCharge.add(0, R.string.menu_all_profiles, 0, R.string.menu_all_profiles)
+                        .setIcon(R.drawable.ic_supervised_user);
+                //menuCharge.add(0, R.string.menu_new_semester, 0, R.string.menu_new_semester);
+            }
+
+        } else {
+            loginMenu.add(1, R.string.menu_login, 0, R.string.menu_login)
+                    ///.setCheckable(false)
+                    .setIcon(R.drawable.ic_exit);
+        }
+
+        loginMenu.setGroupCheckable(1, false, true);
+
+        Menu moreMenu = menu.addSubMenu(R.string.menu_more);
+        moreMenu.add(1, R.string.menu_more_history, 1, R.string.menu_more_history);
+        moreMenu.add(1, R.string.menu_more_frat_wue, 1, R.string.menu_more_frat_wue);
+        moreMenu.add(1, R.string.menu_more_frat_organisation, 1,
+                R.string.menu_more_frat_organisation);
+
+        Menu menuEnd = menu.addSubMenu(R.string.menu_other);
+        menuEnd.add(0, R.string.menu_settings, 0, R.string.menu_settings).setIcon(R.drawable.ic_settings).setCheckable(false);
+        menuEnd.add(0, R.string.menu_donate, 0, R.string.menu_donate).setCheckable(false).setIcon(R.drawable.ic_donate);
+
+        navigationView.invalidate();
+    }
+
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        fragmentManager = getSupportFragmentManager();
         externalListener = this;
         authListener = this;
         inAppMessage = this::openInAppMessageDialog;
+        parentLayout = findViewById(android.R.id.content);
         de.b3ttertogeth3r.walhalla.App.setContext(MainActivity.this);
         de.b3ttertogeth3r.walhalla.App.setFragmentManager(getFragmentManager());
-        Firebase.RemoteConfig.apply();
-
+        RemoteConfig.apply();
 
         // region the default ui
         // Set content
         setContentView(R.layout.activity_main);
 
-        //For easier access to this view for Toast and SnackBar messages
-        parentLayout = findViewById(android.R.id.content);
 
         //Initialize Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -147,99 +228,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
              */
         }
         // endregion
-        Firebase.Crashlytics.sendUnsent();
+        Crashlytics.sendUnsent();
     }
 
-    /**
-     * Filling the left side nav with data
-     */
-    private void fillSideNav () {
-        View view = navigationView.getHeaderView(0);
-        ImageView image = view.findViewById(R.id.nav_headder);
-        TextView title = view.findViewById(R.id.nav_title);
-        TextView street = view.findViewById(R.id.nav_street);
-        TextView city = view.findViewById(R.id.nav_city);
-        if(Firebase.Authentication.isSignIn()){
-            FirebaseUser user = Firebase.Authentication.getUser();
-            try {
-                Glide.with(this)
-                        .load(user.getPhotoUrl())
-                        .fitCenter()
-                        .placeholder(R.drawable.wappen_2017_v2)
-                        .into(image);
-            } catch(Exception ignored){}
-            title.setText(user.getDisplayName());
-            street.setText(user.getEmail());
-            city.setText(user.getPhoneNumber());
-        }
-        else {
-            image.setImageResource(R.drawable.wappen_2017);
-            title.setText(Walhalla.NAME.toString());
-            street.setText(Walhalla.ADH.toString());
-            city.setVisibility(View.GONE);
+    private void openInAppMessageDialog (String title, String message, @NonNull String page) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(App.getContext());
+        builder.setTitle(title)
+                .setMessage(message)
+                .setNegativeButton(R.string.later, null)
+                .setCancelable(true)
+                .setIcon(R.drawable.ic_error_outline);
+
+        switch (page) {
+            case "balance":
+                builder
+                        .setPositiveButton(R.string.yes,
+                                (dialog, which) -> switchPage(R.string.menu_balance));
+                break;
+            case "program":
+                builder
+                        .setPositiveButton(R.string.yes,
+                                (dialog, which) -> switchPage(R.string.menu_program));
+                break;
+            case "news":
+                builder
+                        .setPositiveButton(R.string.yes,
+                                (dialog, which) -> switchPage(R.string.menu_messages));
+                break;
         }
 
-        //Navigation Body
-        navigationView.getMenu().clear();
-        Menu menu = navigationView.getMenu();
-        //Public area
-        menu.add(0, R.string.menu_home, 0, R.string.menu_home)
-                //.setChecked(true)
-                .setIcon(R.drawable.ic_home);
-        menu.add(0, R.string.menu_about_us, 0, R.string.menu_about_us).setIcon(R.drawable.ic_info);
-        menu.add(0, R.string.menu_rooms, 0, R.string.menu_rooms).setIcon(R.drawable.ic_rooms);
-        menu.add(0, R.string.menu_program, 0, R.string.menu_program).setIcon(R.drawable.ic_calendar);
-        menu.add(0, R.string.menu_messages, 0, R.string.menu_messages).setIcon(R.drawable.ic_message);
-        menu.add(0, R.string.menu_chargen, 0, R.string.menu_chargen).setIcon(R.drawable.ic_group);
-        menu.add(0, R.string.menu_chargen_phil, 0, R.string.menu_chargen_phil).setIcon(R.drawable.ic_group_line);
-
-        /* Login/Sign up, Logout */
-        Menu loginMenu = menu.addSubMenu(R.string.menu_user_editing);
-        if (Firebase.Authentication.isSignIn()) {
-            loginMenu.add(1, R.string.menu_logout, 0, R.string.menu_logout).setIcon(R.drawable.ic_exit).setCheckable(false);
-            loginMenu.add(0, R.string.menu_profile, 0, R.string.menu_profile).setIcon(R.drawable.ic_person);
-
-            loginMenu.add(0, R.string.menu_drinks, 0, R.string.menu_drinks) //Change appearance
-                    // depending on who is logged in
-                    .setIcon(R.drawable.ic_beer);
-            loginMenu.add(0, R.string.menu_balance, 0, R.string.menu_balance);
-
-            //Only visible to members of the fraternity
-            Menu menuLogin = menu.addSubMenu(R.string.menu_intern);
-            menuLogin.add(0, R.string.menu_transcript, 0, R.string.menu_transcript).setIcon(R.drawable.ic_scriptor);
-            menuLogin.add(0, R.string.menu_kartei, 0, R.string.menu_kartei).setIcon(R.drawable.ic_contacts);
-
-            //Only visible to a active board member of the current semester
-            //if (User.hasCharge()) {
-            Menu menuCharge = menu.addSubMenu(R.string.menu_board_only);
-            menuCharge.add(0, R.string.menu_new_person, 0, R.string.menu_new_person).setIcon(R.drawable.ic_person_add);
-                /*menuCharge.add(0, R.string.menu_user, 0, R.string.menu_user)
-                        .setIcon(R.drawable.ic_user_add);
-                /*menuCharge.add(0, R.string.menu_account, 0, R.string.menu_account)
-                        .setIcon(R.drawable.ic_account);
-            menuCharge.add(0, R.string.menu_new_semester, 0, R.string.menu_new_semester);
-            //}
-            */
-
-        } else {
-            loginMenu.add(1, R.string.menu_login, 0, R.string.menu_login)
-                    ///.setCheckable(false)
-                    .setIcon(R.drawable.ic_exit);
-        }
-
-        loginMenu.setGroupCheckable(1, false, true);
-
-        Menu moreMenu = menu.addSubMenu(R.string.menu_more);
-        moreMenu.add(1, R.string.menu_more_history, 1, R.string.menu_more_history);
-        moreMenu.add(1, R.string.menu_more_frat_wue, 1, R.string.menu_more_frat_wue);
-        moreMenu.add(1, R.string.menu_more_frat_organisation, 1,
-                R.string.menu_more_frat_organisation);
-
-        Menu menuEnd = menu.addSubMenu(R.string.menu_other);
-        menuEnd.add(0, R.string.menu_settings, 0, R.string.menu_settings).setIcon(R.drawable.ic_settings).setCheckable(false);
-        menuEnd.add(0, R.string.menu_donate, 0, R.string.menu_donate).setCheckable(false).setIcon(R.drawable.ic_donate);
-
-        navigationView.invalidate();
+        runOnUiThread(() -> {
+            if(CacheData.getFirstStart()) {
+                AlertDialog dialog1 = builder.create();
+                dialog1.show();
+            }
+        });
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -247,92 +270,133 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //System.out.println(item);
         switch (item) {
             case R.string.menu_home:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_home));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.home.Fragment()).commit();
+                Analytics.screenChange(item, getString(R.string.menu_home));
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        new HomeFragment())
+                        .addToBackStack(TAG)
+                        .commit();
                 break;
             case R.id.program:
             case R.string.menu_program:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_program));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.program.Fragment()).commit();
+                Analytics.screenChange(item, getString(R.string.menu_program));
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        new de.b3ttertogeth3r.walhalla.fragments_main.program.Fragment())
+                        .addToBackStack(TAG)
+                        .commit();
                 break;
             case R.id.row2first:
-                if (Firebase.Authentication.isSignIn()) {
-                    Firebase.Analytics.screenChange(item, getString(R.string.menu_balance));
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            new de.b3ttertogeth3r.walhalla.fragments.drinks.Fragment()).commit();
+                if (Authentication.isSignIn()) {
+                    Analytics.screenChange(item, getString(R.string.menu_balance));
+                    fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                            new de.b3ttertogeth3r.walhalla.fragments_main.drinks.Fragment())
+                            .addToBackStack(null)
+                            .commit();
                 } else {
-                    Firebase.Analytics.screenChange(item, getString(R.string.menu_rooms));
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            new de.b3ttertogeth3r.walhalla.fragments.room.Fragment()).commit();
+                    Analytics.screenChange(item, getString(R.string.menu_rooms));
+                    fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                            new RoomFragment())
+                            .addToBackStack(null)
+                            .commit();
                 }
                 break;
             case R.string.menu_rooms:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_rooms));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.room.Fragment()).commit();
+                Analytics.screenChange(item, getString(R.string.menu_rooms));
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        new RoomFragment())
+                        .addToBackStack(TAG)
+                        .commit();
                 break;
             case R.string.menu_login:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_login));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.signin.Fragment()).commit();
+                Analytics.screenChange(item, getString(R.string.menu_login));
+                Intent startSignIn = new Intent(this, SignInActivity.class);
+                // startSignIn.addFlags(Intent.FLAG_ACT)
+                startActivityForResult(startSignIn, SIGN_IN);
                 break;
             case R.string.menu_greeting:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_greeting));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.greeting.Fragment()).commit();
+                Analytics.screenChange(item, getString(R.string.menu_greeting));
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        new GreetingFragment())
+                        .addToBackStack(TAG)
+                        .commit();
                 break;
             case R.string.menu_profile:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_profile));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.profile.Fragment()).commit();
+                Analytics.screenChange(item, getString(R.string.menu_profile));
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        new de.b3ttertogeth3r.walhalla.fragments_main.profile.Fragment())
+                        .addToBackStack(TAG)
+                        .commit();
                 break;
             case R.string.menu_balance:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_balance));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.balance.Fragment()).commit();
+                Analytics.screenChange(item, getString(R.string.menu_balance));
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        new BalanceFragment())
+                        .addToBackStack(TAG)
+                        .commit();
                 break;
             case R.string.menu_chargen:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_chargen));
+                Analytics.screenChange(item, getString(R.string.menu_chargen));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.chargen.Fragment()).commit();
+                        new ChargenFragment())
+                        .addToBackStack(TAG)
+                        .commit();
                 break;
             case R.string.menu_chargen_phil:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_chargen_phil));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.chargen_phil.Fragment()).commit();
+                Analytics.screenChange(item, getString(R.string.menu_chargen_phil));
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        new ChargenPhilFragment())
+                        .addToBackStack(TAG)
+                        .commit();
                 break;
             case R.string.menu_drinks:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_drinks));
+                Analytics.screenChange(item, getString(R.string.menu_drinks));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.drinks.Fragment()).commit();
+                        new de.b3ttertogeth3r.walhalla.fragments_main.drinks.Fragment())
+                        .addToBackStack(TAG)
+                        .commit();
                 break;
             case R.string.menu_about_us:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_about_us));
+                Analytics.screenChange(item, getString(R.string.menu_about_us));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.about_us.Fragment()).commit();
+                        new AboutUsFragment())
+                        .addToBackStack(TAG)
+                        .commit();
                 break;
             case R.string.menu_more_history:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_more_history));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.own_history.Fragment()).commit();
+                Analytics.screenChange(item, getString(R.string.menu_more_history));
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        new HistoryFragment())
+                        .addToBackStack(TAG)
+                        .commit();
                 break;
             case R.string.menu_more_frat_wue:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_more_frat_wue));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.fraternity_wuerzburg.Fragment()).commit();
+                Analytics.screenChange(item, getString(R.string.menu_more_frat_wue));
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        new FratWueFragment())
+                        .addToBackStack(TAG)
+                        .commit();
                 break;
             case R.string.menu_more_frat_organisation:
-                Firebase.Analytics.screenChange(item, getString(R.string.menu_more_frat_organisation));
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments.fraternity_germany.Fragment()).commit();
+                Analytics.screenChange(item, getString(R.string.menu_more_frat_organisation));
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        new FratGermanyFragment())
+                        .addToBackStack(TAG)
+                        .commit();
+                break;
+            case R.string.menu_all_profiles:
+                Analytics.screenChange(item, getString(R.string.menu_all_profiles));
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        new de.b3ttertogeth3r.walhalla.fragments_main.all_users.Fragment())
+                        .addToBackStack(TAG)
+                        .commit();
                 break;
             case R.string.menu_logout:
-                Firebase.Authentication.signOut();
+                Authentication.signOut();
                 break;
             default:
-                Firebase.Crashlytics.log(TAG, "page with id " + item + "doesn't exist");
+                Snackbar.make(parentLayout, "page not found" + item.toString(),
+                        Snackbar.LENGTH_LONG).show();
+                Crashlytics.log(TAG, "page with id " + item + "doesn't exist");
+                break;
         }
     }
 
@@ -349,28 +413,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     @Override
     public void onBackPressed () {
-        try {
-            App.lastSiteId.pop();
-        } catch (EmptyStackException ese) {
-            // Log.e(TAG, "onBackPressed: EmptyStackException", ese);
-        }
-        if (App.lastSiteId.isEmpty()) {
+        if (fragmentManager.getBackStackEntryCount() == 1) {
             //If drawer is open, show possibility to close the app via the back-button.
             if (drawerlayout.isDrawerOpen(GravityCompat.START)) {
                 if (doubleBackToExitPressedOnce) {
-                    //Button pressed a second time within half a second.
+                    //Button pressed a second time within a second.
                     super.onBackPressed();
                     return;
                 }
                 this.doubleBackToExitPressedOnce = true;
                 Toast.makeText(this, R.string.exit_app_via_back, Toast.LENGTH_LONG).show();
 
-                new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 500);
+                new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 1000);
             } else { //Otherwise open the left menu
                 drawerlayout.openDrawer(GravityCompat.START);
             }
         } else {
-            switchPage(App.lastSiteId.peek());
+            fragmentManager.popBackStack();
         }
     }
 
@@ -378,8 +437,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onActivityResult (int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && data.getExtras() != null) {
-            Log.d(TAG,
-                    "onActivityResult: resultCode:" + resultCode + "- requestCode: " + requestCode);
+            if (requestCode == SIGN_IN) {
+                Log.d(TAG, "onActivityResult: Sign in done");
+                if(resultCode == Activity.RESULT_OK) {
+                    //reload Activity
+                    //TODO get the activity to start with the previous fragment backstack
+                    recreate();
+                }
+            }
         } else {
             Log.d(TAG, "onActivityResult: no data in intent");
         }
@@ -415,5 +480,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void intentOpener (Intent intent, int resultCode) {
         this.startActivityForResult(intent, resultCode);
+    }
+
+    public interface InAppMessage {
+        void displayMessage (String title, String message, String page);
     }
 }

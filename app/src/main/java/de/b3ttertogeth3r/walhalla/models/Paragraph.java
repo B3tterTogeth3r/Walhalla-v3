@@ -4,10 +4,12 @@ import com.google.firebase.firestore.Exclude;
 
 import java.util.List;
 
+import de.b3ttertogeth3r.walhalla.firebase.Firestore;
+
 /**
  * The {@code Paragraph} class represents all paragraphs that could be designed
  * in the app. All Paragraphs of the same site are saved inside the same collection
- * in {@link de.b3ttertogeth3r.walhalla.firebase.Firebase.Firestore Cloud Firestore}.
+ * in {@link Firestore Cloud Firestore}.
  * <br>
  * All paragraphs have at least these three elements:
  * <ul>

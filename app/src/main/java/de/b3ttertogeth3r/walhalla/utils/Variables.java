@@ -14,5 +14,7 @@ public class Variables {
             App.getContext().getString(R.string.month_aug), App.getContext().getString(R.string.month_sep),
             App.getContext().getString(R.string.month_oct), App.getContext().getString(R.string.month_nov),
             App.getContext().getString(R.string.month_dec)};
-    public static final String GOOGLE_CLIENT_ID = "456221124895-jjhv97lsl2eckfoggqd7phj95s7u05ti.apps.googleusercontent.com";
+    public static final int CAMERA = 2;
+    public static final int GALLERY = 3;
+    public static final int SIGN_IN = 4;
 }

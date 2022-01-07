@@ -1,6 +1,6 @@
 package de.b3ttertogeth3r.walhalla.exceptions;
 
-import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 
 public class NoUploadDataException extends Exception{
     private static final String TAG = "NoUploadDataException";
@@ -8,6 +8,6 @@ public class NoUploadDataException extends Exception{
 
     public NoUploadDataException () {
         super();
-        Firebase.Crashlytics.log(TAG, message);
+        Crashlytics.log(TAG, message);
     }
 }

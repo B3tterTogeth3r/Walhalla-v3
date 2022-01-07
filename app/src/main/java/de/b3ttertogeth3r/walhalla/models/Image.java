@@ -8,18 +8,14 @@ public class Image {
     private String description;
     private String icon_path;
     private String large_path;
-    private String icon_link;
-    private String large_link;
 
     public Image () {
     }
 
-    public Image (String description, String icon_path, String icon_link, String large_path, String large_link) {
+    public Image (String description, String icon_path, String large_path) {
         this.description = description;
         this.icon_path = icon_path;
         this.large_path = large_path;
-        this.icon_link = icon_link;
-        this.large_link = large_link;
     }
 
     @Exclude
@@ -54,21 +50,5 @@ public class Image {
 
     public void setLarge_path (String large_path) {
         this.large_path = large_path;
-    }
-
-    public String getIcon_link () {
-        return icon_link;
-    }
-
-    public void setIcon_link (String icon_link) {
-        this.icon_link = icon_link;
-    }
-
-    public String getLarge_link () {
-        return large_link;
-    }
-
-    public void setLarge_link (String large_link) {
-        this.large_link = large_link;
     }
 }

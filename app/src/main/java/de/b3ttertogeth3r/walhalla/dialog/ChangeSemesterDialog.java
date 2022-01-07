@@ -26,10 +26,9 @@ import java.util.Calendar;
 import de.b3ttertogeth3r.walhalla.MainActivity;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.enums.Kind;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase.Crashlytics;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase.Firestore;
+import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
+import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.interfaces.SemesterChangeListener;
-import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.Semester;
 
 public class ChangeSemesterDialog extends DialogFragment implements DialogInterface.OnClickListener {

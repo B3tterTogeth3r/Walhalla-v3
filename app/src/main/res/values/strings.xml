@@ -144,6 +144,27 @@
     <string name="menu_drink_fine">Strafe</string>
     <string name="menu_more_wuerzburg_frat">Würzburgs Verbindungen</string>
     <string name="menu_more_germany_frat">Studentische Verbände</string>
-
+    <string name="close">Schließen</string>
+    <string name="dialog_charge_choose">Wähle eine Charge</string>
+    <string name="select_person">Person suchen</string>
+    <string name="from">aus</string>
+    <string name="upload_complete">Upload erfolgreich</string>
+    <string name="major_short">stud.</string>
+    <string name="existing">Existierendes</string>
+    <string name="from_device">Gerät</string>
+    <string name="choose">Wähle von</string>
+    <string name="from_online">Online</string>
+    <string name="menu_all_profiles">Alle Nutzer</string>
+    <string name="resume">Weiter</string>
+    <string name="profile_image">Profilbild</string>
+    <string name="password_strength_weak">weak</string>
+    <string name="password_strength_medium">medium</string>
+    <string name="password_strength_strong">strong</string>
+    <string name="password_strength_very_strong">very strong</string>
+    <string name="go_back">Zurück</string>
+    <string name="password_description">\nPasswort-Bestimmungen:\n- mindestens 8 Zeichen lang\n- mindestens einen Kleinbuchstaben\n- mindestens einen Großbuchstaben\n- mindestens eine Zahl</string>
+    <string name="set_password">Passwort setzen</string>
+    <string name="edit_password">Passwort ändern</string>
+    <string name="confirm_password">Passwort erneut eingeben</string>
 
 </resources>

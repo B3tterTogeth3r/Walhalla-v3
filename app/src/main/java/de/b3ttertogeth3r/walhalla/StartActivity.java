@@ -2,7 +2,6 @@ package de.b3ttertogeth3r.walhalla;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -16,11 +15,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.UploadTask;
 
-import de.b3ttertogeth3r.walhalla.enums.Charge;
+import java.util.List;
+
+import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
-import de.b3ttertogeth3r.walhalla.interfaces.OnGetDataListener;
+import de.b3ttertogeth3r.walhalla.firebase.Firestore;
+import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
 import de.b3ttertogeth3r.walhalla.interfaces.SplashInterface;
+import de.b3ttertogeth3r.walhalla.models.Image;
+import de.b3ttertogeth3r.walhalla.models.User;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
 
 /**
@@ -36,7 +44,6 @@ import de.b3ttertogeth3r.walhalla.utils.CacheData;
 public class StartActivity extends AppCompatActivity implements SplashInterface {
     private static final String TAG = "StartActivity";
     public static SplashInterface newDone;
-    private final String PREFS_NAME = "FirstStart";
     private final int total = 4;
     private int counter = 0;
     private int progress = 0;
@@ -50,12 +57,13 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
         progressBar.setProgress(0);
         progressBar.setVisibility(View.VISIBLE);
         newDone = this;
-        //Check if is apps  first start
-        // https://stackoverflow.com/questions/4636141/determine-if-android-app-is-being-used-for
-        // -the-first-time
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        try {
+            CacheData.init(getApplicationContext());
+        } catch (Exception e) {
+            Log.e(TAG, "CacheData:", e);
+        }
 
-        if (settings.getBoolean("my_first_time", true) && !isOnline()) {
+        if (!CacheData.getFirstStart() && !isOnline()) {
             Log.d(TAG, "Comments: no internet on first start");
             //TODO Display dialog with message to get internet. Terminate app on cancel and dismiss
             AlertDialog.Builder internetDialog = new AlertDialog.Builder(this);
@@ -66,7 +74,6 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
                     .show();
         } else {
             updateProgressbar();
-            settings.edit().putBoolean("my_first_time", false).apply();
             new App();
             App.init();
         }
@@ -97,7 +104,6 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
     public void appDone () {
         updateProgressbar();
         try {
-            CacheData.init(getApplicationContext());
             Firebase.init(getApplicationContext());
         } catch (Exception e) {
             Log.e(TAG, "appDone: ", e);
@@ -123,17 +129,18 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
                 Uri deepLink = pendingDynamicLinkData.getLink();
                 if (deepLink != null) {
                     // TODO Manage dynamic link
-                    Firebase.Crashlytics.log("Dynamic link found. Value is: " + deepLink);
+                    Crashlytics.log("Dynamic link found. Value is: " + deepLink);
                 }
             } catch (Exception ignored) {
             }
-        }).addOnFailureListener(this, e -> Firebase.Crashlytics.log(TAG + ":getDynamicLink" +
+        }).addOnFailureListener(this, e -> Crashlytics.log(TAG + ":getDynamicLink" +
                 ":onFailure", e));
     }
 
     void goOn () {
         // Go to start Activity after fetching dynamic links and intents from push messages
-        Firebase.Firestore.getUserCharge(new OnGetDataListener(){
+        Firestore.getUserCharge(new CustomFirebaseCompleteListener() {
+
             @Override
             public void onSuccess () {
                 updateProgressbar();
@@ -141,7 +148,7 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
 
             @Override
             public void onFailure (Exception exception) {
-
+                updateProgressbar();
             }
         });
     }

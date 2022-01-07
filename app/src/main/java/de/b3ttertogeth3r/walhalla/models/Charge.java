@@ -1,5 +1,7 @@
 package de.b3ttertogeth3r.walhalla.models;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.Exclude;
 
@@ -16,10 +18,20 @@ public class Charge {
     private String mobile;
     private Map<String, Object> address = new HashMap<>();
     private String picture_path;
-    private String uid;
     private String major;
 
     public Charge () {
+    }
+
+    public Charge(@NonNull Person person){
+        this.PoB = person.getPoB();
+        this.first_Name = person.getFirst_Name();
+        this.last_Name = person.getLast_Name();
+        this.mail = person.getEmail();
+        this.mobile = person.getMobile();
+        this.id = person.getId();
+        this.major = person.getMajor();
+        this.address = person.getAddress();
     }
 
     @Exclude
@@ -108,14 +120,7 @@ public class Charge {
         this.picture_path = picture_path;
     }
 
-    public String getUid () {
-        return uid;
-    }
-
-    public void setUid (String uid) {
-        this.uid = uid;
-    }
-
+    @Exclude
     public String getAddressStr () {
         String result = "";
         try {
@@ -126,5 +131,10 @@ public class Charge {
         } catch (Exception ignored) {
         }
         return result;
+    }
+
+    @Exclude
+    public Person getPerson () {
+        return new Person(this);
     }
 }

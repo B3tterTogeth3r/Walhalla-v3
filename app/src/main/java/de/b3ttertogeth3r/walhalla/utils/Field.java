@@ -6,14 +6,13 @@ import android.content.Context;
 import android.os.OperationCanceledException;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -32,6 +31,7 @@ import de.b3ttertogeth3r.walhalla.MainActivity;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.annos.Designer;
 import de.b3ttertogeth3r.walhalla.design.MyBulletItem;
+import de.b3ttertogeth3r.walhalla.design.MyBulletListItem;
 import de.b3ttertogeth3r.walhalla.design.MyButton;
 import de.b3ttertogeth3r.walhalla.design.MySliderView;
 import de.b3ttertogeth3r.walhalla.design.MySubtitle;
@@ -40,7 +40,9 @@ import de.b3ttertogeth3r.walhalla.design.MyTable;
 import de.b3ttertogeth3r.walhalla.design.MyTextView;
 import de.b3ttertogeth3r.walhalla.design.MyTitle;
 import de.b3ttertogeth3r.walhalla.enums.Design;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
+import de.b3ttertogeth3r.walhalla.firebase.Firestore;
+import de.b3ttertogeth3r.walhalla.firebase.Storage;
 import de.b3ttertogeth3r.walhalla.models.Image;
 import de.b3ttertogeth3r.walhalla.models.Paragraph;
 
@@ -97,7 +99,7 @@ public class Field {
                     return null;
             }
         } catch (Exception e) {
-            Firebase.Crashlytics.log(TAG, "design error", e);
+            Crashlytics.log(TAG, "design error", e);
             return null;
         }
     }
@@ -135,8 +137,8 @@ public class Field {
      * @throws OperationCanceledException
      *         If given object list is not formatted properly
      * @see Image
-     * @see Firebase.Firestore Firebase Cloud Firestore
-     * @see de.b3ttertogeth3r.walhalla.firebase.Firebase.Storage Firebase Storage
+     * @see Firestore Firebase Cloud Firestore
+     * @see Storage Firebase Storage
      * @see <a href="https://github.com/smarteist/Android-Image-Slider">Android Image Slide</a>
      * @since 1.0
      */
@@ -152,7 +154,7 @@ public class Field {
     }
 
     /**
-     * TODO create design and format all its values
+     * create design and format all its values
      *
      * @return the created view.
      * @since 1.0
@@ -174,14 +176,15 @@ public class Field {
                         context.getResources().getDisplayMetrics()
                 );
                 if (p.getKind().equals(TABLE_TITLE.toString())) {
-                    title.setPadding(/*left*/padding*2,
+                    title.setPadding(/*left*/padding,
                             /*top*/padding,
-                            /*right*/padding,
+                            /*right*/padding*2,
                             /*bottom*/padding);
                     title.setTextAppearance(R.style.TextAppearance_AppCompat_Subhead);
                 } else {
-                    title.setPadding(padding, (int) (0.5 * padding), padding, padding);
+                    title.setPadding(padding, padding, padding, padding);
                     title.setTextAppearance(R.style.TextAppearance_AppCompat_Body1);
+                    title.setGravity(Gravity.START);
                 }
                 title.setText(s);
                 row.addView(title);
@@ -210,7 +213,7 @@ public class Field {
     }
 
     /**
-     * TODO create design and format all its values
+     * create design and format all its values
      *
      * @return The created view.
      * @see Button
@@ -221,7 +224,6 @@ public class Field {
     private View button () throws OperationCanceledException {
         MyButton button = new MyButton(context);
         button.setText(paragraph.getValue().get(0));
-        button.setTextColor(ContextCompat.getColor(context, R.color.white));
         int padding = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 16f,
@@ -277,13 +279,23 @@ public class Field {
      * <p>
      * {@code {list_bullet: (List<String>)"values"}}
      * <p>
-     * TODO create the design and its inner functions
+     * create the design and its inner functions
      *
      * @return the created view.
      * @since 1.0
      */
+    @NonNull
     private View listBullet () throws OperationCanceledException {
-        throw new OperationCanceledException("Function not yet initialized");
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        List<String> list = paragraph.getValue();
+        MyBulletListItem item;
+        for (String text : list) {
+            item = new MyBulletListItem(context);
+            item.setText(text);
+            layout.addView(item);
+        }
+        return layout;
 
     }
 
@@ -292,7 +304,7 @@ public class Field {
      * this way:
      * {@code {listChecked: (List<String>)"values"}}
      * <p>
-     * TODO create the design and its inner functions
+     * create the design and its inner functions
      *
      * @return the created view.
      * @since 1.0
@@ -339,7 +351,7 @@ public class Field {
                 context.getResources().getDisplayMetrics()
         );
         button.setPadding(padding, padding, padding, padding);
-        button.setTextColor(ContextCompat.getColor(context, R.color.white));
+        // button.setTextColor(ContextCompat.getColor(context, R.color.white));
 
         return button;
     }
@@ -368,6 +380,5 @@ public class Field {
 
         return table;
     }
-
 
 }

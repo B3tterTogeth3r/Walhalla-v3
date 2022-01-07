@@ -13,6 +13,7 @@ public enum Page {
     BALANCE(new Charge[]{X, VX, FM, XX, XXX}),
     BEER(new Charge[]{X, VX, FM, XX, XXX, AH_XXX, AH_X}),
     CHARGEN(new Charge[]{X, VX, FM, XX, XXX, AH_XXX, AH_X}),
+    CHARGEN_DESCRIPTION("chargen_description"),
     GREETING(new Charge[]{X, VX, FM, XX, XXX, AH_XXX, AH_X, AH_XX}),
     HOME(new Charge[0]),
     NEWS(new Charge[]{X, VX, FM, XX, XXX, AH_XXX, AH_X, AH_XX}),
@@ -29,7 +30,8 @@ public enum Page {
 
     private Charge[] editableByWhom = new Charge[0];
     private String name = "";
-    Page (String name){
+
+    Page (String name) {
         this.name = name;
     }
 
@@ -37,41 +39,56 @@ public enum Page {
         this.editableByWhom = editableByWhom;
     }
 
-    public String getName(){
+    public String getName () {
         return name;
     }
 
     public boolean canEditPage (Charge charge) {
-        if(charge == Charge.ADMIN)
+        if (charge == Charge.ADMIN) {
             return true;
-        if(FRAT_GER.inEditable(charge))
+        }
+        if (FRAT_GER.inEditable(charge)) {
             return true;
-        if(FRAT_WUE.inEditable(charge))
+        }
+        if (FRAT_WUE.inEditable(charge)) {
             return true;
-        if(ABOUT_US.inEditable(charge))
+        }
+        if (ABOUT_US.inEditable(charge)) {
             return true;
-        if(BALANCE.inEditable(charge))
+        }
+        if (BALANCE.inEditable(charge)) {
             return true;
-        if(BEER.inEditable(charge))
+        }
+        if (BEER.inEditable(charge)) {
             return true;
-        if(CHARGEN.inEditable(charge))
+        }
+        if (CHARGEN.inEditable(charge)) {
             return true;
-        if(GREETING.inEditable(charge))
+        }
+        if (GREETING.inEditable(charge)) {
             return true;
-        if(HOME.inEditable(charge))
+        }
+        if (HOME.inEditable(charge)) {
             return true;
-        if(NEWS.inEditable(charge))
+        }
+        if (NEWS.inEditable(charge)) {
             return true;
-        if(PROGRAM.inEditable(charge))
+        }
+        if (PROGRAM.inEditable(charge)) {
             return true;
-        if(OWN_HISTORY.inEditable(charge))
+        }
+        if (OWN_HISTORY.inEditable(charge)) {
             return true;
-        if(ROOM.inEditable(charge))
+        }
+        if (ROOM.inEditable(charge)) {
             return true;
-        if(SIGN_IN.inEditable(charge))
+        }
+        if (SIGN_IN.inEditable(charge)) {
             return true;
-        if(TRANSCRIPT.inEditable(charge))
+        }
+        if (TRANSCRIPT.inEditable(charge)) {
             return true;
+        }
         return false;
     }
 

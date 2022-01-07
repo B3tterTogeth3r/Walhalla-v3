@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
@@ -20,8 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase;
-import de.b3ttertogeth3r.walhalla.interfaces.OnGetDataListener;
+import de.b3ttertogeth3r.walhalla.firebase.Firestore;
+import de.b3ttertogeth3r.walhalla.firebase.Storage;
+import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Image;
 
 public class MySliderAdapter extends SliderViewAdapter<MySliderAdapter.SliderAdapterVH> {
@@ -49,12 +49,12 @@ public class MySliderAdapter extends SliderViewAdapter<MySliderAdapter.SliderAda
     public void onBindViewHolder (SliderAdapterVH viewHolder, final int position) {
         String sliderItem = mSliderItems.get(position);
 
-        Firebase.Firestore.getImage(sliderItem, new OnGetDataListener() {
+        Firestore.getImage(sliderItem, new CustomFirebaseCompleteListener() {
             @Override
             public void onSuccess (Image image) {
                 if (image != null) {
                     viewHolder.textViewDescription.setText(image.getDescription());
-                    StorageReference ref = Firebase.Storage.downloadImage(image.getLarge_path());
+                    StorageReference ref = Storage.downloadImage(image.getLarge_path());
                     Glide.with(viewHolder.itemView)
                             .load(ref)
                             .fitCenter()

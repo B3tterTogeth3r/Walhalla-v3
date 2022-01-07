@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import de.b3ttertogeth3r.walhalla.enums.Address;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 
 public class Person implements Cloneable {
     //region static Variables
@@ -39,29 +39,32 @@ public class Person implements Cloneable {
     public static final String PICTURE_PATH = "picture_path";
     public static final String POB = "poB";
     public static final String RANK = "rank";
-    public static final String RANK_SETTINGS = "rankSettings";
-    public static final String UID = "uid";
     private static final String TAG = "Person";
     //endregion
-
     //region values
-    private String id;
-    private String PoB;
-    private String first_Name;
-    private String last_Name;
-    private String mail;
-    private String mobile;
-    private String rank;
-    private String uid;
-    private String major;
+    /** not editable */
+    private final boolean isVerified;
+    /** not editable */
+    private final boolean isDisabled;
+    /** not editable */
+    private final boolean hasPassword;
+    private String id = "";
+    private String PoB = "";
+    private String first_Name = "";
+    private String last_Name = "";
+    private String email = "";
+    private String mobile = "";
+    private String rank = "";
+    private String major = "";
     private Map<String, Object> address = new HashMap<>();
     private Map<String, Object> address_2 = new HashMap<>();
     private int joined = 0;
-    private Timestamp DoB;
+    private Timestamp DoB = new Timestamp(new Date());
     private float balance = 0f;
-    private String picture_path;
-    private Map<String, Object> rankSettings = new HashMap<>();
-    private String fcm_token;
+    private String picture_path = "";
+    private String fcm_token = "";
+    private PersonChangeListener changeListener = null;
+    private String password;
     //endregion
 
     //region constructors
@@ -72,6 +75,24 @@ public class Person implements Cloneable {
      * @see Person Class description
      */
     public Person () {
+        isVerified = false;
+        isDisabled = false;
+        hasPassword = false;
+    }
+
+    public Person (@NonNull Charge charge) {
+        this.address = charge.getAddress();
+        this.first_Name = charge.getFirst_Name();
+        this.last_Name = charge.getLast_Name();
+        this.id = charge.getId();
+        this.picture_path = charge.getPicture_path();
+        this.PoB = charge.getPoB();
+        this.major = charge.getMajor();
+        this.mobile = charge.getMobile();
+        this.email = charge.getMail();
+        isVerified = false;
+        isDisabled = false;
+        hasPassword = false;
     }
 
     /**
@@ -91,8 +112,6 @@ public class Person implements Cloneable {
      *         mobile or landline number
      * @param rank
      *         name of the rank
-     * @param uid
-     *         uid of the firebase auth
      * @param address
      *         address with {@link #ADDRESS_NUMBER} {@link #ADDRESS_STREET} {@link
      *         #ADDRESS_ZIP_CODE} {@link #ADDRESS_CITY}
@@ -109,25 +128,22 @@ public class Person implements Cloneable {
      *         the major or the occupation title
      * @param id
      *         id of the user
-     * @param rankSettings
-     *         the customised settings by the user
      * @param fcm_token
      *         the tokens used to send push messages to this user.
      */
     public Person (String id, String poB, String first_Name, String last_Name, String mail,
-                   String mobile, String rank, String uid, String major,
-                   Map<String, Object> address, Map<String, Object> address_2, int joined,
-                   Timestamp doB, float balance, String picture_path,
-                   Map<String, Object> rankSettings, String fcm_token) {
+                   String mobile, String rank, String major, Map<String, Object> address,
+                   Map<String, Object> address_2, int joined, Timestamp doB, float balance,
+                   String picture_path, String fcm_token, boolean isVerified, boolean isDisabled,
+                   boolean hasPassword) {
         this.fcm_token = fcm_token;
         this.id = id;
         this.PoB = poB;
         this.first_Name = first_Name;
         this.last_Name = last_Name;
-        this.mail = mail;
+        this.email = mail;
         this.mobile = mobile;
         this.rank = rank;
-        this.uid = uid;
         this.major = major;
         this.address = address;
         this.address_2 = address_2;
@@ -135,19 +151,48 @@ public class Person implements Cloneable {
         this.DoB = doB;
         this.balance = balance;
         this.picture_path = picture_path;
-        this.rankSettings = rankSettings;
+        this.isVerified = isVerified;
+        this.isDisabled = isDisabled;
+        this.hasPassword = hasPassword;
     }
     //endregion
 
     //region Getter and Setter
-    @Exclude
+
+    /**
+     *
+     * @param password String password for the new auth user
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * only for firebase to create a new user
+     * @return normally null
+     */
+    public String getPassword(){
+        return password;
+    }
+
+    /**
+     * not editable
+     *
+     * @return true, if user has a password set in Firebase Auth
+     */
+    public boolean hasPassword () {
+        return hasPassword;
+    }
+
     public String getId () {
         return id;
     }
 
-    @Exclude
     public void setId (String id) {
         this.id = id;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
 
     @Exclude
@@ -160,6 +205,9 @@ public class Person implements Cloneable {
     @Deprecated
     public void setAddress_2 (Map<String, Object> address_2) {
         this.address_2 = address_2;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
 
     /**
@@ -180,6 +228,9 @@ public class Person implements Cloneable {
 
     public void setFirst_Name (String first_Name) {
         this.first_Name = first_Name;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
 
     public String getLast_Name () {
@@ -188,6 +239,9 @@ public class Person implements Cloneable {
 
     public void setLast_Name (String last_Name) {
         this.last_Name = last_Name;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
 
     /**
@@ -227,14 +281,12 @@ public class Person implements Cloneable {
         data.put(FIRST_NAME, getFirst_Name());
         data.put(JOINED, getJoined());
         data.put(LAST_NAME, getLast_Name());
-        data.put(MAIL, getMail());
+        data.put(MAIL, getEmail());
         data.put(MAJOR, getMajor());
         data.put(MOBILE, getMobile());
         data.put(PICTURE_PATH, getPicture_path());
         data.put(POB, getPoB());
         data.put(RANK, getRank());
-        data.put(RANK_SETTINGS, getRankSettings());
-        data.put(UID, getUid());
         data.put(FCM_TOKEN, getFcm_token());
 
         return data;
@@ -246,6 +298,9 @@ public class Person implements Cloneable {
 
     public void setAddress (Map<String, Object> address) {
         this.address = address;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
 
     public float getBalance () {
@@ -260,12 +315,12 @@ public class Person implements Cloneable {
         return joined;
     }
 
-    public String getMail () {
-        return mail;
+    public String getEmail () {
+        return email;
     }
 
-    public void setMail (String mail) {
-        this.mail = mail;
+    public void setEmail (String email) {
+        this.email = email;
     }
 
     public String getMajor () {
@@ -278,6 +333,9 @@ public class Person implements Cloneable {
 
     public void setMobile (String mobile) {
         this.mobile = mobile;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
 
     public String getPicture_path () {
@@ -290,6 +348,9 @@ public class Person implements Cloneable {
 
     public void setPoB (String poB) {
         PoB = poB;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
 
     public String getRank () {
@@ -298,18 +359,9 @@ public class Person implements Cloneable {
 
     public void setRank (String rank) {
         this.rank = rank;
-    }
-
-    public Map<String, Object> getRankSettings () {
-        return rankSettings;
-    }
-
-    public String getUid () {
-        return uid;
-    }
-
-    public void setUid (String uid) {
-        this.uid = uid;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
 
     public String getFcm_token () {
@@ -318,32 +370,64 @@ public class Person implements Cloneable {
 
     public void setFcm_token (String fcm_token) {
         this.fcm_token = fcm_token;
-    }
-
-    public void setRankSettings (Map<String, Object> rankSettings) {
-        this.rankSettings = rankSettings;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
 
     public void setPicture_path (String picture_path) {
         this.picture_path = picture_path;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
 
     public void setMajor (String major) {
         this.major = major;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
 
     public void setJoined (int joined) {
         this.joined = joined;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
-
 
     public void setDoB (Timestamp doB) {
         DoB = doB;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
 
     public void setBalance (float balance) {
         this.balance = balance;
+        if(changeListener != null){
+            changeListener.change(this);
+        }
     }
+
+    /**
+     * not editable
+     *
+     * @return true, if Firebase Auth email is verified
+     */
+    public boolean isVerified () {
+        return isVerified;
+    }
+
+    /**
+     * not editable
+     *
+     * @return true, if Firebase Auth account is disabled
+     */
+    public boolean isDisabled () {
+        return isDisabled;
+    }
+
     //endregion
 
     /**
@@ -365,7 +449,7 @@ public class Person implements Cloneable {
             c.setTime(date);
             return c.get(Calendar.DAY_OF_MONTH) + "." + (c.get(Calendar.MONTH) + 1) + "." + c.get(Calendar.YEAR);
         } catch (Exception e) {
-            Firebase.Crashlytics.log(TAG, "Date invalid", e);
+            Crashlytics.log(TAG, "Date invalid", e);
             return null;
         }
     }
@@ -378,10 +462,9 @@ public class Person implements Cloneable {
         set.add(this.PoB);
         set.add(this.first_Name);
         set.add(this.last_Name);
-        set.add(this.mail);
+        set.add(this.email);
         set.add(this.mobile);
         set.add(this.rank);
-        set.add(this.uid);
         set.add(this.major);
         set.add(getAddressString());
         set.add(String.valueOf(this.joined));
@@ -420,17 +503,25 @@ public class Person implements Cloneable {
 
     public boolean isValid () {
         try {
-            return !this.PoB.isEmpty() &&
+            return // !PoB.isEmpty() &&
                     !first_Name.isEmpty() &&
                     !last_Name.isEmpty() &&
-                    !mobile.isEmpty() &&
-                    !major.isEmpty() &&
-                    !address.isEmpty() &&
-                    //TODO add rank into profile
-                    this.DoB != null;
+                    // !mobile.isEmpty() &&
+                    // !address.isEmpty() &&
+                    !rank.isEmpty() &&
+                    !email.isEmpty();
+                    // DoB != null;
         } catch (Exception e) {
             Log.e(TAG, "isValid: ", e);
             return false;
         }
+    }
+
+    public void setChangeListener(PersonChangeListener personChangeListener) {
+        this.changeListener = personChangeListener;
+    }
+
+    public interface PersonChangeListener{
+        void change (Person person);
     }
 }

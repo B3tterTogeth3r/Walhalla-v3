@@ -1,14 +1,12 @@
 package de.b3ttertogeth3r.walhalla.exceptions;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 
-import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 
 public class InvalidFirestorePathException extends Exception {
     private static final String TAG = "InvalidFirestorePathException";
@@ -18,11 +16,11 @@ public class InvalidFirestorePathException extends Exception {
     public InvalidFirestorePathException(){
         super();
         this.message = "exception thrown";
-        Firebase.Crashlytics.log(TAG, message);
+        Crashlytics.log(TAG, message);
     }
 
     protected InvalidFirestorePathException(String string){
-        Firebase.Crashlytics.log(TAG, string);
+        Crashlytics.log(TAG, string);
     }
 
     public InvalidFirestorePathException(DocumentReference ref){
@@ -32,7 +30,7 @@ public class InvalidFirestorePathException extends Exception {
         else if(ref.getPath().isEmpty()){
             message = "Path is empty";
         }
-        Firebase.Crashlytics.log(TAG, message);
+        Crashlytics.log(TAG, message);
     }
 
     public InvalidFirestorePathException(CollectionReference ref){
@@ -41,7 +39,7 @@ public class InvalidFirestorePathException extends Exception {
         } else if (ref.getPath().isEmpty()) {
             message = "CollectionReference path is empty";
         }
-        Firebase.Crashlytics.log(TAG, message);
+        Crashlytics.log(TAG, message);
     }
 
     @Nullable

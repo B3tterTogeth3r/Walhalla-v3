@@ -2,7 +2,6 @@ package de.b3ttertogeth3r.walhalla.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,7 +19,10 @@ import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.enums.Address;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.exceptions.PersonException;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.firebase.Analytics;
+import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
+import de.b3ttertogeth3r.walhalla.firebase.Firestore;
+import de.b3ttertogeth3r.walhalla.fragments_main.HomeFragment;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
 import de.b3ttertogeth3r.walhalla.models.Semester;
@@ -41,6 +43,7 @@ public class CacheData {
     private static final String TAG = "CacheData";
     private static final String INTENT_START_PAGE = "intent_start_page";
     private static final String USER_CHARGE = "Charge";
+    public static final String FIRST_START = "FirstStart";
     private static SharedPreferences SP;
 
     public CacheData () {
@@ -60,11 +63,11 @@ public class CacheData {
      *         <code>true</code>: the user wants to send analytics data.<br>
      *         <code>false</code>: the user <b>does not</b> want to send analytics data.
      */
-    public static void ChangeAnalyticsCollection (boolean value) {
+    public static void changeAnalyticsCollection (boolean value) {
         if (value) {
-            SP.edit().putBoolean(Firebase.Analytics.TAG, true).apply();
+            SP.edit().putBoolean(Analytics.TAG, true).apply();
         } else {
-            SP.edit().putBoolean(Firebase.Analytics.TAG, false).apply();
+            SP.edit().putBoolean(Analytics.TAG, false).apply();
         }
     }
 
@@ -75,7 +78,7 @@ public class CacheData {
      * @since 1.0
      */
     public static boolean getAnalyticsCollection () {
-        return SP.getBoolean(Firebase.Analytics.TAG, true);
+        return SP.getBoolean(Analytics.TAG, true);
     }
 
     public static int getIntentStartPage () {
@@ -86,7 +89,7 @@ public class CacheData {
 
     /**
      * The user can choose a custom page the app can start to. It doesn't have to be the "home"
-     * page. If no page is selected, the {@link de.b3ttertogeth3r.walhalla.fragments.home.Fragment
+     * page. If no page is selected, the {@link HomeFragment
      * Home Fragment} will be returned.
      *
      * @return the id of the page
@@ -104,7 +107,7 @@ public class CacheData {
      */
     public static void setStartPage (int page_id) {
         SP.edit().putInt(START_PAGE, page_id).apply();
-        Firebase.Analytics.changeStartPage();
+        Analytics.changeStartPage();
     }
 
     public static void setIntentStartPage (int page_id) {
@@ -131,14 +134,14 @@ public class CacheData {
     /**
      * @param sem_id
      *         the id of the semester from the
-     *         {@link de.b3ttertogeth3r.walhalla.firebase.Firebase.Firestore
+     *         {@link Firestore
      *         Firestore}-Database
      * @since 1.0
      */
     public static void setCurrentSemester (int sem_id) {
-        Firebase.Firestore.getSemester(sem_id).get().addOnSuccessListener(documentSnapshot -> {
+        Firestore.getSemester(sem_id).get().addOnSuccessListener(documentSnapshot -> {
             if (!documentSnapshot.exists()) {
-                Firebase.Crashlytics.log(TAG, "could not load semester with id " + sem_id);
+                Crashlytics.log(TAG, "could not load semester with id " + sem_id);
             } else {
                 try {
                     Semester currentSemester = documentSnapshot.toObject(Semester.class);
@@ -149,7 +152,7 @@ public class CacheData {
                     // at each start of the app reset chosen semester to the current one.
                     setChosenSemester(currentSemester);
                 } catch (Exception e) {
-                    Firebase.Crashlytics.log(TAG, "could not parse semester with id " + sem_id, e);
+                    Crashlytics.log(TAG, "could not parse semester with id " + sem_id, e);
                     Semester currentSemester = new Semester();
                     SP.edit().putStringSet(CURRENT_SEMESTER, currentSemester.getSet())
                             .apply();
@@ -218,8 +221,6 @@ public class CacheData {
         } catch (Exception ignored) {
         }
 
-        //TODO RankSettings
-
         editor.putFloat(USER_DATA + Person.BALANCE, user.getBalance())
                 .putLong(USER_DATA + Person.DOB, user.getDoB().toDate().getTime())
                 .putString(USER_DATA + Person.FIRST_NAME, user.getFirst_Name())
@@ -227,13 +228,12 @@ public class CacheData {
                 .putString(USER_DATA + Person.ID, user.getId())
                 .putInt(USER_DATA + Person.JOINED, user.getJoined())
                 .putString(USER_DATA + Person.LAST_NAME, user.getLast_Name())
-                .putString(USER_DATA + Person.MAIL, user.getMail())
+                .putString(USER_DATA + Person.MAIL, user.getEmail())
                 .putString(USER_DATA + Person.MAJOR, user.getMajor())
                 .putString(USER_DATA + Person.MOBILE, user.getMobile())
                 .putString(USER_DATA + Person.PICTURE_PATH, user.getPicture_path())
                 .putString(USER_DATA + Person.POB, user.getPoB())
                 .putString(USER_DATA + Person.RANK, user.getRank())
-                .putString(USER_DATA + Person.UID, user.getUid())
                 .apply();
     }
 
@@ -250,13 +250,12 @@ public class CacheData {
         person.setId(SP.getString(USER_DATA + Person.ID, ""));
         person.setJoined(SP.getInt(USER_DATA + Person.JOINED, 0));
         person.setLast_Name(SP.getString(USER_DATA + Person.LAST_NAME, ""));
-        person.setMail(SP.getString(USER_DATA + Person.MAIL, ""));
+        person.setEmail(SP.getString(USER_DATA + Person.MAIL, ""));
         person.setMajor(SP.getString(USER_DATA + Person.MAJOR, ""));
         person.setMobile(SP.getString(USER_DATA + Person.MOBILE, ""));
         person.setPicture_path(SP.getString(USER_DATA + Person.PICTURE_PATH, ""));
         person.setPoB(SP.getString(USER_DATA + Person.POB, ""));
         person.setRank(SP.getString(USER_DATA + Person.RANK, ""));
-        person.setUid(SP.getString(USER_DATA + Person.UID, ""));
 
         Map<String, Object> address = new HashMap<>();
         address.put(Address.CITY.toString(), SP.getString(USER_DATA + Person.ADDRESS_CITY, ""));
@@ -265,18 +264,29 @@ public class CacheData {
         address.put(Address.ZIP.toString(), SP.getString(USER_DATA + Person.ADDRESS_ZIP_CODE, ""));
         person.setAddress(address);
 
-        Map<String, Object> rankSettings = new HashMap<>();
-
-        person.setRankSettings(rankSettings);
-
         return person;
     }
 
-    public static void putCharge (@NonNull Charge charge) {
+    public static void setCharge (@NonNull Charge charge) {
         SP.edit().putString(USER_CHARGE, charge.getName()).apply();
     }
 
     public static Charge getCharge(){
         return Charge.find(SP.getString(USER_CHARGE, Charge.NONE.toString()));
+    }
+
+    public static void clearUserData () {
+        SP.edit().remove(USER_CHARGE).apply();
+        setChosenSemester(getCurrentSemester());
+        saveUser(new Person());
+        changeAnalyticsCollection(true);
+    }
+
+    public static boolean getFirstStart(){
+        return SP.getBoolean(FIRST_START, false);
+    }
+
+    public static void firstStart(){
+        SP.edit().putBoolean(FIRST_START, false).apply();
     }
 }

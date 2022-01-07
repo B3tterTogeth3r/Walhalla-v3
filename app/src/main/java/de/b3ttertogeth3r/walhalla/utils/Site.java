@@ -9,7 +9,6 @@ import static de.b3ttertogeth3r.walhalla.enums.Design.LIST_CHECKED;
 import static de.b3ttertogeth3r.walhalla.enums.Design.SUBTITLE1;
 import static de.b3ttertogeth3r.walhalla.enums.Design.SUBTITLE2;
 import static de.b3ttertogeth3r.walhalla.enums.Design.TABLE;
-import static de.b3ttertogeth3r.walhalla.enums.Design.TABLE_TITLE;
 import static de.b3ttertogeth3r.walhalla.enums.Design.TEXT;
 import static de.b3ttertogeth3r.walhalla.enums.Design.TITLE;
 
@@ -27,8 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.b3ttertogeth3r.walhalla.design.MyLinearLayout;
-import de.b3ttertogeth3r.walhalla.enums.Design;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.interfaces.Reload;
 import de.b3ttertogeth3r.walhalla.models.Paragraph;
 
@@ -70,7 +68,7 @@ public class Site implements Reload {
 
     @NonNull
     private View display (@NotNull List<Paragraph> paragraph) {
-        Log.d(TAG, "display: creating view");
+        Log.d(TAG, "display: creating paragraph");
         LinearLayout layout = new MyLinearLayout(context);
         layout.removeAllViewsInLayout();
         try {
@@ -78,9 +76,9 @@ public class Site implements Reload {
             for (int i = 0; i < size; i++) {
                 Paragraph line = paragraph.get(i);
                 if (line == null) {
-                    Firebase.Crashlytics.log("Object line == null");
+                    Crashlytics.log("Object line == null");
                 } else {
-                    if(line.getKind().startsWith("table_")){
+                    if (line.getKind().startsWith("table_")) {
                         List<Paragraph> tableList = new ArrayList<>();
                         try {
                             do {
@@ -88,7 +86,7 @@ public class Site implements Reload {
                                 i++;
                                 line = paragraph.get(i);
                             } while (line.getKind().startsWith("table_"));
-                        } catch(Exception ignored){
+                        } catch (Exception ignored) {
                         }
                         Field field = new Field(context, tableList);
                         addTable(layout, field);
@@ -97,10 +95,11 @@ public class Site implements Reload {
                                 new Field(context, line);
                         findValues(layout, line, field);
                     }
+                    //TODO add advert after every paragraph except the last
                 }
             }
         } catch (Exception e) {
-            Firebase.Crashlytics.log(TAG, "Site isn't active anymore.", e);
+            Crashlytics.log(TAG, "Site isn't active anymore.", e);
         }
         return layout;
     }

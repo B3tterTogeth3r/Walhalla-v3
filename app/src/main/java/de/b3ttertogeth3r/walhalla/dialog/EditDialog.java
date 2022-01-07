@@ -76,8 +76,8 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
                 field_0.setEditable(Editable.FIRST_NAME);
                 field_1.setEditable(Editable.LAST_NAME);
                 Map<String, String> names = (Map<String, String>) value;
-                field_0.setText(names.get(Person.FIRST_NAME));
-                field_1.setText(names.get(Person.LAST_NAME));
+                field_0.setContent(names.get(Person.FIRST_NAME));
+                field_1.setContent(names.get(Person.LAST_NAME));
                 layout.addView(field_0);
                 layout.addView(field_1);
                 view.addView(layout);
@@ -91,10 +91,10 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
                 field_2.setInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_CLASS_TEXT);
                 field_3.setHint(R.string.city);
                 Map<String, String> address = (Map<String, String>) value;
-                field_0.setText(address.get(Address.STREET.toString()));
-                field_1.setText(address.get(Address.NUMBER.toString()));
-                field_2.setText(address.get(Address.ZIP.toString()));
-                field_3.setText(address.get(Address.CITY.toString()));
+                field_0.setContent(address.get(Address.STREET.toString()));
+                field_1.setContent(address.get(Address.NUMBER.toString()));
+                field_2.setContent(address.get(Address.ZIP.toString()));
+                field_3.setContent(address.get(Address.CITY.toString()));
                 layout.addView(field_0);
                 layout.addView(field_1);
                 layout.addView(field_2);
@@ -103,14 +103,14 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
                 break;
             case POB:
                 field_0.setHint(R.string.pob);
-                field_0.setText(value.toString());
+                field_0.setContent(value.toString());
                 layout.addView(field_0);
                 view.addView(layout);
                 builder.setTitle(R.string.pob);
                 break;
             case MOBILE:
                 field_0.setHint(R.string.mobile);
-                field_0.setText(value.toString());
+                field_0.setContent(value.toString());
                 field_0.setInputType(InputType.TYPE_CLASS_PHONE);
                 layout.addView(field_0);
                 view.addView(layout);
@@ -118,14 +118,14 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
                 break;
             case MAJOR:
                 field_0.setHint(R.string.major);
-                field_0.setText(value.toString());
+                field_0.setContent(value.toString());
                 layout.addView(field_0);
                 view.addView(layout);
                 builder.setTitle(R.string.major);
                 break;
             case MAIL:
                 builder.setTitle(R.string.mail);
-                field_0.setText(value.toString());
+                field_0.setContent(value.toString());
                 field_0.setHint(R.string.fui_email_hint);
                 field_0.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
                 layout.addView(field_0);
@@ -166,25 +166,25 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
                 error = getString(R.string.error_address);
                 Map<String, Object> address = new HashMap<>();
                 if (field_0.getText() != null && field_0.getText().length() > 1) {
-                    address.put(Address.STREET.toString(), field_0.getText().toString());
+                    address.put(Address.STREET.toString(), field_0.getText());
                 } else {
                     listener.sendError(editable, error);
                     return;
                 }
                 if (field_1.getText() != null) {
-                    address.put(Address.NUMBER.toString(), field_1.getText().toString());
+                    address.put(Address.NUMBER.toString(), field_1.getText());
                 } else {
                     listener.sendError(editable, error);
                     return;
                 }
                 if (field_2.getText() != null && field_2.getText().length() >= 3) {
-                    address.put(Address.ZIP.toString(), field_2.getText().toString());
+                    address.put(Address.ZIP.toString(), field_2.getText());
                 } else {
                     listener.sendError(editable, error);
                     return;
                 }
                 if (field_3.getText() != null) {
-                    address.put(Address.CITY.toString(), field_3.getText().toString());
+                    address.put(Address.CITY.toString(), field_3.getText());
                 } else {
                     listener.sendError(editable, error);
                     return;
@@ -194,17 +194,17 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
             //endregion
             case NAME:
                 /* map with first and last name in it */
-                String first_name = "";
-                String last_name = "";
+                String first_name;
+                String last_name;
                 error = getString(R.string.fui_missing_first_and_last_name);
-                if (field_0.getText() != null && field_0.getText().length() > 3) {
-                    first_name = field_0.getText().toString();
+                if (field_0.getText() != null && field_0.getText().length() >= 2) {
+                    first_name = field_0.getText();
                 } else {
                     listener.sendError(editable, error);
                     return;
                 }
-                if (field_1.getText() != null && field_1.getText().length() > 3) {
-                    last_name = field_1.getText().toString();
+                if (field_1.getText() != null && field_1.getText().length() >= 2) {
+                    last_name = field_1.getText();
                 } else {
                     listener.sendError(editable, error);
                     return;
@@ -218,8 +218,8 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
             case POB:
                 /* string */
                 error = getString(R.string.error_pob);
-                if (field_0.getText() != null && field_0.getText().length() > 3) {
-                    result = field_0.getText().toString();
+                if (field_0.getText() != null && field_0.getText().length() != 0) {
+                    result = field_0.getText();
                 } else {
                     listener.sendError(editable, error);
                     return;
@@ -227,15 +227,16 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
                 break;
             case MOBILE:
                 /* string */
-                //TODO Format number into +XX number format without blanks
+                // if input longer than 7 -> go on, else show error
                 error = getString(R.string.error_mobile);
-                if (field_0.getText() != null && field_0.getText().length() > 3) {
-                    String field = field_0.getText().toString();
+                if (field_0.getText() != null && field_0.getText().length() >= 7) {
+                    String field = field_0.getText();
                     if (field.startsWith("+")) {
                         result = field;
                     } else if (field.startsWith("0")) {
                         result = field.replaceFirst("0", "+49");
                     }
+                    //TODO remove " " (spaces)
                 } else {
                     listener.sendError(editable, error);
                     return;
@@ -245,7 +246,7 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
                 /* string */
                 error = getString(R.string.fui_invalid_email_address);
                 if (field_0.getText() != null && field_0.getText().length() > 3) {
-                    result = field_0.getText().toString();
+                    result = field_0.getText();
                 } else {
                     listener.sendError(editable, error);
                     return;
@@ -254,8 +255,8 @@ public class EditDialog extends DialogFragment implements DialogInterface.OnClic
             case MAJOR:
                 /* string */
                 error = getString(R.string.error_major);
-                if (field_0.getText() != null && field_0.getText().length() > 0) {
-                    result = field_0.getText().toString();
+                if (field_0.getText() != null && field_0.getText().length() != 0) {
+                    result = field_0.getText();
                 } else {
                     listener.sendError(editable, error);
                     return;

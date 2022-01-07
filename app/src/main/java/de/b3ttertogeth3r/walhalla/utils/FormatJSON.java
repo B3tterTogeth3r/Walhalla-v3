@@ -1,5 +1,8 @@
 package de.b3ttertogeth3r.walhalla.utils;
 
+import static de.b3ttertogeth3r.walhalla.enums.Charge.*;
+
+import android.content.res.AssetManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -12,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import de.b3ttertogeth3r.walhalla.App;
@@ -49,8 +53,35 @@ public class FormatJSON implements Runnable {
             case SEMESTER_NOTES:
                 semester_notes(loadJSONFromAsset(Page.SEMESTER_NOTES.getName()));
                 break;
+            case CHARGEN_DESCRIPTION:
+                chargen_description(loadJSONFromAsset(Page.CHARGEN_DESCRIPTION.getName()));
             default:
                 Log.e(TAG, "run: page has nothing to format");
+        }
+    }
+
+    private void chargen_description (String localData) {
+        try {
+            JSONObject config = new JSONObject(configData);
+            JSONObject configVersion = config.getJSONObject("version");
+            JSONObject local = new JSONObject(localData);
+            JSONObject localVersion = local.getJSONObject("version");
+            RemoteConfigData.chargen_description.clear();
+            JSONObject object;
+            if (localVersion.getLong("versionNumber") < configVersion.getLong("versionNumber")) {
+                object = config;
+            } else {
+                object = local;
+            }
+            String x = object.getString(X.getName());
+            String vx = object.getString(VX.getName());
+            String fm = object.getString(FM.getName());
+            String xx = object.getString(XX.getName());
+            String xxx = object.getString(XXX.getName());
+            String desc = object.getString(NONE.getName());
+            RemoteConfigData.chargen_description.addAll(Arrays.asList(x, vx, fm, xx, xxx, desc));
+        } catch (Exception e) {
+            Log.e(TAG, "chargen_description: ", e);
         }
     }
 
@@ -60,12 +91,12 @@ public class FormatJSON implements Runnable {
             JSONObject local = new JSONObject(assetData);
             JSONObject configVersion = config.getJSONObject("version");
             JSONObject localVersion = local.getJSONObject("version");
-            SiteData.roomsList.clear();
+            RemoteConfigData.roomsList.clear();
             if (localVersion.getLong("versionNumber") < configVersion.getLong("versionNumber")) {
                 for (int i = 1; i < config.length(); i++) {
                     JSONObject paragraph_list = config.getJSONObject("paragraph_" + i);
                     if (paragraph_list.length() != 0) {
-                        SiteData.roomsList.add(toList(paragraph_list, page));
+                        RemoteConfigData.roomsList.add(toList(paragraph_list, page));
                     }
                 }
             } else {
@@ -73,7 +104,7 @@ public class FormatJSON implements Runnable {
                 for (int i = 1; i < local.length(); i++) {
                     JSONObject paragraph_list = local.getJSONObject("paragraph_" + i);
                     if (paragraph_list.length() != 0) {
-                        SiteData.roomsList.add(toList(paragraph_list, page));
+                        RemoteConfigData.roomsList.add(toList(paragraph_list, page));
                     }
                 }
             }
@@ -88,7 +119,8 @@ public class FormatJSON implements Runnable {
         try {
             String fileName = name + ".json";
             Log.d(TAG, "loadJSONFromAsset: " + fileName);
-            InputStream is = App.getContext().getAssets().open(fileName);
+            AssetManager manager = App.getContext().getApplicationContext().getAssets();
+            InputStream is = manager.open(fileName);
             int size = is.available();
             byte[] buffer = new byte[size];
             int amount = is.read(buffer, 0, size);
@@ -107,19 +139,22 @@ public class FormatJSON implements Runnable {
             JSONObject local = new JSONObject(localData);
             JSONObject configVersion = config.getJSONObject("version");
             JSONObject localVersion = local.getJSONObject("version");
-            SiteData.own_history.clear();
+            RemoteConfigData.own_history.clear();
             if (localVersion.getLong("versionNumber") < configVersion.getLong("versionNumber")) {
                 for (int i = 1; i < config.length(); i++) {
-                    JSONObject paragraph_list = config.getJSONObject("paragraph_" + i);
-                    if (paragraph_list.length() != 0) {
-                        SiteData.own_history.add(toList(paragraph_list, page));
+                    try {
+                        JSONObject paragraph_list = config.getJSONObject("paragraph_" + i);
+                        if (paragraph_list.length() != 0) {
+                            RemoteConfigData.own_history.add(toList(paragraph_list, page));
+                        }
+                    } catch (Exception ignored){
                     }
                 }
             } else {
                 for (int i = 1; i < local.length(); i++) {
                     JSONObject paragraph_list = local.getJSONObject("paragraph_" + i);
                     if (paragraph_list.length() != 0) {
-                        SiteData.own_history.add(toList(paragraph_list, page));
+                        RemoteConfigData.own_history.add(toList(paragraph_list, page));
                     }
                 }
             }
@@ -134,19 +169,19 @@ public class FormatJSON implements Runnable {
             JSONObject local = new JSONObject(localData);
             JSONObject configVersion = config.getJSONObject("version");
             JSONObject localVersion = local.getJSONObject("version");
-            SiteData.about_us.clear();
+            RemoteConfigData.about_us.clear();
             if (localVersion.getLong("versionNumber") < configVersion.getLong("versionNumber")) {
                 for (int i = 1; i < config.length(); i++) {
                     JSONObject paragraph_list = config.getJSONObject("paragraph_" + i);
                     if (paragraph_list.length() != 0) {
-                        SiteData.about_us.add(toList(paragraph_list, page));
+                        RemoteConfigData.about_us.add(toList(paragraph_list, page));
                     }
                 }
             } else {
                 for (int i = 1; i < local.length(); i++) {
                     JSONObject paragraph_list = local.getJSONObject("paragraph_" + i);
                     if (paragraph_list.length() != 0) {
-                        SiteData.about_us.add(toList(paragraph_list, page));
+                        RemoteConfigData.about_us.add(toList(paragraph_list, page));
                     }
                 }
             }
@@ -161,19 +196,19 @@ public class FormatJSON implements Runnable {
             JSONObject local = new JSONObject(localData);
             JSONObject configVersion = config.getJSONObject("version");
             JSONObject localVersion = local.getJSONObject("version");
-            SiteData.frat_germany.clear();
+            RemoteConfigData.frat_germany.clear();
             if (localVersion.getLong("versionNumber") < configVersion.getLong("versionNumber")) {
                 for (int i = 1; i < config.length(); i++) {
                     JSONObject paragraph_list = config.getJSONObject("paragraph_" + i);
                     if (paragraph_list.length() != 0) {
-                        SiteData.frat_germany.add(toList(paragraph_list, page));
+                        RemoteConfigData.frat_germany.add(toList(paragraph_list, page));
                     }
                 }
             } else {
                 for (int i = 1; i < local.length(); i++) {
                     JSONObject paragraph_list = local.getJSONObject("paragraph_" + i);
                     if (paragraph_list.length() != 0) {
-                        SiteData.frat_germany.add(toList(paragraph_list, page));
+                        RemoteConfigData.frat_germany.add(toList(paragraph_list, page));
                     }
                 }
             }
@@ -188,19 +223,19 @@ public class FormatJSON implements Runnable {
             JSONObject local = new JSONObject(localData);
             JSONObject configVersion = config.getJSONObject("version");
             JSONObject localVersion = local.getJSONObject("version");
-            SiteData.frat_wuerzburg.clear();
+            RemoteConfigData.frat_wuerzburg.clear();
             if (localVersion.getLong("versionNumber") < configVersion.getLong("versionNumber")) {
                 for (int i = 1; i < config.length(); i++) {
                     JSONObject paragraph_list = config.getJSONObject("paragraph_" + i);
                     if (paragraph_list.length() != 0) {
-                        SiteData.frat_wuerzburg.add(toList(paragraph_list, page));
+                        RemoteConfigData.frat_wuerzburg.add(toList(paragraph_list, page));
                     }
                 }
             } else {
                 for (int i = 1; i < local.length(); i++) {
                     JSONObject paragraph_list = local.getJSONObject("paragraph_" + i);
                     if (paragraph_list.length() != 0) {
-                        SiteData.frat_wuerzburg.add(toList(paragraph_list, page));
+                        RemoteConfigData.frat_wuerzburg.add(toList(paragraph_list, page));
                     }
                 }
             }
@@ -215,18 +250,18 @@ public class FormatJSON implements Runnable {
             JSONObject local = new JSONObject(localData);
             JSONObject configVersion = config.getJSONObject("version");
             JSONObject localVersion = local.getJSONObject("version");
-            SiteData.semester_notes.clear();
+            RemoteConfigData.semester_notes.clear();
             if (localVersion.getLong("versionNumber") < configVersion.getLong("versionNumber")) {
                 JSONArray paragraph_list = config.getJSONArray("list");
                 int size = paragraph_list.length();
                 for (int i = 0; i < size; i++) {
-                    SiteData.semester_notes.add(paragraph_list.getString(i));
+                    RemoteConfigData.semester_notes.add(paragraph_list.getString(i));
                 }
             } else {
                 JSONArray paragraph_list = local.getJSONArray("list");
                 int size = paragraph_list.length();
                 for (int i = 0; i < size; i++) {
-                    SiteData.semester_notes.add(paragraph_list.getString(i));
+                    RemoteConfigData.semester_notes.add(paragraph_list.getString(i));
                 }
             }
         } catch (Exception e) {

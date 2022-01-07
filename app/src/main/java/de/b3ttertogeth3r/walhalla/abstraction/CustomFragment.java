@@ -2,22 +2,30 @@ package de.b3ttertogeth3r.walhalla.abstraction;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.firebase.Authentication;
+import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
+import de.b3ttertogeth3r.walhalla.firebase.Firestore;
+import de.b3ttertogeth3r.walhalla.interfaces.AuthListener;
+import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
 
 /**
  * This class is so that every fragment inside the app looks the same, has similar runtime and a
@@ -30,13 +38,14 @@ import de.b3ttertogeth3r.walhalla.firebase.Firebase;
  * @version 1.0
  * @since 1.0
  */
-public abstract class CustomFragment extends Fragment {
+@SuppressWarnings("JavaDoc")
+public abstract class CustomFragment extends Fragment implements FirebaseAuth.IdTokenListener {
     private final String TAG = "CustomFragment";
     /**
      * A list to collect all realtime listeners into the Firestore database.
      *
      * @see ListenerRegistration
-     * @see Firebase.Firestore
+     * @see Firestore
      * @since 1.0
      */
     public ArrayList<ListenerRegistration> registration;
@@ -100,10 +109,10 @@ public abstract class CustomFragment extends Fragment {
             toolbar = requireActivity().findViewById(R.id.toolbar);
             toolbar.findViewById(R.id.custom_title).setVisibility(View.GONE);
             toolbar.setTitle("Walhalla");
-            super.onViewCreated(view, savedInstanceState);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         } finally {
+            super.onViewCreated(view, savedInstanceState);
+            hideKeyBoard();
             viewCreated();
             toolbarContent();
         }
@@ -134,13 +143,33 @@ public abstract class CustomFragment extends Fragment {
      */
     public abstract void analyticsProperties ();
 
+    /**
+     * Fired after the authentication token changed into a valid state
+     */
+    public abstract void authStatusChanged ();
+
+    @Override
+    public void onIdTokenChanged (@NonNull FirebaseAuth firebaseAuth) {
+        Authentication.changeLoggingData(new CustomFirebaseCompleteListener() {
+            @Override
+            public void onSuccess () {
+                authStatusChanged();
+            }
+
+            @Override
+            public void onFailure (Exception exception) {
+
+            }
+        });
+    }
+
     @Override
     public void onResume () {
         super.onResume();
         try {
             toolbarContent();
         } catch (Exception e) {
-            Firebase.Crashlytics.log("Refilling toolbar at onResume did not work", e);
+            Crashlytics.log("Refilling toolbar at onResume did not work", e);
         }
     }
 
@@ -156,7 +185,7 @@ public abstract class CustomFragment extends Fragment {
             }
             registration.clear();
         } catch (Exception e) {
-            Firebase.Crashlytics.log("Something went wrong while removing the snapshot listener",
+            Crashlytics.log("Something went wrong while removing the snapshot listener",
                     e);
         } finally {
             toolbar.getMenu().clear();
@@ -175,6 +204,24 @@ public abstract class CustomFragment extends Fragment {
      * @see #onStop()
      */
     public abstract void stop ();
+
+    /**
+     * Hides the keyboard on the start of a new Fragment
+     *
+     * @see
+     * <a href="https://stackoverflow.com/questions/7940765/how-to-hide-the-soft-keyboard-inside-a-fragment">Ian
+     * G. Clifton's answer</a>
+     * @see InputMethodManager
+     */
+    private void hideKeyBoard () {
+        try {
+            final InputMethodManager imm =
+                    (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(requireView().getWindowToken(), 0);
+        } catch (Exception e) {
+            Log.e(TAG, "hideKeyBoard: ", e);
+        }
+    }
 
     /**
      * @see #onViewCreated(View, Bundle)

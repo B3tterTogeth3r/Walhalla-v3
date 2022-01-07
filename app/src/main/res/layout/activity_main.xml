@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="de.walhalla.app2.MainActivity">
+    tools:context="de.b3ttertogeth3r.walhalla.MainActivity">
 
     <RelativeLayout
         android:id="@+id/main_linear_layout"
