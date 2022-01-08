@@ -26,7 +26,6 @@ import de.b3ttertogeth3r.walhalla.utils.CacheData;
 public class App extends Application {
     private static final String TAG = "App";
     private static Context ctx;
-    private static Toolbar toolbar;
     private static boolean internetConnection = true;
     private static FragmentManager fm;
 

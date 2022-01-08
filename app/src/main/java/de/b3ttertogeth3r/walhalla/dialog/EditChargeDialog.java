@@ -46,7 +46,7 @@ import de.b3ttertogeth3r.walhalla.firebase.Functions;
 import de.b3ttertogeth3r.walhalla.firebase.Storage;
 import de.b3ttertogeth3r.walhalla.fragments_main.ChargenFragment;
 import de.b3ttertogeth3r.walhalla.fragments_main.ChargenPhilFragment;
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Image;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.SearchModel;
@@ -62,7 +62,7 @@ public class EditChargeDialog extends DialogFragment implements DialogInterface.
     private static final int IMAGE_SELECT_INTENT = 129;
     private static FragmentManager fm;
     private final Charge kind;
-    private de.b3ttertogeth3r.walhalla.models.Charge charge;
+    private final de.b3ttertogeth3r.walhalla.models.Charge charge;
     private MyEditText first_name, last_name, pob, mobile, major, mail;
     private MyImageButton image;
     private Bitmap imageBitmap;
@@ -159,8 +159,18 @@ public class EditChargeDialog extends DialogFragment implements DialogInterface.
                 charge.setPicture_path("/images/" + Format.imageName(imageName));
                 //Upload image and change file name
                 Firestore.uploadImage(imageBitmap, imageName,
-                        exception -> Crashlytics.log(CustomFirebaseCompleteListener.TAG,
-                                "ImageUploadFailure", exception));
+                        new MyCompleteListener<Void>() {
+                            @Override
+                            public void onSuccess (Void result) {
+
+                            }
+
+                            @Override
+                            public void onFailure (Exception exception) {
+                                Crashlytics.log(MyCompleteListener.TAG,
+                                        "ImageUploadFailure", exception);
+                            }
+                        });
             }
 
             // If person with this name exists, copy uid;
@@ -172,7 +182,7 @@ public class EditChargeDialog extends DialogFragment implements DialogInterface.
                 uploadCharge(charge);
             } else {
                 Firestore.findUserByName(charge.getFirst_Name(), charge.getLast_Name(),
-                        new CustomFirebaseCompleteListener() {
+                        new MyCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onSuccess (QuerySnapshot querySnapshot) {
                                 // Get uid from Person
@@ -195,7 +205,7 @@ public class EditChargeDialog extends DialogFragment implements DialogInterface.
                             @Override
                             public void onFailure (Exception exception) {
                                 // Create user and add uid to the charge
-                                Functions.createUser(charge, new CustomFirebaseCompleteListener() {
+                                Functions.createUser(charge, new MyCompleteListener<String>() {
                                     @Override
                                     public void onSuccess (String string) {
                                         charge.setId(string);
@@ -215,7 +225,7 @@ public class EditChargeDialog extends DialogFragment implements DialogInterface.
             dismiss();
         } else if (which == DialogInterface.BUTTON_NEUTRAL) {
             // open dialog with all persons
-            Firestore.findAllPerson(new CustomFirebaseCompleteListener() {
+            Firestore.findAllPerson(new MyCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onSuccess (QuerySnapshot querySnapshot) {
                     ArrayList<Person> peopleList = new ArrayList<>();
@@ -244,9 +254,10 @@ public class EditChargeDialog extends DialogFragment implements DialogInterface.
 
     private void uploadCharge (de.b3ttertogeth3r.walhalla.models.Charge charge) {
         Firestore.uploadCharge(CacheData.getChosenSemester(), charge, kind,
-                new CustomFirebaseCompleteListener() {
+                new MyCompleteListener<Void>() {
+
                     @Override
-                    public void onSuccess () {
+                    public void onSuccess (Void result) {
                         MyToast toast = new MyToast(MainActivity.parentLayout.getContext());
                         toast.setText(R.string.upload_complete);
                         toast.show();
@@ -333,7 +344,7 @@ public class EditChargeDialog extends DialogFragment implements DialogInterface.
     }
 
     private void selectImages () {
-        Firestore.findAllImages(new CustomFirebaseCompleteListener() {
+        Firestore.findAllImages(new MyCompleteListener<QuerySnapshot>() {
             @Override
             public void onSuccess (QuerySnapshot querySnapshot) {
                 if (querySnapshot.isEmpty()) {

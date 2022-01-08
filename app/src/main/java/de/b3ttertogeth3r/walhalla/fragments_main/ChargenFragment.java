@@ -31,7 +31,7 @@ import de.b3ttertogeth3r.walhalla.dialog.EditChargeDialog;
 import de.b3ttertogeth3r.walhalla.enums.Page;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Charge;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
 import de.b3ttertogeth3r.walhalla.utils.RemoteConfigData;
@@ -50,7 +50,7 @@ public class ChargenFragment extends CustomFragment {
 
     @Override
     public void start () {
-        Firestore.getChargen(CacheData.getChosenSemester(), new CustomFirebaseCompleteListener() {
+        Firestore.getChargen(CacheData.getChosenSemester(), new MyCompleteListener<QuerySnapshot>() {
             @Override
             public void onSuccess (QuerySnapshot querySnapshot) {
                 if (querySnapshot == null || querySnapshot.isEmpty()) {

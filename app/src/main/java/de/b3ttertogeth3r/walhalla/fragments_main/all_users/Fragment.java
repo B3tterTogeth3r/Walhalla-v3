@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 import android.widget.TableRow;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.firebase.database.annotations.NotNull;
 
@@ -17,7 +18,7 @@ import de.b3ttertogeth3r.walhalla.design.MyTextView;
 import de.b3ttertogeth3r.walhalla.design.MyTitle;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Functions;
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.User;
 
 /**
@@ -25,7 +26,7 @@ import de.b3ttertogeth3r.walhalla.models.User;
  * @version 1.0
  * @since 1.0
  */
-public class Fragment extends CustomFragment implements View.OnClickListener, CustomFirebaseCompleteListener {
+public class Fragment extends CustomFragment implements View.OnClickListener, MyCompleteListener<List<User>> {
     private static final String TAG = "menu_all_profiles.Fragment";
     private LinearLayout layout;
 
@@ -65,6 +66,7 @@ public class Fragment extends CustomFragment implements View.OnClickListener, Cu
 
     @Override
     public void onClick (View v) {
+
     }
 
     @Override

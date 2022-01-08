@@ -2,12 +2,7 @@ package de.b3ttertogeth3r.walhalla.firebase;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 
 /**
  * @see <a href="https://firebase.google.com/docs/cloud-messaging">Firebase Cloud Messaging</a>
@@ -15,7 +10,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
 public class Messaging {
     private static final String TAG = "Messaging";
 
-    public static void getFCMToken (CustomFirebaseCompleteListener listener) {
+    public static void getFCMToken (MyCompleteListener<String> listener) {
         Firebase.MESSAGING.getToken().addOnCompleteListener(task -> {
             if (!task.isSuccessful()) {
                 listener.onFailure(task.getException());

@@ -2,13 +2,13 @@ package de.b3ttertogeth3r.walhalla.firebase;
 
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.CollectionReference;
@@ -20,7 +20,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import de.b3ttertogeth3r.walhalla.enums.Charge;
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Account;
 import de.b3ttertogeth3r.walhalla.models.Image;
 import de.b3ttertogeth3r.walhalla.models.Person;
@@ -37,7 +37,7 @@ public class Firestore {
     private static final String TAG = "Firestore";
     public static FirebaseFirestore FIRESTORE;
 
-    public static void getImage (@NonNull String uid, CustomFirebaseCompleteListener listener) {
+    public static void getImage (@NonNull String uid, MyCompleteListener<Image> listener) {
         try {
             FIRESTORE.collection("Images")
                     .document(uid)
@@ -60,13 +60,13 @@ public class Firestore {
     }
 
     public static void uploadImage (@NonNull Bitmap image, String name,
-                                    CustomFirebaseCompleteListener listener) {
-        Storage.uploadImage(image, name, new CustomFirebaseCompleteListener() {
+                                    MyCompleteListener<Void> listener) {
+        Storage.uploadImage(image, name, new MyCompleteListener<Uri>() {
             @Override
-            public void onSuccess (String string) {
+            public void onSuccess (Uri uri) {
                 Image image = new Image();
-                image.setLarge_path(string);
-                //add _100x100 before the ".jpeg" area
+                image.setLarge_path(uri.toString());
+                //TODO add _100x100 before the ".jpeg" and save it as image.setIcon_path(small);
                 image.setDescription(name);
                 FIRESTORE.collection("Images")
                         .add(image)
@@ -74,7 +74,7 @@ public class Firestore {
                             if (!task.isSuccessful() && task.getException() != null) {
                                 listener.onFailure(task.getException());
                             }
-                            listener.onSuccess();
+                            listener.onSuccess(null);
                         });
             }
 
@@ -85,7 +85,7 @@ public class Firestore {
         });
     }
 
-    public static void getSemester (int semesterID, CustomFirebaseCompleteListener listener) {
+    public static void getSemester (int semesterID, MyCompleteListener<DocumentSnapshot> listener) {
         getSemester(semesterID).get().addOnCompleteListener(task -> {
             DocumentSnapshot ds = task.getResult();
             if (!ds.exists()) {
@@ -108,7 +108,7 @@ public class Firestore {
         return FIRESTORE.collection("Semester").document(String.valueOf(semesterID));
     }
 
-    public static void findUserById (String uid, CustomFirebaseCompleteListener listener) {
+    public static void findUserById (String uid, MyCompleteListener<DocumentSnapshot> listener) {
         FIRESTORE.collection("Person")
                 .document(uid)
                 .get()
@@ -124,9 +124,9 @@ public class Firestore {
     public static void uploadAccountEntry (String semester, Account account) {
         FIRESTORE.collection("Semester/" + semester + "/Account")
                 .add(account)
-                .addOnSuccessListener(documentReference -> {
-                    Log.d(TAG, "uploadAccountEntry: success: " + semester);
-                })
+                .addOnSuccessListener(documentReference ->
+                    Log.d(TAG, "uploadAccountEntry: success: " + semester)
+                )
                 .addOnFailureListener(e -> Log.e(TAG,
                         "uploadAccountEntry: failure: semester" + semester, e));
     }
@@ -146,7 +146,7 @@ public class Firestore {
         uploadPerson(person, null);
     }
 
-    public static void uploadPerson (@NonNull Person person, CustomFirebaseCompleteListener listener) {
+    public static void uploadPerson (@NonNull Person person, MyCompleteListener<String> listener) {
         try {
             if (person.getId() == null) {
                 FIRESTORE.collection("Person")
@@ -169,7 +169,7 @@ public class Firestore {
                         .addOnCompleteListener(task -> {
                             Log.d(TAG, "userUpdate: success");
                             if (listener != null) {
-                                listener.onSuccess();
+                                listener.onSuccess(null);
                             }
                         })
                         .addOnFailureListener(e -> {
@@ -189,7 +189,7 @@ public class Firestore {
     }
 
     public static void getChargen (@NonNull Semester semester,
-                                   @NonNull CustomFirebaseCompleteListener listener) {
+                                   @NonNull MyCompleteListener<QuerySnapshot> listener) {
         FIRESTORE.collection("Semester")
                 .document(semester.getId() + "")
                 .collection("Board_Students")
@@ -199,7 +199,7 @@ public class Firestore {
     }
 
     public static void getPhilChargen (@NonNull Semester semester,
-                                       @NonNull CustomFirebaseCompleteListener listener) {
+                                       @NonNull MyCompleteListener<QuerySnapshot> listener) {
         FIRESTORE.collection("Semester")
                 .document(semester.getId() + "")
                 .collection("Board_union")
@@ -208,58 +208,55 @@ public class Firestore {
                 .addOnFailureListener(listener::onFailure);
     }
 
-    public static void getUserCharge (CustomFirebaseCompleteListener listener) {
+    public static void getUserCharge (MyCompleteListener<Void> listener) {
         if (Authentication.isSignIn()) {
-            Firestore.findUserCharge(new CustomFirebaseCompleteListener() {
+            Firestore.findUserCharge(new MyCompleteListener<String>() {
                 @Override
                 public void onSuccess (String string) {
                     Charge charge = Charge.find(string);
                     CacheData.setCharge(charge);
                     if (listener != null) {
-                        listener.onSuccess();
+                        listener.onSuccess(null);
                     }
                 }
 
                 @Override
                 public void onFailure (Exception e) {
                     if (listener != null) {
-                        listener.onSuccess();
+                        listener.onSuccess(null);
                     }
                 }
             });
         } else {
             if (listener != null) {
-                listener.onSuccess();
+                listener.onSuccess(null);
             }
         }
     }
 
-    public static void findUserCharge (CustomFirebaseCompleteListener listener) {
+    public static void findUserCharge (MyCompleteListener<String> listener) {
         if (AUTH.getUid() == null || AUTH.getUid().isEmpty()) {
             listener.onFailure();
         }
         FIRESTORE.collection("Current")
                 .whereArrayContains("UID", AUTH.getUid())
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete (@NonNull Task<QuerySnapshot> task) {
-                        if(task.getException() != null) {
-                            listener.onFailure();
-                            return;
-                        }
-                        if (task.getResult().isEmpty()) {
-                            listener.onFailure();
-                            return;
-                        }
-                        for(QueryDocumentSnapshot qds : task.getResult()) {
-                            String id = qds.getId();
-                            if (id.equals(Charge.ADMIN.getName())) {
-                                listener.onSuccess(id);
-                                break;
-                            } else {
-                                listener.onSuccess(id);
-                            }
+                .addOnCompleteListener(task -> {
+                    if(task.getException() != null) {
+                        listener.onFailure();
+                        return;
+                    }
+                    if (task.getResult().isEmpty()) {
+                        listener.onFailure();
+                        return;
+                    }
+                    for(QueryDocumentSnapshot qds : task.getResult()) {
+                        String id = qds.getId();
+                        if (id.equals(Charge.ADMIN.getName())) {
+                            listener.onSuccess(id);
+                            break;
+                        } else {
+                            listener.onSuccess(id);
                         }
                     }
                 });
@@ -271,7 +268,7 @@ public class Firestore {
      * @param listener
      *         OnGetDataListener to send the data back to the fragment
      */
-    public static void getUserDrinks (CustomFirebaseCompleteListener listener) {
+    public static void getUserDrinks (MyCompleteListener<QuerySnapshot> listener) {
         if (Authentication.isSignIn()) {
             String uid = Authentication.getUser().getUid();
             FIRESTORE.collection("Drinks")
@@ -294,7 +291,7 @@ public class Firestore {
         }
     }
 
-    public static void getDrinkValues (CustomFirebaseCompleteListener listener) {
+    public static void getDrinkValues (MyCompleteListener<QuerySnapshot> listener) {
         FIRESTORE.collection("Enums/rKnY7Tv2NpmTuMGvwPPW/Drink")
                 .get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -305,7 +302,7 @@ public class Firestore {
         });
     }
 
-    public static void findAllPerson (CustomFirebaseCompleteListener listener) {
+    public static void findAllPerson (MyCompleteListener<QuerySnapshot> listener) {
         Query query;
         switch (CacheData.getCharge()){
             case X:
@@ -329,7 +326,7 @@ public class Firestore {
     }
 
     public static void findUserByName (String first_name, String last_name,
-                                       CustomFirebaseCompleteListener listener) {
+                                       MyCompleteListener<QuerySnapshot> listener) {
         FIRESTORE.collection("Person")
                 .whereEqualTo("first_name", first_name)
                 .whereEqualTo("last_name", last_name)
@@ -353,7 +350,7 @@ public class Firestore {
 
     public static void uploadCharge (@NonNull Semester chosenSemester,
                                      @NonNull de.b3ttertogeth3r.walhalla.models.Charge charge
-            , @NonNull Charge kind, @Nullable CustomFirebaseCompleteListener listener) {
+            , @NonNull Charge kind, @Nullable MyCompleteListener<Void> listener) {
         DocumentReference ref = FIRESTORE.collection("Semester")
                 .document(String.valueOf(chosenSemester.getId()));
         switch (kind) {
@@ -379,20 +376,20 @@ public class Firestore {
                         listener.onFailure(task.getException());
                     }
                     if (listener != null) {
-                        listener.onSuccess();
+                        listener.onSuccess(null);
                     }
                 });
 
     }
 
-    public static void findAllImages (@NonNull CustomFirebaseCompleteListener listener) {
+    public static void findAllImages (@NonNull MyCompleteListener<QuerySnapshot> listener) {
         FIRESTORE.collection("Images")
                 .get()
                 .addOnFailureListener(listener::onFailure)
                 .addOnSuccessListener(listener::onSuccess);
     }
 
-    public static void getUserByEmail (String email, CustomFirebaseCompleteListener listener) {
+    public static void getUserByEmail (String email, MyCompleteListener<QuerySnapshot> listener) {
         FIRESTORE.collection("Person")
                 .whereEqualTo("email", email)
                 .limit(1)

@@ -2,15 +2,18 @@ package de.b3ttertogeth3r.walhalla.firebase;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.utils.Format;
 
 /**
@@ -32,7 +35,7 @@ public class Storage {
      * @param imagePath of the storage path
      * @param listener get the resulting uri or an exception
      */
-    public static void getUri (@NonNull String imagePath, @NonNull CustomFirebaseCompleteListener listener) {
+    public static void getUri (@NonNull String imagePath, @NonNull MyCompleteListener<Uri> listener) {
         REFERENCE.child(imagePath)
                 .getDownloadUrl()
                 .addOnSuccessListener(listener::onSuccess)
@@ -80,11 +83,11 @@ public class Storage {
     }
 
     public static void uploadImage (Bitmap imageBitmap, String name,
-                                    @NonNull CustomFirebaseCompleteListener listener) {
+                                    @NonNull MyCompleteListener<Uri> listener) {
         String imagePath = "images/" + Format.imageName(name);
         REFERENCE.child(imagePath)
                 .putBytes(compressImage(imageBitmap))
-                .addOnSuccessListener(task -> listener.onSuccess(imagePath))
+                .addOnSuccessListener(taskSnapshot -> listener.onSuccess(taskSnapshot.getUploadSessionUri()))
                 .addOnFailureListener(listener::onFailure);
     }
 

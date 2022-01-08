@@ -14,7 +14,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -24,8 +23,7 @@ import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.firebase.Authentication;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
-import de.b3ttertogeth3r.walhalla.interfaces.AuthListener;
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 
 /**
  * This class is so that every fragment inside the app looks the same, has similar runtime and a
@@ -38,9 +36,8 @@ import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
  * @version 1.0
  * @since 1.0
  */
-@SuppressWarnings("JavaDoc")
 public abstract class CustomFragment extends Fragment implements FirebaseAuth.IdTokenListener {
-    private final String TAG = "CustomFragment";
+    private static final String TAG = "CustomFragment";
     /**
      * A list to collect all realtime listeners into the Firestore database.
      *
@@ -143,26 +140,6 @@ public abstract class CustomFragment extends Fragment implements FirebaseAuth.Id
      */
     public abstract void analyticsProperties ();
 
-    /**
-     * Fired after the authentication token changed into a valid state
-     */
-    public abstract void authStatusChanged ();
-
-    @Override
-    public void onIdTokenChanged (@NonNull FirebaseAuth firebaseAuth) {
-        Authentication.changeLoggingData(new CustomFirebaseCompleteListener() {
-            @Override
-            public void onSuccess () {
-                authStatusChanged();
-            }
-
-            @Override
-            public void onFailure (Exception exception) {
-
-            }
-        });
-    }
-
     @Override
     public void onResume () {
         super.onResume();
@@ -248,4 +225,24 @@ public abstract class CustomFragment extends Fragment implements FirebaseAuth.Id
      */
     public abstract void createView (@NonNull @NotNull View view,
                                      @NonNull @NotNull LayoutInflater inflater);
+
+    @Override
+    public void onIdTokenChanged (@NonNull FirebaseAuth firebaseAuth) {
+        Authentication.changeLoggingData(new MyCompleteListener<Void>() {
+            @Override
+            public void onSuccess (Void result) {
+                authStatusChanged();
+            }
+
+            @Override
+            public void onFailure (Exception exception) {
+
+            }
+        });
+    }
+
+    /**
+     * Fired after the authentication token changed into a valid state
+     */
+    public abstract void authStatusChanged ();
 }

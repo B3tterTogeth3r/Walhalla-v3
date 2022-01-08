@@ -1,7 +1,6 @@
 package de.b3ttertogeth3r.walhalla.fragments_signin;
 
 import android.net.Uri;
-import android.text.Editable;
 import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
@@ -27,13 +26,12 @@ import de.b3ttertogeth3r.walhalla.abstraction.CustomFragment;
 import de.b3ttertogeth3r.walhalla.design.MyButton;
 import de.b3ttertogeth3r.walhalla.design.MyEditText;
 import de.b3ttertogeth3r.walhalla.design.MyImageView;
-import de.b3ttertogeth3r.walhalla.design.MyTextView;
 import de.b3ttertogeth3r.walhalla.design.MyTitle;
 import de.b3ttertogeth3r.walhalla.design.MyToast;
+import de.b3ttertogeth3r.walhalla.firebase.Authentication;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.firebase.Storage;
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
-import de.b3ttertogeth3r.walhalla.interfaces.MyTextWatcher;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.utils.Format;
 
@@ -86,7 +84,7 @@ public class StartFragment extends CustomFragment implements View.OnClickListene
 
             MyImageView imageView = new MyImageView(getContext());
             imageView.setDescription(R.string.image_description);
-            Storage.getUri("images/PICT3030-104675293.jpeg", new CustomFirebaseCompleteListener() {
+            Storage.getUri("images/PICT3030-104675293.jpeg", new MyCompleteListener<Uri>() {
                 @Override
                 public void onSuccess (Uri imageUri) {
                     imageView.setImage(imageUri);
@@ -157,7 +155,7 @@ public class StartFragment extends CustomFragment implements View.OnClickListene
             }
             // email valid -> check, if an user already exists
             String emailStr = Objects.requireNonNull(email.getText());
-            Firestore.getUserByEmail(emailStr, new CustomFirebaseCompleteListener() {
+            Firestore.getUserByEmail(emailStr, new MyCompleteListener<QuerySnapshot>() {
                 @SuppressWarnings("CatchMayIgnoreException")
                 @Override
                 public void onSuccess (QuerySnapshot querySnapshot) {
@@ -174,6 +172,10 @@ public class StartFragment extends CustomFragment implements View.OnClickListene
                         if (list.size() != 0) {
                             DocumentSnapshot ds = querySnapshot.getDocuments().get(0);
                             Person p = ds.toObject(Person.class);
+                            if (p == null) {
+                                toast.setMessage("No account found").show();
+                                return;
+                            }
                             p.setId(ds.getId());
                             if (p.isDisabled()) {
                                 // Send error message
@@ -185,6 +187,7 @@ public class StartFragment extends CustomFragment implements View.OnClickListene
                                 Log.d(TAG, "onSuccess: email not verified");
                                 toast.setMessage("E-Mail address not verified. send a new " +
                                         "verification email").show();
+                                Authentication.sendVerificationMail();
                                 // -> still sign in after password, if password was already set.
                             }
                             // Ask for password

@@ -41,7 +41,7 @@ import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.firebase.Storage;
 import de.b3ttertogeth3r.walhalla.interfaces.EditListener;
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.interfaces.SemesterChangeListener;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.Semester;
@@ -83,7 +83,7 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
                 user.setId(firebaseUser.getUid());
                 //if image selected upload otherwise skip
                 if (imageBitmap != null) {
-                    Storage.uploadImage(imageBitmap, user.getFullName(), new CustomFirebaseCompleteListener() {
+                    Storage.uploadImage(imageBitmap, user.getFullName(), new MyCompleteListener<Uri>() {
                         @Override
                         public void onSuccess (Uri imageUri) {
                             user.setPicture_path(imageUri.getPath());
@@ -204,7 +204,7 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
         joined.setTitleText(R.string.joined);
         joinedRow.addView(joined);
         //Format into semester name, not just the id
-        Firestore.getSemester(user.getJoined(), new CustomFirebaseCompleteListener() {
+        Firestore.getSemester(user.getJoined(), new MyCompleteListener<DocumentSnapshot>() {
             @Override
             public void onSuccess (DocumentSnapshot documentSnapshot) {
                 Semester semester = documentSnapshot.toObject(Semester.class);

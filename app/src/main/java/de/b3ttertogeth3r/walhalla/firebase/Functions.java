@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Charge;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.User;
@@ -37,7 +37,6 @@ public class Functions {
     private static final String TAG = "CloudFunctions";
     protected static FirebaseFunctions FUNCTIONS;
 
-
     /**
      * create a user after creating a profile of this person without a password
      *
@@ -46,7 +45,7 @@ public class Functions {
      * @param listener
      *         listener to get the result of the upload
      */
-    public static void createUser (Person person, CustomFirebaseCompleteListener listener){
+    public static void createUser (Person person, MyCompleteListener<String> listener){
         if (person == null) {
             Log.e(TAG, "createUser: Person cannot be empty");
             return;
@@ -63,7 +62,7 @@ public class Functions {
      * @param listener
      *         listener to get the result of the upload
      */
-    public static void createUser (Person person, String password, CustomFirebaseCompleteListener listener) {
+    public static void createUser (Person person, String password, MyCompleteListener<String> listener) {
         if (person == null) {
             Log.e(TAG, "createUser: Person cannot be empty");
             return;
@@ -78,7 +77,7 @@ public class Functions {
         }
 
         if (!person.getPicture_path().isEmpty()) {
-            Storage.getUri(person.getPicture_path(), new CustomFirebaseCompleteListener() {
+            Storage.getUri(person.getPicture_path(), new MyCompleteListener<Uri>() {
                 @Override
                 public void onSuccess (Uri imageUri) {
                     data.put("photoURL", imageUri.toString());
@@ -96,7 +95,7 @@ public class Functions {
         createUser(data, listener);
     }
 
-    protected static void createUser (Map<String, Object> userData, CustomFirebaseCompleteListener listener) {
+    protected static void createUser (Map<String, Object> userData, MyCompleteListener<String> listener) {
         try {
             addUser(userData)
                     .addOnCompleteListener(task -> {
@@ -134,7 +133,7 @@ public class Functions {
      * @param listener
      *         get the result of the upload
      */
-    public static void createUser (Charge charge, CustomFirebaseCompleteListener listener) {
+    public static void createUser (Charge charge, MyCompleteListener<String> listener) {
         if (charge == null) {
             Log.e(TAG, "createUser: charge cannot be empty or null");
             return;
@@ -150,7 +149,7 @@ public class Functions {
         // only add image if one was selected and uploaded.
         // if upload previously failed, create user without an image.
         if (!charge.getPicture_path().isEmpty()) {
-            Storage.getUri(charge.getPicture_path(), new CustomFirebaseCompleteListener() {
+            Storage.getUri(charge.getPicture_path(), new MyCompleteListener<Uri>() {
                 @Override
                 public void onSuccess (Uri imageUri) {
                     data.put("photoURL", imageUri.toString());
@@ -168,7 +167,7 @@ public class Functions {
         createUser(data, listener);
     }
 
-    public static void findAllUsers (CustomFirebaseCompleteListener listener) {
+    public static void findAllUsers (MyCompleteListener<List<User>> listener) {
         try{
             findAll()
                     .addOnCompleteListener(task -> {

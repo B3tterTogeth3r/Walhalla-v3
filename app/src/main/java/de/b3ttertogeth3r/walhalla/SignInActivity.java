@@ -9,23 +9,23 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import de.b3ttertogeth3r.walhalla.firebase.Authentication;
+import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.fragments_signin.StartFragment;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.interfaces.Reload;
 import de.b3ttertogeth3r.walhalla.models.Person;
 
-public class SignInActivity extends AppCompatActivity implements Reload {
+public class SignInActivity extends AppCompatActivity implements MyCompleteListener<Void> {
     public static final String TAG = "SignInActivity";
     public static Person user = new Person();
     public static Bitmap imageBitmap;
     private FragmentManager fm;
-    public static Reload finish;
 
     @Override
     protected void onCreate (@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         fm = getSupportFragmentManager();
-        finish = this;
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
@@ -45,8 +45,18 @@ public class SignInActivity extends AppCompatActivity implements Reload {
     }
 
     @Override
-    public void site () {
+    public void finish() {
         finishActivity(Activity.RESULT_OK);
-        this.finish();
+        super.finish();
+    }
+
+    @Override
+    public void onSuccess (Void result) {
+
+    }
+
+    @Override
+    public void onFailure (Exception exception) {
+        Crashlytics.log(TAG, "MyCompleteListener failed", exception);
     }
 }

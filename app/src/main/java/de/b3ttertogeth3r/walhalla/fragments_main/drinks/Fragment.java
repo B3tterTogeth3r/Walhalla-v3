@@ -23,7 +23,7 @@ import de.b3ttertogeth3r.walhalla.design.MyTextView;
 import de.b3ttertogeth3r.walhalla.design.MyToast;
 import de.b3ttertogeth3r.walhalla.enums.Page;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Drink;
 import de.b3ttertogeth3r.walhalla.models.DrinkPrice;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
@@ -47,7 +47,7 @@ public class Fragment extends CustomFragment {
 
     @Override
     public void start () {
-        Firestore.getUserDrinks(new CustomFirebaseCompleteListener() {
+        Firestore.getUserDrinks(new MyCompleteListener<QuerySnapshot>() {
             @Override
             public void onSuccess (QuerySnapshot querySnapshot) {
                 drinkList.clear();
@@ -69,7 +69,7 @@ public class Fragment extends CustomFragment {
             }
         });
 
-        Firestore.getDrinkValues(new CustomFirebaseCompleteListener() {
+        Firestore.getDrinkValues(new MyCompleteListener<QuerySnapshot>() {
             @Override
             public void onSuccess (QuerySnapshot querySnapshot) {
                 Log.e(TAG, "onSuccess: task successful");
@@ -99,12 +99,12 @@ public class Fragment extends CustomFragment {
 
     private void fillTable () {
         layout.removeAllViewsInLayout();
-        MyTable table = new MyTable(getContext());
-        MyTableRow row = new MyTableRow(getContext());
-        MyTextView date = new MyTextView(getContext());
-        MyTextView amount = new MyTextView(getContext());
-        MyTextView value = new MyTextView(getContext());
-        MyTextView name = new MyTextView(getContext());
+        MyTable table = new MyTable(requireContext());
+        MyTableRow row = new MyTableRow(requireContext());
+        MyTextView date = new MyTextView(requireContext());
+        MyTextView amount = new MyTextView(requireContext());
+        MyTextView value = new MyTextView(requireContext());
+        MyTextView name = new MyTextView(requireContext());
 
         date.setText(R.string.drink_date);
         amount.setText(R.string.drink_amount);
@@ -119,11 +119,11 @@ public class Fragment extends CustomFragment {
         table.addView(row);
 
         for (Drink drink : drinkList) {
-            row = new MyTableRow(getContext());
-            date = new MyTextView(getContext());
-            amount = new MyTextView(getContext());
-            value = new MyTextView(getContext());
-            name = new MyTextView(getContext());
+            row = new MyTableRow(requireContext());
+            date = new MyTextView(requireContext());
+            amount = new MyTextView(requireContext());
+            value = new MyTextView(requireContext());
+            name = new MyTextView(requireContext());
 
             //Format date
             Calendar c = Calendar.getInstance();

@@ -5,7 +5,6 @@ import static de.b3ttertogeth3r.walhalla.utils.Variables.SIGN_IN;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,6 +29,7 @@ import androidx.fragment.app.FragmentManager;
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.NotNull;
 
@@ -48,36 +48,28 @@ import de.b3ttertogeth3r.walhalla.fragments_main.FratWueFragment;
 import de.b3ttertogeth3r.walhalla.fragments_main.GreetingFragment;
 import de.b3ttertogeth3r.walhalla.fragments_main.HomeFragment;
 import de.b3ttertogeth3r.walhalla.fragments_main.HistoryFragment;
-import de.b3ttertogeth3r.walhalla.interfaces.AuthListener;
 import de.b3ttertogeth3r.walhalla.interfaces.OpenExternal;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
-        OpenExternal, AuthListener {
+        OpenExternal, FirebaseAuth.AuthStateListener {
     public static final String TAG = "MainActivity";
     /** For easier access to this view for Toast and SnackBar messages */
     @SuppressLint("StaticFieldLeak")
     public static View parentLayout;
     public static OpenExternal externalListener;
     public static InAppMessage inAppMessage;
-    public static AuthListener authListener;
     private DrawerLayout drawerlayout;
     private NavigationView navigationView;
     private boolean doubleBackToExitPressedOnce = false;
     private FragmentManager fragmentManager;
-
 
     @Override
     protected void onStop () {
         //save, that the app has been started before
         CacheData.firstStart();
         super.onStop();
-    }
-
-    @Override
-    public void statusChange () {
-        fillSideNav();
     }
 
     /**
@@ -177,7 +169,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         fragmentManager = getSupportFragmentManager();
         externalListener = this;
-        authListener = this;
         inAppMessage = this::openInAppMessageDialog;
         parentLayout = findViewById(android.R.id.content);
         de.b3ttertogeth3r.walhalla.App.setContext(MainActivity.this);
@@ -480,6 +471,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void intentOpener (Intent intent, int resultCode) {
         this.startActivityForResult(intent, resultCode);
+    }
+
+    @Override
+    public void onAuthStateChanged (@NonNull FirebaseAuth firebaseAuth) {
+        recreate();
     }
 
     public interface InAppMessage {

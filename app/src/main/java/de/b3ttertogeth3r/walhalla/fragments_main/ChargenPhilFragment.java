@@ -18,7 +18,7 @@ import de.b3ttertogeth3r.walhalla.abstraction.CustomFragment;
 import de.b3ttertogeth3r.walhalla.design.RowChargen;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Charge;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
 
@@ -40,7 +40,7 @@ public class ChargenPhilFragment extends CustomFragment {
     }
     @Override
     public void start () {
-        Firestore.getPhilChargen(CacheData.getChosenSemester(), new CustomFirebaseCompleteListener(){
+        Firestore.getPhilChargen(CacheData.getChosenSemester(), new MyCompleteListener<QuerySnapshot>(){
             @Override
             public void onSuccess (QuerySnapshot querySnapshot) {
                 if(querySnapshot == null || querySnapshot.isEmpty()){

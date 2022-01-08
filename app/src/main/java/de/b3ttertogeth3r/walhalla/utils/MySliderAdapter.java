@@ -21,7 +21,7 @@ import java.util.List;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.firebase.Storage;
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Image;
 
 public class MySliderAdapter extends SliderViewAdapter<MySliderAdapter.SliderAdapterVH> {
@@ -49,7 +49,7 @@ public class MySliderAdapter extends SliderViewAdapter<MySliderAdapter.SliderAda
     public void onBindViewHolder (SliderAdapterVH viewHolder, final int position) {
         String sliderItem = mSliderItems.get(position);
 
-        Firestore.getImage(sliderItem, new CustomFirebaseCompleteListener() {
+        Firestore.getImage(sliderItem, new MyCompleteListener<Image>() {
             @Override
             public void onSuccess (Image image) {
                 if (image != null) {

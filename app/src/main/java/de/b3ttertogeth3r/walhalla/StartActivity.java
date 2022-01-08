@@ -15,20 +15,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.UploadTask;
-
-import java.util.List;
 
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
+import de.b3ttertogeth3r.walhalla.firebase.DynamicLinks;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.interfaces.SplashInterface;
-import de.b3ttertogeth3r.walhalla.models.Image;
-import de.b3ttertogeth3r.walhalla.models.User;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
 
 /**
@@ -44,7 +37,7 @@ import de.b3ttertogeth3r.walhalla.utils.CacheData;
 public class StartActivity extends AppCompatActivity implements SplashInterface {
     private static final String TAG = "StartActivity";
     public static SplashInterface newDone;
-    private final int total = 4;
+    private final int total = 5;
     private int counter = 0;
     private int progress = 0;
     private ProgressBar progressBar;
@@ -97,6 +90,9 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
             counter++;
             progress = progress + (100 / total);
             progressBar.setProgress(progress, true);
+            if(counter == total) {
+                updateProgressbar();
+            }
         }
     }
 
@@ -123,26 +119,30 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
      * Dynamic Links</a>
      */
     private void dynamicLink () {
-        updateProgressbar();
-        FirebaseDynamicLinks.getInstance().getDynamicLink(getIntent()).addOnSuccessListener(pendingDynamicLinkData -> {
-            try {
-                Uri deepLink = pendingDynamicLinkData.getLink();
-                if (deepLink != null) {
-                    // TODO Manage dynamic link
-                    Crashlytics.log("Dynamic link found. Value is: " + deepLink);
+        DynamicLinks.DYNAMIC_LINKS = FirebaseDynamicLinks.getInstance();
+        try {
+            DynamicLinks.getLink(getIntent(), new MyCompleteListener<Void>() {
+                @Override
+                public void onSuccess (@Nullable Void result) {
+                    updateProgressbar();
                 }
-            } catch (Exception ignored) {
-            }
-        }).addOnFailureListener(this, e -> Crashlytics.log(TAG + ":getDynamicLink" +
-                ":onFailure", e));
+
+                @Override
+                public void onFailure (@Nullable Exception exception) {
+                    updateProgressbar();
+                }
+            });
+        } catch (NullPointerException npe) {
+            updateProgressbar();
+        }
     }
 
     void goOn () {
         // Go to start Activity after fetching dynamic links and intents from push messages
-        Firestore.getUserCharge(new CustomFirebaseCompleteListener() {
+        Firestore.getUserCharge(new MyCompleteListener<Void>() {
 
             @Override
-            public void onSuccess () {
+            public void onSuccess (Void voids) {
                 updateProgressbar();
             }
 

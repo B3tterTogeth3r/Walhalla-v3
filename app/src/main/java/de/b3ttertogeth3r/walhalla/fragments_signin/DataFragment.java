@@ -50,7 +50,7 @@ import de.b3ttertogeth3r.walhalla.firebase.Analytics;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.firebase.Messaging;
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.interfaces.EditListener;
 import de.b3ttertogeth3r.walhalla.interfaces.OnDoneListener;
 import de.b3ttertogeth3r.walhalla.interfaces.SemesterChangeListener;
@@ -71,7 +71,7 @@ public class DataFragment extends CustomFragment implements View.OnClickListener
 
     @Override
     public void start () {
-        Messaging.getFCMToken(new CustomFirebaseCompleteListener() {
+        Messaging.getFCMToken(new MyCompleteListener<String>() {
             @Override
             public void onSuccess (String string) {
                 user.setFcm_token(string);
@@ -163,7 +163,7 @@ public class DataFragment extends CustomFragment implements View.OnClickListener
                     .setTitleText(R.string.address);
             joined.setTitleText(R.string.joined);
             // Format number into clear semester
-            Firestore.getSemester(user.getJoined(), new CustomFirebaseCompleteListener() {
+            Firestore.getSemester(user.getJoined(), new MyCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess (DocumentSnapshot documentSnapshot) {
                     Semester semester = documentSnapshot.toObject(Semester.class);

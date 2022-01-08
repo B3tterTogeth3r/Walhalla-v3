@@ -17,13 +17,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import de.b3ttertogeth3r.walhalla.MainActivity;
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.SignInActivity;
 import de.b3ttertogeth3r.walhalla.StartActivity;
-import de.b3ttertogeth3r.walhalla.abstraction.CustomFragment;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.exceptions.PersonException;
-import de.b3ttertogeth3r.walhalla.interfaces.AuthListener;
-import de.b3ttertogeth3r.walhalla.interfaces.CustomFirebaseCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
@@ -96,11 +93,11 @@ public class Authentication {
         changeLoggingData(false, null);
     }
 
-    public static void changeLoggingData(CustomFirebaseCompleteListener listener) {
+    public static void changeLoggingData(MyCompleteListener<Void> listener) {
         changeLoggingData(false, listener);
     }
 
-    protected static void changeLoggingData (boolean isInit, CustomFirebaseCompleteListener listener) {
+    protected static void changeLoggingData (boolean isInit, MyCompleteListener<Void> listener) {
         try {
             if (AUTH == null || AUTH.getCurrentUser() == null || AUTH.getUid() == null) {
                 // if no user is signed in, write "not signed in"
@@ -111,18 +108,18 @@ public class Authentication {
                     StartActivity.newDone.firebaseDone();
                 }
                 if(listener != null) {
-                    listener.onSuccess();
+                    listener.onSuccess(null);
                 }
             } else {
                 // Sets the user id to the crash and analytics values.
                 String uid = AUTH.getCurrentUser().getUid();
-                Firestore.findUserById(uid, new CustomFirebaseCompleteListener() {
+                Firestore.findUserById(uid, new MyCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess (DocumentSnapshot documentSnapshot) {
                         try {
                             Person user = documentSnapshot.toObject(Person.class);
                             user.setId(documentSnapshot.getId());
-                            Messaging.getFCMToken(new CustomFirebaseCompleteListener() {
+                            Messaging.getFCMToken(new MyCompleteListener<String>() {
                                 @Override
                                 public void onSuccess (String string) {
                                     user.setFcm_token(string);
@@ -162,7 +159,7 @@ public class Authentication {
                             StartActivity.newDone.firebaseDone();
                         }
                         if(listener != null){
-                            listener.onSuccess();
+                            listener.onSuccess(null);
                         }
 
                     }
@@ -180,7 +177,7 @@ public class Authentication {
                             StartActivity.newDone.firebaseDone();
                         }
                         if(listener != null) {
-                            listener.onSuccess();
+                            listener.onSuccess(null);
                         }
                     }
                 });
@@ -191,7 +188,7 @@ public class Authentication {
         if (!isInit) {
             // ?? TODO MainActivity.authListener.statusChange();
             if(listener != null) {
-                listener.onSuccess();
+                listener.onSuccess(null);
             }
         }
     }
@@ -200,16 +197,12 @@ public class Authentication {
         return AUTH.getUid() != null;
     }
 
-    public static void linkGoogle (String idToken, CustomFirebaseCompleteListener listener) {
+    public static void linkGoogle (String idToken, MyCompleteListener<Void> listener) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         AUTH.getCurrentUser().linkWithCredential(credential)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete (@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            listener.onSuccess();
-
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        listener.onSuccess(null);
                     }
                 });
     }
@@ -218,8 +211,22 @@ public class Authentication {
         return AUTH.getCurrentUser();
     }
 
-    public static void setCustomAuthListener (AuthListener listener) {
-        AUTH.addIdTokenListener((FirebaseAuth.IdTokenListener) firebaseAuth -> listener.statusChange());
+    public static void sendVerificationMail () {
+        FirebaseUser user = AUTH.getCurrentUser();
+        if (user != null) {/*
+            String url = "https://b3tterTogeth3r.github.io/?verify=" + user.getUid();
+
+            ActionCodeSettings actionCodeSettings =
+                    ActionCodeSettings.newBuilder()
+                            .setUrl(url)
+                            .setAndroidPackageName("de.b3ttertogeth3r.walhalla",
+                                    true,
+                                    null)
+                            .setHandleCodeInApp(true)
+                            .build();
+            user.sendEmailVerification(actionCodeSettings);*/
+            user.sendEmailVerification();
+        }
     }
 
     public interface SignInListener {
@@ -238,7 +245,6 @@ public class Authentication {
             Log.d(TAG, "successful: true");
             changeLoggingData();
             statusChange(true);
-            MainActivity.authListener.statusChange();
         }
     }
 }
