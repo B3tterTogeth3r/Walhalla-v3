@@ -17,4 +17,7 @@ public class Variables {
     public static final int CAMERA = 2;
     public static final int GALLERY = 3;
     public static final int SIGN_IN = 4;
+    public static final int REGISTER_COMPLETE = 5;
+    public static final int CHANGE_COMPLETE = 6;
+    public static final int SIGN_IN_COMPLETE = 7;
 }

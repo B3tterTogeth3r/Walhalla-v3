@@ -29,6 +29,7 @@ import de.b3ttertogeth3r.walhalla.firebase.Authentication;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Person;
+import de.b3ttertogeth3r.walhalla.utils.Variables;
 
 /**
  * @author B3tterToegth3r
@@ -156,7 +157,7 @@ public class PasswordFragment extends CustomFragment implements View.OnClickList
             if (kind != Display.EDIT) {
                 user.setId(null);
                 user.setPassword(password_two.getString());
-                Firestore.uploadPerson(user/*, new MyCompleteListener() {
+                Firestore.uploadPerson(user, new MyCompleteListener<String>() {
                     @Override
                     public void onSuccess (String string) {
                         registration.add(waitForCF(string));
@@ -166,17 +167,7 @@ public class PasswordFragment extends CustomFragment implements View.OnClickList
                     public void onFailure (Exception exception) {
 
                     }
-                }*/
-                        , new MyCompleteListener<String>() {
-                            @Override
-                            public void onSuccess(String result){
-
-                            }
-                            @Override
-                            public void onFailure (Exception exception) {
-
-                            }
-                        });
+                });
             }
         }
     }
@@ -200,11 +191,9 @@ public class PasswordFragment extends CustomFragment implements View.OnClickList
                     Authentication.signIn(user.getEmail(), user.getPassword(),
                             success -> {
                                 if(success) {
-                                    Authentication.sendVerificationMail();
-                                    MyToast toast = new MyToast(App.getContext());
-                                    toast.setMessage("register successful");
-                                    Log.d(TAG, "authStatusChanged: register successful");
-                                    toast.show();
+                                    SignInActivity.uploadListener.onSuccess(Variables.REGISTER_COMPLETE);
+                                } else {
+                                    SignInActivity.uploadListener.onFailure();
                                 }
                             });
                 }

@@ -29,6 +29,7 @@ import de.b3ttertogeth3r.walhalla.design.MyImageView;
 import de.b3ttertogeth3r.walhalla.design.MyTitle;
 import de.b3ttertogeth3r.walhalla.design.MyToast;
 import de.b3ttertogeth3r.walhalla.firebase.Authentication;
+import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.firebase.Storage;
 import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
@@ -166,7 +167,7 @@ public class StartFragment extends CustomFragment implements View.OnClickListene
                     // else -> create new user
                     try {
                         //TODO check, if emailStr is a valid email address
-                        SignInActivity.user.setEmail(emailStr);
+                        user.setEmail(emailStr);
                         List<DocumentSnapshot> list = querySnapshot.getDocuments();
                         MyToast toast = new MyToast(getContext());
                         if (list.size() != 0) {
@@ -203,6 +204,7 @@ public class StartFragment extends CustomFragment implements View.OnClickListene
                             // email has no account -> register new one
                             Log.d(TAG, "onSuccess: no account so far");
                             toast.setMessage("Create new Account").show();
+                            user.setEmail(emailStr);
                             getParentFragmentManager().beginTransaction()
                                     .replace(R.id.fragment_container, new DataFragment())
                                     .addToBackStack(SignInActivity.TAG)
@@ -216,6 +218,7 @@ public class StartFragment extends CustomFragment implements View.OnClickListene
                 @Override
                 public void onFailure (Exception exception) {
                     // display an error message
+                    Crashlytics.log(TAG, exception);
                 }
             });
         }

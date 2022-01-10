@@ -37,8 +37,8 @@ import de.b3ttertogeth3r.walhalla.enums.Walhalla;
 import de.b3ttertogeth3r.walhalla.firebase.Analytics;
 import de.b3ttertogeth3r.walhalla.firebase.Authentication;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
+import de.b3ttertogeth3r.walhalla.firebase.Realtime;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
-import de.b3ttertogeth3r.walhalla.fragments_main.RoomFragment;
 import de.b3ttertogeth3r.walhalla.fragments_main.AboutUsFragment;
 import de.b3ttertogeth3r.walhalla.fragments_main.BalanceFragment;
 import de.b3ttertogeth3r.walhalla.fragments_main.ChargenFragment;
@@ -46,8 +46,9 @@ import de.b3ttertogeth3r.walhalla.fragments_main.ChargenPhilFragment;
 import de.b3ttertogeth3r.walhalla.fragments_main.FratGermanyFragment;
 import de.b3ttertogeth3r.walhalla.fragments_main.FratWueFragment;
 import de.b3ttertogeth3r.walhalla.fragments_main.GreetingFragment;
-import de.b3ttertogeth3r.walhalla.fragments_main.HomeFragment;
 import de.b3ttertogeth3r.walhalla.fragments_main.HistoryFragment;
+import de.b3ttertogeth3r.walhalla.fragments_main.HomeFragment;
+import de.b3ttertogeth3r.walhalla.fragments_main.RoomFragment;
 import de.b3ttertogeth3r.walhalla.interfaces.OpenExternal;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
@@ -66,10 +67,105 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private FragmentManager fragmentManager;
 
     @Override
+    protected void onCreate (Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        fragmentManager = getSupportFragmentManager();
+        externalListener = this;
+        inAppMessage = this::openInAppMessageDialog;
+        parentLayout = findViewById(android.R.id.content);
+        de.b3ttertogeth3r.walhalla.App.setContext(MainActivity.this);
+        de.b3ttertogeth3r.walhalla.App.setFragmentManager(getFragmentManager());
+        RemoteConfig.apply();
+
+        // region the default ui
+        // Set content
+        setContentView(R.layout.activity_main);
+
+
+        //Initialize Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        drawerlayout = findViewById(R.id.drawer_layout);
+
+        //The left site navigation controller
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        fillSideNav();
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerlayout, toolbar,
+                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        toggle.syncState();
+
+        // endregion
+
+        // region Open start fragment
+        if (savedInstanceState == null) {
+            ProfileError error = CacheData.getProfileError();
+            if (error != null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Profile incomplete")
+                        .setMessage(error.getMessage())
+                        .setPositiveButton(R.string.edit,
+                                (dialog, which) -> switchPage(error.getPage()))
+                        .setCancelable(false)
+                        .setIcon(R.drawable.ic_error_outline);
+                AlertDialog dialog1 = builder.create();
+                dialog1.show();
+            } else {
+                switchPage(CacheData.getIntentStartPage());
+            }
+            /* backup to copy
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new de.walhalla.app2.fragments.home.Fragment()).commit();
+             */
+        }
+        // endregion
+        Crashlytics.sendUnsent();
+    }
+
+    @Override
     protected void onStop () {
         //save, that the app has been started before
         CacheData.firstStart();
+        if (Authentication.isSignIn()) {
+            Realtime.internet(CacheData.getUser().getId());
+        }
         super.onStop();
+    }
+
+    private void openInAppMessageDialog (String title, String message, @NonNull String page) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(App.getContext());
+        builder.setTitle(title)
+                .setMessage(message)
+                .setNegativeButton(R.string.later, null)
+                .setCancelable(true)
+                .setIcon(R.drawable.ic_error_outline);
+
+        switch (page) {
+            case "balance":
+                builder
+                        .setPositiveButton(R.string.yes,
+                                (dialog, which) -> switchPage(R.string.menu_balance));
+                break;
+            case "program":
+                builder
+                        .setPositiveButton(R.string.yes,
+                                (dialog, which) -> switchPage(R.string.menu_program));
+                break;
+            case "news":
+                builder
+                        .setPositiveButton(R.string.yes,
+                                (dialog, which) -> switchPage(R.string.menu_messages));
+                break;
+        }
+
+        runOnUiThread(() -> {
+            if (CacheData.getFirstStart()) {
+                AlertDialog dialog1 = builder.create();
+                dialog1.show();
+            }
+        });
     }
 
     /**
@@ -162,98 +258,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         menuEnd.add(0, R.string.menu_donate, 0, R.string.menu_donate).setCheckable(false).setIcon(R.drawable.ic_donate);
 
         navigationView.invalidate();
-    }
-
-    @Override
-    protected void onCreate (Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        fragmentManager = getSupportFragmentManager();
-        externalListener = this;
-        inAppMessage = this::openInAppMessageDialog;
-        parentLayout = findViewById(android.R.id.content);
-        de.b3ttertogeth3r.walhalla.App.setContext(MainActivity.this);
-        de.b3ttertogeth3r.walhalla.App.setFragmentManager(getFragmentManager());
-        RemoteConfig.apply();
-
-        // region the default ui
-        // Set content
-        setContentView(R.layout.activity_main);
-
-
-        //Initialize Toolbar
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        drawerlayout = findViewById(R.id.drawer_layout);
-
-        //The left site navigation controller
-        navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        fillSideNav();
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerlayout, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        toggle.syncState();
-
-        // endregion
-
-        // region Open start fragment
-        if (savedInstanceState == null) {
-            ProfileError error = CacheData.getProfileError();
-            if (error != null) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Profile incomplete")
-                        .setMessage(error.getMessage())
-                        .setPositiveButton(R.string.edit,
-                                (dialog, which) -> switchPage(error.getPage()))
-                        .setCancelable(false)
-                        .setIcon(R.drawable.ic_error_outline);
-                AlertDialog dialog1 = builder.create();
-                dialog1.show();
-            } else {
-                switchPage(CacheData.getIntentStartPage());
-            }
-            /* backup to copy
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                    new de.walhalla.app2.fragments.home.Fragment()).commit();
-             */
-        }
-        // endregion
-        Crashlytics.sendUnsent();
-    }
-
-    private void openInAppMessageDialog (String title, String message, @NonNull String page) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(App.getContext());
-        builder.setTitle(title)
-                .setMessage(message)
-                .setNegativeButton(R.string.later, null)
-                .setCancelable(true)
-                .setIcon(R.drawable.ic_error_outline);
-
-        switch (page) {
-            case "balance":
-                builder
-                        .setPositiveButton(R.string.yes,
-                                (dialog, which) -> switchPage(R.string.menu_balance));
-                break;
-            case "program":
-                builder
-                        .setPositiveButton(R.string.yes,
-                                (dialog, which) -> switchPage(R.string.menu_program));
-                break;
-            case "news":
-                builder
-                        .setPositiveButton(R.string.yes,
-                                (dialog, which) -> switchPage(R.string.menu_messages));
-                break;
-        }
-
-        runOnUiThread(() -> {
-            if(CacheData.getFirstStart()) {
-                AlertDialog dialog1 = builder.create();
-                dialog1.show();
-            }
-        });
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -430,7 +434,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (data != null && data.getExtras() != null) {
             if (requestCode == SIGN_IN) {
                 Log.d(TAG, "onActivityResult: Sign in done");
-                if(resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK) {
                     //reload Activity
                     //TODO get the activity to start with the previous fragment backstack
                     recreate();
@@ -472,6 +476,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void intentOpener (Intent intent, int resultCode) {
         this.startActivityForResult(intent, resultCode);
     }
+
 
     @Override
     public void onAuthStateChanged (@NonNull FirebaseAuth firebaseAuth) {

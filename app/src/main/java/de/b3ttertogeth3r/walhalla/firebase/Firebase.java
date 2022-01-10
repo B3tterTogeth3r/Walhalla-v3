@@ -180,6 +180,8 @@ public class Firebase {
      *         true or false
      */
     protected static void onlineStatus (String uid, boolean status) {
-        FIRESTORE.collection("Person").document(uid).update("online", status);
+        FIRESTORE.collection("Person").document(uid).update(
+                "online", status
+        );
     }
 }

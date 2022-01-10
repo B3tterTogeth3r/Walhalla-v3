@@ -239,7 +239,7 @@ public class CacheData {
 
     @NonNull
     @Contract(" -> new")
-    public static Person getUser () throws PersonException {
+    public static Person getUser (){
         Person person = new Person();
         person.setBalance(SP.getFloat(USER_DATA + Person.BALANCE, 0.0f));
         long date = SP.getLong(USER_DATA + Person.DOB, new Date().getTime());

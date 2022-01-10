@@ -1,11 +1,18 @@
 package de.b3ttertogeth3r.walhalla.fragments_main.profile;
 
+import static android.app.Activity.RESULT_OK;
 import static de.b3ttertogeth3r.walhalla.enums.Page.PROFILE;
+import static de.b3ttertogeth3r.walhalla.utils.Variables.CAMERA;
+import static de.b3ttertogeth3r.walhalla.utils.Variables.GALLERY;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,29 +26,30 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstraction.CustomFragment;
-import de.b3ttertogeth3r.walhalla.design.MyTable;
-import de.b3ttertogeth3r.walhalla.design.MyTableRow;
+import de.b3ttertogeth3r.walhalla.design.MyProfileImage;
 import de.b3ttertogeth3r.walhalla.design.MyToast;
 import de.b3ttertogeth3r.walhalla.design.RowProfile;
 import de.b3ttertogeth3r.walhalla.dialog.ChangeSemesterDialog;
+import de.b3ttertogeth3r.walhalla.dialog.ChoosePicture;
 import de.b3ttertogeth3r.walhalla.dialog.EditDialog;
 import de.b3ttertogeth3r.walhalla.enums.Address;
 import de.b3ttertogeth3r.walhalla.enums.Editable;
 import de.b3ttertogeth3r.walhalla.enums.Kind;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
-import de.b3ttertogeth3r.walhalla.exceptions.PersonException;
 import de.b3ttertogeth3r.walhalla.firebase.Authentication;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.firebase.Storage;
 import de.b3ttertogeth3r.walhalla.interfaces.EditListener;
 import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
+import de.b3ttertogeth3r.walhalla.interfaces.OnDoneListener;
 import de.b3ttertogeth3r.walhalla.interfaces.SemesterChangeListener;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.Semester;
@@ -54,15 +62,14 @@ import de.b3ttertogeth3r.walhalla.utils.CacheData;
  */
 public class Fragment extends CustomFragment implements View.OnClickListener {
     private static final String TAG = "profile.Fragment";
-    private MyTableRow mailRow, nameRow, addressRow, dobRow, mobileRow, pobRow, majorRow, rankRow
-            , joinedRow, pictureRow, connectedRow;
-    private RowProfile name, mail, pob, mobile, rank, major, address, joined, dob;
     private Person user;
     private Bitmap imageBitmap = null;
+    private RowProfile mail, name, address, dob, mobile, pob, major, rank, joined, picture;
+    private MyProfileImage profileImage;
 
     @Override
     public void start () {
-
+        Log.i(TAG, "starting");
     }
 
     @Override
@@ -83,19 +90,20 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
                 user.setId(firebaseUser.getUid());
                 //if image selected upload otherwise skip
                 if (imageBitmap != null) {
-                    Storage.uploadImage(imageBitmap, user.getFullName(), new MyCompleteListener<Uri>() {
-                        @Override
-                        public void onSuccess (Uri imageUri) {
-                            user.setPicture_path(imageUri.getPath());
-                            upload(user);
-                        }
+                    Storage.uploadImage(imageBitmap, user.getFullName(),
+                            new MyCompleteListener<Uri>() {
+                                @Override
+                                public void onSuccess (Uri imageUri) {
+                                    user.setPicture_path(imageUri.getPath());
+                                    upload(user);
+                                }
 
-                        @Override
-                        public void onFailure (Exception e) {
-                            Crashlytics.log(TAG, "Image upload failed", e);
-                            upload(user);
-                        }
-                    });
+                                @Override
+                                public void onFailure (Exception e) {
+                                    Crashlytics.log(TAG, "Image upload failed", e);
+                                    upload(user);
+                                }
+                            });
                 } else {
                     upload(user);
                 }
@@ -114,129 +122,109 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
 
     @Override
     public void viewCreated () {
+        mail.setOnClickListener(this);
+        name.setOnClickListener(this);
+        address.setOnClickListener(this);
+        dob.setOnClickListener(this);
+        mobile.setOnClickListener(this);
+        pob.setOnClickListener(this);
+        major.setOnClickListener(this);
+        rank.setOnClickListener(this);
+        joined.setOnClickListener(this);
+        picture.setOnClickListener(this);
     }
 
     @Override
     public void toolbarContent () {
         toolbar.setTitle(R.string.menu_profile);
+        toolbar.getMenu().clear();
+        toolbar.inflateMenu(R.menu.default_save_abort);
+        toolbar.getMenu().removeItem(R.id.abort);
+        toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.save) {
+                if (user.isValid()) {
+                    upload(user);
+                }
+            }
+            return false;
+        });
     }
 
     @Override
     public void createView (@NonNull @NotNull View view,
                             @NonNull @NotNull LayoutInflater inflater) {
-        try {
-            user = CacheData.getUser();
-        } catch (PersonException e) {
-            user = new Person();
-        }
+        user = CacheData.getUser();
         LinearLayout layout = view.findViewById(R.id.fragment_container);
         layout.removeAllViews();
         layout.removeAllViewsInLayout();
 
-        layout.addView(profileTable(getContext()));
-        //endregion
+        try {
+            mail = new RowProfile(getContext());
+            name = new RowProfile(getContext());
+            pob = new RowProfile(getContext());
+            mobile = new RowProfile(getContext());
+            rank = new RowProfile(getContext());
+            major = new RowProfile(getContext());
+            address = new RowProfile(getContext());
+            joined = new RowProfile(getContext());
+            dob = new RowProfile(getContext());
+            picture = new RowProfile(getContext());
+
+            mail.setTitleText(R.string.fui_email_hint)
+                    .addToTitle("*")
+                    .setValueText(user.getEmail());
+            name.setTitleText(R.string.full_name)
+                    .addToTitle("*")
+                    .setValueText(user.getFullName());
+            pob.setTitleText(R.string.pob)
+                    .setValueText(user.getPoB());
+            mobile.setTitleText(R.string.mobile)
+                    .setValueText(user.getMobile());
+            rank.setTitleText(R.string.rank)
+                    .addToTitle("*")
+                    .setValueText(user.getRank());
+            major.setTitleText(R.string.major)
+                    .setValueText(user.getMajor());
+            address.setValueText(user.getAddressString())
+                    .setTitleText(R.string.address);
+            joined.setTitleText(R.string.joined);
+            // Format number into clear semester
+            Firestore.getSemester(user.getJoined(), new MyCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess (DocumentSnapshot documentSnapshot) {
+                    Semester semester = documentSnapshot.toObject(Semester.class);
+                    assert semester != null;
+                    joined.setValueText(semester.getName_long());
+                }
+
+                @Override
+                public void onFailure (Exception e) {
+                    joined.setValueText(String.valueOf(user.getJoined()));
+                }
+            });
+
+            dob.setTitleText(R.string.dob)
+                    .setValueText(user.getDoBString());
+            picture.setTitleText(R.string.profile_image);
+            profileImage = new MyProfileImage(getContext());
+            picture.replaceValue(profileImage);
+
+            //TODO add reasons why the data is needed. maybe just in the dialog
+            layout.addView(mail);
+            layout.addView(name);
+            layout.addView(address);
+            layout.addView(dob);
+            layout.addView(mobile);
+            layout.addView(joined);
+            layout.addView(major);
+            layout.addView(rank);
+            layout.addView(pob);
+            layout.addView(picture);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @NonNull
-    private View profileTable(Context context) {
-        //region table and rows with onClickListener
-        MyTable profileTable = new MyTable(context);
-        mailRow = new MyTableRow(context);
-        nameRow = new MyTableRow(context);
-        addressRow = new MyTableRow(context);
-        dobRow = new MyTableRow(context);
-        mobileRow = new MyTableRow(context);
-        pobRow = new MyTableRow(context);
-        majorRow = new MyTableRow(context);
-        rankRow = new MyTableRow(context);
-        joinedRow = new MyTableRow(context);
-        pictureRow = new MyTableRow(context);
-        connectedRow = new MyTableRow(context);
-        mailRow.setOnClickListener(this);
-        nameRow.setOnClickListener(this);
-        addressRow.setOnClickListener(this);
-        dobRow.setOnClickListener(this);
-        mobileRow.setOnClickListener(this);
-        pobRow.setOnClickListener(this);
-        majorRow.setOnClickListener(this);
-        rankRow.setOnClickListener(this);
-        joinedRow.setOnClickListener(this);
-        pictureRow.setOnClickListener(this);
-        connectedRow.setOnClickListener(this);
-        //endregion
-
-        mail = new RowProfile(context);
-        mail.setTitleText(getString(R.string.fui_email_hint));
-        mail.setValueText(user.getEmail());
-        mailRow.addView(mail);
-
-        name = new RowProfile(context);
-        name.setTitleText(getString(R.string.full_name));
-        name.setValueText(user.getFullName());
-        nameRow.addView(name);
-
-        pob = new RowProfile(context);
-        pob.setTitleText(R.string.pob);
-        pob.setValueText(user.getPoB());
-        pobRow.addView(pob);
-
-        mobile = new RowProfile(context);
-        mobile.setTitleText(R.string.mobile);
-        mobile.setValueText(user.getMobile());
-        mobileRow.addView(mobile);
-
-        rank = new RowProfile(context);
-        rank.setTitleText(R.string.rank);
-        rank.setValueText(user.getRank());
-        rankRow.addView(rank);
-
-        major = new RowProfile(context);
-        major.setTitleText(R.string.major);
-        major.setValueText(user.getMajor());
-        majorRow.addView(major);
-
-        address = new RowProfile(context);
-        address.setTitleText(R.string.address);
-        address.setValueText(user.getAddressString());
-        addressRow.addView(address);
-
-        joined = new RowProfile(context);
-        joined.setTitleText(R.string.joined);
-        joinedRow.addView(joined);
-        //Format into semester name, not just the id
-        Firestore.getSemester(user.getJoined(), new MyCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess (DocumentSnapshot documentSnapshot) {
-                Semester semester = documentSnapshot.toObject(Semester.class);
-                assert semester != null;
-                joined.setValueText(semester.getName_long());
-            }
-
-            @Override
-            public void onFailure (Exception e) {
-            }
-        });
-
-        dob = new RowProfile(context);
-        dob.setTitleText(R.string.dob);
-        dob.setValueText(user.getDoBString());
-        dobRow.addView(dob);
-
-        //region add rows to table and table to layout
-        profileTable.addView(mailRow);
-        profileTable.addView(nameRow);
-        profileTable.addView(addressRow);
-        profileTable.addView(dobRow);
-        profileTable.addView(mobileRow);
-        profileTable.addView(pobRow);
-        profileTable.addView(majorRow);
-        profileTable.addView(rankRow);
-        profileTable.addView(joinedRow);
-        profileTable.addView(pictureRow);
-        profileTable.addView(connectedRow);
-
-        return profileTable;
-    }
 
     @Override
     public void authStatusChanged () {
@@ -248,7 +236,8 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
     public void onClick (View v) {
         MyToast toast = new MyToast(requireContext());
         EditDialog dialog;
-        if (v == mailRow) {
+        //region if mail
+        if (v == mail) {
             dialog = new EditDialog(Editable.MAIL, user.getEmail(), new EditListener() {
                 @Override
                 public void saveEdit (Object value, Editable editable) {
@@ -275,7 +264,10 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
                 }
             });
             dialog.show(getParentFragmentManager(), TAG);
-        } else if (v == nameRow) {
+        }
+        //endregion
+        //region else if name
+        else if (v == name) {
             Map<String, String> nameBackup = new HashMap<>();
             nameBackup.put(Person.FIRST_NAME, user.getFirst_Name());
             nameBackup.put(Person.LAST_NAME, user.getLast_Name());
@@ -316,7 +308,10 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
                 }
             });
             dialog.show(getParentFragmentManager(), TAG);
-        } else if (v == addressRow) {
+        }
+        //endregion
+        //region else if address
+        else if (v == address) {
             Map<String, Object> addressBackup = new HashMap<>();
             addressBackup.put(Address.NUMBER.toString(),
                     user.getAddress().get(Address.NUMBER.toString()));
@@ -372,7 +367,10 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
                 }
             });
             dialog.show(getParentFragmentManager(), TAG);
-        } else if (v == dobRow) {
+        }
+        //endregion
+        //region else if dob
+        else if (v == dob) {
             Calendar date = Calendar.getInstance();
             date.setTime(user.getDoB().toDate());
             DatePickerDialog birthday = new DatePickerDialog(requireContext(),
@@ -383,7 +381,10 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
                         dob.setValueText(user.getDoBString());
                     }, date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DATE));
             birthday.show();
-        } else if (v == mobileRow) {
+        }
+        //endregion
+        //region else if mobile
+        else if (v == mobile) {
             dialog = new EditDialog(Editable.MOBILE, user.getMobile(), new EditListener() {
                 @Override
                 public void saveEdit (Object value, Editable editable) {
@@ -407,7 +408,10 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
                 }
             });
             dialog.show(getParentFragmentManager(), TAG);
-        } else if (v == pobRow) {
+        }
+        //endregion
+        //region else if pob
+        else if (v == pob) {
             dialog = new EditDialog(Editable.POB, user.getPoB(), new EditListener() {
                 @Override
                 public void saveEdit (Object value, Editable editable) {
@@ -431,7 +435,10 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
                 }
             });
             dialog.show(getParentFragmentManager(), TAG);
-        } else if (v == majorRow) {
+        }
+        //endregion
+        //region else if major
+        else if (v == major) {
             dialog = new EditDialog(Editable.MAJOR, user.getMajor(), new EditListener() {
                 @Override
                 public void saveEdit (Object value, Editable editable) {
@@ -456,7 +463,10 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
                 }
             });
             dialog.show(getParentFragmentManager(), TAG);
-        } else if (v == rankRow) {
+        }
+        //endregion
+        //region else if rank
+        else if (v == rank) {
             try {
                 CharSequence[] rankList = getRanks();
                 final int[] position = {0};
@@ -482,7 +492,10 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
             } catch (Exception e) {
                 Log.e(TAG, "onClick: ", e);
             }
-        } else if (v == joinedRow) {
+        }
+        //endregion
+        //region else if joined
+        else if (v == joined) {
             new ChangeSemesterDialog(Kind.JOINED, new SemesterChangeListener() {
                 @Override
                 public void joinedDone (Semester semester) {
@@ -490,16 +503,60 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
                     joined.setValueText(semester.getName_long());
                 }
             }, CacheData.getCurrentSemester()).show(getParentFragmentManager(), TAG);
-        } else if (v == pictureRow) {
+        }
+        //endregion
+        //region else if picture
+        else if (v == picture) {
+            new ChoosePicture(requireContext(), new OnDoneListener() {
+                @Override
+                public void positive (Intent resultIntent) {
+                    int value = resultIntent.getIntExtra("ImageSelector", -1);
+                    switch (value) {
+                        case CAMERA:
+                            Log.d(TAG, "positive: start activity for result camera");
+                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            try {
+                                startActivityForResult(cameraIntent, CAMERA);
+                            } catch (ActivityNotFoundException e) {
+                                //TODO Ask user permission to user camera
+                                e.printStackTrace();
+                            }
+                            break;
+                        case GALLERY:
+                            Log.d(TAG, "positive: get picture from local gallery");
+                            Intent galleryIntent = new Intent();
+                            galleryIntent.setType("image/*");
+                            galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                            try {
+                                startActivityForResult(Intent.createChooser(galleryIntent,
+                                        "Select Picture"), GALLERY);
+                            } catch (ActivityNotFoundException e) {
+                                //TODO Ask user for permission to use storage
+                                e.printStackTrace();
+                            }
+                            break;
+                        default:
+                            Log.e(TAG, "positive: an error occurred\nvalue is not 0 or 1");
+                            break;
+                    }
+                    toast.setText(getString(R.string.error_dev) + "\npicture");
+                    toast.show();
+                }
+
+                @Override
+                public void negative (Intent resultIntent) {
+                }
+            }).create().show();
             toast.setText(getString(R.string.error_dev) + "\npicture");
             toast.show();
-        } else if (v == connectedRow) {
-            toast.setText(getString(R.string.error_dev) + "\nconnected");
-            toast.show();
-        } else {
+        }
+        //endregion
+        //region else
+        else {
             toast.setText(R.string.fui_error_unknown);
             toast.show();
         }
+        //endregion
     }
 
     private void updateName (@NonNull Map<String, String> nameMap) {
@@ -529,5 +586,37 @@ public class Fragment extends CustomFragment implements View.OnClickListener {
             ranks[i] = list[i].toString();
         }
         return ranks;
+    }
+
+    @Override
+    public void onActivityResult (int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case CAMERA:
+                    Bundle extras = data.getExtras();
+                    //TODO Rotate camera image by 90° counter clock wise
+                    imageBitmap = extras.getParcelable("data");
+                    if (imageBitmap == null) {
+                        return;
+                    }
+                    profileImage.setImageBitmap(imageBitmap);
+                    break;
+                case GALLERY:
+                    try {
+                        final Uri imageUri = data.getData();
+                        final InputStream imageStream =
+                                requireContext().getContentResolver().openInputStream(imageUri);
+                        imageBitmap = BitmapFactory.decodeStream(imageStream);
+                        profileImage.setImageBitmap(imageBitmap);
+                    } catch (Exception ignored) {
+                        // no image chosen or context == null
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return;
+        }
+        Log.d(TAG, "onActivityResult: result not ok: " + resultCode);
     }
 }

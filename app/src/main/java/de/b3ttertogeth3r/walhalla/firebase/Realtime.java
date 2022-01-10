@@ -1,5 +1,7 @@
 package de.b3ttertogeth3r.walhalla.firebase;
 
+import static de.b3ttertogeth3r.walhalla.firebase.Firebase.REALTIME_DB;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -27,13 +29,13 @@ public class Realtime {
      * @since 1.0
      */
     public static void internet (String uid) {
-        Firebase.REALTIME_DB.getReference("/online_users").onDisconnect().setValue(null,
+        REALTIME_DB.getReference("/online_users").onDisconnect().setValue(null,
                 (error, ref) -> {
                     // set value of Person/{userID}/online to false
-                    //Firebase.onlineStatus(uid, false);
+                    Firebase.onlineStatus(uid, false);
                 });
 
-        DatabaseReference connectedRef = Firebase.REALTIME_DB.getReference(".info/connected");
+        DatabaseReference connectedRef = REALTIME_DB.getReference(".info/connected");
         connectedRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange (@NonNull DataSnapshot snapshot) {
