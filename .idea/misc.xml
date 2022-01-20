@@ -27,7 +27,7 @@
         <entry key="app/src/main/res/layout/background.xml" value="0.21197916666666666" />
         <entry key="app/src/main/res/layout/background_dialog.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/custom_button.xml" value="0.17447916666666666" />
-        <entry key="app/src/main/res/layout/custom_dialog_event_edit.xml" value="0.3591485507246377" />
+        <entry key="app/src/main/res/layout/custom_dialog_event_edit.xml" value="0.1" />
         <entry key="app/src/main/res/layout/custom_edit_text.xml" value="0.11639492753623189" />
         <entry key="app/src/main/res/layout/custom_image_button.xml" value="0.1828774062816616" />
         <entry key="app/src/main/res/layout/custom_image_edit.xml" value="0.1828774062816616" />
@@ -38,8 +38,9 @@
         <entry key="app/src/main/res/layout/dialog_change_semester.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/dialog_item_sem_change.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/dialog_sign_in_mail.xml" value="0.1824074074074074" />
-        <entry key="app/src/main/res/layout/event_detail.xml" value="0.2125" />
-        <entry key="app/src/main/res/layout/event_item.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/event_create.xml" value="0.3792325056433409" />
+        <entry key="app/src/main/res/layout/event_detail.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/event_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/event_list.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/image_slider_layout_item.xml" value="0.37604166666666666" />
@@ -48,6 +49,7 @@
         <entry key="app/src/main/res/layout/slider_item.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/slider_layout.xml" value="0.228125" />
         <entry key="app/src/main/res/layout/test.xml" value="0.25" />
+        <entry key="app/src/main/res/menu/add.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/menu/default_edit_only.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/menu/default_save_abort.xml" value="0.26851851851851855" />
         <entry key="app/src/main/res/menu/drink.xml" value="0.3287037037037037" />

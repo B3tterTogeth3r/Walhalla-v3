@@ -1,12 +1,11 @@
 package de.b3ttertogeth3r.walhalla.fragments_main.program;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -25,14 +23,15 @@ import de.b3ttertogeth3r.walhalla.abstraction.CustomFragment;
 import de.b3ttertogeth3r.walhalla.design.MyTitle;
 import de.b3ttertogeth3r.walhalla.dialog.ChangeSemesterDialog;
 import de.b3ttertogeth3r.walhalla.dialog.DetailsDialog;
+import de.b3ttertogeth3r.walhalla.design.EventRow;
 import de.b3ttertogeth3r.walhalla.enums.Kind;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
+import de.b3ttertogeth3r.walhalla.interfaces.Reload;
 import de.b3ttertogeth3r.walhalla.interfaces.SemesterChangeListener;
 import de.b3ttertogeth3r.walhalla.models.Event;
 import de.b3ttertogeth3r.walhalla.models.Semester;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
-import de.b3ttertogeth3r.walhalla.utils.Variables;
 
 /**
  * In this fragment the program of the selected semester. By default the current semester gets
@@ -45,12 +44,7 @@ public class Fragment extends CustomFragment implements SemesterChangeListener {
     private static QuerySnapshot documentSnapshots;
     private final ArrayList<Event> eventList = new ArrayList<>();
     private LinearLayout layout, customTitle;
-    private String publicity = "public";
     private Semester semester = CacheData.getChosenSemester();
-    @Override
-    public void authStatusChanged () {
-        getParentFragmentManager().beginTransaction().replace(R.id.fragment_container, this).commit();
-    }
 
     @Override
     public void start () {
@@ -59,7 +53,8 @@ public class Fragment extends CustomFragment implements SemesterChangeListener {
     }
 
     /**
-     * load on start and after the user chose another semester via {@link de.b3ttertogeth3r.walhalla.dialog.ChangeSemesterDialog ChangeSemesterDialog}
+     * load on start and after the user chose another semester via {@link
+     * de.b3ttertogeth3r.walhalla.dialog.ChangeSemesterDialog ChangeSemesterDialog}
      */
     private void downloadSemester () {
         registration.add(0, Firestore.loadSemesterEvents(String.valueOf(semester.getId()))
@@ -67,35 +62,28 @@ public class Fragment extends CustomFragment implements SemesterChangeListener {
                     if (error != null || value == null || value.isEmpty()) {
                         return;
                     }
-                    // Log.d(TAG, "start: " + value.size());
-                    Fragment.documentSnapshots = value;
+                    documentSnapshots = value;
                     try {
                         updateList();
                     } catch (Exception e) {
-                        Crashlytics.log(TAG, e);
+                        e.printStackTrace();
                     }
                 }));
     }
 
     private void updateList () {
-        if (documentSnapshots.isEmpty()) {
-            return;
-        }
         eventList.clear();
         for (DocumentSnapshot doc : documentSnapshots) {
             Event e = doc.toObject(Event.class);
             if (e != null && e.exists()) {
                 e.setId(doc.getId());
-                //TODO admin user
-                /*
-                if(user == admin || user == Charge.*) {
-                    eventList.add(e);
-                } else{
-                 */
-                if (publicity.equals(e.getPublicity())) {
-                    eventList.add(e);
-                }
-                //}
+                // TODO admin user
+                //  1. always show public events
+                //  2. if a user is signed in:
+                //  2.1 if user is admin/charge -> show everything (incl drafts)
+                //  2.2 show events to its rank(-group)
+                //  2.3 maybe show events to the users auth-group
+                eventList.add(e);
             }
             try {
                 eventList.sort((o1, o2) -> Integer.compare(o1.getBegin().compareTo(o2.getBegin())
@@ -110,7 +98,7 @@ public class Fragment extends CustomFragment implements SemesterChangeListener {
         layout.removeAllViewsInLayout();
         if (groupByMonth.isEmpty()) {
             Log.d(TAG, "updateList: groupByMonth list empty");
-            //TODO show text with message, that no data could be found or loaded.
+            // show text with message, that no data could be found or loaded.
             TextView noData = new MyTitle(getContext());
             noData.setText("Es konnte keine Veranstaltung geladen werden.");
             layout.addView(noData);
@@ -127,41 +115,46 @@ public class Fragment extends CustomFragment implements SemesterChangeListener {
                 keys.remove("title");
                 int keySize = keys.size();
                 for (int i = 0; i < keySize; i++) {
-                    try {
-                        Event event = (Event) month.get(keys.get(i));
-                        View view = fillEventItem(event,
-                                getLayoutInflater().inflate(R.layout.event_item, null));
-                        view.setOnClickListener(v -> Details.display(getParentFragmentManager(),
+                    Object day = month.get(keys.get(i));
+                    if (day == null) {
+                        return;
+                    } else if (day.getClass().equals(Event.class)) {
+                        Event event = (Event) day;
+                        EventRow row = new EventRow(getContext(), event);
+                        row.setOnClickListener(v -> Details.display(getParentFragmentManager(),
                                 event));
-                        //Maybe an onLongClick to edit displayed details only if user is Charge.*
-                        // or super-admin
-                        view.setOnLongClickListener(v -> {
+                        //TODO add onLongClick to edit displayed details only if user is
+                        // enum.Charge.* or super-admin
+                        row.setOnLongClickListener(v -> {
                             DetailsDialog dialog = new DetailsDialog(requireContext(), event);
                             dialog.show();
                             return false;
                         });
-                        view.setBackgroundResource(R.drawable.border_bottom_black);
-                        layout.addView(view);
-                    } catch (ClassCastException cce) {
-                        Log.e(TAG, "updateList: ClassCastException", cce);
-                    } catch (Exception e) {
-                        if (e.getClass() != ClassCastException.class) {
-                            Log.d(TAG, "formatResult: design: first try: exception: ", e);
-                        }
+                        layout.addView(row);
+                    } else {
                         try {
+                            @SuppressWarnings("unchecked")
                             Map<String, Event> eventMap =
-                                    (Map<String, Event>) month.get(keys.get(i));
+                                    (Map<String, Event>) day;
                             //Add layout around for the border
                             LinearLayout multiEventAtOneDay = new LinearLayout(getContext());
                             multiEventAtOneDay.setOrientation(LinearLayout.VERTICAL);
                             for (String string : eventMap.keySet()) {
                                 // Format the events accordingly
-                                Event sameDay = eventMap.get(string);
-                                View view = fillEventItem(sameDay,
-                                        getLayoutInflater().inflate(R.layout.event_item, null));
-                                view.setOnClickListener(v -> Details.display(getParentFragmentManager(), sameDay));
-                                view.setBackgroundResource(R.drawable.border_bottom_gray);
-                                multiEventAtOneDay.addView(view);
+                                Event event = eventMap.get(string);
+                                EventRow row = new EventRow(getContext(), event);
+                                row.setOnClickListener(v -> Details.display(getParentFragmentManager(),
+                                        event));
+                                //TODO add onLongClick to edit displayed details only if
+                                // user is enum.Charge.* or super-admin
+                                row.setOnLongClickListener(v -> {
+                                    DetailsDialog dialog = new DetailsDialog(requireContext(),
+                                            event);
+                                    dialog.show();
+                                    return false;
+                                });
+                                row.isMulti();
+                                multiEventAtOneDay.addView(row);
                             }
                             multiEventAtOneDay.setBackgroundResource(R.drawable.border_bottom_black);
                             layout.addView(multiEventAtOneDay);
@@ -173,119 +166,6 @@ public class Fragment extends CustomFragment implements SemesterChangeListener {
                 }
             }
         }
-    }
-
-    @NonNull
-    @org.jetbrains.annotations.Contract("_, _ -> param2")
-    private View fillEventItem (Event event, @NonNull View view) {
-        RelativeLayout date = view.findViewById(R.id.item_event_date);
-        TextView year = view.findViewById(R.id.item_event_year);
-        TextView day = view.findViewById(R.id.item_event_day);
-        TextView month = view.findViewById(R.id.item_event_month);
-        TextView time = view.findViewById(R.id.item_event_time);
-        TextView punkt = view.findViewById(R.id.item_event_punkt);
-        TextView collar = view.findViewById(R.id.item_event_collar);
-        TextView title = view.findViewById(R.id.item_event_title);
-        TextView description = view.findViewById(R.id.item_event_description);
-
-        //Switch between the kinds of events
-        Calendar calendar = Calendar.getInstance();
-        try {
-            calendar.setTime(event.getBegin().toDate());
-            if (event.getPunct().contains("after") || event.getPunct().contains("ansch")) {
-                date.setVisibility(View.INVISIBLE);
-                time.setText(R.string.program_later);
-                collar.setText(event.getCollar());
-                punkt.setVisibility(View.GONE);
-                title.setText(event.getTitle());
-                description.setText(event.getDescription());
-            }
-            //TODO Make that also possible for events at the same day depending on .getStart()
-            else if (event.getPunct().contains("later")) {
-                date.setVisibility(View.INVISIBLE);
-                time.setText(getTime(calendar));
-                punkt.setVisibility(View.GONE);
-                collar.setVisibility(View.GONE);
-                title.setText(event.getTitle());
-                description.setText(event.getDescription());
-            }
-            //TODO Make that also possible for events at the same day depending on .getStart()
-            else if (event.getPunct().contains("total")) {
-                //what to show?
-                date.setVisibility(View.VISIBLE);
-                year.setText(String.valueOf(calendar.get(Calendar.YEAR)));
-                day.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-                month.setText(Variables.MONTHS[calendar.get(Calendar.MONTH)]);
-                time.setText(getTime(calendar));
-                collar.setVisibility(View.GONE);
-                punkt.setVisibility(View.GONE);
-                title.setText(event.getTitle());
-                description.setText(event.getDescription());
-            } else if (event.getPunct().contains("info")) {
-                //TODO what to show?
-                date.setVisibility(View.GONE);
-                time.setVisibility(View.GONE);
-                collar.setVisibility(View.GONE);
-                punkt.setVisibility(View.GONE);
-                title.setVisibility(View.GONE);
-                String helper = event.getTitle() + " " + event.getDescription();
-                description.setText(helper);
-            } else {
-                date.setVisibility(View.VISIBLE);
-                year.setText(String.valueOf(calendar.get(Calendar.YEAR)));
-                day.setText(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-                month.setText(Variables.MONTHS[calendar.get(Calendar.MONTH)]);
-                punkt.setText(event.getPunct());
-                time.setText(getTime(calendar));
-                collar.setText(event.getCollar());
-                title.setText(event.getTitle());
-                description.setText(event.getDescription());
-            }
-
-            switch (event.getPublicity()) {
-                case "public":
-                    view.setAlpha(1f);
-                    break;
-                case "internal":
-                    view.setAlpha(0.75f);
-                    break;
-                case "draft":
-                    view.setAlpha(0.5f);
-                    break;
-                default:
-                    break;
-            }
-        } catch (Exception format) {
-            Log.e(TAG, "Something went wrong while formatting data", format);
-        }
-
-        Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.fade_in);
-        try {
-            view.startAnimation(anim);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return view;
-    }
-
-    @NonNull
-    @NotNull
-    private String getTime (@NonNull @NotNull Calendar calendar) {
-        float hourFL = calendar.get(Calendar.HOUR_OF_DAY);
-        float minuteFL = calendar.get(Calendar.MINUTE);
-        String minute, hour;
-        if (hourFL < 10) {
-            hour = "0" + String.format(Variables.LOCALE, "%.0f", hourFL);
-        } else {
-            hour = String.format(Variables.LOCALE, "%.0f", hourFL);
-        }
-        if (minuteFL < 10) {
-            minute = "0" + String.format(Variables.LOCALE, "%.0f", minuteFL);
-        } else {
-            minute = String.format(Variables.LOCALE, "%.0f", minuteFL);
-        }
-        return hour + "." + minute + " " + getResources().getString(R.string.clock);
     }
 
     @Override
@@ -315,11 +195,29 @@ public class Fragment extends CustomFragment implements SemesterChangeListener {
     public void toolbarContent () {
         customTitle = toolbar.findViewById(R.id.custom_title);
         customTitle.setVisibility(View.VISIBLE);
-        ((TextView) customTitle.findViewById(R.id.action_bar_title)).setText(R.string.menu_program);
+        ((TextView) customTitle.findViewById(R.id.action_bar_title))
+                .setText(CacheData.getChosenSemester().getName_long());
         customTitle.setOnClickListener(v -> {
-            //TODO add semester change dialog
-            Log.d(TAG, "toolbarContent: custom title clicked");
+            // add semester change dialog
+            // Log.d(TAG, "toolbarContent: custom title clicked");
             ChangeSemesterDialog.display(getParentFragmentManager(), Kind.CHANGE, this, semester);
+        });
+        toolbar.getMenu().clear();
+        toolbar.inflateMenu(R.menu.add);
+        toolbar.setOnMenuItemClickListener(item -> {
+            if(item.getItemId() == R.id.add) {
+                Log.d(TAG, "toolbarContent: add an event");
+                NewEventDialog newEventDialog = NewEventDialog.show(getParentFragmentManager());
+                if(newEventDialog != null) {
+                    newEventDialog.addOnDismissListener(new Reload() {
+                        @Override
+                        public void site () {
+                            updateList();
+                        }
+                    });
+                }
+            }
+            return true;
         });
     }
 
@@ -328,6 +226,16 @@ public class Fragment extends CustomFragment implements SemesterChangeListener {
                             @NonNull @NotNull LayoutInflater inflater) {
         layout = view.findViewById(R.id.fragment_container);
         Log.d(TAG, "createView: semester: " + semester.getId());
+    }
+
+    @Override
+    public void authStatusChanged () {
+        try {
+            updateList();
+        } catch (Exception ignored) {
+        } finally {
+            toolbarContent();
+        }
     }
 
     @Override

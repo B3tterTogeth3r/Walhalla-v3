@@ -3,11 +3,8 @@ package de.b3ttertogeth3r.walhalla.design;
 import static de.b3ttertogeth3r.walhalla.enums.Editable.EMPTY;
 
 import android.content.Context;
-import android.text.InputType;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethod;
 import android.widget.EditText;
 
 import androidx.annotation.Nullable;
@@ -19,7 +16,6 @@ import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.enums.PasswordStrength;
 import de.b3ttertogeth3r.walhalla.interfaces.EditListener;
 import de.b3ttertogeth3r.walhalla.interfaces.MyTextWatcher;
-import io.github.douglasjunior.androidSimpleTooltip.SimpleTooltip;
 
 /**
  * My Design of an edit text view where the hint is always visible
@@ -195,14 +191,16 @@ public class MyEditText extends TextInputLayout {
             try {
                 this.setErrorEnabled(true);
                 this.setErrorIconDrawable(R.drawable.ic_error_outline);
-                this.setErrorIconTintList(ContextCompat.getColorStateList(context, strength.getColor()));
-                String result = strength.getText(context) + "\n" + strength.getRequireDescription(context);
+                this.setErrorIconTintList(ContextCompat.getColorStateList(context,
+                        strength.getColor()));
+                String result =
+                        strength.getText(context) + "\n" + strength.getRequireDescription(context);
                 this.setError(result); //TODO Add password description
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
-            try{
+            try {
                 this.setErrorEnabled(true);
                 this.setErrorTextColor(ContextCompat.getColorStateList(context, R.color.green));
                 this.setErrorIconOnClickListener(null);
@@ -217,7 +215,7 @@ public class MyEditText extends TextInputLayout {
     @Override
     public void setEnabled (boolean enabled) {
         super.setEnabled(enabled);
-        if(this.text != null) {
+        if (this.text != null) {
             text.setEnabled(enabled);
             text.setClickable(enabled);
         }

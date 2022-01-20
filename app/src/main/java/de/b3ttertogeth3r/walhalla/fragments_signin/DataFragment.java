@@ -50,6 +50,7 @@ import de.b3ttertogeth3r.walhalla.firebase.Analytics;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.firebase.Messaging;
+import de.b3ttertogeth3r.walhalla.interfaces.ChangeListener;
 import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.interfaces.EditListener;
 import de.b3ttertogeth3r.walhalla.interfaces.OnDoneListener;
@@ -112,8 +113,8 @@ public class DataFragment extends CustomFragment implements View.OnClickListener
         joined.setOnClickListener(this);
         picture.setOnClickListener(this);
         goOnButton.setEnabled(false);
-        user.setChangeListener(person -> {
-            if (person.isValid()) {
+        user.setChangeListener((ChangeListener<Person>) change -> {
+            if(change.isValid()){
                 // enable goOnButton
                 goOnButton.setEnabled(true);
                 goOnButton.setOnClickListener(DataFragment.this);

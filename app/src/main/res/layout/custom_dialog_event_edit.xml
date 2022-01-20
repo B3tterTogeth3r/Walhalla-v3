@@ -71,22 +71,16 @@
         </RadioGroup>
     </LinearLayout>
 
-    <TableRow
+    <com.google.android.material.textfield.TextInputEditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="Titel:" />
-
+        android:layout_height="wrap_content"
+        android:hint="Titel:">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxWidth="@dimen/material_emphasis_disabled"
-            android:text="Superbowl LV" />
-    </TableRow>
+            android:text="Superbowl LV"
+            />
+    </com.google.android.material.textfield.TextInputEditText>
 
     <TableRow
         android:layout_width="match_parent"

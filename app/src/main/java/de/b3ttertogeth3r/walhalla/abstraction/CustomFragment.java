@@ -106,6 +106,7 @@ public abstract class CustomFragment extends Fragment implements FirebaseAuth.Id
             toolbar = requireActivity().findViewById(R.id.toolbar);
             toolbar.findViewById(R.id.custom_title).setVisibility(View.GONE);
             toolbar.setTitle("Walhalla");
+            toolbar.getMenu().clear();
         } catch (Exception ignored) {
         } finally {
             super.onViewCreated(view, savedInstanceState);

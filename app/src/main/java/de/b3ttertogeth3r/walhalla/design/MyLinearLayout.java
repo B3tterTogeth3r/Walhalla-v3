@@ -15,7 +15,7 @@ public class MyLinearLayout extends LinearLayout {
         super(context);
         int padding = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
-                8f,
+                4f,
                 context.getResources().getDisplayMetrics()
         );
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(

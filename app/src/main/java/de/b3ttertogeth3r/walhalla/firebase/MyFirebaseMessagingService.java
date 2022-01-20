@@ -38,15 +38,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             FirebaseUser user = Authentication.getUser();
 
             //send token to Firestore
-            try {
-                Person p = CacheData.getUser();
-                if (user != null && p.getId().equals(user.getUid())) {
-                    p.setFcm_token(token);
-                    Firestore.uploadPerson(p);
-                }
-            } catch (PersonException e) {
-                Crashlytics.log(TAG, "getting fcm token did not work.", e);
+            Person p = CacheData.getUser();
+            if (user != null && p.getId().equals(user.getUid())) {
+                p.setFcm_token(token);
+                Firestore.uploadPerson(p);
             }
+            CacheData.saveUser(p);
         }
     }
 

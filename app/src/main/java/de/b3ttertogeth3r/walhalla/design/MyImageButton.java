@@ -63,12 +63,18 @@ public class MyImageButton extends RelativeLayout {
     }
 
     public MyImageButton setImageDrawable (Drawable drawable) {
-        image.setImageDrawable(drawable);
+        Glide.with(context)
+                .load(drawable)
+                .fitCenter()
+                .into(image);
         return this;
     }
 
     public MyImageButton setImageBitmap(Bitmap bm){
-        image.setImageBitmap(bm);
+        Glide.with(context)
+                .load(bm)
+                .fitCenter()
+                .into(image);
         return this;
     }
 

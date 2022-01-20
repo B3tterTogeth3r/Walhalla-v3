@@ -3,6 +3,7 @@ package de.b3ttertogeth3r.walhalla.design;
 import android.content.Context;
 import android.util.TypedValue;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -39,7 +40,6 @@ public class MyTextView extends androidx.appcompat.widget.AppCompatTextView {
         setPadding(padding, (int) (0.5 * padding), padding, padding);
         setTextAppearance(context, R.style.TextAppearance_AppCompat_Body1);
         setLayoutParams(params);
-        //TODO Autolink web
         setLinksClickable(true);
         setLinkTextColor(ContextCompat.getColor(context, R.color.colorAccent));
     }

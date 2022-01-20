@@ -9,16 +9,15 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_centerVertical="true"
-        android:background="@color/colorPrimary"
-        android:orientation="vertical">
+        android:background="@color/colorPrimary">
 
         <TextView
             android:id="@+id/item_event_year"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/item_event_day"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="3dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:background="@color/black"
             android:text="2021"
             android:textAlignment="center"
@@ -40,7 +39,7 @@
             android:layout_below="@id/item_event_day"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="4dp"
             android:text="Februar" />
     </RelativeLayout>
 
@@ -83,10 +82,10 @@
         </LinearLayout>
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center_horizontal"
         android:layout_toEndOf="@id/item_event_time_layout"
         android:orientation="vertical"
         android:padding="4dp">
@@ -102,8 +101,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/item_event_title"
-            android:text="The AFC champion Kansas City Chiefs will play the NFC champion Tampa Bay Buccaneers. In the halftime The Weeknd are going to perform."
+            android:text="The AFC champion Kansas City Chiefs will play the NFC champion Tampa Bay Buccaneers. In the halftime The Weeknd is going to perform."
             android:textStyle="italic" />
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>

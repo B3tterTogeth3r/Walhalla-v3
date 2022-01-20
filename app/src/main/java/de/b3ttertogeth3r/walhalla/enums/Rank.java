@@ -2,11 +2,14 @@ package de.b3ttertogeth3r.walhalla.enums;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 public enum Rank {
     ACTIVE_FUX("Fux"),
     ACTIVE("Bursch"),
-    PHILISTINES("A-Philister"),
+    PHILISTINES("Philister"),
     PHILISTINES_B("B-Philister"),
     ACTIVE_FRIEND("Korporationsfreund Aktiver"),
     PHILISTINES_FRIEND("Korporationsfreund Alter Herr"),
@@ -17,7 +20,7 @@ public enum Rank {
     LEFT("Ausgetreten"),
     NONE("not_signed_in"),
     ERROR("Error_while_loading");
-    /** german string description of the string*/
+    /** german string description of the string */
     private final String description;
 
     Rank (String description) {
@@ -32,7 +35,7 @@ public enum Rank {
      * @return the Rank
      */
     public static Rank find (String rankName) {
-        if (rankName == null || rankName.isEmpty()){
+        if (rankName == null || rankName.isEmpty()) {
             return ERROR;
         } else if (ACTIVE_FUX.getDescription().equals(rankName)) {
             return ACTIVE_FUX;
@@ -67,6 +70,28 @@ public enum Rank {
 
     public String getDescription () {
         return description;
+    }
+
+    public Group getGroup () {
+        switch (this) {
+            case PHILISTINES:
+            case HONOR_MEMBER:
+            case PHILISTINES_B:
+            case PHILISTINES_HONOR:
+            case PHILISTINES_FRIEND:
+                return Group.PHILISTINES;
+            case ACTIVE:
+            case ACTIVE_FUX:
+            case ACTIVE_FRIEND:
+                return Group.ACTIVE;
+            case GUEST:
+            case GONE:
+            case LEFT:
+            case NONE:
+            case ERROR:
+            default:
+                return Group.PUBLIC;
+        }
     }
 
     @NonNull

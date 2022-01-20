@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.database.annotations.NotNull;
+import com.google.firebase.database.core.view.Change;
 import com.google.firebase.firestore.Exclude;
 
 import java.util.Calendar;
@@ -17,6 +18,7 @@ import java.util.Set;
 
 import de.b3ttertogeth3r.walhalla.enums.Address;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
+import de.b3ttertogeth3r.walhalla.interfaces.ChangeListener;
 
 public class Person implements Cloneable {
     //region static Variables
@@ -63,7 +65,7 @@ public class Person implements Cloneable {
     private float balance = 0f;
     private String picture_path = "";
     private String fcm_token = "";
-    private PersonChangeListener changeListener = null;
+    private ChangeListener<Person> changeListener = null;
     private String password;
     //endregion
 
@@ -517,11 +519,7 @@ public class Person implements Cloneable {
         }
     }
 
-    public void setChangeListener(PersonChangeListener personChangeListener) {
-        this.changeListener = personChangeListener;
-    }
-
-    public interface PersonChangeListener{
-        void change (Person person);
+    public void setChangeListener(ChangeListener changeListener) {
+        this.changeListener = changeListener;
     }
 }

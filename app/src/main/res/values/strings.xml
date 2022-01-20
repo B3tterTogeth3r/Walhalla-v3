@@ -166,5 +166,17 @@
     <string name="set_password">Passwort setzen</string>
     <string name="edit_password">Passwort ändern</string>
     <string name="confirm_password">Passwort erneut eingeben</string>
+    <string name="choose_time">Uhrzeit</string>
+    <string name="event_duration">Dauer</string>
+    <string name="event_begin">Startzeit</string>
+    <string name="event_date">Startdatum</string>
+    <string name="event_description">Beschreibung</string>
+    <string name="event_visibleTo">Sichtbar für</string>
+    <string name="event_isMeeting">Konvent</string>
+    <string name="event_add">Veranstaltung erstellen</string>
+    <string name="event_collar">Kragen</string>
+    <string name="ok">OK</string>
+    <string name="event_duration_set">Setze die Dauer der Veranstaltung</string>
+    <string name="event_time">Startzeit</string>
 
 </resources>

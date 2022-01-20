@@ -2,11 +2,13 @@ package de.b3ttertogeth3r.walhalla.design;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
@@ -15,6 +17,7 @@ import de.b3ttertogeth3r.walhalla.R;
 
 public class MyButton extends RelativeLayout {
     private final MySubtitle text;
+    private final ImageView icon;
 
     public MyButton (Context context) {
         super(context);
@@ -23,10 +26,11 @@ public class MyButton extends RelativeLayout {
                 16f,
                 context.getResources().getDisplayMetrics()
         );
+        icon = new ImageView(context);
         text = new MySubtitle(context);
         RelativeLayout.LayoutParams textParams = new LayoutParams(
                 LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT
+                LayoutParams.WRAP_CONTENT
         );
         textParams.addRule(CENTER_IN_PARENT);
         setBackground(ContextCompat.getDrawable(context, R.drawable.background_button));
@@ -37,7 +41,18 @@ public class MyButton extends RelativeLayout {
         params.setMargins(padding, padding, padding, padding);
         setLayoutParams(params);
         text.setGravity(Gravity.CENTER);
+        text.setId(R.id.text);
+        LayoutParams imageParams = new LayoutParams((padding / 2), (padding / 2));
+        imageParams.addRule(LEFT_OF, text.getId());
+        icon.setVisibility(View.GONE);
         addView(text, textParams);
+        addView(icon, imageParams);
+    }
+
+    public MyButton setIconDrawable (Drawable drawable) {
+        icon.setImageDrawable(drawable);
+        icon.setVisibility(View.VISIBLE);
+        return this;
     }
 
     public void setText (CharSequence text) {
@@ -45,9 +60,10 @@ public class MyButton extends RelativeLayout {
         this.text.setTextColor(ContextCompat.getColor(getContext(), R.color.background));
     }
 
-    public void setText(int resid) {
+    public MyButton setText(int resid) {
         this.text.setText(resid);
         this.text.setTextColor(ContextCompat.getColor(getContext(), R.color.background));
+        return this;
     }
 
     @Override

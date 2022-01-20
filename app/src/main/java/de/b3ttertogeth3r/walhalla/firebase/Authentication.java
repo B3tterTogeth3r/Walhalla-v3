@@ -140,12 +140,7 @@ public class Authentication {
                             CacheData.saveUser(user);
                             CacheData.changeAnalyticsCollection(true);
                             Firestore.getUserCharge(null);
-                            try {
-                                CacheData.getUser();
-                            } catch (PersonException pe) {
-                                CacheData.setProfileError(new ProfileError(R.string.menu_profile,
-                                        true, "profile incomplete"));
-                            }
+                            CacheData.getUser();
                         } catch (Exception e) {
                             Crashlytics.log(TAG, "Person could not be parsed", e);
                             //Users profile is incomplete or has some errors.

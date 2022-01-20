@@ -22,6 +22,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Account;
+import de.b3ttertogeth3r.walhalla.models.Event;
 import de.b3ttertogeth3r.walhalla.models.Image;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.Semester;
@@ -400,6 +401,28 @@ public class Firestore {
                         return;
                     }
                     listener.onFailure();
+                });
+    }
+
+    public static void uploadEvent (Event event) {
+        uploadEvent(event, null);
+    }
+
+    public static void uploadEvent (Event event, MyCompleteListener<DocumentReference> listener) {
+        String semId = String.valueOf(CacheData.getChosenSemester().getId());
+        FIRESTORE.collection("Semester")
+                .document(semId)
+                .collection("Events")
+                .add(event)
+                .addOnCompleteListener(task -> {
+                    if(task.getException()!= null){
+                        if(listener != null) {
+                            listener.onFailure(task.getException());
+                        }
+                        if(listener != null) {
+                            listener.onSuccess(task.getResult());
+                        }
+                    }
                 });
     }
 }

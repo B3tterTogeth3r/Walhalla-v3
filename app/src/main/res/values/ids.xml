@@ -17,4 +17,15 @@
     <item name="chargen" type="id" />
     <item name="row2first" type="id" />
     <item name="login" type="id" />
+    <item name="layoutDate" type="id" />
+    <item name="layoutTime" type="id" />
+    <item name="layoutTitle" type="id" />
+    <item name="year" type="id" />
+    <item name="day" type="id" />
+    <item name="month" type="id" />
+    <item name="time" type="id" />
+    <item name="collar" type="id" />
+    <item name="punctuality" type="id" />
+    <item name="title" type="id" />
+    <item name="description" type="id" />
 </resources>

@@ -4,7 +4,10 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.Exclude;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+
+import de.b3ttertogeth3r.walhalla.interfaces.ChangeListener;
 
 /**
  * This class contains every value an event of the fraternity could have.
@@ -14,42 +17,55 @@ import java.util.Calendar;
  */
 public class Event {
     private Timestamp end, begin;
-    private String id, punct, title, description, collar, location_name;
+    private String id, punctuality, title, description, collar, location_name;
     private GeoPoint location_coordinates;
-    private boolean meeting = false;
-    private String publicity;
+    private boolean hasDetails, isMeeting;
+    /** list of ranks, the event is visible to
+     * TODO Maybe extendable to analytics groups */
+    private ArrayList<String> visibleTo;
+    private ChangeListener<Event> listener = null;
 
     public Event () {
     }
 
-    public Event (Timestamp end, Timestamp begin, String punct, String title, String description,
-                  String collar, String location_name, GeoPoint location_coordinates,
-                  String publicity) {
+    public Event (Timestamp end, Timestamp begin, String id, String punctuality, String title,
+                  String description, String collar, String location_name,
+                  GeoPoint location_coordinates, boolean hasDetails,
+                  boolean isMeeting, ArrayList<String> visibleTo) {
         this.end = end;
         this.begin = begin;
-        this.punct = punct;
+        this.id = id;
+        this.punctuality = punctuality;
         this.title = title;
         this.description = description;
         this.collar = collar;
         this.location_name = location_name;
         this.location_coordinates = location_coordinates;
-        this.publicity = publicity;
+        this.hasDetails = hasDetails;
+        this.isMeeting = isMeeting;
+        this.visibleTo = visibleTo;
     }
 
-    public Event (Timestamp end, Timestamp begin, String punct, String title, String description,
-                  String collar, String location_name, GeoPoint location_coordinates,
-                  String publicity,
-                  boolean meeting) {
+    public Timestamp getEnd () {
+        return end;
+    }
+
+    public void setEnd (Timestamp end) {
         this.end = end;
+        if(listener != null) {
+            listener.change(this);
+        }
+    }
+
+    public Timestamp getBegin () {
+        return begin;
+    }
+
+    public void setBegin (Timestamp begin) {
         this.begin = begin;
-        this.punct = punct;
-        this.title = title;
-        this.description = description;
-        this.collar = collar;
-        this.location_name = location_name;
-        this.location_coordinates = location_coordinates;
-        this.publicity = publicity;
-        this.meeting = meeting;
+        if(listener != null) {
+            listener.change(this);
+        }
     }
 
     public String getId () {
@@ -60,20 +76,15 @@ public class Event {
         this.id = id;
     }
 
-    public Timestamp getBegin () {
-        return begin;
+    public String getPunctuality () {
+        return punctuality;
     }
 
-    public void setBegin (Timestamp begin) {
-        this.begin = begin;
-    }
-
-    public String getPunct () {
-        return punct;
-    }
-
-    public void setPunct (String punct) {
-        this.punct = punct;
+    public void setPunctuality (String punctuality) {
+        this.punctuality = punctuality;
+        if(listener != null) {
+            listener.change(this);
+        }
     }
 
     public String getTitle () {
@@ -82,17 +93,20 @@ public class Event {
 
     public void setTitle (String title) {
         this.title = title;
+        if(listener != null) {
+            listener.change(this);
+        }
     }
 
     public String getDescription () {
-        if(description == null || description.equals("null")) {
-            return "";
-        }
         return description;
     }
 
     public void setDescription (String description) {
         this.description = description;
+        if(listener != null) {
+            listener.change(this);
+        }
     }
 
     public String getCollar () {
@@ -101,6 +115,9 @@ public class Event {
 
     public void setCollar (String collar) {
         this.collar = collar;
+        if(listener != null) {
+            listener.change(this);
+        }
     }
 
     public String getLocation_name () {
@@ -109,6 +126,9 @@ public class Event {
 
     public void setLocation_name (String location_name) {
         this.location_name = location_name;
+        if(listener != null) {
+            listener.change(this);
+        }
     }
 
     public GeoPoint getLocation_coordinates () {
@@ -117,26 +137,47 @@ public class Event {
 
     public void setLocation_coordinates (GeoPoint location_coordinates) {
         this.location_coordinates = location_coordinates;
+        if(listener != null) {
+            listener.change(this);
+        }
+    }
+
+    public boolean isHasDetails () {
+        return hasDetails;
+    }
+
+    public void setHasDetails (boolean hasDetails) {
+        this.hasDetails = hasDetails;
+        if(listener != null) {
+            listener.change(this);
+        }
     }
 
     public boolean isMeeting () {
-        return meeting;
+        return isMeeting;
     }
 
     public void setMeeting (boolean meeting) {
-        this.meeting = meeting;
+        isMeeting = meeting;
+        if(listener != null) {
+            listener.change(this);
+        }
     }
 
-    public String getPublicity () {
-        return publicity;
+    public ArrayList<String> getVisibleTo () {
+        return visibleTo;
     }
 
-    public void setPublicity (String publicity) {
-        this.publicity = publicity;
+    public void setVisibleTo (ArrayList<String> visibleTo) {
+        this.visibleTo = visibleTo;
+        if(listener != null) {
+            listener.change(this);
+        }
     }
 
+    @Exclude
     public boolean exists () {
-        return !title.isEmpty();
+        return !(title == null || title.isEmpty());
     }
 
     /**
@@ -159,11 +200,52 @@ public class Event {
         return start.get(Calendar.MONTH);
     }
 
-    public Timestamp getEnd () {
-        return end;
+    @Exclude
+    public void setChangeListener(ChangeListener<Event> listener) {
+        this.listener = listener;
     }
 
-    public void setEnd (Timestamp end) {
-        this.end = end;
+    @Exclude
+    public boolean isValid () {
+        return exists() && getBegin() != null && getEnd() != null;
+    }
+
+    @Exclude
+    public String getBeginDateString () {
+        String result = "";
+        if(begin != null){
+            Calendar c = Calendar.getInstance();
+            c.setTime(begin.toDate());
+            int day = c.get(Calendar.DAY_OF_MONTH);
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH)+1;
+            String monthStr;
+            if(month <10) {
+                monthStr = "0" + month;
+            } else {
+                monthStr = String.valueOf(month);
+            }
+            result = day + "." + monthStr + "." + year;
+        }
+        return result;
+    }
+
+    @Exclude
+    public String getBeginTimeString(){
+        String result = "";
+        if (begin != null) {
+            Calendar c = Calendar.getInstance();
+            c.setTime(begin.toDate());
+            int hour = c.get(Calendar.HOUR_OF_DAY);
+            int minute = c.get(Calendar.MINUTE);
+            String minuteStr;
+            if(minute <10){
+                minuteStr = "0" + minute;
+            } else {
+                minuteStr = String.valueOf(minute);
+            }
+            result = hour + ":" + minuteStr;
+        }
+        return result;
     }
 }
