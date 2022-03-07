@@ -8,8 +8,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -56,7 +54,7 @@ public class Firestore {
                         }
                     });
         } catch (Exception e) {
-            Crashlytics.log(TAG, "loading image did not work.", e);
+            Crashlytics.error(TAG, "loading image did not work.", e);
         }
     }
 
@@ -159,7 +157,7 @@ public class Firestore {
                             }
                         })
                         .addOnFailureListener(e -> {
-                            Crashlytics.log(TAG, "userCreate: onFailure: " +
+                            Crashlytics.error(TAG, "userCreate: onFailure: " +
                                     "update user did not work", e);
                             if (listener != null) {
                                 listener.onFailure(e);
@@ -174,7 +172,7 @@ public class Firestore {
                             }
                         })
                         .addOnFailureListener(e -> {
-                            Crashlytics.log(TAG, "onFailure: " +
+                            Crashlytics.error(TAG, "onFailure: " +
                                     "update user did not work", e);
                             if (listener != null) {
                                 listener.onFailure(e);
@@ -278,7 +276,7 @@ public class Firestore {
                     .limit(10)
                     .addSnapshotListener((value, error) -> {
                         if (error != null) {
-                            Crashlytics.log(TAG, "listening to realtime changes " +
+                            Crashlytics.error(TAG, "listening to realtime changes " +
                                     "of drinks did not work, mostly because user has no " +
                                     "drinks");
                             listener.onFailure();
@@ -288,7 +286,6 @@ public class Firestore {
                             listener.onSuccess(value);
                         }
                     });
-
         }
     }
 

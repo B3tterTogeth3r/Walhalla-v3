@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.NotNull;
 
+import de.b3ttertogeth3r.walhalla.design.MyToast;
 import de.b3ttertogeth3r.walhalla.enums.Walhalla;
 import de.b3ttertogeth3r.walhalla.firebase.Analytics;
 import de.b3ttertogeth3r.walhalla.firebase.Authentication;
@@ -52,6 +52,7 @@ import de.b3ttertogeth3r.walhalla.fragments_main.RoomFragment;
 import de.b3ttertogeth3r.walhalla.interfaces.OpenExternal;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
+import de.b3ttertogeth3r.walhalla.utils.MyLog;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         OpenExternal, FirebaseAuth.AuthStateListener {
@@ -284,13 +285,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Analytics.screenChange(item, getString(R.string.menu_balance));
                     fragmentManager.beginTransaction().replace(R.id.fragment_container,
                             new de.b3ttertogeth3r.walhalla.fragments_main.drinks.Fragment())
-                            .addToBackStack(null)
+                            .addToBackStack(TAG)
                             .commit();
                 } else {
                     Analytics.screenChange(item, getString(R.string.menu_rooms));
                     fragmentManager.beginTransaction().replace(R.id.fragment_container,
                             new RoomFragment())
-                            .addToBackStack(null)
+                            .addToBackStack(TAG)
                             .commit();
                 }
                 break;
@@ -390,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             default:
                 Snackbar.make(parentLayout, "page not found" + item.toString(),
                         Snackbar.LENGTH_LONG).show();
-                Crashlytics.log(TAG, "page with id " + item + "doesn't exist");
+                Crashlytics.error(TAG, "page with id " + item + "doesn't exist");
                 break;
         }
     }
@@ -433,15 +434,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && data.getExtras() != null) {
             if (requestCode == SIGN_IN) {
-                Log.d(TAG, "onActivityResult: Sign in done");
+                MyLog.d(TAG, "onActivityResult: Sign in done");
+                MyToast toast = new MyToast(this);
                 if (resultCode == Activity.RESULT_OK) {
                     //reload Activity
-                    //TODO get the activity to start with the previous fragment backstack
+                    //TODO keep previous fragment backstack
                     recreate();
+                    toast.setMessage(R.string.fui_welcome_back_email_header);
+                } else {
+                    toast.setMessage(R.string.sign_in_failed);
                 }
+                toast.show();
             }
         } else {
-            Log.d(TAG, "onActivityResult: no data in intent");
+            MyLog.d(TAG, "onActivityResult: no data in intent");
         }
     }
 

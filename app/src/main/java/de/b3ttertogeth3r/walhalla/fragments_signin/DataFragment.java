@@ -250,7 +250,7 @@ public class DataFragment extends CustomFragment implements View.OnClickListener
                         updateName((Map<String, String>) value);
                     } catch (Exception e) {
                         updateName(nameBackup);
-                        Crashlytics.log(TAG, R.string.fui_missing_first_and_last_name);
+                        Log.i(TAG, "Name not valid");
                         toast.setText(R.string.fui_missing_first_and_last_name);
                         toast.show();
                     }
@@ -301,8 +301,8 @@ public class DataFragment extends CustomFragment implements View.OnClickListener
                         updateAddress((Map<String, Object>) value);
                     } catch (Exception e) {
                         updateAddress(addressBackup);
-                        Crashlytics.log(TAG, R.string.fui_missing_first_and_last_name);
-                        toast.setText(R.string.fui_missing_first_and_last_name);
+                        Log.d(TAG, "Name not valid");
+                        toast.setText(R.string.invalid_address);
                         toast.show();
                     }
                 }

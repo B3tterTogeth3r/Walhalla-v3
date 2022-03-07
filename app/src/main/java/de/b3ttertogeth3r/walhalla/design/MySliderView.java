@@ -37,10 +37,9 @@ public class MySliderView extends SliderView {
     public void design (List<String> list) {
         MySliderAdapter adapter = new MySliderAdapter(context);
         adapter.renewItems(list);
-        setPageIndicatorView(new MyPageIndicatorView(context));
 
         int padding = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
+                TypedValue.COMPLEX_UNIT_SP,
                 8f,
                 context.getResources().getDisplayMetrics()
         );
@@ -50,20 +49,16 @@ public class MySliderView extends SliderView {
         setPadding(padding, padding, padding, padding);
         setLayoutParams(params);
 
-        setIndicatorAnimation(IndicatorAnimationType.WORM); //set indicator animation by using
+        // setIndicatorAnimation(IndicatorAnimationType.WORM); //set indicator animation by using
         // IndicatorAnimationType. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE
         // or SCALE_DOWN or SLIDE and SWAP!!
         setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
         setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_RIGHT);
         setIndicatorEnabled(true);
         setIndicatorVisibility(true);
-        setIndicatorSelectedColor(context.getColor(R.color.colorAccent));
+        setIndicatorSelectedColor(context.getColor(R.color.colorAccentLight));
         setIndicatorUnselectedColor(context.getColor(R.color.colorPrimaryDark));
-        setScrollTimeInSec(10); //set scroll delay in seconds
-
         setSliderAdapter(adapter, true);
-
-        startAutoCycle();
+        setScrollTimeInSec(10); //set scroll delay in seconds
     }
-
 }

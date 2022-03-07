@@ -58,7 +58,7 @@ public class Firebase {
     private static final String TAG = "Firebase";
     protected static FirebaseApp FIREBASE_APP;
     protected static FirebaseRemoteConfig REMOTE_CONFIG;
-    protected static FirebaseCrashlytics CRASHLYTICS;
+    public static FirebaseCrashlytics CRASHLYTICS;
     /**
      * to activate analytics debug write in terminal with only one device connected:
      * <ul>

@@ -76,7 +76,7 @@ public class Site implements Reload {
             for (int i = 0; i < size; i++) {
                 Paragraph line = paragraph.get(i);
                 if (line == null) {
-                    Crashlytics.log("Object line == null");
+                    Crashlytics.error(TAG, "Object line == null");
                 } else {
                     if (line.getKind().startsWith("table_")) {
                         List<Paragraph> tableList = new ArrayList<>();
@@ -99,7 +99,7 @@ public class Site implements Reload {
                 }
             }
         } catch (Exception e) {
-            Crashlytics.log(TAG, "Site isn't active anymore.", e);
+            Crashlytics.error(TAG, "Site isn't active anymore.", e);
         }
         return layout;
     }

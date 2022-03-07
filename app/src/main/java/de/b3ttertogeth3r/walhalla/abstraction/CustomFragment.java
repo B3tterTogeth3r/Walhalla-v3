@@ -147,7 +147,7 @@ public abstract class CustomFragment extends Fragment implements FirebaseAuth.Id
         try {
             toolbarContent();
         } catch (Exception e) {
-            Crashlytics.log("Refilling toolbar at onResume did not work", e);
+            Crashlytics.error(TAG, "Refilling toolbar at onResume did not work", e);
         }
     }
 
@@ -163,7 +163,7 @@ public abstract class CustomFragment extends Fragment implements FirebaseAuth.Id
             }
             registration.clear();
         } catch (Exception e) {
-            Crashlytics.log("Something went wrong while removing the snapshot listener",
+            Crashlytics.error(TAG, "Something went wrong while removing the snapshot listener",
                     e);
         } finally {
             toolbar.getMenu().clear();

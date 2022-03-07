@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,6 +28,7 @@ public class Details extends DialogFragment {
     private static Details detailsDialog;
     private Toolbar toolbar;
     private static Date start_date;
+    TextView title, description,  time;
 
     public Details(Event event) {
         this.event = event;

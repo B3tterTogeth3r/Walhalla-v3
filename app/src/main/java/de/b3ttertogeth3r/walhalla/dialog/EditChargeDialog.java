@@ -167,7 +167,7 @@ public class EditChargeDialog extends DialogFragment implements DialogInterface.
 
                             @Override
                             public void onFailure (Exception exception) {
-                                Crashlytics.log(MyCompleteListener.TAG,
+                                Crashlytics.error(MyCompleteListener.TAG,
                                         "ImageUploadFailure", exception);
                             }
                         });
@@ -215,7 +215,7 @@ public class EditChargeDialog extends DialogFragment implements DialogInterface.
 
                                     @Override
                                     public void onFailure (Exception exception) {
-                                        Crashlytics.log(TAG, "Creating user did not work",
+                                        Crashlytics.error(TAG, "Creating user did not work",
                                                 exception);
                                     }
                                 });
@@ -265,7 +265,7 @@ public class EditChargeDialog extends DialogFragment implements DialogInterface.
 
                     @Override
                     public void onFailure (Exception exception) {
-                        Crashlytics.log(TAG, "editing/adding charge did not work",
+                        Crashlytics.error(TAG, "editing/adding charge did not work",
                                 exception);
                     }
                 });
@@ -309,7 +309,7 @@ public class EditChargeDialog extends DialogFragment implements DialogInterface.
             dialog.setCancelable(false);
             dialog.show(fragmentManager, TAG);
         } catch (Exception e) {
-            Crashlytics.log(TAG, "Could not start dialog");
+            Crashlytics.error(TAG, "Could not start dialog");
         }
     }
 
@@ -372,7 +372,7 @@ public class EditChargeDialog extends DialogFragment implements DialogInterface.
 
             @Override
             public void onFailure (Exception exception) {
-                Crashlytics.log(TAG, "loading all Images did not work", exception);
+                Crashlytics.error(TAG, "loading all Images did not work", exception);
             }
         });
     }

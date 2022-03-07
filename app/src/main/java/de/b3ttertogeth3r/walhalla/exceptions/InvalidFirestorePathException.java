@@ -16,11 +16,11 @@ public class InvalidFirestorePathException extends Exception {
     public InvalidFirestorePathException(){
         super();
         this.message = "exception thrown";
-        Crashlytics.log(TAG, message);
+        Crashlytics.error(TAG, message);
     }
 
     protected InvalidFirestorePathException(String string){
-        Crashlytics.log(TAG, string);
+        Crashlytics.error(TAG, string);
     }
 
     public InvalidFirestorePathException(DocumentReference ref){
@@ -30,7 +30,7 @@ public class InvalidFirestorePathException extends Exception {
         else if(ref.getPath().isEmpty()){
             message = "Path is empty";
         }
-        Crashlytics.log(TAG, message);
+        Crashlytics.error(TAG, message);
     }
 
     public InvalidFirestorePathException(CollectionReference ref){
@@ -39,7 +39,7 @@ public class InvalidFirestorePathException extends Exception {
         } else if (ref.getPath().isEmpty()) {
             message = "CollectionReference path is empty";
         }
-        Crashlytics.log(TAG, message);
+        Crashlytics.error(TAG, message);
     }
 
     @Nullable

@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,7 +28,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.xw.repo.BubbleSeekBar;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
@@ -37,7 +35,6 @@ import java.util.Objects;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.design.MyToast;
 import de.b3ttertogeth3r.walhalla.enums.Punctuality;
-import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.interfaces.ChangeListener;
@@ -75,7 +72,7 @@ public class NewEventDialog extends DialogFragment implements ChangeListener<Eve
             dialog.show(manager, TAG);
             return dialog;
         } catch (Exception e) {
-            Crashlytics.log(TAG, "Displaying dialog to create a new event did not work", e);
+            Crashlytics.error(TAG, "Displaying dialog to create a new event did not work", e);
             return null;
         }
     }
@@ -271,7 +268,7 @@ public class NewEventDialog extends DialogFragment implements ChangeListener<Eve
                 public void onFailure (@Nullable Exception exception) {
                     MyToast toast = new MyToast(getContext());
                     toast.setMessage(exception.getMessage()).show();
-                    Crashlytics.log(TAG, "upload of event failed", exception);
+                    Crashlytics.error(TAG, "upload of event failed", exception);
                 }
             });
         }

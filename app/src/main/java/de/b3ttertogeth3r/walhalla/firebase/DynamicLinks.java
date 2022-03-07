@@ -26,7 +26,7 @@ public class DynamicLinks {
                 listener.onSuccess(null);
             }
         }).addOnFailureListener(exception -> {
-            Crashlytics.log(TAG, ":getDynamicLink" +
+            Crashlytics.error(TAG, ":getDynamicLink" +
                     ":onFailure", exception);
             listener.onSuccess(null);
         });

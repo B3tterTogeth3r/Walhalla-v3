@@ -19,7 +19,6 @@ import de.b3ttertogeth3r.walhalla.MainActivity;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.StartActivity;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
-import de.b3ttertogeth3r.walhalla.exceptions.PersonException;
 import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Person;
 import de.b3ttertogeth3r.walhalla.models.ProfileError;
@@ -70,6 +69,43 @@ public class Authentication {
                         }
                     }
                 });
+    }
+
+    public static void changePassword(Person p, String newPw, MyCompleteListener<Void> listener) {
+        changePassword(p, "Walhalla1864", newPw, listener);
+    }
+
+    public static void changePassword(Person p, String oldPW,  String newPw, MyCompleteListener<Void> listener) {
+        NullPointerException npe = null;
+        if(p == null) {
+            npe = new NullPointerException("Person cannot be null");
+        } else if (p.getEmail() == null) {
+            npe = new NullPointerException("Persons email cannot be null");
+        } else if (p.getEmail().equals("") || p.getEmail().isEmpty()) {
+            npe = new NullPointerException("Persons email cannot be empty");
+        }
+        if(npe == null) {
+            signIn(p.getEmail(), oldPW, success -> {
+                if (success) {
+                    AUTH.getCurrentUser().updatePassword(newPw).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete (@NonNull Task<Void> task) {
+                            if (task.getException() == null && task.isSuccessful()) {
+                                if (listener != null) {
+                                    listener.onSuccess(null);
+                                }
+                            } else {
+                                if (listener != null) {
+                                    listener.onFailure(task.getException());
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            listener.onFailure(npe);
+        }
     }
 
     /**
@@ -142,11 +178,12 @@ public class Authentication {
                             Firestore.getUserCharge(null);
                             CacheData.getUser();
                         } catch (Exception e) {
-                            Crashlytics.log(TAG, "Person could not be parsed", e);
+                            Crashlytics.error(TAG, "Person could not be parsed", e);
                             //Users profile is incomplete or has some errors.
                             CacheData.setProfileError(new ProfileError(R.string.menu_profile,
                                     true, "person values contain errors"));
                             Firebase.CRASHLYTICS.setUserId(PROFILE_DATA);
+                            Crashlytics.error(Authentication.TAG, PROFILE_DATA, e);
                             Firebase.ANALYTICS.setUserId(PROFILE_DATA);
                             Analytics.setRank(Rank.ERROR.toString());
                         }
@@ -156,7 +193,6 @@ public class Authentication {
                         if(listener != null){
                             listener.onSuccess(null);
                         }
-
                     }
 
                     @Override
@@ -178,7 +214,7 @@ public class Authentication {
                 });
             }
         } catch (Exception e) {
-            Log.e(TAG, "changeLoggingData: ", e);
+            Crashlytics.error(TAG, "changeLoggingData: ", e);
         }
         if (!isInit) {
             // ?? TODO MainActivity.authListener.statusChange();
@@ -227,7 +263,7 @@ public class Authentication {
     public interface SignInListener {
         default void failed (@NonNull Task<AuthResult> task) {
             // If sign failed, display a message to the user.
-            Crashlytics.log(TAG, "signInWithCredential:failure", task.getException());
+            Crashlytics.error(TAG, "signInWithCredential:failure", task.getException());
             Snackbar.make(MainActivity.parentLayout, "Authentication failed",
                     Snackbar.LENGTH_INDEFINITE).setAction(R.string.close, null)
                     .setActionTextColor(Color.RED).show();

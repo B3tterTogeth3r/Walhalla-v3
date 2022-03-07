@@ -99,7 +99,7 @@ public class Field {
                     return null;
             }
         } catch (Exception e) {
-            Crashlytics.log(TAG, "design error", e);
+            Crashlytics.error(TAG, "design error", e);
             return null;
         }
     }

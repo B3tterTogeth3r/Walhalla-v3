@@ -57,7 +57,7 @@ public class MySliderAdapter extends SliderViewAdapter<MySliderAdapter.SliderAda
                     StorageReference ref = Storage.downloadImage(image.getLarge_path());
                     Glide.with(viewHolder.itemView)
                             .load(ref)
-                            .fitCenter()
+                            .centerInside()
                             .into(viewHolder.imageViewBackground);
                 } else {
                     Log.e(TAG, "onSuccess: image == null");

@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.database.annotations.NotNull;
-import com.google.firebase.database.core.view.Change;
 import com.google.firebase.firestore.Exclude;
 
 import java.util.Calendar;
@@ -48,8 +47,7 @@ public class Person implements Cloneable {
     private final boolean isVerified;
     /** not editable */
     private final boolean isDisabled;
-    /** not editable */
-    private final boolean hasPassword;
+    private boolean isPassword;
     private String id = "";
     private String PoB = "";
     private String first_Name = "";
@@ -79,7 +77,7 @@ public class Person implements Cloneable {
     public Person () {
         isVerified = false;
         isDisabled = false;
-        hasPassword = false;
+        isPassword = false;
     }
 
     public Person (@NonNull Charge charge) {
@@ -94,7 +92,7 @@ public class Person implements Cloneable {
         this.email = charge.getMail();
         isVerified = false;
         isDisabled = false;
-        hasPassword = false;
+        isPassword = false;
     }
 
     /**
@@ -155,7 +153,7 @@ public class Person implements Cloneable {
         this.picture_path = picture_path;
         this.isVerified = isVerified;
         this.isDisabled = isDisabled;
-        this.hasPassword = hasPassword;
+        this.isPassword = hasPassword;
     }
     //endregion
 
@@ -175,15 +173,6 @@ public class Person implements Cloneable {
      */
     public String getPassword(){
         return password;
-    }
-
-    /**
-     * not editable
-     *
-     * @return true, if user has a password set in Firebase Auth
-     */
-    public boolean hasPassword () {
-        return hasPassword;
     }
 
     public String getId () {
@@ -451,7 +440,7 @@ public class Person implements Cloneable {
             c.setTime(date);
             return c.get(Calendar.DAY_OF_MONTH) + "." + (c.get(Calendar.MONTH) + 1) + "." + c.get(Calendar.YEAR);
         } catch (Exception e) {
-            Crashlytics.log(TAG, "Date invalid", e);
+            Crashlytics.error(TAG, "Date invalid", e);
             return null;
         }
     }
@@ -519,7 +508,16 @@ public class Person implements Cloneable {
         }
     }
 
-    public void setChangeListener(ChangeListener changeListener) {
+    @Exclude
+    public void setChangeListener(ChangeListener<Person> changeListener) {
         this.changeListener = changeListener;
+    }
+
+    public boolean isPassword () {
+        return isPassword;
+    }
+
+    public void setPassword (boolean password) {
+        isPassword = password;
     }
 }

@@ -3,6 +3,7 @@ package de.b3ttertogeth3r.walhalla.fragments_main;
 import static de.b3ttertogeth3r.walhalla.utils.Variables.SIGN_IN;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -296,6 +297,7 @@ public class HomeFragment extends CustomFragment implements View.OnClickListener
     @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick (@NonNull View v) {
+        // TODO: 15.02.22 do this from inside the MainActivity.java
         switch (v.getId()) {
             case R.id.program:
                 Log.d(TAG, "onClick: program");

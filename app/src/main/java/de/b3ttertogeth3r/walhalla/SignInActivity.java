@@ -7,7 +7,6 @@ import static de.b3ttertogeth3r.walhalla.utils.Variables.SIGN_IN_COMPLETE;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +18,7 @@ import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.fragments_signin.StartFragment;
 import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Person;
+import de.b3ttertogeth3r.walhalla.utils.MyLog;
 
 public class SignInActivity extends AppCompatActivity implements MyCompleteListener<Integer> {
     public static final String TAG = "SignInActivity";
@@ -43,6 +43,7 @@ public class SignInActivity extends AppCompatActivity implements MyCompleteListe
     @Override
     public void onBackPressed () {
         if (fm.getBackStackEntryCount() == 0) {
+            // TODO: 15.02.22 doesn't work anymore, but did a month ago...
             finishActivity(Activity.RESULT_CANCELED);
             super.onBackPressed();
             return;
@@ -62,13 +63,13 @@ public class SignInActivity extends AppCompatActivity implements MyCompleteListe
                 toast.setMessage("register successful");
                 toast.show();
                 finish();
-                Log.d(TAG, "onSuccess: register complete");
+                MyLog.d(TAG, "onSuccess: register complete");
                 break;
             case CHANGE_COMPLETE:
-                Log.d(TAG, "onSuccess: change password complete");
+                MyLog.d(TAG, "onSuccess: change password complete");
                 break;
             case SIGN_IN_COMPLETE:
-                Log.d(TAG, "onSuccess: sign in complete");
+                MyLog.d(TAG, "onSuccess: sign in complete");
                 break;
             default:
                 break;
@@ -82,6 +83,6 @@ public class SignInActivity extends AppCompatActivity implements MyCompleteListe
 
     @Override
     public void onFailure (Exception exception) {
-        Crashlytics.log(TAG, "MyCompleteListener failed", exception);
+        Crashlytics.error(TAG, "MyCompleteListener failed", exception);
     }
 }

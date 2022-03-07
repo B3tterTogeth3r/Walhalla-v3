@@ -178,5 +178,15 @@
     <string name="ok">OK</string>
     <string name="event_duration_set">Setze die Dauer der Veranstaltung</string>
     <string name="event_time">Startzeit</string>
+    <string name="sign_in_no_internet">App has no internet connection. Sign in and register only with internet connection possible</string>
+    <string name="account_disabled">Account disabled</string>
+    <string name="account_not_found">No account with this email address found</string>
+    <string name="account_send_verification">Email address not yet verified. Sending a new verification email now</string>
+    <string name="account_sign_in">enter password to sign in</string>
+    <string name="account_no_password">Set a new password</string>
+    <string name="account_create">Create new Account</string>
+    <string name="sign_in">Passwort eingeben</string>
+    <string name="sign_in_failed">Sign in failed!</string>
+    <string name="invalid_address">Dies ist keine gültige Adresse</string>
 
 </resources>

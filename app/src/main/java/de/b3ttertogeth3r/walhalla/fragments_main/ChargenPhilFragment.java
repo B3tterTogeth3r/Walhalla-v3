@@ -44,7 +44,7 @@ public class ChargenPhilFragment extends CustomFragment {
             @Override
             public void onSuccess (QuerySnapshot querySnapshot) {
                 if(querySnapshot == null || querySnapshot.isEmpty()){
-                    Crashlytics.log(TAG, "finding chargen did not work");
+                    Crashlytics.error(TAG, "finding chargen did not work");
                     return;
                 }
                 board.clear();

@@ -30,6 +30,7 @@ public class FormatJSON implements Runnable {
     public FormatJSON (Page page, String configData) {
         this.page = page;
         this.configData = configData;
+        // TODO: 08.02.22 on first app start configData == null -> Fix the JSONObject getter
     }
 
     @Override
@@ -55,8 +56,10 @@ public class FormatJSON implements Runnable {
                 break;
             case CHARGEN_DESCRIPTION:
                 chargen_description(loadJSONFromAsset(Page.CHARGEN_DESCRIPTION.getName()));
+                break;
             default:
-                Log.e(TAG, "run: page has nothing to format");
+                Log.e(TAG, "run: " + page.getName() + " has nothing to format");
+                break;
         }
     }
 
@@ -118,7 +121,7 @@ public class FormatJSON implements Runnable {
         String result;
         try {
             String fileName = name + ".json";
-            Log.d(TAG, "loadJSONFromAsset: " + fileName);
+            // Log.d(TAG, "loadJSONFromAsset: " + fileName);
             AssetManager manager = App.getContext().getApplicationContext().getAssets();
             InputStream is = manager.open(fileName);
             int size = is.available();
@@ -272,7 +275,8 @@ public class FormatJSON implements Runnable {
     @NonNull
     private ArrayList<Paragraph> toList (@NonNull JSONObject paragraph_list, Page page) {
         ArrayList<Paragraph> paragraphs = new ArrayList<>();
-        for (int j = 0; j < paragraph_list.length(); j++) {
+        int j;
+        for (j = 0; j < paragraph_list.length(); j++) {
             try {
                 JSONObject content =
                         paragraph_list.getJSONObject(String.valueOf(j));
@@ -286,8 +290,8 @@ public class FormatJSON implements Runnable {
                 }
                 p.setValue(value);
                 paragraphs.add(p);
-            } catch (Exception e) {
-                Log.e(TAG, page.getName() + ": ", e);
+            } catch (Exception ignored) {
+                Log.e(TAG, "Parsing error in " + page.getName() + " at position " + j);
             }
         }
         return paragraphs;

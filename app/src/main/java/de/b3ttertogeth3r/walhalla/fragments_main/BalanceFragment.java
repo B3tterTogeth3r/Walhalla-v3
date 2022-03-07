@@ -51,7 +51,7 @@ public class BalanceFragment extends CustomFragment {
                             .addSnapshotListener((value, error) -> {
                                 if (error != null) {
                                     String message = "trying to listen to realtime updates of " + person.getId();
-                                    Crashlytics.log(TAG, message, error);
+                                    Crashlytics.error(TAG, message, error);
                                     goHome();
                                 }
                                 if (value != null && value.exists()) {
@@ -59,13 +59,13 @@ public class BalanceFragment extends CustomFragment {
                                         person = value.toObject(Person.class);
                                         updateAmount();
                                     } catch (Exception e){
-                                        Crashlytics.log(TAG, "Parsing person", e);
+                                        Crashlytics.error(TAG, "Parsing person", e);
                                         goHome();
                                     }
                                 } else {
                                     // Go back to home
                                     String message = "trying to listen to realtime updates of " + user.getUid();
-                                    Crashlytics.log(TAG, message, error);
+                                    Crashlytics.error(TAG, message, error);
                                     goHome();
                                 }
                             })

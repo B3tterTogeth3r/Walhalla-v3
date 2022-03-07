@@ -8,6 +8,6 @@ public class NoUploadDataException extends Exception{
 
     public NoUploadDataException () {
         super();
-        Crashlytics.log(TAG, message);
+        Crashlytics.error(TAG, message);
     }
 }

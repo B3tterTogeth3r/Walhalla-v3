@@ -64,12 +64,12 @@ public class RemoteConfig {
                         //Log.e(TAG, "thread: starting " + t.getName());
                         t.start();
                     } catch (Exception e) {
-                        Crashlytics.log(TAG, "starting remote config thread unable to start",
+                        Crashlytics.error(TAG, "starting remote config thread unable to start",
                                 e);
                     }
                 }
             } else {
-                Crashlytics.log(TAG, "Fetching remote config data failed", task.getException());
+                Crashlytics.error(TAG, "Fetching remote config data failed", task.getException());
             }
         });
     }

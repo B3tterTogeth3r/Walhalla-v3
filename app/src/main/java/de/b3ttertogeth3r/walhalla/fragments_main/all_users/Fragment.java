@@ -6,7 +6,6 @@ import android.widget.LinearLayout;
 import android.widget.TableRow;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.firebase.database.annotations.NotNull;
 
@@ -71,7 +70,7 @@ public class Fragment extends CustomFragment implements View.OnClickListener, My
 
     @Override
     public void onFailure (Exception exception) {
-        Crashlytics.log(TAG, "getting users did not work", exception);
+        Crashlytics.error(TAG, "getting users did not work", exception);
     }
 
     @Override

@@ -1,7 +1,5 @@
 package de.b3ttertogeth3r.walhalla.fragments_main.program;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +18,12 @@ import java.util.Map;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstraction.CustomFragment;
+import de.b3ttertogeth3r.walhalla.design.EventRow;
 import de.b3ttertogeth3r.walhalla.design.MyTitle;
 import de.b3ttertogeth3r.walhalla.dialog.ChangeSemesterDialog;
 import de.b3ttertogeth3r.walhalla.dialog.DetailsDialog;
-import de.b3ttertogeth3r.walhalla.design.EventRow;
 import de.b3ttertogeth3r.walhalla.enums.Kind;
+import de.b3ttertogeth3r.walhalla.enums.Page;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.interfaces.Reload;
@@ -121,15 +120,20 @@ public class Fragment extends CustomFragment implements SemesterChangeListener {
                     } else if (day.getClass().equals(Event.class)) {
                         Event event = (Event) day;
                         EventRow row = new EventRow(getContext(), event);
+                        /* TODO: 08.02.22 fix map
+                           TODO: 08.02.22 add helpers and account bound to the event, than
+                             activate the listener again
                         row.setOnClickListener(v -> Details.display(getParentFragmentManager(),
-                                event));
+                                event));*/
                         //TODO add onLongClick to edit displayed details only if user is
                         // enum.Charge.* or super-admin
-                        row.setOnLongClickListener(v -> {
-                            DetailsDialog dialog = new DetailsDialog(requireContext(), event);
-                            dialog.show();
-                            return false;
-                        });
+                        if (Page.PROGRAM.canEditPage(CacheData.getCharge())) {
+                            row.setOnLongClickListener(v -> {
+                                DetailsDialog dialog = new DetailsDialog(requireContext(), event);
+                                dialog.show();
+                                return false;
+                            });
+                        }
                         layout.addView(row);
                     } else {
                         try {
@@ -178,7 +182,7 @@ public class Fragment extends CustomFragment implements SemesterChangeListener {
         try {
             customTitle.setOnClickListener(null);
         } catch (Exception e) {
-            Crashlytics.log(TAG, "Trying to disable the OnClickListener for Custom " +
+            Crashlytics.error(TAG, "Trying to disable the OnClickListener for Custom " +
                     "Title", e);
         }
     }
@@ -203,22 +207,24 @@ public class Fragment extends CustomFragment implements SemesterChangeListener {
             ChangeSemesterDialog.display(getParentFragmentManager(), Kind.CHANGE, this, semester);
         });
         toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.add);
-        toolbar.setOnMenuItemClickListener(item -> {
-            if(item.getItemId() == R.id.add) {
-                Log.d(TAG, "toolbarContent: add an event");
-                NewEventDialog newEventDialog = NewEventDialog.show(getParentFragmentManager());
-                if(newEventDialog != null) {
-                    newEventDialog.addOnDismissListener(new Reload() {
-                        @Override
-                        public void site () {
-                            updateList();
-                        }
-                    });
+        if (Page.PROGRAM.canEditPage(CacheData.getCharge())) {
+            toolbar.inflateMenu(R.menu.add);
+            toolbar.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.add) {
+                    Log.d(TAG, "toolbarContent: add an event");
+                    NewEventDialog newEventDialog = NewEventDialog.show(getParentFragmentManager());
+                    if (newEventDialog != null) {
+                        newEventDialog.addOnDismissListener(new Reload() {
+                            @Override
+                            public void site () {
+                                updateList();
+                            }
+                        });
+                    }
                 }
-            }
-            return true;
-        });
+                return true;
+            });
+        }
     }
 
     @Override

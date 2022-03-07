@@ -18,7 +18,6 @@ import java.util.Map;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.enums.Address;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
-import de.b3ttertogeth3r.walhalla.exceptions.PersonException;
 import de.b3ttertogeth3r.walhalla.firebase.Analytics;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
@@ -141,7 +140,7 @@ public class CacheData {
     public static void setCurrentSemester (int sem_id) {
         Firestore.getSemester(sem_id).get().addOnSuccessListener(documentSnapshot -> {
             if (!documentSnapshot.exists()) {
-                Crashlytics.log(TAG, "could not load semester with id " + sem_id);
+                Crashlytics.error(TAG, "could not load semester with id " + sem_id);
             } else {
                 try {
                     Semester currentSemester = documentSnapshot.toObject(Semester.class);
@@ -152,7 +151,7 @@ public class CacheData {
                     // at each start of the app reset chosen semester to the current one.
                     setChosenSemester(currentSemester);
                 } catch (Exception e) {
-                    Crashlytics.log(TAG, "could not parse semester with id " + sem_id, e);
+                    Crashlytics.error(TAG, "could not parse semester with id " + sem_id, e);
                     Semester currentSemester = new Semester();
                     SP.edit().putStringSet(CURRENT_SEMESTER, currentSemester.getSet())
                             .apply();

@@ -54,7 +54,7 @@ public class ChargenFragment extends CustomFragment {
             @Override
             public void onSuccess (QuerySnapshot querySnapshot) {
                 if (querySnapshot == null || querySnapshot.isEmpty()) {
-                    Crashlytics.log(TAG, "finding chargen did not work");
+                    Crashlytics.error(TAG, "finding chargen did not work");
                     return;
                 }
                 board = new ArrayList<>(Arrays.asList(new Charge(), new Charge(), new Charge(),
@@ -195,7 +195,7 @@ public class ChargenFragment extends CustomFragment {
                     layout.addView(new RowChargen(requireContext(), b, selected));
                 }
             } catch (Exception e) {
-                Crashlytics.log(TAG, "ChargenRow could not be created", e);
+                Crashlytics.error(TAG, "ChargenRow could not be created", e);
             }
         }
 

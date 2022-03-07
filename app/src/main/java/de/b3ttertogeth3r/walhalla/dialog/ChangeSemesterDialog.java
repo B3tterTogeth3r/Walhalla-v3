@@ -52,7 +52,7 @@ public class ChangeSemesterDialog extends DialogFragment implements DialogInterf
             ChangeSemesterDialog dialog = new ChangeSemesterDialog(kind, listener, semester);
             dialog.show(fragmentManager, TAG);
         } catch (Exception e) {
-            Crashlytics.log(TAG, "Could not start dialog");
+            Crashlytics.error(TAG, "Could not start dialog");
         }
     }
 
@@ -189,17 +189,17 @@ public class ChangeSemesterDialog extends DialogFragment implements DialogInterf
                                             listener.selectorDone(s);
                                         }
                                     } catch (Exception e) {
-                                        Crashlytics.log(TAG, "onClick: if-else", e);
+                                        Crashlytics.error(TAG, "onClick: if-else", e);
                                     }
                                 } catch (Exception error) {
-                                    Crashlytics.log(TAG, "onSuccess: selected semester does not " +
+                                    Crashlytics.error(TAG, "onSuccess: selected semester does not " +
                                             "exist", error);
                                     Snackbar.make(MainActivity.parentLayout,
                                             R.string.error_semester_not_exist,
                                             Snackbar.LENGTH_LONG).show();
                                 }
                             } else {
-                                Crashlytics.log(TAG, "onSuccess: selected semester does not exist");
+                                Crashlytics.error(TAG, "onSuccess: selected semester does not exist");
                                 Snackbar.make(MainActivity.parentLayout,
                                         R.string.error_semester_not_exist, Snackbar.LENGTH_LONG).show();
                             }

@@ -65,14 +65,12 @@ public class Storage {
      * @param name
      *         name of the file to upload
      */
-    public static void uploadRecipe (Bitmap recipeBitmap, String name) {
+    public static void uploadRecipe (Bitmap recipeBitmap, String name, @NonNull MyCompleteListener<Void> listener) {
         String imageName = Format.imageName(name);
         REFERENCE.child("recipe/" + imageName)
                 .putBytes(compressImage(recipeBitmap))
-                .addOnSuccessListener(taskSnapshot -> Crashlytics.log(TAG + ":onSuccess: " +
-                        "upload of image " + imageName + "complete."))
-                .addOnFailureListener(e -> Crashlytics.log(TAG + ":onFailure: upload of image" +
-                        " " + imageName + " failed.", e));
+                .addOnSuccessListener(taskSnapshot -> listener.onSuccess(null))
+                .addOnFailureListener(listener::onFailure);
     }
 
     @NonNull
@@ -96,22 +94,13 @@ public class Storage {
      *
      * @param recipe_name
      *         the name of the recipe to download
-     * @return bitmap value of the recipe
      */
-    public static Bitmap downloadRecipe (String recipe_name) {
-        final Bitmap[] result = {null};
+    public static void downloadRecipe (String recipe_name, @NonNull MyCompleteListener<Bitmap> listener) {
         REFERENCE.child("images" + recipe_name).getBytes(ONE_MEGABYTE).addOnSuccessListener(bytes -> {
             // Data for "images/island.jpg" is returns, use this as needed
-            result[0] = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-        }).addOnFailureListener(exception -> {
-            // Handle any errors
-            Crashlytics.log(TAG + ":downloadImage:onFailure: download failed", exception);
-        });
-
-        while (result[0] == null) {
-            // wait
-        }
-        return result[0];
+            Bitmap result = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            listener.onSuccess(result);
+        }).addOnFailureListener(listener::onFailure);
     }
 
     /**

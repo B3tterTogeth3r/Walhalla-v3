@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -23,6 +24,7 @@ import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.interfaces.SplashInterface;
 import de.b3ttertogeth3r.walhalla.utils.CacheData;
+import de.b3ttertogeth3r.walhalla.utils.MyLog;
 
 /**
  * This Activity is the loading screen of the app. Every needed data is being loaded and the user is
@@ -37,7 +39,7 @@ import de.b3ttertogeth3r.walhalla.utils.CacheData;
 public class StartActivity extends AppCompatActivity implements SplashInterface {
     private static final String TAG = "StartActivity";
     public static SplashInterface newDone;
-    private final int total = 5;
+    private final int total = 6;
     private int counter = 0;
     private int progress = 0;
     private ProgressBar progressBar;
@@ -143,13 +145,25 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
 
             @Override
             public void onSuccess (Void voids) {
-                updateProgressbar();
+                setSize();
             }
 
             @Override
             public void onFailure (Exception exception) {
-                updateProgressbar();
+                setSize();
             }
         });
+    }
+
+    void setSize(){
+        updateProgressbar(); // from goOn()
+        // TODO: 08.02.22 find a unit to use and use it for every design value
+        float size = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_PT,
+                1f,
+                getApplicationContext().getResources().getDisplayMetrics()
+        );
+        MyLog.d(TAG, "setSize: " + size);
+        updateProgressbar();
     }
 }
