@@ -298,72 +298,7 @@ public class HomeFragment extends CustomFragment implements View.OnClickListener
     @Override
     public void onClick (@NonNull View v) {
         // TODO: 15.02.22 do this from inside the MainActivity.java
-        switch (v.getId()) {
-            case R.id.program:
-                Log.d(TAG, "onClick: program");
-                Analytics.screenChange(v.getId(), getString(R.string.menu_program));
-                getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments_main.program.Fragment())
-                        .addToBackStack(MainActivity.TAG)
-                        .commit();
-                break;
-            case R.id.greeting:
-                Log.d(TAG, "onClick: greeting");
-                Analytics.screenChange(v.getId(), getString(R.string.menu_greeting));
-                getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new GreetingFragment())
-                        .addToBackStack(MainActivity.TAG)
-                        .commit();
-                break;
-            case R.id.chargen:
-                Log.d(TAG, "onClick: chargen");
-                Analytics.screenChange(v.getId(), getString(R.string.menu_chargen));
-                getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new ChargenFragment())
-                        .addToBackStack(MainActivity.TAG)
-                        .commit();
-                break;
-            case R.id.news:
-                Log.d(TAG, "onClick: news");
-                Analytics.screenChange(v.getId(), getString(R.string.menu_messages));
-                getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                        new de.b3ttertogeth3r.walhalla.fragments_main.news.Fragment())
-                        .addToBackStack(MainActivity.TAG)
-                        .commit();
-                break;
-            case R.id.row2first:
-                if (Authentication.isSignIn()) {
-                    Log.d(TAG, "onClick: balance");
-                    Analytics.screenChange(v.getId(), getString(R.string.menu_balance));
-                    getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            new BalanceFragment())
-                            .addToBackStack(MainActivity.TAG)
-                            .commit();
-                } else {
-                    Log.d(TAG, "onClick: rooms");
-                    Analytics.screenChange(v.getId(), getString(R.string.menu_rooms));
-                    getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            new RoomFragment())
-                            .addToBackStack(MainActivity.TAG)
-                            .commit();
-                }
-                break;
-            case R.id.login:
-                if (Authentication.isSignIn()) {
-                    Authentication.signOut();
-                    Analytics.screenChange(v.getId(), getString(R.string.menu_home));
-                    getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            new HomeFragment())
-                            .addToBackStack(MainActivity.TAG)
-                            .commit();
-                } else {
-                    Log.d(TAG, "onClick: login");
-                    Intent startSignInActivity = new Intent(getActivity(), SignInActivity.class);
-                    requireActivity().startActivityFromFragment(this, startSignInActivity,
-                            SIGN_IN);
-                }
-                break;
-        }
+        MainActivity.externalListener.switchFragment(v.getId());
     }
 
     @Override
@@ -371,10 +306,5 @@ public class HomeFragment extends CustomFragment implements View.OnClickListener
         getParentFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 this)
                 .commit();
-
-    }
-
-    @Override
-    public void onIdTokenChanged (@NonNull FirebaseAuth firebaseAuth) {
     }
 }

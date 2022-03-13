@@ -220,8 +220,7 @@ public class CacheData {
         } catch (Exception ignored) {
         }
 
-        editor.putFloat(USER_DATA + Person.BALANCE, user.getBalance())
-                .putLong(USER_DATA + Person.DOB, user.getDoB().toDate().getTime())
+        editor.putLong(USER_DATA + Person.DOB, user.getDoB().toDate().getTime())
                 .putString(USER_DATA + Person.FIRST_NAME, user.getFirst_Name())
                 .putString(USER_DATA + Person.FCM_TOKEN, user.getFcm_token())
                 .putString(USER_DATA + Person.ID, user.getId())
@@ -240,7 +239,6 @@ public class CacheData {
     @Contract(" -> new")
     public static Person getUser (){
         Person person = new Person();
-        person.setBalance(SP.getFloat(USER_DATA + Person.BALANCE, 0.0f));
         long date = SP.getLong(USER_DATA + Person.DOB, new Date().getTime());
         // Log.e(TAG, "getUser: dob time" + date);
         person.setDoB(new Timestamp(new Date(date)));

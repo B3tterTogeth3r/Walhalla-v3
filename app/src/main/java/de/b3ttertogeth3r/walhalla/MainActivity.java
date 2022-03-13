@@ -129,9 +129,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onStop () {
         //save, that the app has been started before
         CacheData.firstStart();
-        if (Authentication.isSignIn()) {
-            Realtime.internet(CacheData.getUser().getId());
-        }
         super.onStop();
     }
 
@@ -282,17 +279,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.row2first:
                 if (Authentication.isSignIn()) {
-                    Analytics.screenChange(item, getString(R.string.menu_balance));
-                    fragmentManager.beginTransaction().replace(R.id.fragment_container,
-                            new de.b3ttertogeth3r.walhalla.fragments_main.drinks.Fragment())
-                            .addToBackStack(TAG)
-                            .commit();
+                    switchPage(R.string.menu_balance);
                 } else {
-                    Analytics.screenChange(item, getString(R.string.menu_rooms));
-                    fragmentManager.beginTransaction().replace(R.id.fragment_container,
-                            new RoomFragment())
-                            .addToBackStack(TAG)
-                            .commit();
+                    switchPage(R.string.menu_rooms);
+                }
+                break;
+            case R.id.login:
+                if (Authentication.isSignIn()) {
+                    switchPage(R.string.menu_logout);
+                } else {
+                    switchPage(R.string.menu_login);
                 }
                 break;
             case R.string.menu_rooms:
@@ -308,6 +304,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 // startSignIn.addFlags(Intent.FLAG_ACT)
                 startActivityForResult(startSignIn, SIGN_IN);
                 break;
+            case R.id.greeting:
             case R.string.menu_greeting:
                 Analytics.screenChange(item, getString(R.string.menu_greeting));
                 fragmentManager.beginTransaction().replace(R.id.fragment_container,
@@ -329,6 +326,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .addToBackStack(TAG)
                         .commit();
                 break;
+            case R.id.chargen:
             case R.string.menu_chargen:
                 Analytics.screenChange(item, getString(R.string.menu_chargen));
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
@@ -388,8 +386,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.string.menu_logout:
                 Authentication.signOut();
                 break;
+            case R.id.news:
+            case R.string.menu_messages:
+                MainActivity.externalListener.switchFragment(item);
+                Analytics.screenChange(item, getString(R.string.menu_messages));
+                fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                        new de.b3ttertogeth3r.walhalla.fragments_main.news.Fragment())
+                        .addToBackStack(MainActivity.TAG)
+                        .commit();
+                break;
             default:
-                Snackbar.make(parentLayout, "page not found" + item.toString(),
+                Snackbar.make(parentLayout, "page not found" + item,
                         Snackbar.LENGTH_LONG).show();
                 Crashlytics.error(TAG, "page with id " + item + "doesn't exist");
                 break;
@@ -432,20 +439,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onActivityResult (int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (data != null && data.getExtras() != null) {
-            if (requestCode == SIGN_IN) {
-                MyLog.d(TAG, "onActivityResult: Sign in done");
-                MyToast toast = new MyToast(this);
-                if (resultCode == Activity.RESULT_OK) {
-                    //reload Activity
-                    //TODO keep previous fragment backstack
-                    recreate();
-                    toast.setMessage(R.string.fui_welcome_back_email_header);
-                } else {
-                    toast.setMessage(R.string.sign_in_failed);
-                }
-                toast.show();
+        if (requestCode == SIGN_IN) {
+            MyLog.d(TAG, "onActivityResult: Sign in done");
+            MyToast toast = new MyToast(this);
+            if (resultCode == Activity.RESULT_OK) {
+                toast.setMessage(R.string.fui_welcome_back_email_header);
+                recreate();
+            } else if (resultCode == Activity.RESULT_CANCELED) {
+               toast.setMessage(R.string.sign_in_canceled);
+            } else {
+                toast.setMessage(R.string.sign_in_failed);
             }
+            toast.show();
         } else {
             MyLog.d(TAG, "onActivityResult: no data in intent");
         }
@@ -483,6 +488,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.startActivityForResult(intent, resultCode);
     }
 
+    @Override
+    public void switchFragment (int resId) {
+        switchPage(resId);
+    }
 
     @Override
     public void onAuthStateChanged (@NonNull FirebaseAuth firebaseAuth) {

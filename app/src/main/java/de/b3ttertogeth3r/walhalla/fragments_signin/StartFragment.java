@@ -1,5 +1,6 @@
 package de.b3ttertogeth3r.walhalla.fragments_signin;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.text.InputType;
 import android.util.Log;
@@ -67,12 +68,13 @@ public class StartFragment extends CustomFragment implements View.OnClickListene
     @Override
     public void toolbarContent () {
         toolbar.setTitle(R.string.menu_login);
-        // TODO: 15.02.22 add an cancel button
         toolbar.getMenu().clear();
         toolbar.inflateMenu(R.menu.default_save_abort);
         toolbar.getMenu().removeItem(R.id.save);
         toolbar.setOnMenuItemClickListener(item -> {
             if(item.getItemId() == R.id.abort) {
+                this.requireActivity().setResult(Activity.RESULT_CANCELED);
+                this.requireActivity().finish();
                 return true;
             }
             return false;
@@ -168,7 +170,6 @@ public class StartFragment extends CustomFragment implements View.OnClickListene
             // email valid -> check, if an user already exists
             String emailStr = Objects.requireNonNull(email.getText());
             Firestore.getUserByEmail(emailStr, new MyCompleteListener<QuerySnapshot>() {
-                @SuppressWarnings("CatchMayIgnoreException")
                 @Override
                 public void onSuccess (QuerySnapshot querySnapshot) {
                     // if size != 0
@@ -203,7 +204,7 @@ public class StartFragment extends CustomFragment implements View.OnClickListene
                             }
                             Display kind = Display.SHOW;
                             // Ask for password
-                            if (p.isPassword()) {
+                            if (p.getPassword()) {
                                 Log.d(TAG, "onSuccess: ask for password");
                                 toast.setMessage(R.string.account_sign_in).show();
                             } else {

@@ -188,5 +188,7 @@
     <string name="sign_in">Passwort eingeben</string>
     <string name="sign_in_failed">Sign in failed!</string>
     <string name="invalid_address">Dies ist keine gültige Adresse</string>
+    <string name="sign_in_canceled">Sign in canceled!</string>
+    <string name="password_wrong">Passwort falsch</string>
 
 </resources>

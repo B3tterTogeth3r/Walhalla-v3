@@ -2,7 +2,6 @@ package de.b3ttertogeth3r.walhalla.interfaces;
 
 import android.content.Intent;
 
-
 import com.google.firebase.database.annotations.NotNull;
 
 import de.b3ttertogeth3r.walhalla.enums.Walhalla;
@@ -29,5 +28,8 @@ public interface OpenExternal {
     }
 
     void email (@NotNull String email, String subject);
-    void intentOpener(Intent intent, int resultCode);
+
+    void intentOpener (Intent intent, int resultCode);
+
+    void switchFragment(int resId);
 }

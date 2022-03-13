@@ -32,6 +32,7 @@ public class SignInActivity extends AppCompatActivity implements MyCompleteListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         fm = getSupportFragmentManager();
+        uploadListener = this;
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
@@ -42,10 +43,11 @@ public class SignInActivity extends AppCompatActivity implements MyCompleteListe
 
     @Override
     public void onBackPressed () {
+        MyLog.e(TAG, "BackStackSize: " + fm.getBackStackEntryCount());
         if (fm.getBackStackEntryCount() == 0) {
             // TODO: 15.02.22 doesn't work anymore, but did a month ago...
-            finishActivity(Activity.RESULT_CANCELED);
-            super.onBackPressed();
+            setResult(Activity.RESULT_CANCELED);
+            finish();
             return;
         }
         fm.popBackStack();
@@ -59,9 +61,7 @@ public class SignInActivity extends AppCompatActivity implements MyCompleteListe
         switch (result) {
             case REGISTER_COMPLETE:
                 Authentication.sendVerificationMail();
-                MyToast toast = new MyToast(App.getContext());
-                toast.setMessage("register successful");
-                toast.show();
+                setResult(Activity.RESULT_OK);
                 finish();
                 MyLog.d(TAG, "onSuccess: register complete");
                 break;
@@ -74,11 +74,6 @@ public class SignInActivity extends AppCompatActivity implements MyCompleteListe
             default:
                 break;
         }
-    }
-
-    @Override
-    public void finish () {
-        finishActivity(Activity.RESULT_OK);
     }
 
     @Override

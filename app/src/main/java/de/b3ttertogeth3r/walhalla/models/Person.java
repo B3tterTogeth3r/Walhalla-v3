@@ -1,7 +1,5 @@
 package de.b3ttertogeth3r.walhalla.models;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import com.google.firebase.Timestamp;
@@ -11,13 +9,12 @@ import com.google.firebase.firestore.Exclude;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import de.b3ttertogeth3r.walhalla.enums.Address;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.interfaces.ChangeListener;
+import de.b3ttertogeth3r.walhalla.utils.MyLog;
 
 public class Person implements Cloneable {
     //region static Variables
@@ -26,8 +23,6 @@ public class Person implements Cloneable {
     public static final String ADDRESS_NUMBER = Address.NUMBER.toString();
     public static final String ADDRESS_STREET = Address.STREET.toString();
     public static final String ADDRESS_ZIP_CODE = Address.ZIP.toString();
-    public static final String ADDRESS_2 = "address_2";
-    public static final String BALANCE = "balance";
     public static final String DOB = "doB";
     public static final String FIRST_NAME = "first_Name";
     public static final String FCM_TOKEN = "fcm_token";
@@ -44,9 +39,11 @@ public class Person implements Cloneable {
     //endregion
     //region values
     /** not editable */
-    private final boolean isVerified;
+    @Exclude
+    private boolean isVerified;
     /** not editable */
-    private final boolean isDisabled;
+    @Exclude
+    private boolean isDisabled;
     private boolean isPassword;
     private String id = "";
     private String PoB = "";
@@ -60,11 +57,10 @@ public class Person implements Cloneable {
     private Map<String, Object> address_2 = new HashMap<>();
     private int joined = 0;
     private Timestamp DoB = new Timestamp(new Date());
-    private float balance = 0f;
     private String picture_path = "";
     private String fcm_token = "";
     private ChangeListener<Person> changeListener = null;
-    private String password;
+    private String passwordStr;
     //endregion
 
     //region constructors
@@ -75,9 +71,6 @@ public class Person implements Cloneable {
      * @see Person Class description
      */
     public Person () {
-        isVerified = false;
-        isDisabled = false;
-        isPassword = false;
     }
 
     public Person (@NonNull Charge charge) {
@@ -120,8 +113,6 @@ public class Person implements Cloneable {
      *         #ADDRESS_ZIP_CODE} {@link #ADDRESS_CITY}
      * @param joined
      *         the id of the joined semester
-     * @param balance
-     *         the value of the person
      * @param picture_path
      *         string to the cloud storage bucket with the image inside
      * @param major
@@ -133,7 +124,7 @@ public class Person implements Cloneable {
      */
     public Person (String id, String poB, String first_Name, String last_Name, String mail,
                    String mobile, String rank, String major, Map<String, Object> address,
-                   Map<String, Object> address_2, int joined, Timestamp doB, float balance,
+                   Map<String, Object> address_2, int joined, Timestamp doB,
                    String picture_path, String fcm_token, boolean isVerified, boolean isDisabled,
                    boolean hasPassword) {
         this.fcm_token = fcm_token;
@@ -149,7 +140,6 @@ public class Person implements Cloneable {
         this.address_2 = address_2;
         this.joined = joined;
         this.DoB = doB;
-        this.balance = balance;
         this.picture_path = picture_path;
         this.isVerified = isVerified;
         this.isDisabled = isDisabled;
@@ -160,19 +150,20 @@ public class Person implements Cloneable {
     //region Getter and Setter
 
     /**
+     * only for firebase to create a new user
      *
-     * @param password String password for the new auth user
+     * @return normally null
      */
-    public void setPassword(String password) {
-        this.password = password;
+    public String getPasswordStr () {
+        return passwordStr;
     }
 
     /**
-     * only for firebase to create a new user
-     * @return normally null
+     * @param password
+     *         String password for the new auth user
      */
-    public String getPassword(){
-        return password;
+    public void setPasswordStr (String password) {
+        this.passwordStr = password;
     }
 
     public String getId () {
@@ -181,7 +172,7 @@ public class Person implements Cloneable {
 
     public void setId (String id) {
         this.id = id;
-        if(changeListener != null){
+        if (changeListener != null) {
             changeListener.change(this);
         }
     }
@@ -196,7 +187,7 @@ public class Person implements Cloneable {
     @Deprecated
     public void setAddress_2 (Map<String, Object> address_2) {
         this.address_2 = address_2;
-        if(changeListener != null){
+        if (changeListener != null) {
             changeListener.change(this);
         }
     }
@@ -219,7 +210,7 @@ public class Person implements Cloneable {
 
     public void setFirst_Name (String first_Name) {
         this.first_Name = first_Name;
-        if(changeListener != null){
+        if (changeListener != null) {
             changeListener.change(this);
         }
     }
@@ -230,7 +221,7 @@ public class Person implements Cloneable {
 
     public void setLast_Name (String last_Name) {
         this.last_Name = last_Name;
-        if(changeListener != null){
+        if (changeListener != null) {
             changeListener.change(this);
         }
     }
@@ -267,7 +258,6 @@ public class Person implements Cloneable {
         Map<String, Object> data = new HashMap<>();
 
         data.put(ADDRESS, getAddress());
-        data.put(BALANCE, getBalance());
         data.put(DOB, getDoB());
         data.put(FIRST_NAME, getFirst_Name());
         data.put(JOINED, getJoined());
@@ -289,13 +279,9 @@ public class Person implements Cloneable {
 
     public void setAddress (Map<String, Object> address) {
         this.address = address;
-        if(changeListener != null){
+        if (changeListener != null) {
             changeListener.change(this);
         }
-    }
-
-    public float getBalance () {
-        return balance;
     }
 
     public Timestamp getDoB () {
@@ -324,7 +310,7 @@ public class Person implements Cloneable {
 
     public void setMobile (String mobile) {
         this.mobile = mobile;
-        if(changeListener != null){
+        if (changeListener != null) {
             changeListener.change(this);
         }
     }
@@ -339,7 +325,7 @@ public class Person implements Cloneable {
 
     public void setPoB (String poB) {
         PoB = poB;
-        if(changeListener != null){
+        if (changeListener != null) {
             changeListener.change(this);
         }
     }
@@ -350,7 +336,7 @@ public class Person implements Cloneable {
 
     public void setRank (String rank) {
         this.rank = rank;
-        if(changeListener != null){
+        if (changeListener != null) {
             changeListener.change(this);
         }
     }
@@ -361,42 +347,35 @@ public class Person implements Cloneable {
 
     public void setFcm_token (String fcm_token) {
         this.fcm_token = fcm_token;
-        if(changeListener != null){
+        if (changeListener != null) {
             changeListener.change(this);
         }
     }
 
     public void setPicture_path (String picture_path) {
         this.picture_path = picture_path;
-        if(changeListener != null){
+        if (changeListener != null) {
             changeListener.change(this);
         }
     }
 
     public void setMajor (String major) {
         this.major = major;
-        if(changeListener != null){
+        if (changeListener != null) {
             changeListener.change(this);
         }
     }
 
     public void setJoined (int joined) {
         this.joined = joined;
-        if(changeListener != null){
+        if (changeListener != null) {
             changeListener.change(this);
         }
     }
 
     public void setDoB (Timestamp doB) {
         DoB = doB;
-        if(changeListener != null){
-            changeListener.change(this);
-        }
-    }
-
-    public void setBalance (float balance) {
-        this.balance = balance;
-        if(changeListener != null){
+        if (changeListener != null) {
             changeListener.change(this);
         }
     }
@@ -410,6 +389,8 @@ public class Person implements Cloneable {
         return isVerified;
     }
 
+    //endregion
+
     /**
      * not editable
      *
@@ -418,8 +399,6 @@ public class Person implements Cloneable {
     public boolean isDisabled () {
         return isDisabled;
     }
-
-    //endregion
 
     /**
      * formatted into a string in german format. Example:
@@ -443,27 +422,6 @@ public class Person implements Cloneable {
             Crashlytics.error(TAG, "Date invalid", e);
             return null;
         }
-    }
-
-    @Exclude
-    public Set<String> getSet () {
-        Set<String> set = new HashSet<>();
-        set.add(this.fcm_token);
-        set.add(this.id);
-        set.add(this.PoB);
-        set.add(this.first_Name);
-        set.add(this.last_Name);
-        set.add(this.email);
-        set.add(this.mobile);
-        set.add(this.rank);
-        set.add(this.major);
-        set.add(getAddressString());
-        set.add(String.valueOf(this.joined));
-        set.add(String.valueOf(this.DoB.getSeconds()));
-        set.add(String.valueOf(this.balance));
-        set.add(this.picture_path);
-
-        return set;
     }
 
     /**
@@ -492,32 +450,33 @@ public class Person implements Cloneable {
         return result;
     }
 
+    @Exclude
     public boolean isValid () {
         try {
             return // !PoB.isEmpty() &&
                     !first_Name.isEmpty() &&
-                    !last_Name.isEmpty() &&
-                    // !mobile.isEmpty() &&
-                    // !address.isEmpty() &&
-                    !rank.isEmpty() &&
-                    !email.isEmpty();
-                    // DoB != null;
+                            !last_Name.isEmpty() &&
+                            // !mobile.isEmpty() &&
+                            // !address.isEmpty() &&
+                            !rank.isEmpty() &&
+                            !email.isEmpty();
+            // DoB != null;
         } catch (Exception e) {
-            Log.e(TAG, "isValid: ", e);
+            MyLog.e(TAG, "isValid: ", e);
             return false;
         }
     }
 
     @Exclude
-    public void setChangeListener(ChangeListener<Person> changeListener) {
+    public void setChangeListener (ChangeListener<Person> changeListener) {
         this.changeListener = changeListener;
-    }
-
-    public boolean isPassword () {
-        return isPassword;
     }
 
     public void setPassword (boolean password) {
         isPassword = password;
+    }
+
+    public boolean getPassword () {
+        return isPassword;
     }
 }

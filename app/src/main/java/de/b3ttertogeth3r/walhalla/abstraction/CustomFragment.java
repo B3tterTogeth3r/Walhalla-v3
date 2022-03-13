@@ -229,17 +229,7 @@ public abstract class CustomFragment extends Fragment implements FirebaseAuth.Id
 
     @Override
     public void onIdTokenChanged (@NonNull FirebaseAuth firebaseAuth) {
-        Authentication.changeLoggingData(new MyCompleteListener<Void>() {
-            @Override
-            public void onSuccess (Void result) {
-                authStatusChanged();
-            }
-
-            @Override
-            public void onFailure (Exception exception) {
-
-            }
-        });
+        authStatusChanged();
     }
 
     /**

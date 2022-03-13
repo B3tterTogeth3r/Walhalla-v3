@@ -21,6 +21,7 @@ import de.b3ttertogeth3r.walhalla.SignInActivity;
 import de.b3ttertogeth3r.walhalla.abstraction.CustomFragment;
 import de.b3ttertogeth3r.walhalla.design.MyButton;
 import de.b3ttertogeth3r.walhalla.design.MyEditText;
+import de.b3ttertogeth3r.walhalla.design.MyToast;
 import de.b3ttertogeth3r.walhalla.enums.Display;
 import de.b3ttertogeth3r.walhalla.enums.PasswordStrength;
 import de.b3ttertogeth3r.walhalla.firebase.Analytics;
@@ -28,6 +29,7 @@ import de.b3ttertogeth3r.walhalla.firebase.Authentication;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
 import de.b3ttertogeth3r.walhalla.models.Person;
+import de.b3ttertogeth3r.walhalla.utils.MyLog;
 import de.b3ttertogeth3r.walhalla.utils.Variables;
 
 /**
@@ -163,14 +165,15 @@ public class PasswordFragment extends CustomFragment implements View.OnClickList
 
     private void signIn () {
         layout.removeAllViews();
-        layout.setBackgroundColor(Color.BLUE);
+        // TODO: 12.03.22 add title and welcome back message
         password_one = new MyEditText(getContext());
         password_one
                 .setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
-                .setDescription(R.string.fui_new_password_hint);
+                .setDescription(R.string.fui_password_hint);
         layout.addView(password_one);
         signInButton = new MyButton(getContext());
         signInButton.setText(R.string.fui_sign_in_default);
+        signInButton.setOnClickListener(this);
         layout.addView(signInButton);
     }
 
@@ -188,10 +191,11 @@ public class PasswordFragment extends CustomFragment implements View.OnClickList
             password_two.setEnabled(false);
             if (kind == Display.ADD) {
                 user.setId(null);
-                user.setPassword(password_two.getString());
+                user.setPasswordStr(password_two.getString());
                 Firestore.uploadPerson(user, new MyCompleteListener<String>() {
                     @Override
                     public void onSuccess (String string) {
+                        signInButton.setEnabled(false);
                         registration.add(waitForCF(string));
                     }
 
@@ -210,6 +214,7 @@ public class PasswordFragment extends CustomFragment implements View.OnClickList
                             @Override
                             public void onSuccess (@Nullable Void result) {
                                 Log.e(TAG, "onSuccess: success");
+                                signInButton.setEnabled(false);
                                 // TODO: 08.02.22
                                 //  1. finish fragment/activity
                                 //  2. toast success message on MainActivity
@@ -237,6 +242,22 @@ public class PasswordFragment extends CustomFragment implements View.OnClickList
                         });
             }
         }
+        if (v == signInButton) {
+            if (kind == Display.SHOW) {
+                signInButton.setEnabled(false);
+                Authentication.signIn(user.getEmail(), password_one.getString(),
+                        success -> {
+                            if (success) {
+                                SignInActivity.uploadListener.onSuccess(Variables.REGISTER_COMPLETE);
+                            } else {
+                                signInButton.setEnabled(true);
+                                MyToast toast = new MyToast(getContext());
+                                toast.setText(R.string.password_wrong);
+                                toast.show();
+                            }
+                        });
+            }
+        }
     }
 
     /**
@@ -254,9 +275,9 @@ public class PasswordFragment extends CustomFragment implements View.OnClickList
             }
             try {
                 Person p = value.toObject(Person.class);
-                if (p != null && p.getPassword() == null) {
+                if (p != null && p.getPasswordStr() == null) {
                     Log.i(TAG, "onSuccess: sign in start");
-                    Authentication.signIn(user.getEmail(), user.getPassword(),
+                    Authentication.signIn(user.getEmail(), user.getPasswordStr(),
                             success -> {
                                 if (success) {
                                     SignInActivity.uploadListener.onSuccess(Variables.REGISTER_COMPLETE);
@@ -265,7 +286,8 @@ public class PasswordFragment extends CustomFragment implements View.OnClickList
                                 }
                             });
                 }
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                MyLog.e(TAG, "Listener didn't work", e);
             }
         });
     }

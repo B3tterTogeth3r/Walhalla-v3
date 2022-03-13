@@ -127,7 +127,8 @@ public class BalanceFragment extends CustomFragment {
      */
     private void updateAmount () {
         try {
-            String string = "€ " + String.format(Variables.LOCALE, "%.2f", person.getBalance());
+            //TODO read data from new place
+            String string = "€ " + "0,00";//String.format(Variables.LOCALE, "%.2f", person.getBalance());
             amount.setText(string);
         } catch (Exception e) {
             Log.e(TAG, "updateAmount: formatting did not work", e);
