@@ -5,7 +5,7 @@
 5    <uses-sdk
 6        android:minSdkVersion="16"
 6-->/Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml
-7        android:targetSdkVersion="30" />
+7        android:targetSdkVersion="32" />
 7-->/Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml
 8
 9    <application android:supportsRtl="true" >

@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022.
+  ~
+  ~ Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
+  ~ except in compliance with the License. You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the
+  ~  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+  ~  either express or implied. See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.b3ttertogeth3r.walhalla">
 
@@ -6,8 +20,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -24,6 +41,12 @@
             android:description="@string/app_description"
             android:exported="true"
             android:icon="@drawable/wappen_round"
+            android:theme="@style/SplashTheme" />
+
+        <activity
+            android:name=".StartActivity"
+            android:exported="true"
+            android:taskAffinity=".StartActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,23 +61,27 @@
         </activity>
 
         <activity
-            android:name=".StartActivity"
-            android:taskAffinity=".StartActivity"
-            android:theme="@style/SplashTheme" />
-
-        <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-
-        <activity android:name=".SignInActivity"
-            android:taskAffinity=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.INSERT" />
+                <data android:mimeType="vnd.android.cursor.dir/event" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <meta-data
             android:name="firebase_performance_collection_enabled"
             android:value="true" />
+
+        <!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
+        <!-- TODO register App with admob to replace APPLICATION_ID -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-1971318728377485~2511846917" />
 
         <meta-data
             android:name="firebase_performance_logcat_enabled"
@@ -64,7 +91,7 @@
             android:value="true" />
 
         <service
-            android:name="de.b3ttertogeth3r.walhalla.firebase.MyFirebaseMessagingService"
+            android:name=".old.firebase.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -81,7 +108,17 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
 
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/maps_api_key" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
     </application>
-
-
 </manifest>

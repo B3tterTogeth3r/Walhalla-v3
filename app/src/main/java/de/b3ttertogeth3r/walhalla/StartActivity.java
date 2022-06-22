@@ -1,45 +1,47 @@
+/*
+ * Copyright (c) 2022.
+ *
+ * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ *  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ *  either express or implied. See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package de.b3ttertogeth3r.walhalla;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
-
+import de.b3ttertogeth3r.walhalla.firebase.Analytics;
+import de.b3ttertogeth3r.walhalla.firebase.Authentication;
+import de.b3ttertogeth3r.walhalla.firebase.CloudMessaging;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.DynamicLinks;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
-import de.b3ttertogeth3r.walhalla.interfaces.MyCompleteListener;
-import de.b3ttertogeth3r.walhalla.interfaces.SplashInterface;
-import de.b3ttertogeth3r.walhalla.utils.CacheData;
-import de.b3ttertogeth3r.walhalla.utils.MyLog;
+import de.b3ttertogeth3r.walhalla.firebase.InAppMessaging;
+import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
+import de.b3ttertogeth3r.walhalla.firebase.Storage;
+import de.b3ttertogeth3r.walhalla.interfaces.FirebaseInit;
+import de.b3ttertogeth3r.walhalla.object.Log;
 
-/**
- * This Activity is the loading screen of the app. Every needed data is being loaded and the user is
- * displayed a progressbar. If an error occurred, the user gets an alert dialog with that error.
- * Also most variables, that could change over time are created here.
- *
- * @author B3tterTogeth3r
- * @version 1.0
- * @see AppCompatActivity
- * @since 1.0
- */
-public class StartActivity extends AppCompatActivity implements SplashInterface {
+
+public class StartActivity extends AppCompatActivity implements FirebaseInit {
     private static final String TAG = "StartActivity";
-    public static SplashInterface newDone;
-    private final int total = 6;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final int TOTAL = 9;
     private int counter = 0;
     private int progress = 0;
     private ProgressBar progressBar;
@@ -51,7 +53,23 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
         progressBar = findViewById(R.id.progressBar);
         progressBar.setProgress(0);
         progressBar.setVisibility(View.VISIBLE);
-        newDone = this;
+        new App();
+
+        //Init cacheData here
+
+        FirebaseInit firebaseInit = this;
+
+        firebaseInit.Analytics(getApplicationContext());
+        firebaseInit.Crashlytics(getApplicationContext());
+        firebaseInit.Authentication(getApplicationContext());
+        firebaseInit.CloudMessaging(getApplicationContext());
+        firebaseInit.DynamicLinks(getApplicationContext());
+        firebaseInit.Firestore(getApplicationContext());
+        firebaseInit.InAppMessaging(getApplicationContext());
+        firebaseInit.RemoteConfig(getApplicationContext());
+        firebaseInit.Storage(getApplicationContext());
+
+        /*
         try {
             CacheData.init(getApplicationContext());
         } catch (Exception e) {
@@ -69,9 +87,8 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
                     .show();
         } else {
             updateProgressbar();
-            new App();
-            App.init();
-        }
+            new de.b3ttertogeth3r.walhalla.old.App();
+        }*/
     }
 
     public boolean isOnline () {
@@ -82,7 +99,7 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
     }
 
     private void updateProgressbar () {
-        if (counter == total) {
+        if (counter == TOTAL) {
             progressBar.setProgress(progress, true);
             /* Go to MainActivity */
             Intent mainIntent = new Intent(this, MainActivity.class);
@@ -90,80 +107,103 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
             finish();
         } else {
             counter++;
-            progress = progress + (100 / total);
+            progress = progress + (100 / TOTAL);
             progressBar.setProgress(progress, true);
-            if(counter == total) {
+            if (counter == TOTAL) {
                 updateProgressbar();
             }
         }
     }
 
     @Override
-    public void appDone () {
-        updateProgressbar();
-        try {
-            Firebase.init(getApplicationContext());
-        } catch (Exception e) {
-            Log.e(TAG, "appDone: ", e);
+    public void Analytics (Context context) {
+        if (new Analytics().init(context)) {
+            updateProgressbar();
+            Log.i(TAG, "Analytics init complete");
+            return;
         }
+        android.util.Log.e(TAG, "Analytics init incomplete");
     }
 
     @Override
-    public void firebaseDone () {
-        // fetch dynamic links and push message intents
-        updateProgressbar();
-        dynamicLink();
-        goOn();
-    }
-
-    /**
-     * @see <a href="https://firebase.google.com/docs/dynamic-links/android/receive">Firebase
-     * Dynamic Links</a>
-     */
-    private void dynamicLink () {
-        DynamicLinks.DYNAMIC_LINKS = FirebaseDynamicLinks.getInstance();
-        try {
-            DynamicLinks.getLink(getIntent(), new MyCompleteListener<Void>() {
-                @Override
-                public void onSuccess (@Nullable Void result) {
-                    updateProgressbar();
-                }
-
-                @Override
-                public void onFailure (@Nullable Exception exception) {
-                    updateProgressbar();
-                }
-            });
-        } catch (NullPointerException npe) {
+    public void Authentication (Context context) {
+        if (new Authentication().init(context)) {
             updateProgressbar();
+            Log.i(TAG, "Authentication init complete");
+            return;
         }
+        Log.e(TAG, "Authentication init incomplete");
     }
 
-    void goOn () {
-        // Go to start Activity after fetching dynamic links and intents from push messages
-        Firestore.getUserCharge(new MyCompleteListener<Void>() {
-
-            @Override
-            public void onSuccess (Void voids) {
-                setSize();
-            }
-
-            @Override
-            public void onFailure (Exception exception) {
-                setSize();
-            }
-        });
+    @Override
+    public void CloudMessaging (Context context) {
+        if (new CloudMessaging().init(context)) {
+            updateProgressbar();
+            Log.i(TAG, "CloudMessaging init complete");
+            return;
+        }
+        Log.i(TAG, "CloudMessaging init incomplete");
     }
 
-    void setSize(){
-        updateProgressbar(); // from goOn()
-        // TODO: 08.02.22 find a unit to use and use it for every design value
-        float size = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_PT,
-                1f,
-                getApplicationContext().getResources().getDisplayMetrics()
-        );
-        MyLog.d(TAG, "setSize: " + size);
-        updateProgressbar();
+    @Override
+    public void Crashlytics (Context context) {
+        if (new Crashlytics().init(context)) {
+            updateProgressbar();
+            Log.i(TAG, "Crashlytics init complete");
+            return;
+        }
+        Log.i(TAG, "Crashlytics init incomplete");
+    }
+
+    @Override
+    public void DynamicLinks (Context context) {
+        if (new DynamicLinks().init(context)) {
+            updateProgressbar();
+            Log.i(TAG, "DynamicLinks init complete");
+            return;
+        }
+        Log.i(TAG, "DynamicLinks init incomplete");
+    }
+
+    @Override
+    public void Firestore (Context context) {
+        if (new Firestore().init(context)) {
+            updateProgressbar();
+            Log.i(TAG, "Firestore init complete");
+            return;
+        }
+        Log.i(TAG, "Firestore init incomplete");
+    }
+
+    @Override
+    public void InAppMessaging (Context context) {
+        if (new InAppMessaging().init(context)) {
+            updateProgressbar();
+            Log.i(TAG, "InAppMessaging init complete");
+            return;
+        }
+        Log.i(TAG, "InAppMessaging init incomplete");
+    }
+
+    @Override
+    public void RemoteConfig (Context context) {
+        if (new RemoteConfig().init(context)) {
+            RemoteConfig.apply();
+            RemoteConfig.update();
+            updateProgressbar();
+            Log.i(TAG, "RemoteConfig init complete");
+            return;
+        }
+        Log.i(TAG, "RemoteConfig init incomplete");
+    }
+
+    @Override
+    public void Storage (Context context) {
+        if (new Storage().init(context)) {
+            updateProgressbar();
+            Log.i(TAG, "Storage init complete");
+            return;
+        }
+        Log.i(TAG, "Storage init incomplete");
     }
 }

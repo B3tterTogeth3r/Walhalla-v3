@@ -3,7 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="../../../../layout/custom_preview.xml" value="0.21666666666666667" />
+        <entry key="../../../../layout/custom_preview.xml" value="0.22395833333333334" />
         <entry key="../../.gradle/caches/transforms-3/a3f41d7d27190c846f1169b055d627c8/transformed/jetified-firebase-ui-auth-7.2.0/res/drawable/fui_ic_github_white_24dp.xml" value="0.27685185185185185" />
         <entry key="../../.gradle/caches/transforms-3/a3f41d7d27190c846f1169b055d627c8/transformed/jetified-firebase-ui-auth-7.2.0/res/drawable/fui_idp_button_background_github.xml" value="0.27685185185185185" />
         <entry key="../../.gradle/caches/transforms-3/a3f41d7d27190c846f1169b055d627c8/transformed/jetified-firebase-ui-auth-7.2.0/res/layout/fui_activity_register_email.xml" value="0.37604166666666666" />
@@ -13,13 +13,20 @@
         <entry key="../../.gradle/caches/transforms-3/a3f41d7d27190c846f1169b055d627c8/transformed/jetified-firebase-ui-auth-7.2.0/res/layout/fui_register_email_layout.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/drawable-v24/background_button.xml" value="0.3921875" />
         <entry key="app/src/main/res/drawable-v24/background_image_description.xml" value="0.24427083333333333" />
+        <entry key="app/src/main/res/drawable-v24/background_toast.xml" value="0.142" />
+        <entry key="app/src/main/res/drawable-v24/border_bottom_black.xml" value="0.3045" />
+        <entry key="app/src/main/res/drawable-v24/border_bottom_gray.xml" value="0.3045" />
         <entry key="app/src/main/res/drawable-v24/border_round.xml" value="0.20572916666666666" />
         <entry key="app/src/main/res/drawable-v24/border_round_clear.xml" value="0.17864583333333334" />
+        <entry key="app/src/main/res/drawable-v24/ic_add.xml" value="0.3045" />
+        <entry key="app/src/main/res/drawable-v24/ic_arrow_right.xml" value="0.3045" />
         <entry key="app/src/main/res/drawable-v24/ic_baseline_announcement_24.xml" value="0.24427083333333333" />
         <entry key="app/src/main/res/drawable/background_overlay.xml" value="0.20572916666666666" />
         <entry key="app/src/main/res/drawable/checkbox_selector.xml" value="0.20572916666666666" />
+        <entry key="app/src/main/res/drawable/ic_check_circle.xml" value="0.3045" />
+        <entry key="app/src/main/res/drawable/ic_circle.xml" value="0.3045" />
         <entry key="app/src/main/res/drawable/ic_image.xml" value="0.3765625" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.22864583333333333" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_sign_in.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_start.xml" value="0.25" />
         <entry key="app/src/main/res/layout/auto_image_slider.xml" value="0.228125" />
@@ -37,10 +44,11 @@
         <entry key="app/src/main/res/layout/designtest.xml" value="0.67" />
         <entry key="app/src/main/res/layout/dialog_change_semester.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/layout/dialog_item_sem_change.xml" value="0.22864583333333333" />
+        <entry key="app/src/main/res/layout/dialog_layout.xml" value="0.1828774062816616" />
         <entry key="app/src/main/res/layout/dialog_sign_in_mail.xml" value="0.1824074074074074" />
         <entry key="app/src/main/res/layout/event_create.xml" value="0.3792325056433409" />
         <entry key="app/src/main/res/layout/event_detail.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/event_item.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/event_item.xml" value="0.8260869565217391" />
         <entry key="app/src/main/res/layout/event_list.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/image_slider_layout_item.xml" value="0.37604166666666666" />
@@ -50,6 +58,7 @@
         <entry key="app/src/main/res/layout/slider_layout.xml" value="0.228125" />
         <entry key="app/src/main/res/layout/test.xml" value="0.25" />
         <entry key="app/src/main/res/menu/add.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/menu/calendar.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/menu/default_edit_only.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/menu/default_save_abort.xml" value="0.26851851851851855" />
         <entry key="app/src/main/res/menu/drink.xml" value="0.3287037037037037" />

@@ -1,9 +1,245 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2022.
+  ~
+  ~ Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
+  ~ except in compliance with the License. You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the
+  ~  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+  ~  either express or implied. See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
 <!-- START xml_defaults -->
 <defaultsMap>
     <entry>
         <key>current_semester_id</key>
-        <value>316</value>
+        <value>317</value>
     </entry>
-</defaultsMap>
-    <!-- END xml_defaults -->
+    <entry>
+        <key>semester_notes</key>
+        <value>{"version": {"versionNumber":1},"list":["Soweit nicht anders angegeben, treffen wir
+            uns zu den Veranstaltungen auf dem Walhallahaus in der Mergentheimer Straße 32. Gäste
+            sind, außer bei Conventen, immer herzlich eingeladen. Auf die sonst so geschätzte
+            Anwesenheit von Damen müssen wir bei Kneipen leider verzichten.","An jedem
+            veranstaltungsfreien Dienstag findet ein Aktivenstammtisch statt. Ort und Zeit gibt der
+            Senior jeweils bekannt.","Der Walhallanenstammtisch findet an jedem letzten Freitag des
+            Monats adH statt. Für die Teilnahme ist eine telefonische Anmeldung (0931 534 42) bei AH
+            Alfred Fischer erforderlich.","Jeden zweiten Mittwoch im Monat trifft sich der
+            KV-Ortszirkel „Schelch“ um 18.00 Uhr in der Schiestl-Stube des Ratskellers.","Aktuelle
+            Änderungen zum Programm werden rechtzeitig auf unserer Homepage oder via Facebook
+            bekannt gegeben. Ergänzend möchten wir noch auf unseren Facebook-Auftritt hinweisen, der
+            ein wenig aktueller geprägt ist, Bilder unserer Veranstaltungen beinhaltet und schnelle
+            Kontaktmöglichkeiten bietet.","Während der Baumaßnahmen an unserem schönen Haus ist der
+            Zugang derzeit beschwerlich","Aufgrund der noch andauernden Corona-Pandemie behalten wir
+            uns die Möglichkeit vor, jeweils einzelne Programmpunkte kurzfristig abzusagen. Des
+            Weiteren gelten auf allen Veranstaltungen die aktuellen Regelungen des Freitaates Bayern
+            und der Stadt Würzburg. Schaut bitte hierzu auf den Webseiten und unserer Facebookseite
+            nach."]}
+        </value>
+    </entry>
+    <entry>
+        <key>fraternity_germany</key>
+        <value>
+            {"version":{"versionNumber":2},"paragraph_1":{"0":{"kind":"title","position":0,"value":["Die
+            wichtigsten studentischen Verbände"]},"1":{"kind":"text","position":0,"value":["Ein
+            Dachverband vereint mehrere Vereine/Verbindungen unter gemeinsamen Prinzipien. Er soll
+            sowohl einen besseren Austausch untereinander als auch eine gebündelte
+            Interessensvertretung nach außen
+            ermöglichen."]},"2":{"kind":"text","position":2,"value":["Die Bildung der meisten
+            Verbände geht auf das 19. Jahrhundert zurück. Im 20. Jahrhundert fusionierten jedoch
+            einige Verbände, bzw. begannen in wieder übergeordneten Verbänden zusammenzuarbeiten.
+            Die wichtigsten Verbände innerhalb Deutschlands sind im Folgenden
+            aufgeführt:"]},"3":{"kind":"table_title","position":3,"value":["Kürzel","Dachverband","Gründung","Mitglieder","Verbindungen"]},"4":{"kind":"table_row","position":4,"value":["ATB","Akademischer
+            Turnerbund",1883,5,44]},"5":{"kind":"table_row","position":5,"value":["CC","Coburger
+            Convent",1951,12,104]},"6":{"kind":"table_row","position":6,"value":["CV","Cartellverband
+            katholischer deutscher
+            Studentenverbindungen",1867,30,126]},"7":{"kind":"table_row","position":7,"value":["DB","Deutsche
+            Burschenschaft",1902,15,121]},"8":{"kind":"table_row","position":8,"value":["KV","Kartellverband
+            katholischer deutscher
+            Studentenvereine",1865,20,137]},"9":{"kind":"table_row","position":9,"value":["KSCV","Kösener
+            Senioren-Convents-Verband",1848,17,104]},"10":{"kind":"table_row","position":10,"value":["NDB","Neue
+            Deutsche
+            Burschenschaft",1996,4,22]},"11":{"kind":"table_row","position":11,"value":["RKDB","Ring
+            Katholischer Deutscher
+            Burschenschaften",1924,1.6,9]},"12":{"kind":"table_row","position":12,"value":["SB","Schwarzburgbund",1887,2.7,24]},"13":{"kind":"table_row","position":13,"value":["UV","Unitasverband",1860,8,46]},"14":{"kind":"table_row","position":14,"value":["WJSC","Wernigeroder
+            Jagdkorporationen
+            Senioren-Convent",1922,600,14]},"15":{"kind":"table_row","position":15,"value":["WSC","Weinheimer
+            Senioren-Convent",1863,1.8,63]},"16":{"kind":"table_row","position":16,"value":["WB","Wingolfsbund",1844,4.6,36]}}}
+        </value>
+    </entry>
+    <entry>
+        <key>fraternity_wuerzburg</key>
+        <value>
+            {"version":{"versionNumber":2},"paragraph_1":{"0":{"kind":"text","position":0,"value":["Überall
+            in Würzburg gibt es Studentenverbindungen. Sie gehören verschiedenen Dachverbänden an
+            und vertreten unterschiedliche Prinzipien. Hier bei Walhalla sind uns besonders unsere
+            drei Prinzipien wichtig: Religion – Wissenschaft –
+            Freundschaft."]},"1":{"kind":"text","position":1,"value":["Aus unserer christlichen
+            Weltanschauung heraus lehnen wir das studentische Fechten strikt ab. Walhalla ist
+            demnach ein nicht-schlagender Bund von
+            Studenten."]},"2":{"kind":"text","position":2,"value":["Darüber hinaus stellen wir den
+            ältesten katholischen Studentenverein
+            Würzburgs."]},"3":{"kind":"text","position":3,"value":["Auf dem folgenden Bild kannst du
+            dir einen Überblick darüber verschaffen, wo die Verbindungen in Würzburg ihre Häuser
+            haben und welche Prinzipien sie vertreten.
+            "]},"4":{"kind":"image","position":4,"value":["6jaGTzK14sEPv6PakZgZ"]},"5":{"kind":"link","position":5,"value":["Herunterladen
+            (Dropbox.com)","https://www.dropbox.com/s/pwswcbkdzls3xg7/Couleurkarte%20W%C3%BCrzburg.pdf"]}},"paragraph_2":{"0":{"kind":"title","position":0,"value":["Auflistung
+            Würzburger
+            Studentenvereine"]},"1":{"kind":"table_title","position":1,"value":["Dachverband","Name","Farben","Gründung","schlagend","Farbenprinzip"]},"2":{"kind":"table_row","position":2,"value":["KV","K.St.V.
+            Walhalla","weinrot-weiß-schwarz",1864,"nein","farbenführend"]},"3":{"kind":"table_row","position":3,"value":["KV","K.St.V.
+            Normannia","rot-weiß-grün",1876,"nein","farbenführend"]},"4":{"kind":"table_row","position":4,"value":["KV","K.St.V.
+            Rheno-Frankonia","grün-weiß-gold",1892,"nein","farbenführend"]},"5":{"kind":"table_row","position":5,"value":["CV","K.D.St.V.
+            Markomannia","blau-gold-grün auf
+            gold",1871,"nein","farbentragend"]},"6":{"kind":"table_row","position":6,"value":["CV","K.D.St.V.
+            Cheruskia","rosa-weiß-hellblau",1893,"nein","farbentragend"]},"7":{"kind":"table_row","position":7,"value":["CV","K.D.St.V.
+            Gothia","schwarz-gold-grün auf
+            grün-schwarz",1895,"nein","farbentragend"]},"8":{"kind":"table_row","position":8,"value":["CV","K.D.St.V.
+            Thuringia","rot-grün-schwarz",1902,"nein","farbetragend"]},"9":{"kind":"table_row","position":9,"value":["CV","K.D.St.V.
+            Franco-Raetia","kirschrot-weiß-blau",1905,"nein","farbetragend"]},"10":{"kind":"table_row","position":10,"value":["frei","WB!
+            Germania","schwarz-gold-hellblau",1818,"ja","farbetragend"]},"11":{"kind":"table_row","position":11,"value":["frei","WB!
+            Arminia","schwarz-gold-rot",1867,"ja","farbetragend"]},"12":{"kind":"table_row","position":12,"value":["frei","B!
+            Adelphia","grün-schwarz-orange",1867,"ja","farbetragend"]},"13":{"kind":"table_row","position":13,"value":["DB","B!
+            Teutonia
+            Prag","schwarz-rot-gold",1876,"ja","farbetragend"]},"14":{"kind":"table_row","position":14,"value":["KSCV","Corps
+            Franconia","apfelgrün-pfirsichrot",1805,"ja","farbetragend"]},"15":{"kind":"table_row","position":15,"value":["KSCV","Corps
+            Moenania","grün-gelb-rot",1814,"ja","farbetragend"]},"16":{"kind":"table_row","position":16,"value":["KSCV","Corps
+            Bavaria","blau-weiß-himmelblau",1815,"ja","farbetragend"]},"17":{"kind":"table_row","position":17,"value":["KSCV","Corps
+            Nassovia","blau-weiß-orange",1836,"ja","farbetragend"]},"18":{"kind":"table_row","position":18,"value":["KSCV","Corps
+            Rhenania","blau-weiß-rot",1842,"ja","farbetragend"]},"19":{"kind":"table_row","position":19,"value":["KSCV","Corps
+            Makaria-Guestphalia","blau-gold-rot auf
+            weiß",1863,"ja","farbetragend"]},"20":{"kind":"table_row","position":20,"value":["CC","T!
+            Asciburgia","grün-weiß-rot",1851,"ja","farbetragend"]},"21":{"kind":"table_row","position":21,"value":["CC","L!
+            Alemannia-Makaria","schwarz-weiß-rot auf
+            blau",1863,"ja","farbetragend"]},"22":{"kind":"table_row","position":22,"value":["CC","L!
+            Teutonia","rot-weiß-gelb",1865,"ja","farbetragend"]},"23":{"kind":"table_row","position":23,"value":["UV","W.K.St.V.
+            Unitas
+            Hetania","blau-weiß-gelb",1847,"nein","farbeführend"]},"24":{"kind":"table_row","position":24,"value":["WB","Wingolfsverbindung
+            Chattia","rot-weiß-gold",1931,"nein","farbetragend"]},"25":{"kind":"table_row","position":15,"value":["WJSC","Akademische
+            Jägerschaft St.
+            Eustachius","grüßn-gold-rot",1968,"fakultativ","farbetragend"]},"26":{"kind":"table_row","position":26,"value":["ATB","ATV
+            Alsatia","schwarz-rot-silber",1880,"nein","farbeführend"]},"27":{"kind":"table_row","position":27,"value":["SV","Akademisch
+            Musische
+            Verbindung","rot-weiß",1872,"nein","farbeführend"]},"28":{"kind":"table_row","position":28,"value":["VVDST","V.D.St.
+            Würzburg-Jena","schwarz-weiß-rot",1919,"nein","farbeführend"]},"29":{"kind":"table_row","position":29,"value":["frei","US!
+            Barden","hellblau-weiß-hellbau",1951,"fakultativ","farbetragend"]}}}
+        </value>
+    </entry>
+    <entry>
+        <key>rooms</key>
+        <value>
+            {"version":{"versionNumber":2},"paragraph_1":{"0":{"kind":"text","position":0,"value":["Zum
+            kommenden Semester werden wieder Zimmer auf unserem Haus frei! Im Folgenden bekommst du
+            einen kurzen Überblick:"]},"1":{"kind":"text","position":1,"value":["Unser Haus in der
+            Mergentheimer Straße 32 dient als Zentrum unseres Verbindungslebens und liegt in in
+            bester Mainlage nahe der Universitätsgebäude. Hier wird Gemeinschaft gelebt und
+            gefeiert. In einer neuen Studienstadt wie Würzburg tut es zweifellos gut, solch einen
+            Ort sein Zuhause nennen zu dürfen. Über das Studium hinaus bleibt das Walhallahaus für
+            uns alle stets ein gemütlicher Treffpunkt für Feste, Gespräche und ein gemeinsames Bier
+            an der
+            Bar."]},"2":{"kind":"image","position":2,"value":["ZKWabTaDsoFlrMgL7ou8","hLwQotAeCWlHGdHVMzw6","5k1VtjbEPTA30Yz6xfvj"]},"3":{"kind":"link","position":3,"value":["Kontakt","http://walhalla-wuerzburg.de/kontakt"]},"4":{"kind":"text","position":4,"value":["Auf
+            2 Stockwerken stehen der Aktivitas insgesamt 6 möblierte Zimmer zu günstigen Preisen zur
+            Verfügung. Im Erdgeschoss des Hauses locken eine große Küche und unsere Bar, im 1.Stock
+            laden ein Fernsehzimmer und ein Billardzimmer zum Verweilen ein. Zusätzlich kannst du
+            dich auf dem Tennisplatz sportlich austoben und in unserem großen Garten sonnen. Die
+            Zimmer werden an männliche und christlich getaufte Studenten, aller in Würzburg
+            ansässigen tertiären Bildungseinrichtungen (Universitäten, Fachhochschulen, etc.)
+            vermietet. Deine Nationalität spielt keine
+            Rolle."]}},"paragraph_2":{"0":{"kind":"title","position":0,"value":["Die Lage ist
+            optimal für angehende Studenten:"]},"1":{"kind":"block","position":1,"value":["Neue
+            Universität (Sanderring)","(u.a. wirtschaftswiss. Fakultät)","5 Minuten mit der
+            Straßenbahn"]},"2":{"kind":"block","position":2,"value":["Hubland","(u.a.
+            naturwiss.-techn. Fakultät)","15 Minuten mit dem
+            Bus"]},"3":{"kind":"block","position":3,"value":["Universität am Röntgenring","(u.a.
+            med. Fakultät)","15 Minuten mit der
+            Straßenbahn"]},"4":{"kind":"block","position":4,"value":["Wittelsbacher Platz","(u.a.
+            phil. Fakultät)","10 Minuten mit dem
+            Bus"]}},"paragraph_3":{"0":{"kind":"title","position":0,"value":["Detaillierte Fotos der
+            Zimmer"]},"1":{"kind":"image","position":1,"value":["NiQgCp7SZAx9OwW0CqmY","wa4AwmtgHoZTQ4UQK6iv","NfIFUsqEo8WvvJrLGFNw","xGbEwTMuqXw31QLyDjqd","pNDUktcd7H0CfLCy60ea","WGUIoZmPBPUFamUc00vc","fXfKeWwjw6DnoeUydrX3","xk6A7D6kSDEvjRBeAIMl","T8dfEOPNMZWK9j3aQH1e","HQztM0pfz6kKMXRGqs1w","axc9oPxNikbkmHHqZMY9","LEo1Thef4xw6MggvU7RY"]},"2":{"kind":"text","position":2,"value":["Wir
+            freuen uns, von dir zu hören!"]},"3":{"kind":"text","position":3,"value":["In deiner
+            Bewerbung solltest du uns gleich einen ersten Eindruck über dich vermitteln. Wir melden
+            uns dann bei dir. Unsere Veranstaltungen oder ein gemütliches Beisammensein bieten sich
+            für ein ungezwungenes Kennenlernen
+            an."]},"4":{"kind":"link","position":4,"value":["Walhalla bei WG-Gesucht
+            (Erdgeschoss)","https://www.wg-gesucht.de/7479261.html"]},"5":{"kind":"link","position":5,"value":["Walhalla
+            bei WG-Gesucht
+            (Dachgeschoss)","https://www.wg-gesucht.de/2874162.html"]},"6":{"kind":"link","position":6,"value":["Walhalla
+            WG in der
+            Sanderstraße","https://www.wg-gesucht.de/6969828.html"]},"7":{"kind":"button","position":7,"value":["Direkt
+            eine E-Mail schreiben"]}}}
+        </value>
+    </entry>
+    <entry>
+        <key>about_us</key>
+        <value>"paragraph_1":{"0":{"kind":"title","position":0,"value":["Wer wir sind"]},"1":{"kind":"text","position":1,"value":["Wir sind eine 1864 in Würzburg gegründete katholische Studentenverbindung aller Fachrichtungen. Wir haben uns zusammengefunden, um gemeinsam zu lernen, zu studieren und zu feiern. Auf dem Walhallahaus in der Mergentheimer Straße 32 hören wir Vorträge, treffen uns zu Federweißerabenden oder traditionellen Kneipen, spielen Tennis und feiern Feste."]}, "2":{"kind":"text","position":2,"value":["Uns verbindet die Orientierung an den Grundsätzen Religion, Wissenschaft und Freundschaft. Deshalb haben wir uns in einem starken Dachverband zusammengeschlossen: dem Kartellverband katholischer deutscher Studentenvereine (KV). Diesem gehören über 80 aktive Vereine an mehr als 40 Hochschulen in ganz Deutschland an. Aus unserer christlichen Tradition heraus lehnen wir das Schlagen von Mensuren ab. Wir sind also unpolitisch, nicht schlagend und nicht farbentragend."]}, "3":{"kind":"image","position":3,"value":["Le4sqiP2Os5K1SDIwRks","Tv04VmupWJweyU64GWst","jRF9NpA1oElOdzULYWSf"]}, "4":{"kind":"text","position":4,"value":["Unsere Mitglieder unterteilen sich in Aktivitas und Altherrenschaft. Die Aktivitas besteht ausschließlich aus Studierenden an den Würzburger Hochschulen. Als lebendiges „Herz“ der Verbindung übernimmt sie die Gestaltung des Verbindungslebens, inklusive der Planung verschiedenster Veranstaltungen. Auf Basis eines „umgekehrten Generationenvertrags“ unterstützt die Altherrenschaft die Verbindung finanziell und kümmert sich um den Erhalt und die Verwaltung unseres Hauses. Darüber hinaus bereichert sie mit ihrer Erfahrung das Verbindungsleben und steht der Aktivitas stets mit Rat und Tat zur Seite. Im Mittelpunkt des Verbindungslebens stehen generationenübergreifende Freundschaft und Zusammenhalt, die weit über das eigene Studium hinaus Bestand haben."]}}, "paragraph_2":{ "0":{"kind":"title","position":0,"value":["Wen wir suchen"]}, "1":{"kind":"text","position":1,"value":["Neugierig geworden? Dann solltest du nicht lange zögern! Kontaktiere uns und lerne uns auf einer unserer Veranstaltungen oder auch bei einem gemütlichen Beisammensein näher kennen. Wer sich bei uns in der Gemeinschaft engagiert und auch bereit ist Verantwortung zu übernehmen, erhält nicht nur die Chance sich persönlich weiterzuentwickeln, sondern auch viele neue Freundschaften zu schließen und eine Menge Spaß zu haben. Ein gegenseitiges, unverbindliches Kennenlernen sichert ab, das du auch zu uns passt. Entscheidend sind für uns dabei ausschließlich der Mensch und der Wille, sich in der Gemeinschaft einzubringen."]}},
+            "paragraph_3":{
+                "0":{"kind":"title","position":0,"value":["Kurz und knapp: Das findest du bei uns"]},
+                "1":{"kind":"BULLET_ITEM","position":1,"value":["Aktive Unterstützung im Studium durch Ältere","Generationenübergreifende Freundschaft, die ein Leben lang hält","Traditionelle und kulturelle Veranstaltungen rund um das Studententum","Geräumige Zimmer zu studentenfreundlichen Preisen in Nähe zur Uni","Erlernen von Soft Skills durch aktives Einbringen in die Gemeinschaft und das Übernehmen von Vorstandsämtern","Ein altehrwürdiges und gemütliches Haus unterhalb des Würzburger Käppele mit Garten und Tennisplatz","Lerne mit uns Würzburg mit all seinen Facetten kennen!"]}}}
+        </value>
+    </entry>
+    <entry>
+        <key>iban_values</key>
+        <value>{"version":{"versionNumber":1},"iban_active":{"iban":"DE10 7509 0300 0103 0118
+            10","name":"Konto der Aktivitas"},"iban_donations":{"iban":"DE39 7905 0000 0047 3816
+            11","name":"Spendenkonto Hausbau"},"iban_kstv":{"iban":"DE50 7905 0000 0000 2099
+            57","name":"K.St.V. Walhalla"},"iban_hbv":{"iban":"DE80 7905 0000 0000 0679
+            59","name":"Hausbauverein Walhalla e.V."}}
+        </value>
+    </entry>
+    <entry>
+        <key>history_short</key>
+        <value>
+            {"version":{"versionNumber":2},"paragraph_1":{"1":{"kind":"text","position":1,"value":["Unsere
+            Walhalla wurde 1864 mit dem Ziel gegründet, auf wissenschaftlicher, religiöser und
+            freundschaftlicher Basis gleichgesinnte Studenten zu vereinen. Als Wahlspruch wurde „Pro
+            Fide et Patria“ gewählt, zu deutsch „Für Glaube und Vaterland“. Zusammen mit den
+            katholischen Studentenvereinen in Berlin, Bonn, Breslau und Münster gründete Walhalla
+            1866 den „Kartellverband der katholischen deutschen Studentenvereine“
+            (KV)."]},"2":{"kind":"text","position":2,"value":["Das Vereinsleben blühte in den ersten
+            Jahren so stark auf, dass man sich 1906 dazu entschloss, das Walhallahaus in schönster
+            Mainlage unterhalb des Käppele zu errichten. Als eins der ältesten noch erhaltenen
+            Korporationshäuser in Deutschland überlebte unser Haus die Bombennacht des 16. März 1945
+            unbeschadet."]},"3":{"kind":"text","position":3,"value":["Besonders in den Jahren
+            1925-1933 galt Walhalla als sog. Sportkorporation, was den Bau eines Tennisplatzes auf
+            dem neu erworbenen Nachbargrundstück nach sich zog. In der Folge wurden viele
+            Wanderpokale bei den Hochschulmeisterschaften der Uni Würzburg errungen. Selbst heute
+            noch spielen wir Walhallanen regelmäßig
+            Tennis."]},"4":{"kind":"text","position":4,"value":["Nachdem Studentenverbindungen
+            aufgrund ihrer demokratischen Strukturen im dritten Reich verboten wurden, gelang es
+            bereits kurze Zeit nach dem 2. Weltkrieg, das Vereinsleben zu reaktivieren und die
+            Mitgliederzahlen explodierten
+            erneut."]},"5":{"kind":"images","position":5,"value":["IhljyRd2SlGBSPjoarfw","zQQF47KrmdztXFmYe9GW"]},"6":{"kind":"text","position":6,"value":["Heute
+            ist Walhalla ein moderner katholischer Studentenverein, der Christen mit offener
+            Weltanschauung verschiedenster Nationalitäten und Fakultäten ohne politische Bindung
+            vereint. Diskussionen aktueller Themen, gegenseitiger Austausch und Unterstützung in
+            allen Lebensbereichen ermöglichen es unseren Mitgliedern seit über 150 Jahren, ihr
+            Studium erfolgreich abzuschließen, dabei ihren Horizont zu erweitern und erste Kontakte
+            für das spätere Berufsleben zu knüpfen."]}}}
+        </value>
+    </entry>
+    <entry>
+        <key>chargen_description</key>
+        <value>{"version":{"versionNumber":1},"Senior":"Der Senior leitet die Aktivitas und vertritt
+            den Verein nach außen. Er übernimmt die Aufgabenverteilung innerhalb der Aktivitas und
+            ist für die Planung, Durchführung und Leitung sämtlicher Verbindungsveranstaltungen
+            verantwortlich.","Consenior":"Der Consenior unterstützt den Senior bei der Erfüllung
+            seiner Aufgaben und vertritt diesen in Abwesenheit. Darüber hinaus leitet er sämtliche
+            Damefestlichkeiten und ist für die Pflege des Sports (Tennisplatz etc.)
+            zuständig.","Fuxmajor":"Der Fuxmajor ist für alle Aspekte der Nachwuchsförderung
+            verantwortlich. Er kümmert sich so besonders um unsere Füchse (Neumitglieder). Jedes
+            Semester wird von ihm ein Herrenessen veranstaltet, bei dem die Füchse unsere Alten
+            Herren bekochen.","Schriftführer":"Der Schriftführer hat den gesamten Schriftverkehr der
+            Aktivitas zu besorgen, pflegt das Gästebuch und ist zudem für unseren Facebookauftritt
+            verantwortlich. Er führt eine Liste der aktiven Mitglieder.","Kassier":"Der Kassier hat
+            die Aktivenkasse und die Aktivenkonten zu verwalten und die dazugehörigen Kassenbücher
+            zu führen. Am Anfang des Semesters stellt er eine finanzielle Planung auf und am Ende
+            des Semesters wird geprüft, ob die Abrechnung korrekt erfolgt ist.","Chargenlos":"Jedes
+            Semester wird von der Aktivitas ein Aktivenvorstand gewählt. Die Übernahme eines Amtes
+            bietet die Chance, sein organisatorisches Geschick unter Beweis zu stellen und seine
+            Soft Skills weiterzuentwickeln. Der Aktivenvorstand stetzt sich aus folgenden
+            Mitgliedern zusammen:"}
+        </value>
+    </entry>
+</defaultsMap><!-- END xml_defaults -->

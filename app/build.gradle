@@ -1,18 +1,33 @@
+/*
+ * Copyright (c) 2022.
+ *
+ * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ *  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ *  either express or implied. See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 plugins {
     id 'com.android.application'
     id 'com.google.gms.google-services' // Google services Gradle Plugin
     id 'com.google.firebase.crashlytics' // Firebase Crashlytics Gradle plugin
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin' // Googgle Maps API
 }
 
 android {
-    compileSdk 30
+    compileSdk 31
 
     defaultConfig {
         applicationId "de.b3ttertogeth3r.walhalla"
-        minSdk 26
-        targetSdk 30
-        versionCode 12
-        versionName "1.13"
+        minSdk 30
+        targetSdk 31
+        versionCode 20
+        versionName "2.0"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -35,13 +50,16 @@ android {
 
 dependencies {
     implementation 'com.android.support:multidex:1.0.3' // Flutter Multidex
+    implementation project(':nativetemplates') // Google ads template
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0-beta03' // Firebase AppCheck
+    implementation 'androidx.appcompat:appcompat:1.4.2'
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0' // Firebase AppCheck
     implementation 'org.jetbrains:annotations:15.0'
-    implementation 'androidx.work:work-runtime:2.5.0'
+    implementation 'androidx.work:work-runtime:2.7.1'
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.android.gms:play-services-ads:21.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
@@ -54,11 +72,14 @@ dependencies {
     implementation 'com.github.douglasjunior:android-simple-tooltip:1.0.0-rc.0' //Custom Tooltip window
 
     implementation 'com.twitter.sdk.android:twitter:3.0.0' // Twitter login
+    implementation 'com.itextpdf:itextg:5.5.10' //iTextG
+    implementation 'com.android.billingclient:billing:5.0.0' // Google In-App payment
+    implementation 'com.google.android.gms:play-services-maps:18.0.2' // Google-Maps-API
 
     // Firebase imports
     implementation 'com.firebaseui:firebase-ui-auth:7.2.0' // Firebase authentication ui
     implementation 'com.firebaseui:firebase-ui-storage:7.2.0' // FirebaseUI Storage only
-    implementation platform('com.google.firebase:firebase-bom:28.4.1')
+    implementation platform('com.google.firebase:firebase-bom:30.0.1')
     implementation 'com.google.firebase:firebase-config' // Remote Configuration
     implementation 'com.google.firebase:firebase-crashlytics' // Crashlytics
     implementation 'com.google.firebase:firebase-dynamic-links' // Dynamic links
@@ -72,5 +93,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-inappmessaging' // In-App Messaging
     implementation 'com.google.firebase:firebase-inappmessaging-display' // In-App Messaging Display
     implementation 'com.google.firebase:firebase-functions' // Cloud Functions
-    implementation 'com.google.android.gms:play-services-auth:19.2.0' // Google Auth
+    implementation 'com.google.android.gms:play-services-auth:20.2.0' // Google Auth
 }

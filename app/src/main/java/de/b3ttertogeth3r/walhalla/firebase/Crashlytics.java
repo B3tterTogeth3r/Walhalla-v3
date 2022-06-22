@@ -1,96 +1,73 @@
+/*
+ * Copyright (c) 2022.
+ *
+ * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ *  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ *  either express or implied. See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 package de.b3ttertogeth3r.walhalla.firebase;
 
-import static de.b3ttertogeth3r.walhalla.firebase.Firebase.CRASHLYTICS;
-
+import android.content.Context;
 import android.util.Log;
 
-import de.b3ttertogeth3r.walhalla.App;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
-/**
- * @see <a href="https://firebase.google.com/docs/crashlytics">Firebase Crashlytics</a>
- */
-public class Crashlytics {
-    private static final String TAG = "Firebase.Crashlytics";
+import de.b3ttertogeth3r.walhalla.interfaces.IInit;
 
-    public static void error (String class_name, String message) {
-        Log.e(class_name, message);
-        CRASHLYTICS.setCustomKey("class_name", class_name);
-        CRASHLYTICS.setCustomKey("error_message", message);
-        sendUnsent();
-    }
+public class Crashlytics implements IInit, de.b3ttertogeth3r.walhalla.object.Log.ILog {
+    private static final String TAG = "Crashlytics";
+    private static FirebaseCrashlytics CRASHLYTICS;
 
-    public static void verbose (String class_name, String message) {
-        Log.v(class_name, message);
-        CRASHLYTICS.setCustomKey("class_name", class_name);
-        CRASHLYTICS.setCustomKey("verbose_message", message);
-        sendUnsent();
-    }
-
-    public static void sendUnsent () {
+    @Override
+    public boolean init (Context context) {
         try {
-            Firebase.CRASHLYTICS.sendUnsentReports();
-        } catch (Exception ignored) {
+            CRASHLYTICS = FirebaseCrashlytics.getInstance();
+            sendUnsent();
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "Crashlytics init error", e);
+            return false;
         }
     }
 
-    public static void info (String class_name, String message) {
-        Log.i(class_name, message);
-        CRASHLYTICS.setCustomKey("class_name", class_name);
-        CRASHLYTICS.setCustomKey("info_message", message);
+    @Override
+    public void log (int type, String TAG, String message, Throwable e) {
+        CRASHLYTICS.setCustomKey("class_name", TAG);
+        switch (type) {
+            case VERBOSE:
+                Crashlytics.CRASHLYTICS.setCustomKey("verbose_message", message);
+                break;
+            case DEBUG:
+                Crashlytics.CRASHLYTICS.setCustomKey("debug_message", message);
+            case ERROR:
+                Crashlytics.CRASHLYTICS.setCustomKey("error_message", message);
+                break;
+            case WARN:
+                Crashlytics.CRASHLYTICS.setCustomKey("warn_message", message);
+                break;
+            case INFO:
+            default:
+                Crashlytics.CRASHLYTICS.setCustomKey("info_message", message);
+                break;
+        }
+        if (e != null) {
+            CRASHLYTICS.recordException(e);
+        }
         sendUnsent();
     }
 
-    public static void warn (String class_name, String message) {
-        Log.w(class_name, message);
-        CRASHLYTICS.setCustomKey("class_name", class_name);
-        CRASHLYTICS.setCustomKey("warn_message", message);
-        sendUnsent();
-    }
-
-    public static void error (String class_name, String message, Throwable e) {
-        Log.e(class_name, message, e);
-        CRASHLYTICS.setCustomKey("class_name", class_name);
-        CRASHLYTICS.setCustomKey("error_message", message);
-        CRASHLYTICS.recordException(e);
-        sendUnsent();
-    }
-
-    public static void warn (String class_name, String message, Throwable e) {
-        Log.w(class_name, message, e);
-        CRASHLYTICS.setCustomKey("class_name", class_name);
-        CRASHLYTICS.setCustomKey("warn_message", message);
-        CRASHLYTICS.recordException(e);
-        sendUnsent();
-    }
-
-    public static void info (String class_name, String message, Throwable e) {
-        Log.i(class_name, message, e);
-        CRASHLYTICS.setCustomKey("class_name", class_name);
-        CRASHLYTICS.setCustomKey("info_message", message);
-        CRASHLYTICS.recordException(e);
-        sendUnsent();
-    }
-
-    public static void verbose (String class_name, String message, Throwable e) {
-        Log.v(class_name, message, e);
-        CRASHLYTICS.setCustomKey("class_name", class_name);
-        CRASHLYTICS.setCustomKey("verbose_message", message);
-        CRASHLYTICS.recordException(e);
-        sendUnsent();
-    }
-
-    public static void debug (String class_name, String message, Throwable e) {
-        Log.d(class_name, message, e);
-        CRASHLYTICS.setCustomKey("class_name", class_name);
-        CRASHLYTICS.setCustomKey("debug_message", message);
-        CRASHLYTICS.recordException(e);
-        sendUnsent();
-    }
-
-    public static void debug (String class_name, String message) {
-        Log.d(class_name, message);
-        CRASHLYTICS.setCustomKey("class_name", class_name);
-        CRASHLYTICS.setCustomKey("debug_message", message);
-        sendUnsent();
+    private void sendUnsent () {
+        try {
+            CRASHLYTICS.sendUnsentReports();
+        } catch (Exception e) {
+            Log.e(TAG, "sending unsent reports did not work", e);
+        }
     }
 }

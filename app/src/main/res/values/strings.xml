@@ -1,5 +1,19 @@
+<!--
+  ~ Copyright (c) 2022.
+  ~
+  ~ Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
+  ~ except in compliance with the License. You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the
+  ~  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+  ~  either express or implied. See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
 <resources>
-    <string name="app_name">Walhalla</string>
+    <string name="app_name" translatable="false">Walhalla</string>
     <string name="app_description">Eine App um den K.St.V. Walhalla im KV zu Würzburg zu verwalten.</string>
 
     <!-- #Twitter Keys -->
@@ -10,16 +24,23 @@
     <string name="facebook_app_id" translatable="false">3078474742426626</string>
     <string name="fb_login_protocol_scheme" translatable="false">fb3078474742426626</string>
 
+    <!-- # Adverd id -->
+    <string name="sampleID" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="adUnitId" translatable="false">ca-app-pub-1971318728377485/9144811322</string>
+
+    <!-- #Maps API-Key -->
+    <string name="maps_api_key" translatable="false">AIzaSyARUfC6W1_yUAnmDzjdwL5R4QdjH7c2P_o</string>
+
     <string name="diashow_left">Vorheriges Bild</string>
     <string name="diashow_right">Nächstes Bild</string>
-    <string name="diashow_icon">Icon</string>
+    <string name="diashow_icon" translatable="false">Icon</string>
 
     <string name="welcome">Wilkommen</string>
 
     <string name="image_description">Bildbeschreibung</string>
     <string name="change_semester">Semester wechseln</string>
-    <string name="navigation_drawer_open">open left side nav</string>
-    <string name="navigation_drawer_close">close left side nav</string>
+    <string name="navigation_drawer_open" translatable="false">open left side nav</string>
+    <string name="navigation_drawer_close" translatable="false">close left side nav</string>
 
     <!-- #Months -->
     <string name="month_jan">Januar</string>
@@ -70,9 +91,9 @@
     <string name="error_dev">Noch in Entwicklung.</string>
     <string name="error_semester_not_exist">Etwas ist schief gelaufen. Das gewählt Semester existiert nicht.</string>
 
-    <string name="frat_name">K.St.V. Walhallaim KV zu Würzbug</string>
-    <string name="frat_address">Mergentheimer Straße 32</string>
-    <string name="frat_city">97082 Würzburg</string>
+    <string name="frat_name" translatable="false">K.St.V. Walhallaim KV zu Würzbug</string>
+    <string name="frat_address" translatable="false">Mergentheimer Straße 32</string>
+    <string name="frat_city" translatable="false">97082 Würzburg</string>
     <string name="edit">Bearbeiten</string>
     <string name="yes">Ja</string>
     <string name="no">Nein</string>
@@ -80,15 +101,15 @@
     <string name="aborted">Abgebrochen</string>
     <string name="save">Speichern</string>
     <string name="abort">Abbrechen</string>
-    <string name="title">Titel</string>
-    <string name="text">Text</string>
+    <string name="title" translatable="false">Titel</string>
+    <string name="text" translatable="false">Text</string>
     <string name="subtitle_1">Untertitel 1</string>
     <string name="subtitle_2">Untertitel 2</string>
     <string name="button">Knopf</string>
     <string name="images">Bilder</string>
     <string name="table">Tabelle</string>
-    <string name="moveup">moveUp</string>
-    <string name="movedown">move down</string>
+    <string name="moveup" translatable="false">moveUp</string>
+    <string name="movedown" translatable="false">move down</string>
     <string name="add">Hinzufügen</string>
     <string name="add_paragraph">Add paragraph</string>
     <string name="remove_paragraph">Remove Paragraph</string>
@@ -103,17 +124,17 @@
     <string name="clock">Uhr</string>
     <string name="program_later">anschl.</string>
     <string name="details_dialog_title">Details bearbeiten</string>
-    <string name="ct">cum tempore</string>
+    <string name="ct" translatable="false">cum tempore</string>
     <string name="whole_day">ganztägig</string>
-    <string name="ws_long">Wintersemester</string>
-    <string name="ss_long">Sommersemester</string>
+    <string name="ws_long" translatable="false">Wintersemester</string>
+    <string name="ss_long" translatable="false">Sommersemester</string>
     <string name="dialog_semester_change">Semester wechseln</string>
     <string name="sign_in_choose">oder wähle</string>
     <string name="city">Stadt</string>
     <string name="zip">PLZ</string>
     <string name="street">Straße</string>
     <string name="number">Nummer</string>
-    <string name="full_name">Name</string>
+    <string name="full_name" translatable="false">Name</string>
     <string name="address">Adresse:</string>
     <string name="dob">Geburtstag</string>
     <string name="pob">Herkunft</string>
@@ -136,7 +157,7 @@
     <string name="drink_date">Datum</string>
     <string name="drink_amount">Anzahl</string>
     <string name="drink_value">Preis</string>
-    <string name="drink_name">Name</string>
+    <string name="drink_name" translatable="false">Name</string>
     <string name="menu_account">Kasse</string>
     <string name="menu_send_reminder">Zahlungserinnerung</string>
     <string name="menu_drink_invoice">Abrechnung</string>
@@ -175,7 +196,7 @@
     <string name="event_isMeeting">Konvent</string>
     <string name="event_add">Veranstaltung erstellen</string>
     <string name="event_collar">Kragen</string>
-    <string name="ok">OK</string>
+    <string name="ok" translatable="false">OK</string>
     <string name="event_duration_set">Setze die Dauer der Veranstaltung</string>
     <string name="event_time">Startzeit</string>
     <string name="sign_in_no_internet">App has no internet connection. Sign in and register only with internet connection possible</string>
@@ -190,5 +211,10 @@
     <string name="invalid_address">Dies ist keine gültige Adresse</string>
     <string name="sign_in_canceled">Sign in canceled!</string>
     <string name="password_wrong">Passwort falsch</string>
+    <string name="chore_bar_b">Bar aufbauen</string>
+    <string name="msg_token_fmt">FCM-Token generiert</string>
+    <string name="previous">Neuer</string>
+    <string name="older">Älter</string>
+    <string name="copied_to_clipboard">In zwischenablage gespeichert</string>
 
 </resources>

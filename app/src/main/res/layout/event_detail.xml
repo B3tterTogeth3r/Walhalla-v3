@@ -1,57 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+  ~ Copyright (c) 2022.
+  ~
+  ~ Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
+  ~ except in compliance with the License. You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the
+  ~  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+  ~  either express or implied. See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="0dp">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/program_details_close"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_alignParentStart="true"
-            android:paddingStart="6dp"
-            android:paddingEnd="16dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:contentInsetStartWithNavigation="0dp"
-            app:navigationIcon="@drawable/ic_close"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <LinearLayout
+    <android.widget.LinearLayout
         android:id="@+id/program_details_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="8dp">
 
-        <TextView
-            android:id="@+id/program_details_title"
+        <android.widget.LinearLayout
+            android:id="@+id/event_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <android.widget.LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:padding="4dp">
+
+            <RelativeLayout
+                android:id="@+id/event_date"
+                style="@style/Custom.Button"
+                android:layout_width="80dp"
+                android:layout_height="80dp">
+
+                <ImageView
+                    android:id="@+id/event_date_image"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/colorPrimaryDark"
+                    android:contentDescription="@string/event_date"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="@color/colorAccentLight" />
+
+                <TextView
+                    android:id="@+id/event_date_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/event_date_image"
+                    android:layout_marginTop="4dp"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="center"
+                    android:text="@string/event_date"
+                    android:textColor="@color/colorAccentLight" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/event_time"
+                style="@style/Custom.Button"
+                android:layout_width="80dp"
+                android:layout_height="80dp">
+
+                <ImageView
+                    android:id="@+id/event_time_image"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/colorPrimaryDark"
+                    android:contentDescription="@string/event_date"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_time"
+                    app:tint="@color/colorAccentLight" />
+
+                <TextView
+                    android:id="@+id/event_time_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/event_time_image"
+                    android:layout_marginTop="4dp"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="center"
+                    android:text="@string/event_time"
+                    android:textColor="@color/colorAccentLight" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/event_collar"
+                style="@style/Custom.Button"
+                android:layout_width="80dp"
+                android:layout_height="80dp">
+
+                <ImageView
+                    android:id="@+id/event_collar_image"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@color/colorPrimaryDark"
+                    android:contentDescription="@string/event_date"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_tie"
+                    app:tint="@color/colorAccentLight" />
+
+                <TextView
+                    android:id="@+id/event_collar_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/event_collar_image"
+                    android:layout_marginTop="4dp"
+                    android:autoSizeTextType="uniform"
+                    android:gravity="center"
+                    android:text="@string/event_collar"
+                    android:textColor="@color/colorAccentLight" />
+            </RelativeLayout>
+        </android.widget.LinearLayout>
+
+        <de.b3ttertogeth3r.walhalla.design.LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Superbowl LV at Tampa, Florida, USA"
-            android:textSize="20dp" />
+            android:layout_below="@id/program_details_layout">
 
-        <TextView
-            android:id="@+id/program_details_time"
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:ignore="SpeakableTextPresentCheck">
+
+                <android.widget.LinearLayout
+                    android:id="@+id/event_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </ScrollView>
+        </de.b3ttertogeth3r.walhalla.design.LinearLayout>
+
+    </android.widget.LinearLayout>
+
+    <android.widget.LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_below="@id/program_details_layout"
+        android:layout_above="@id/bottom_layout">
+
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="08.02.2020 00.30 AM UTC+2"
-            android:textSize="16dp" />
+            tools:ignore="SpeakableTextPresentCheck">
 
-        <TextView
-            android:id="@+id/program_details_description"
+            <TableLayout
+                android:id="@+id/event_chores_table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_round" />
+        </ScrollView>
+    </android.widget.LinearLayout>
+
+    <android.widget.LinearLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <fragment
+            android:id="@+id/maps_fragment"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="The AFC campions ar playing against the NFC campions to win the championchip of the NFL."
-            android:textStyle="italic" />
+            android:layout_alignParentBottom="true"
+            app:adSize="BANNER"
+            app:adUnitId="@string/sampleID" />
+    </android.widget.LinearLayout>
 
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>
