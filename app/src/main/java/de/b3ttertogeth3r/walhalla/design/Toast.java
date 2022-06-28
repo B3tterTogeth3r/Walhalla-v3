@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -23,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.object.Text;
 
 public class Toast extends android.widget.Toast {
     private static final String TAG = "Toast";
@@ -62,12 +61,6 @@ public class Toast extends android.widget.Toast {
     @Override
     public void setDuration (@Duration int duration) {
         super.setDuration(duration);
-    }
-
-    public Toast (Context context, Text text) {
-        super(context);
-        this.context = context;
-        design();
     }
 
     public Toast setMessage (CharSequence s) {

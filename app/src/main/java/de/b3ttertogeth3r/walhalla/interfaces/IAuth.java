@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -32,15 +32,11 @@ import de.b3ttertogeth3r.walhalla.object.Person;
 public interface IAuth {
 
     /**
-     * @param email
-     *         email address of the user
-     * @param password
-     *         password to use with the sign in
-     * @param loader
-     *         result listener
+     * @param email    email address of the user
+     * @param password password to use with the sign in
      * @since 1.0
      */
-    void signIn (String email, String password, @NonNull Loader<AuthResult> loader);
+    Loader<AuthResult> signIn(String email, String password);
 
     /**
      * @return true, if a user is signed in

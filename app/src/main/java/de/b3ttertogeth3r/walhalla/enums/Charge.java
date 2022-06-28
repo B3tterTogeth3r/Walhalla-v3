@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -53,6 +53,7 @@ public enum Charge {
                         "Aufgabenverteilung innerhalb der Aktivitas und ist für die Planung, " +
                         "Durchführung und Leitung sämtlicher Verbindungsveranstaltungen " +
                         "verantwortlich.")));
+                break;
             case VX:
                 title.setValue(new ArrayList<>(Collections.singletonList("Consenior (VX)")));
                 title.setPosition(0);

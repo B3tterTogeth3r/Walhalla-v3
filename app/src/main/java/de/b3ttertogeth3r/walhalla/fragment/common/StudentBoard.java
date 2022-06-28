@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -23,11 +23,11 @@ import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.dialog.ChangeSemester;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
+import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
@@ -91,20 +91,17 @@ public class StudentBoard extends Fragment {
         toolbar.setTitle("");
         customToolbar.setVisibility(View.VISIBLE);
         customToolbarTitle.setText(R.string.menu_chargen);
-        customToolbar.setOnClickListener(v ->
+        customToolbar.setOnClickListener(v -> {
+            try {
                 ChangeSemester.display(getParentFragmentManager(), DialogSize.WRAP_CONTENT,
-                        new Semester(), new Loader<Integer>() {
-                            @Override
-                            public void onSuccessListener(Integer result) {
-                                download(result);
-                            }
-
-                            @Override
-                            public void onFailureListener(Exception e) {
-
-                            }
-                        })
-        );
+                        new Semester()).setOnSuccessListener(result -> {
+                    assert result != null;
+                    download(result);
+                });
+            } catch (CreateDialogException e) {
+                Log.e(TAG, "toolbarContent: ", e);
+            }
+        });
     }
 
     @Override

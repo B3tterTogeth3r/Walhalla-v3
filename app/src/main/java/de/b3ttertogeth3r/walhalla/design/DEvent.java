@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.firebase.Timestamp;
 
@@ -70,7 +71,7 @@ public class DEvent {
     }
 
     @NonNull
-    public static DEvent create(@NonNull Context context, @Nullable ViewGroup root, @NonNull Event event) {
+    public static DEvent create(@NonNull FragmentActivity context, @Nullable ViewGroup root, @NonNull Event event) {
         dEvent = new DEvent(context, root);
         dEvent.setTime(event.getTime());
         dEvent.setCol(event.getCollar());
@@ -81,7 +82,7 @@ public class DEvent {
     }
 
     @NonNull
-    public static DEvent create(@NonNull Context context, @Nullable ViewGroup root, @NonNull Chore chore) {
+    public static DEvent create(@NonNull FragmentActivity context, @Nullable ViewGroup root, @NonNull Chore chore) {
         dEvent = new DEvent(context, root);
         dEvent.setTime(chore.getTime());
         dEvent.setDescription(chore.getChore().toString());

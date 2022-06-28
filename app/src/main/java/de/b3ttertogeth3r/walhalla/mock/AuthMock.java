@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -34,8 +34,9 @@ public class AuthMock implements IAuth {
     }
 
     @Override
-    public void signIn(String email, String password, @NonNull Loader<AuthResult> loader) {
-        loader.done();
+    public Loader<AuthResult> signIn(String email, String password) {
+        Loader<AuthResult> loader = new Loader<>();
+        return loader.done();
     }
 
     @Override

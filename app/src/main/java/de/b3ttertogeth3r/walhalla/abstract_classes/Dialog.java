@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -32,22 +32,20 @@ import java.util.Objects;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.interfaces.IDialog;
+import de.b3ttertogeth3r.walhalla.interfaces.OnFailureListener;
+import de.b3ttertogeth3r.walhalla.interfaces.OnSuccessListener;
 import de.b3ttertogeth3r.walhalla.object.Log;
 
-public abstract class Dialog<T> extends DialogFragment implements DialogInterface.OnClickListener, IDialog<T> {
+public abstract class Dialog<T> extends DialogFragment implements DialogInterface.OnClickListener,
+        IDialog<T> {
     private static final String TAG = "Dialog";
     private final DialogSize size;
     private final Loader<T> loader;
     private int buttonClickListener = 0;
 
-    public Dialog(DialogSize size, Loader<T> loader) {
-        this.size = size;
-        this.loader = loader;
-    }
-
     public Dialog(DialogSize size) {
         this.size = size;
-        this.loader = null;
+        this.loader = new Loader<>(false);
     }
 
     @Override
@@ -87,21 +85,19 @@ public abstract class Dialog<T> extends DialogFragment implements DialogInterfac
     }
 
 
-
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         try {
             switch (buttonClickListener) {
                 case DialogInterface.BUTTON_POSITIVE:
-                    if (loader != null) {
-                        loader.done(done());
-                    }
+                    loader.done(done());
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
                 case DialogInterface.BUTTON_NEUTRAL:
                 default:
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            loader.done(e);
         }
         super.onDismiss(dialog);
     }
@@ -126,6 +122,16 @@ public abstract class Dialog<T> extends DialogFragment implements DialogInterfac
             Objects.requireNonNull(d.getWindow()).setLayout(width, height);
             d.getWindow().setWindowAnimations(R.style.AppTheme_Slide);
         }
+    }
+
+    public Dialog<T> onFailureListener(OnFailureListener<T> onFailureListener) {
+        loader.setOnFailListener(onFailureListener);
+        return this;
+    }
+
+    public Dialog<T> setOnSuccessListener(OnSuccessListener<T> onSuccessListener) {
+        loader.setOnSuccessListener(onSuccessListener);
+        return this;
     }
 
     @Override

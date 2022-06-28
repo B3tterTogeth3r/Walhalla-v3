@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -38,6 +38,8 @@ public class Loader<T> implements LoaderResultListener<T> {
     private final boolean startLoadingCircle;
     private OnSuccessListener<T> resultListenerSuccess;
     private OnFailureListener<T> resultListenerFail;
+    private T result;
+    private Exception e;
 
     /**
      * Constructor with the ability to display the loading circle.
@@ -84,7 +86,7 @@ public class Loader<T> implements LoaderResultListener<T> {
      *
      * @since 1.0
      */
-    public void done() {
+    public Loader<T> done() {
         if (startLoadingCircle) {
             MainActivity.loadingInterface.stop();
         }
@@ -92,10 +94,13 @@ public class Loader<T> implements LoaderResultListener<T> {
             try {
                 resultListenerSuccess.onSuccessListener(null);
             } catch (Exception e) {
-                if(resultListenerFail != null)
-                resultListenerFail.onFailureListener(e);
+                if (resultListenerFail != null)
+                    resultListenerFail.onFailureListener(e);
             }
+        } else {
+            result = null;
         }
+        return this;
     }
 
     /**
@@ -112,8 +117,23 @@ public class Loader<T> implements LoaderResultListener<T> {
             try {
                 resultListenerSuccess.onSuccessListener(result);
             } catch (Exception e) {
-                if(resultListenerFail != null)
-                resultListenerFail.onFailureListener(e);
+                if (resultListenerFail != null)
+                    resultListenerFail.onFailureListener(e);
+            }
+        } else {
+            this.result = result;
+        }
+        return this;
+    }
+
+    public Loader<T> setOnSuccessListener(OnSuccessListener<T> onSuccessListener) {
+        this.resultListenerSuccess = onSuccessListener;
+        if (result != null) {
+            try {
+                onSuccessListener.onSuccessListener(result);
+                result = null;
+            } catch (Exception e) {
+                done(e);
             }
         }
         return this;
@@ -131,17 +151,17 @@ public class Loader<T> implements LoaderResultListener<T> {
         }
         if (resultListenerFail != null) {
             onFailureListener(e);
+        } else {
+            this.e = e;
         }
-        return this;
-    }
-
-    public Loader<T> setOnSuccessListener(OnSuccessListener<T> onSuccessListener) {
-        this.resultListenerSuccess = onSuccessListener;
         return this;
     }
 
     public Loader<T> setOnFailListener(OnFailureListener<T> onFailureListener) {
         this.resultListenerFail = onFailureListener;
+        if (e != null) {
+            onFailureListener.onFailureListener(e);
+        }
         return this;
     }
 }

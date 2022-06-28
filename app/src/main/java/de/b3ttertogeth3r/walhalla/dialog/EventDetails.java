@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -38,7 +38,6 @@ import java.text.SimpleDateFormat;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Dialog;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
 import de.b3ttertogeth3r.walhalla.abstract_classes.TouchListener;
 import de.b3ttertogeth3r.walhalla.design.DEvent;
 import de.b3ttertogeth3r.walhalla.design.Text;
@@ -47,6 +46,7 @@ import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.enums.Collar;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.enums.Punctuality;
+import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.interfaces.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.mock.AuthMock;
@@ -71,20 +71,22 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
     private RelativeLayout view;
     private TableLayout choresTable;
 
-    public EventDetails(DialogSize size, Event event, Loader<Void> loader) {
-        super(size, loader);
+    public EventDetails(DialogSize size, Event event) {
+        super(size);
         this.event = event;
         this.download = new FirestoreMock.Download();
         this.auth = new AuthMock();
     }
 
-    public static void display(FragmentManager fragmentManager, DialogSize size, Event event,
-                               Loader<Void> loader) {
+    @NonNull
+    public static EventDetails display(FragmentManager fragmentManager, DialogSize size, Event event) throws CreateDialogException {
         try {
-            EventDetails dialog = new EventDetails(size, event, loader);
+            EventDetails dialog = new EventDetails(size, event);
             dialog.show(fragmentManager, TAG);
+            return dialog;
         } catch (Exception e) {
             Log.e(TAG, "unable to create dialog", e);
+            throw new CreateDialogException("", e);
         }
     }
 
@@ -130,8 +132,8 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
     }
 
     @Override
-    public void configToolbar(Toolbar toolbar) {
-
+    public void configToolbar(@NonNull Toolbar toolbar) {
+        toolbar.setTitle(event.getTitle());
     }
 
     private void getViews(@NonNull Timestamp time) {
@@ -175,7 +177,9 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
                     for (de.b3ttertogeth3r.walhalla.object.Text t : result) {
                         if (!t.getValue().isEmpty()) {
                             for (String s : t.getValue()) {
-                                description.addView(new Text(requireContext(), s));
+                                Text text = new Text(requireContext(), s);
+                                text.setPadding(0, 0, 0, 0);
+                                description.addView(text);
                             }
                         }
                     }
@@ -188,9 +192,8 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
                     choresTable.removeAllViewsInLayout();
                     if (result != null && !result.isEmpty()) {
                         for (Chore c : result) {
-                            // TODO: 09.06.22 chores aren't displayed. WHY???
                             choresTable.addView(
-                                    DEvent.create(requireContext(), null, c)
+                                    DEvent.create(requireActivity(), null, c)
                                             .addTouchListener(new TouchListener<Chore>(c) {
                                             }).show());
                         }
@@ -201,20 +204,24 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
-        download.eventLocation(event.getId())
-                .setOnSuccessListener(location -> {
-                    if (location == null) {
-                        // TODO: 09.06.22 set result to the home a default location
-                        return;
-                    }
-                    LatLng latLng = new LatLng(location.getCoordinates().getLatitude(),
-                            location.getCoordinates().getLongitude());
-                    googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f));
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(latLng)
-                            .title(location.getName()));
-                });
+        try {
+            download.eventLocation(event.getId())
+                    .setOnSuccessListener(location -> {
+                        if (location == null) {
+                            // TODO: 09.06.22 set result to the home a default location
+                            return;
+                        }
+                        LatLng latLng = new LatLng(location.getCoordinates().getLatitude(),
+                                location.getCoordinates().getLongitude());
+                        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f));
+                        googleMap.addMarker(new MarkerOptions()
+                                .position(latLng)
+                                .title(location.getName()));
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, "onMapReady: creating map did not work", e);
+        }
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -22,7 +22,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -31,13 +30,13 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.Exclude;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
 import de.b3ttertogeth3r.walhalla.abstract_classes.MyObject;
 import de.b3ttertogeth3r.walhalla.abstract_classes.TouchListener;
 import de.b3ttertogeth3r.walhalla.design.Date;
 import de.b3ttertogeth3r.walhalla.design.Text;
 import de.b3ttertogeth3r.walhalla.design.TimeFrat;
 import de.b3ttertogeth3r.walhalla.design.Title;
+import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.dialog.EventDetails;
 import de.b3ttertogeth3r.walhalla.enums.Collar;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
@@ -53,7 +52,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.Validate;
  * @see de.b3ttertogeth3r.walhalla.interfaces.Validate
  * @since 2.0
  */
-public class Event extends MyObject implements Validate {
+public class Event extends MyObject implements Validate, Cloneable {
     private Timestamp end;
     private String title;
     private String description;
@@ -191,7 +190,7 @@ public class Event extends MyObject implements Validate {
             LinearLayout.LayoutParams timeFratParams = new LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
             );
-            timeFratParams.setMargins(margin,margin,margin,margin);
+            timeFratParams.setMargins(margin, margin, margin, margin);
             timeFrat.setLayoutParams(timeFratParams);
             timeFrat.setGravity(Gravity.CENTER);
             layout.addView(timeFrat);
@@ -228,15 +227,11 @@ public class Event extends MyObject implements Validate {
                 @Override
                 public void onClick(Event event, View view) {
                     try {
-                        FragmentManager fm = ((FragmentActivity) activity).getSupportFragmentManager();
-                        EventDetails.display(fm, DialogSize.FULL_SCREEN, Event.this, new Loader<Void>() {
-                            @Override
-                            public void onSuccessListener(@Nullable Void result) {
-
-                            }
-                        });
+                        FragmentManager fm = (activity).getSupportFragmentManager();
+                        EventDetails.display(fm, DialogSize.FULL_SCREEN, Event.this);
                     } catch (Exception e) {
-                        Log.e("Event", "onClickListener: Fragment manager not found", e);
+                        Toast.makeToast(activity, "opening dialog did not work. try again later").show();
+                        Log.e("Event", "onClickListener: creating dialog", e);
                     }
                 }
 
@@ -254,5 +249,16 @@ public class Event extends MyObject implements Validate {
     @Override
     public boolean validate() {
         return false;
+    }
+
+    @Override
+    public Event clone() {
+        try {
+            Event clone = (Event) super.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

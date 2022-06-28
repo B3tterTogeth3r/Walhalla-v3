@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -78,6 +78,12 @@ public class FirestoreMock {
             eventList.add(e1);
             eventList.add(e2);
             eventList.add(e3);
+            eventList.add(e1.clone());
+            eventList.add(e2.clone());
+            eventList.add(e3.clone());
+            eventList.add(e1.clone());
+            eventList.add(e2.clone());
+            eventList.add(e3.clone());
             return loader.done(eventList);
         }
 
@@ -268,16 +274,19 @@ public class FirestoreMock {
             c1.setEvent("Event 1");
             c1.setTime(new Timestamp(new Date()));
             c1.setDone(false);
+            c1.setPerson("Max Jäckel");
             Chore c2 = new Chore();
             c2.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.FOOD_B);
             c2.setEvent("Event 1");
             c2.setTime(new Timestamp(new Date()));
+            c2.setPerson("Tobias Tumbrink");
             c2.setDone(true);
             Chore c3 = new Chore();
             c3.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.CHAR);
             c3.setEvent("Event 1");
             c3.setTime(new Timestamp(new Date()));
             c3.setDone(false);
+            c3.setPerson("Jonas Kohl");
             resultList.add(c1);
             resultList.add(c2);
             resultList.add(c3);

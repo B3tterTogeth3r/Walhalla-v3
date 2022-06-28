@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -30,10 +30,9 @@ import java.util.Calendar;
 import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Dialog;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
-import de.b3ttertogeth3r.walhalla.object.Log;
+import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.object.Semester;
 
 public class ChangeSemester extends Dialog<Integer> {
@@ -41,20 +40,22 @@ public class ChangeSemester extends Dialog<Integer> {
     private final Semester semester;
     private NumberPicker np_year, np_sem_kind;
 
-    public ChangeSemester(DialogSize size, Semester semester, Loader<Integer> loader) {
-        super(size, loader);
+    public ChangeSemester(DialogSize size, Semester semester) {
+        super(size);
         this.semester = semester;
     }
 
-    public static void display(FragmentManager fragmentManager, DialogSize size,
-                               Semester semester, Loader<Integer> loader) {
+    @NonNull
+    public static ChangeSemester display(FragmentManager fragmentManager, DialogSize size,
+                                         Semester semester) throws CreateDialogException {
         try {
             Toast.makeToast(App.getContext(), "MOCK-SEMESTER-DATA").show();
             semester.setId("317");
-            ChangeSemester dialog = new ChangeSemester(size, semester, loader);
+            ChangeSemester dialog = new ChangeSemester(size, semester);
             dialog.show(fragmentManager, TAG);
+            return dialog;
         } catch (Exception e) {
-            Log.e(TAG, "unable to create dialog", e);
+            throw new CreateDialogException("unable to create dialog", e);
         }
     }
 
