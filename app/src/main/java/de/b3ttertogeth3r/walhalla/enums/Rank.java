@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -13,6 +13,8 @@
  */
 
 package de.b3ttertogeth3r.walhalla.enums;
+
+import androidx.annotation.NonNull;
 
 public enum Rank {
     ACTIVE,
@@ -29,7 +31,7 @@ public enum Rank {
     NONE;
 
     public boolean canSee(Visibility visibility) {
-        switch (this){
+        switch (this) {
             case ACTIVE:
             case ACTIVE_B:
             case ACTIVE_F:
@@ -46,6 +48,24 @@ public enum Rank {
             case NONE:
             default:
                 return visibility == Visibility.PUBLIC;
+        }
+    }
+
+
+    /**
+     * format the string value so the first letter s capitalized.
+     *
+     * @return string value of the enum
+     */
+    @NonNull
+    @Override
+    public String toString() {
+        try {
+            String name = super.toString().toLowerCase();
+            String s1 = name.substring(0, 1).toUpperCase();
+            return s1 + name.substring(1);
+        } catch (Exception e) {
+            return super.toString();
         }
     }
 }

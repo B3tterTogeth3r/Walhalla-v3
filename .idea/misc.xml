@@ -11,11 +11,12 @@
         <entry key="../../.gradle/caches/transforms-3/a3f41d7d27190c846f1169b055d627c8/transformed/jetified-firebase-ui-auth-7.2.0/res/layout/fui_idp_button_github.xml" value="0.1824074074074074" />
         <entry key="../../.gradle/caches/transforms-3/a3f41d7d27190c846f1169b055d627c8/transformed/jetified-firebase-ui-auth-7.2.0/res/layout/fui_idp_button_google.xml" value="0.17447916666666666" />
         <entry key="../../.gradle/caches/transforms-3/a3f41d7d27190c846f1169b055d627c8/transformed/jetified-firebase-ui-auth-7.2.0/res/layout/fui_register_email_layout.xml" value="0.37604166666666666" />
-        <entry key="app/src/main/res/drawable-v24/background_button.xml" value="0.3921875" />
+        <entry key="app/src/main/res/drawable-v24/background_button.xml" value="0.243" />
         <entry key="app/src/main/res/drawable-v24/background_image_description.xml" value="0.24427083333333333" />
+        <entry key="app/src/main/res/drawable-v24/background_splash.xml" value="0.218" />
         <entry key="app/src/main/res/drawable-v24/background_toast.xml" value="0.142" />
-        <entry key="app/src/main/res/drawable-v24/border_bottom_black.xml" value="0.3045" />
-        <entry key="app/src/main/res/drawable-v24/border_bottom_gray.xml" value="0.3045" />
+        <entry key="app/src/main/res/drawable-v24/border_bottom_black.xml" value="0.218" />
+        <entry key="app/src/main/res/drawable-v24/border_bottom_gray.xml" value="0.218" />
         <entry key="app/src/main/res/drawable-v24/border_round.xml" value="0.20572916666666666" />
         <entry key="app/src/main/res/drawable-v24/border_round_clear.xml" value="0.17864583333333334" />
         <entry key="app/src/main/res/drawable-v24/ic_add.xml" value="0.3045" />
@@ -29,6 +30,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_sign_in.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_start.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/address.xml" value="0.3076923076923077" />
         <entry key="app/src/main/res/layout/auto_image_slider.xml" value="0.228125" />
         <entry key="app/src/main/res/layout/auto_image_slider_vertical.xml" value="0.228125" />
         <entry key="app/src/main/res/layout/background.xml" value="0.21197916666666666" />
@@ -51,9 +53,11 @@
         <entry key="app/src/main/res/layout/event_item.xml" value="0.8260869565217391" />
         <entry key="app/src/main/res/layout/event_list.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment.xml" value="0.2125" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.297008547008547" />
         <entry key="app/src/main/res/layout/image_slider_layout_item.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/nav_header.xml" value="0.2259963768115942" />
         <entry key="app/src/main/res/layout/profile_layout.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/sign_in_home.xml" value="0.2982905982905983" />
         <entry key="app/src/main/res/layout/slider_item.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/slider_layout.xml" value="0.228125" />
         <entry key="app/src/main/res/layout/test.xml" value="0.25" />
@@ -62,6 +66,7 @@
         <entry key="app/src/main/res/menu/default_edit_only.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/menu/default_save_abort.xml" value="0.26851851851851855" />
         <entry key="app/src/main/res/menu/drink.xml" value="0.3287037037037037" />
+        <entry key="app/src/main/res/menu/info.xml" value="0.16623931623931623" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.3921875" />
         <entry key="app/src/main/res/xml/remote_config_defaults.xml" value="0.37604166666666666" />
       </map>

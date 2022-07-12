@@ -16,32 +16,32 @@ package de.b3ttertogeth3r.walhalla.interfaces;
 
 import android.view.View;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.TouchListener;
+import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
 
 /**
  * This class is to determine which motion was done on a view.
  * The current functions are:
  * <ul>
- *     <li>{@link #onClick(T, View)}</li>
- *     <li>{@link #onLongClick(T, View)}</li>
- *     <li>{@link #onBottomToTopSwipe(T, View)}</li>
- *     <li>{@link #onTopToBottomSwipe(T, View)}</li>
- *     <li>{@link #onRightToLeftSwipe(T, View)}</li>
- *     <li>{@link #onLeftToRightSwipe(T, View)}</li>
+ *     <li>{@link #onClick(View)}</li>
+ *     <li>{@link #onLongClick(View)}</li>
+ *     <li>{@link #onBottomToTopSwipe(View)}</li>
+ *     <li>{@link #onTopToBottomSwipe(View)}</li>
+ *     <li>{@link #onRightToLeftSwipe(View)}</li>
+ *     <li>{@link #onLeftToRightSwipe(View)}</li>
  * </ul>
  *
  * @author B3tterTogeth3r
- * @version 1.0
+ * @version 1.1
  * @since 2.0
  */
-public interface ClickSwipeListener<T> {
+public interface ClickSwipeListener {
 
     /**
      * @param view View which was clicked
      * @see View.OnClickListener
      * @since 1.0
      */
-    default void onClick(T object, View view) {
+    default void onClick(View view) {
     }
 
     /**
@@ -49,38 +49,38 @@ public interface ClickSwipeListener<T> {
      * @see View.OnLongClickListener
      * @since 1.0
      */
-    default void onLongClick(T object, View view) {
+    default void onLongClick(View view) {
     }
 
     /**
      * @param view View which was clicked
-     * @see TouchListener TouchListener
+     * @see Touch TouchListener
      * @since 1.0
      */
-    default void onLeftToRightSwipe(T object, View view) {
+    default void onLeftToRightSwipe(View view) {
     }
 
     /**
      * @param view View which was clicked
-     * @see TouchListener TouchListener
+     * @see Touch TouchListener
      * @since 1.0
      */
-    default void onRightToLeftSwipe(T object, View view) {
+    default void onRightToLeftSwipe(View view) {
     }
 
     /**
      * @param view View which was clicked
-     * @see TouchListener TouchListener
+     * @see Touch TouchListener
      * @since 1.0
      */
-    default void onTopToBottomSwipe(T object, View view) {
+    default void onTopToBottomSwipe(View view) {
     }
 
     /**
      * @param view View which was clicked
-     * @see TouchListener TouchListener
+     * @see Touch TouchListener
      * @since 1.0
      */
-    default void onBottomToTopSwipe(T object, View view) {
+    default void onBottomToTopSwipe(View view) {
     }
 }

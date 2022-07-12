@@ -40,18 +40,17 @@ public class ChangeSemester extends Dialog<Integer> {
     private final Semester semester;
     private NumberPicker np_year, np_sem_kind;
 
-    public ChangeSemester(DialogSize size, Semester semester) {
-        super(size);
+    public ChangeSemester(Semester semester) {
+        super(DialogSize.WRAP_CONTENT);
         this.semester = semester;
     }
 
     @NonNull
-    public static ChangeSemester display(FragmentManager fragmentManager, DialogSize size,
+    public static ChangeSemester display(FragmentManager fragmentManager,
                                          Semester semester) throws CreateDialogException {
         try {
             Toast.makeToast(App.getContext(), "MOCK-SEMESTER-DATA").show();
-            semester.setId("317");
-            ChangeSemester dialog = new ChangeSemester(size, semester);
+            ChangeSemester dialog = new ChangeSemester(semester);
             dialog.show(fragmentManager, TAG);
             return dialog;
         } catch (Exception e) {

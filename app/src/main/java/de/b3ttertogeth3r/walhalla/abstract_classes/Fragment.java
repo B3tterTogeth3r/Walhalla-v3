@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -34,11 +34,12 @@ import java.util.ArrayList;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.interfaces.IAnalytics;
+import de.b3ttertogeth3r.walhalla.interfaces.IFragment;
 import de.b3ttertogeth3r.walhalla.mock.AnalyticsMock;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.ToastList;
 
-public abstract class Fragment extends androidx.fragment.app.Fragment implements FirebaseAuth.AuthStateListener {
+public abstract class Fragment extends androidx.fragment.app.Fragment implements FirebaseAuth.AuthStateListener, IFragment {
     private static final String TAG = "Fragment";
     /**
      * A list to collect all realtime listeners into the Firestore database.
@@ -132,17 +133,6 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
         }
     }
 
-    /**
-     * called before {@link #createView(LinearLayout)} and {@link #viewCreated()}. In it
-     * {@link #registration} should be set before the site start.
-     */
-    public abstract void start ();
-
-    /**
-     * Set the properties for firebase analytics. It will be run after {@link #start()}
-     */
-    public abstract String analyticsProperties ();
-
     @Override
     public void onResume () {
         super.onResume();
@@ -175,39 +165,6 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
             toolbar.setSubtitle("");
         }
     }
-
-    /**
-     * Called when the Fragment is no longer started.  This is generally tied to {@link #onStop()
-     * onStop} of the containing Activity's lifecycle.
-     *
-     * @implNote Called after every entry in {@link #registration} got stopped and the list
-     * cleared.
-     * @see #onStop()
-     */
-    public abstract void stop ();
-
-    /**
-     * @see #onViewCreated(View, Bundle)
-     */
-    public abstract void viewCreated ();
-
-    /**
-     * Called before {@link #viewCreated() viewCreated} returns a result. This is to format the
-     * toolbar in every Subclass the same way.
-     *
-     * @see #toolbar
-     */
-    public abstract void toolbarContent ();
-
-    /**
-     * Create the view and initialize the necessary variables for the site.
-     *
-     * @param view
-     *         inflated View created in {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
-     * @implNote <b>DON'T CALL FUNCTIONS THAT WORK WITH DATA OF {@link #start()} IN HERE</b>
-     * @see #onViewCreated(View, Bundle)
-     */
-    public abstract void createView (@NonNull @NotNull LinearLayout view);
 
     /**
      * this should reload the current fragment, if the users auth status changes. Every subclass

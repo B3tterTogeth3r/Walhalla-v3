@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -29,33 +29,20 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import de.b3ttertogeth3r.walhalla.R;
+import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
 
+@SuppressWarnings("UnusedReturnValue")
 public class Button extends RelativeLayout {
+    private static LayoutParams params;
     private Subtitle1 text;
     private ImageView icon;
-    private static LayoutParams params;
 
-    public Button (Context context) {
+    public Button(Context context) {
         super(context);
         design(context);
     }
 
-    public Button (Context context, AttributeSet attrs) {
-        super(context, attrs);
-        design(context);
-    }
-
-    public Button (Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        design(context);
-    }
-
-    public Button (Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        design(context);
-    }
-
-    public void design (@NonNull Context context) {
+    public void design(@NonNull Context context) {
         int padding = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 16f,
@@ -83,6 +70,21 @@ public class Button extends RelativeLayout {
         addView(text, textParams);
         addView(icon, imageParams);
     }
+
+    public Button(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        design(context);
+    }
+
+    public Button(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        design(context);
+    }
+
+    public Button(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        design(context);
+    }
     /*
     public Button (Context context, String text, String link) {
         super(context);
@@ -95,32 +97,36 @@ public class Button extends RelativeLayout {
 
     }*/
 
-    public Button (Context context, String text) {
+    public Button(Context context, String text) {
         super(context);
         design(context);
         setText(text);
     }
 
-    public Button setText (CharSequence text) {
+    public Button setText(CharSequence text) {
         this.text.setText(text);
         this.text.setTextColor(ContextCompat.getColor(getContext(), R.color.background));
         return this;
     }
 
-    public Button setIconDrawable (Drawable drawable) {
+    public static LayoutParams getParams() {
+        return params;
+    }
+
+    public Button setIconDrawable(Drawable drawable) {
         icon.setImageDrawable(drawable);
         icon.setVisibility(View.VISIBLE);
         return this;
     }
 
-    public Button setText (int resid) {
+    public Button setText(int resid) {
         this.text.setText(resid);
         this.text.setTextColor(ContextCompat.getColor(getContext(), R.color.background));
         return this;
     }
 
     @Override
-    public void setEnabled (boolean enabled) {
+    public void setEnabled(boolean enabled) {
         try {
             if (enabled) {
                 setAlpha(1f);
@@ -140,7 +146,8 @@ public class Button extends RelativeLayout {
         }
     }
 
-    public static LayoutParams getParams() {
-        return params;
+    public Button addTouchListener(Touch touch) {
+        setOnTouchListener(touch);
+        return this;
     }
 }

@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2022.
+  ~
+  ~ Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
+  ~ except in compliance with the License. You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the
+  ~  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+  ~  either express or implied. See the License for the specific language governing permissions and
+  ~  limitations under the License.
+  -->
+
 <resources>
     <item name="table" type="id" />
     <item name="maps_fragment" type="id" />
@@ -28,4 +42,10 @@
     <item name="punctuality" type="id" />
     <item name="title" type="id" />
     <item name="description" type="id" />
+    <item name="number" type="id" />
+    <item name="street" type="id" />
+    <item name="zip" type="id" />
+    <item name="city" type="id" />
+    <item name="country" type="id" />
+    <item name="state" type="id" />
 </resources>

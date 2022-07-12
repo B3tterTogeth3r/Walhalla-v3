@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -23,8 +23,14 @@ public class Semester {
     public Semester() {
     }
 
-    public Semester (String id, String name_long, String name_short, Timestamp start,
-                     Timestamp end) {
+    public Semester(int id) {
+        this.id = String.valueOf(id);
+        this.start = Timestamp.now();
+        this.end = Timestamp.now();
+    }
+
+    public Semester(String id, String name_long, String name_short, Timestamp start,
+                    Timestamp end) {
         this.id = id;
         this.name_long = name_long;
         this.name_short = name_short;

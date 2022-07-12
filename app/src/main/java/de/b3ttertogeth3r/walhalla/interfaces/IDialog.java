@@ -27,10 +27,10 @@ public interface IDialog<T> {
      * Format the data the fragment is supposed to change or edit on the click of
      * the {@link DialogInterface#BUTTON_POSITIVE PositiveButton}
      *
-     * @return default: null<br>if super is overridden: The value the background Fragment needs
+     * @return default: null<br>if overridden: The value the background Fragment needs
      * @implNote only available if {@link de.b3ttertogeth3r.walhalla.abstract_classes.Dialog#loader Dialog#loader} is not {@code null}
      */
-    default T done() {
+    default T done() throws Exception {
         return null;
     }
 
@@ -52,12 +52,11 @@ public interface IDialog<T> {
      * @param builder Dialog builder
      * @since 1.0
      */
-    void configDialog(@NonNull AlertDialog.Builder builder);
+    default void configDialog(@NonNull AlertDialog.Builder builder) {
+    }
 
     /**
-     *
-     *
      * @param toolbar The toolbar.
      */
-    void configToolbar(Toolbar toolbar);
+    void configToolbar(@NonNull Toolbar toolbar);
 }

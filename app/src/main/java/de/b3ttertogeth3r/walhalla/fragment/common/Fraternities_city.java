@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -34,7 +34,7 @@ public class Fraternities_city extends Fragment {
 
     @Override
     public void start() {
-        new FormatJSON(RemoteConfig.get("fraternity_wuerzburg"))
+        new FormatJSON(RemoteConfig.getString("fraternity_wuerzburg"))
                 .setOnSuccessListener(this::fillView)
                 .setOnFailListener(e -> Log.e(TAG, "onFailureListener: ", e))
                 .start();
@@ -56,16 +56,6 @@ public class Fraternities_city extends Fragment {
     @Override
     public String analyticsProperties() {
         return TAG;
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public void viewCreated() {
-
     }
 
     @Override

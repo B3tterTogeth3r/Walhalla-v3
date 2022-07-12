@@ -41,13 +41,13 @@ public class AuthMock implements IAuth {
 
     @Override
     public boolean isSignIn() {
-        return false;
+        return true;
     }
 
     @Override
-    public void changePassword(Person p, String oldPW, String newPW,
-                               @NonNull Loader<Void> loader) {
-        loader.done();
+    public Loader<Boolean> changePassword(Person p, String oldPW, String newPW) {
+        Loader<Boolean> loader = new Loader<>();
+        return loader.done();
     }
 
     @Override
@@ -68,6 +68,12 @@ public class AuthMock implements IAuth {
     @Override
     public void sendVerificationMail() {
 
+    }
+
+    @Override
+    public Loader<Boolean> exitsEmail(String email) {
+        Loader<Boolean> loader = new Loader<>();
+        return loader.done(false);
     }
 
     @Override

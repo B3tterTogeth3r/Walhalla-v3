@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -209,7 +209,7 @@ public class MyEditText extends TextInputLayout {
                         strength.getColor()));
                 String result =
                         strength.getText(context) + "\n" + strength.getRequireDescription(context);
-                this.setError(result); //TODO Add password description
+                this.setError(result);
             } catch (Exception e) {
                 e.printStackTrace();
             }

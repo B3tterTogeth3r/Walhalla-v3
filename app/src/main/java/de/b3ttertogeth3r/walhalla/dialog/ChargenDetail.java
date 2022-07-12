@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -49,7 +49,7 @@ public class ChargenDetail extends Dialog<BoardMember> {
     }
 
     @Override
-    public void configToolbar(Toolbar toolbar) {
+    public void configToolbar(@NonNull Toolbar toolbar) {
         toolbar.setTitle(boardMember.getCharge().getDescription().get(0).getValue().get(0));
     }
 

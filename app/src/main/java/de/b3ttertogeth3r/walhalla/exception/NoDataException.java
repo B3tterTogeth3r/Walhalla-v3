@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -14,6 +14,8 @@
 
 package de.b3ttertogeth3r.walhalla.exception;
 
+import androidx.annotation.NonNull;
+
 /**
  * Thrown when the download finds no data.
  *
@@ -21,6 +23,7 @@ package de.b3ttertogeth3r.walhalla.exception;
  * @since 2.0
  */
 public class NoDataException extends Exception {
+    private static final String TAG = "NoDataException";
 
     /**
      * Constructs a {@code NoDataException} with no detail message
@@ -32,10 +35,15 @@ public class NoDataException extends Exception {
     /**
      * Constructs a {@code NoDataException} with the specified detail message.
      *
-     * @param message
-     *         the detail message.
+     * @param message the detail message.
      */
-    public NoDataException (String message) {
+    public NoDataException(String message) {
         super(message);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return TAG + ": " + getMessage();
     }
 }

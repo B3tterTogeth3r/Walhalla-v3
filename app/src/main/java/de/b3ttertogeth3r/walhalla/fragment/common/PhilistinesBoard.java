@@ -25,9 +25,9 @@ import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.dialog.ChangeSemester;
-import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
+import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
@@ -37,6 +37,36 @@ import de.b3ttertogeth3r.walhalla.object.Semester;
 public class PhilistinesBoard extends Fragment {
     private static final String TAG = "PhilistinesBoard";
     private LinearLayout view;
+
+    @Override
+    public void createView(@NonNull LinearLayout view) {
+        this.view = view;
+    }
+
+    @Override
+    public void toolbarContent() {
+        toolbar.setTitle("");
+        customToolbar.setVisibility(View.VISIBLE);
+        customToolbarTitle.setText(R.string.menu_chargen_phil);
+        customToolbar.setOnClickListener(v ->
+        {
+            try {
+                ChangeSemester.display(getParentFragmentManager(),
+                                new Semester((int) RemoteConfig.getInt("current_semester_id")))
+                        .setOnSuccessListener(result -> {
+                            assert result != null;
+                            download(result);
+                        });
+            } catch (CreateDialogException e) {
+                Log.e(TAG, "toolbarContent: ", e);
+            }
+        });
+    }
+
+    @Override
+    public String analyticsProperties() {
+        return TAG;
+    }
 
     @Override
     public void start() {
@@ -68,44 +98,5 @@ public class PhilistinesBoard extends Fragment {
         for (BoardMember bm : boardList) {
             view.addView(bm.getView(requireActivity()));
         }
-    }
-
-    @Override
-    public String analyticsProperties() {
-        return TAG;
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public void viewCreated() {
-
-    }
-
-    @Override
-    public void toolbarContent() {
-        toolbar.setTitle("");
-        customToolbar.setVisibility(View.VISIBLE);
-        customToolbarTitle.setText(R.string.menu_chargen_phil);
-        customToolbar.setOnClickListener(v ->
-        {
-            try {
-                ChangeSemester.display(getParentFragmentManager(), DialogSize.WRAP_CONTENT,
-                        new Semester()).setOnSuccessListener(result -> {
-                    assert result != null;
-                    download(result);
-                });
-            } catch (CreateDialogException e) {
-                Log.e(TAG, "toolbarContent: ", e);
-            }
-        });
-    }
-
-    @Override
-    public void createView(@NonNull LinearLayout view) {
-        this.view = view;
     }
 }

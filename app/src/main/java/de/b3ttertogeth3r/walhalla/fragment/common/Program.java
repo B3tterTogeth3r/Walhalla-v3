@@ -24,7 +24,7 @@ import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
-import de.b3ttertogeth3r.walhalla.abstract_classes.TouchListener;
+import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
 import de.b3ttertogeth3r.walhalla.design.DEvent;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.dialog.ChangeSemester;
@@ -32,6 +32,7 @@ import de.b3ttertogeth3r.walhalla.dialog.EventDetails;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
+import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.Event;
@@ -48,23 +49,8 @@ public class Program extends Fragment {
     }
 
     @Override
-    public void start() {
-        download(1);
-    }
-
-    @Override
-    public String analyticsProperties() {
-        return TAG;
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public void viewCreated() {
-
+    public void createView(@NonNull LinearLayout view) {
+        this.view = view;
     }
 
     @Override
@@ -75,11 +61,12 @@ public class Program extends Fragment {
         customToolbar.setOnClickListener(v ->
                 {
                     try {
-                        ChangeSemester.display(getParentFragmentManager(), DialogSize.WRAP_CONTENT,
-                                new Semester()).setOnSuccessListener(result -> {
-                            assert result != null;
-                            download(result);
-                        });
+                        ChangeSemester.display(getParentFragmentManager(),
+                                        new Semester((int) RemoteConfig.getInt("current_semester_id")))
+                                .setOnSuccessListener(result -> {
+                                    assert result != null;
+                                    download(result);
+                                });
                     } catch (CreateDialogException e) {
                         e.printStackTrace();
                     }
@@ -88,8 +75,13 @@ public class Program extends Fragment {
     }
 
     @Override
-    public void createView(@NonNull LinearLayout view) {
-        this.view = view;
+    public String analyticsProperties() {
+        return TAG;
+    }
+
+    @Override
+    public void start() {
+        download(1);
     }
 
     private void download(int semId) {
@@ -116,12 +108,12 @@ public class Program extends Fragment {
         int i = 0;
         for (Event e : eventList) {
             view.addView(DEvent.create(requireActivity(), null, e)
-                    .addTouchListener(new TouchListener<Event>(e) {
+                    .addTouchListener(new Touch() {
                         @Override
-                        public void onClick(Event event, View view) {
+                        public void onClick(View view) {
                             try {
                                 FragmentManager fm = requireActivity().getSupportFragmentManager();
-                                EventDetails.display(fm, DialogSize.FULL_SCREEN, event);
+                                EventDetails.display(fm, DialogSize.FULL_SCREEN, e);
                             } catch (Exception e) {
                                 Log.e("Event", "onClickListener: Opening dialog exception", e);
                             }

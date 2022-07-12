@@ -16,13 +16,10 @@ package de.b3ttertogeth3r.walhalla.abstract_classes;
 
 import androidx.annotation.Nullable;
 
-import java.util.Objects;
-
 import de.b3ttertogeth3r.walhalla.MainActivity;
 import de.b3ttertogeth3r.walhalla.interfaces.LoaderResultListener;
 import de.b3ttertogeth3r.walhalla.interfaces.OnFailureListener;
 import de.b3ttertogeth3r.walhalla.interfaces.OnSuccessListener;
-import de.b3ttertogeth3r.walhalla.object.Log;
 
 /**
  * A listener for download results. It can display a loading circle over the whole ui to prevent the
@@ -39,6 +36,7 @@ public class Loader<T> implements LoaderResultListener<T> {
     private OnSuccessListener<T> resultListenerSuccess;
     private OnFailureListener<T> resultListenerFail;
     private T result;
+    private boolean hasResult = false;
     private Exception e;
 
     /**
@@ -60,12 +58,6 @@ public class Loader<T> implements LoaderResultListener<T> {
      * @since 1.0
      */
     private void onStart() {
-        try {
-            String classType =
-                    Objects.requireNonNull(getClass().getGenericSuperclass()).getClass().getTypeName();
-            Log.i(TAG, "Loading of a " + classType + " object started");
-        } catch (Exception ignored) {
-        }
         if (startLoadingCircle) {
             MainActivity.loadingInterface.start();
         }
@@ -79,6 +71,20 @@ public class Loader<T> implements LoaderResultListener<T> {
     public Loader() {
         this.startLoadingCircle = false;
         onStart();
+    }
+
+    @Override
+    public void onSuccessListener(@Nullable T result) {
+        try {
+            resultListenerSuccess.onSuccessListener(result);
+        } catch (Exception ex) {
+            onFailureListener(ex);
+        }
+    }
+
+    @Override
+    public void onFailureListener(Exception e) {
+        resultListenerFail.onFailureListener(e);
     }
 
     /**
@@ -98,6 +104,7 @@ public class Loader<T> implements LoaderResultListener<T> {
                     resultListenerFail.onFailureListener(e);
             }
         } else {
+            hasResult = true;
             result = null;
         }
         return this;
@@ -121,6 +128,7 @@ public class Loader<T> implements LoaderResultListener<T> {
                     resultListenerFail.onFailureListener(e);
             }
         } else {
+            this.hasResult = true;
             this.result = result;
         }
         return this;
@@ -128,7 +136,7 @@ public class Loader<T> implements LoaderResultListener<T> {
 
     public Loader<T> setOnSuccessListener(OnSuccessListener<T> onSuccessListener) {
         this.resultListenerSuccess = onSuccessListener;
-        if (result != null) {
+        if (hasResult) {
             try {
                 onSuccessListener.onSuccessListener(result);
                 result = null;

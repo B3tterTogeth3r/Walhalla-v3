@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -14,7 +14,7 @@
 
 package de.b3ttertogeth3r.walhalla.object;
 
-import android.content.Context;
+import androidx.annotation.NonNull;
 
 import de.b3ttertogeth3r.walhalla.interfaces.Validate;
 
@@ -22,18 +22,18 @@ public class Address implements Validate {
     private String street, number, zip, city, state, country;
     private String id;
 
-    public Address () {
+    public Address() {
     }
 
-    public Address (String street, String number, String zip, String city) {
+    public Address(String street, String number, String zip, String city) {
         this.street = street;
         this.number = number;
         this.zip = zip;
         this.city = city;
     }
 
-    public Address (String street, String number, String zip, String city, String state,
-                    String country) {
+    public Address(String street, String number, String zip, String city, String state,
+                   String country) {
         this.street = street;
         this.number = number;
         this.zip = zip;
@@ -42,88 +42,85 @@ public class Address implements Validate {
         this.country = country;
     }
 
-    public String getId () {
+    public String getId() {
         return id;
     }
 
-    public void setId (String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getView (Context context) {
-        String s = "";
-        if (!getStreet().isEmpty()) {
-            s = s + getStreet() + " ";
-        }
-        if (!getNumber().isEmpty()) {
-            s = s + getNumber() + ", ";
-        }
-        if (!getZip().isEmpty()) {
-            s = s + getZip() + " ";
-        }
-        if (!getCity().isEmpty()) {
-            s = s + getCity() + ", ";
-        }
-        if (!getState().isEmpty()) {
-            s = s + getState() + " ";
-        }
-        if (!getCountry().isEmpty()) {
-            s = s + getCountry();
-        }
-
-        return s;
-    }
-
-    public String getStreet () {
+    public String getStreet() {
         return street;
     }
 
-    public void setStreet (String street) {
+    public void setStreet(String street) {
         this.street = street;
     }
 
-    public String getNumber () {
+    public String getNumber() {
         return number;
     }
 
-    public void setNumber (String number) {
+    public void setNumber(String number) {
         this.number = number;
     }
 
-    public String getZip () {
+    public String getZip() {
         return zip;
     }
 
-    public void setZip (String zip) {
+    public void setZip(String zip) {
         this.zip = zip;
     }
 
-    public String getCity () {
+    public String getCity() {
         return city;
     }
 
-    public void setCity (String city) {
+    public void setCity(String city) {
         this.city = city;
     }
 
-    public String getState () {
+    public String getState() {
         return state;
     }
 
-    public void setState (String state) {
+    public void setState(String state) {
         this.state = state;
     }
 
-    public String getCountry () {
+    public String getCountry() {
         return country;
     }
 
-    public void setCountry (String country) {
+    public void setCountry(String country) {
         this.country = country;
     }
 
+    @NonNull
     @Override
-    public boolean validate () {
-        return false;
+    public String toString() {
+        if (validate()) {
+            String result = "";
+            result = result + street + " " + number;
+            result = result + "\n" + zip + " " + city;
+            if (state != null && !state.isEmpty()) {
+                result = result + "\n" + state;
+            }
+            if (country != null && !country.isEmpty()) {
+                result = result + "\n" + country;
+            }
+            return result;
+        } else
+            return "";
+    }
+
+    @Override
+    public boolean validate() {
+        return (street != null && !street.isEmpty() &&
+                number != null && !number.isEmpty() &&
+                city != null && !city.isEmpty() &&
+                zip != null && !zip.isEmpty());
     }
 }

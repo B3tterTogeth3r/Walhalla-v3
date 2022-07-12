@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -25,28 +25,35 @@ import de.b3ttertogeth3r.walhalla.util.ToastList;
 
 public class AnalyticsMock implements IAnalytics {
     private static final String TAG = "AnalyticsMock";
+    /**
+     * true, if the user allowed data collection by Google's Firebase Analytics
+     */
+    private boolean dataCollection;
 
-    public AnalyticsMock () {
+    public AnalyticsMock() {
         ToastList.addToast(Toast.makeToast(App.getContext(), TAG + "-MOCK-DATA"));
     }
 
     @Override
-    public void screenChange (@NonNull String name) {
-
+    public void screenChange(@NonNull String name) {
+        if (dataCollection)
+            Log.i(TAG, "screenChange: changed screen to" + name);
     }
 
     @Override
-    public void changeStartPage (int string_value) {
-        Log.i(TAG, "Start page set to " + string_value);
+    public void changeStartPage(int string_value) {
+        if (dataCollection)
+            Log.i(TAG, "Start page set to " + string_value);
     }
 
     @Override
-    public void setRank (@NonNull Rank rank) {
-        Log.i(TAG, "Rank set to " + rank);
+    public void setRank(@NonNull Rank rank) {
+        if (dataCollection)
+            Log.i(TAG, "Rank set to " + rank);
     }
 
     @Override
-    public void changeDataCollection (boolean value) {
-
+    public void changeDataCollection(boolean value) {
+        dataCollection = value;
     }
 }

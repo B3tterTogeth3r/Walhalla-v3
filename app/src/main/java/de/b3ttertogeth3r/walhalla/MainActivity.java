@@ -14,12 +14,14 @@
 
 package de.b3ttertogeth3r.walhalla;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.CalendarContract;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
@@ -29,13 +31,16 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import de.b3ttertogeth3r.walhalla.design.SideNav;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.enums.Walhalla;
+import de.b3ttertogeth3r.walhalla.interfaces.HideKeyBoard;
 import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreDownload;
+import de.b3ttertogeth3r.walhalla.interfaces.IOnBackPressed;
 import de.b3ttertogeth3r.walhalla.interfaces.ISideNav;
 import de.b3ttertogeth3r.walhalla.interfaces.LoadingCircle;
 import de.b3ttertogeth3r.walhalla.interfaces.OpenExternal;
@@ -45,20 +50,27 @@ import de.b3ttertogeth3r.walhalla.object.File;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.ProgressBarAnimation;
 
-public class MainActivity extends AppCompatActivity implements LoadingCircle, ISideNav, OpenExternal {
+public class MainActivity extends AppCompatActivity implements LoadingCircle, ISideNav, OpenExternal, HideKeyBoard {
     private static final String TAG = "MainActivity";
     public static LoadingCircle loadingInterface;
     public static OpenExternal openExternal;
+    public static HideKeyBoard hideKeyBoard;
     private ProgressBar loadingCircle;
     private ProgressBarAnimation loadingAnimation;
     private FragmentManager fragmentManager;
     private boolean doubleBackToExit = false;
     private DrawerLayout drawerLayout;
 
+    public void hide() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        loadingInterface = this;
         super.onCreate(savedInstanceState);
+        loadingInterface = this;
+        hideKeyBoard = this;
         loadingCircle = findViewById(R.id.progressBarHolder);
         loadingAnimation = new ProgressBarAnimation(loadingCircle, 0, 20);
         fragmentManager = getSupportFragmentManager();
@@ -84,29 +96,39 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
         toggle.syncState();
 
         if (savedInstanceState == null) {
-            navigationView.changePage(R.string.menu_program, fragmentManager.beginTransaction());
+            navigationView.changePage(R.string.menu_home, fragmentManager.beginTransaction());
         }
     }
 
     @Override
     public void onBackPressed() {
-        if (fragmentManager.getBackStackEntryCount() == 1) {
-            //If drawer is open, show possibility to close the app via the back-button.
-            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-                if (doubleBackToExit) {
-                    //Button pressed a second time within a second.
-                    this.finishAffinity();
-                    return;
-                }
-                this.doubleBackToExit = true;
-                android.widget.Toast.makeText(this, R.string.exit_app_via_back, android.widget.Toast.LENGTH_LONG).show();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        // If the current fragment has a back stack on its own, don't go in here
+        if (!(fragment instanceof IOnBackPressed) || !((IOnBackPressed) fragment).onBackPressed()) {
+            // If backstack is back to the home fragment
+            if (fragmentManager.getBackStackEntryCount() == 1) {
+                //If drawer is open, show possibility to close the app via the back-button.
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    if (doubleBackToExit) {
+                        //Button pressed a second time within a second.
+                        this.finishAffinity();
+                        return;
+                    }
+                    this.doubleBackToExit = true;
+                    android.widget.Toast.makeText(this, R.string.exit_app_via_back, android.widget.Toast.LENGTH_LONG).show();
 
-                new Handler().postDelayed(() -> doubleBackToExit = false, 1000);
-            } else { //Otherwise open the left menu
-                drawerLayout.openDrawer(GravityCompat.START);
+                    new Handler().postDelayed(() -> doubleBackToExit = false, 1000);
+                } else { //Otherwise open the left menu
+                    drawerLayout.openDrawer(GravityCompat.START);
+                }
             }
-        } else {
-            fragmentManager.popBackStack();
+            // Close drawer and go one back
+            else {
+                if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                }
+                fragmentManager.popBackStack();
+            }
         }
     }
 
@@ -184,7 +206,8 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
             Log.e(TAG, "Tried to save an incomplete event");
             return;
         }
-        //todo close keyboard if its open
+        // close keyboard if its open
+        hideKeyBoard.hide();
         //load the location and the full event description
         Toast errorToast = new Toast(getApplicationContext());
         IFirestoreDownload downloader = new FirestoreMock.Download();

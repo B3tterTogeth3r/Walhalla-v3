@@ -41,7 +41,9 @@ public abstract class Dialog<T> extends DialogFragment implements DialogInterfac
     private static final String TAG = "Dialog";
     private final DialogSize size;
     private final Loader<T> loader;
+    public Exception e = null;
     private int buttonClickListener = 0;
+    private T result;
 
     public Dialog(DialogSize size) {
         this.size = size;
@@ -67,16 +69,15 @@ public abstract class Dialog<T> extends DialogFragment implements DialogInterfac
         view.removeAllViewsInLayout();
         view.removeAllViews();
         Toolbar toolbar = layout.findViewById(R.id.dialog_toolbar);
-        toolbar.setNavigationOnClickListener(v -> dismiss());
+        toolbar.setNavigationOnClickListener(v -> this.dismiss());
         try {
             configToolbar(toolbar);
             createDialog(view, inflater);
             configDialog(builder);
         } catch (Exception e) {
             Log.e(TAG, "onCreateDialog: creating dialog didn't work", e);
-            dismiss();
+            this.dismiss();
         }
-
 
         builder.setView(layout);
         AlertDialog dialog = builder.create();
@@ -89,15 +90,17 @@ public abstract class Dialog<T> extends DialogFragment implements DialogInterfac
     public void onDismiss(@NonNull DialogInterface dialog) {
         try {
             switch (buttonClickListener) {
-                case DialogInterface.BUTTON_POSITIVE:
-                    loader.done(done());
-                    break;
                 case DialogInterface.BUTTON_NEGATIVE:
                 case DialogInterface.BUTTON_NEUTRAL:
+                    break;
+                case DialogInterface.BUTTON_POSITIVE:
                 default:
+                    result = done();
+                    loader.done(result);
             }
         } catch (Exception e) {
-            loader.done(e);
+            this.e = e;
+            loader.onFailureListener(e);
         }
         super.onDismiss(dialog);
     }
@@ -126,11 +129,17 @@ public abstract class Dialog<T> extends DialogFragment implements DialogInterfac
 
     public Dialog<T> onFailureListener(OnFailureListener<T> onFailureListener) {
         loader.setOnFailListener(onFailureListener);
+        if (e != null) {
+            loader.done(e);
+        }
         return this;
     }
 
     public Dialog<T> setOnSuccessListener(OnSuccessListener<T> onSuccessListener) {
         loader.setOnSuccessListener(onSuccessListener);
+        if (result != null) {
+            loader.done(result);
+        }
         return this;
     }
 
@@ -149,6 +158,6 @@ public abstract class Dialog<T> extends DialogFragment implements DialogInterfac
         }
         buttonClickListener = which;
         // onDismiss(dialog);
-        dismiss();
+        this.dismiss();
     }
 }

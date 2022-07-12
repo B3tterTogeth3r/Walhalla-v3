@@ -32,7 +32,7 @@ import com.google.firebase.Timestamp;
 import java.text.SimpleDateFormat;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.TouchListener;
+import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
 import de.b3ttertogeth3r.walhalla.enums.Collar;
 import de.b3ttertogeth3r.walhalla.enums.Punctuality;
 import de.b3ttertogeth3r.walhalla.object.Chore;
@@ -148,9 +148,9 @@ public class DEvent {
 
     @SuppressWarnings("rawtypes")
     @SuppressLint("ClickableViewAccessibility")
-    public DEvent addTouchListener(TouchListener touchListener) {
-        if(dEvent != null && view != null) {
-            view.setOnTouchListener(touchListener);
+    public DEvent addTouchListener(Touch touch) {
+        if (dEvent != null && view != null) {
+            view.setOnTouchListener(touch);
             return dEvent;
         }
         return null;

@@ -25,9 +25,10 @@ import de.b3ttertogeth3r.walhalla.object.Person;
 /**
  * Listener collection used by {@link de.b3ttertogeth3r.walhalla.firebase.Authentication
  * Authentication}
- * @since 2.0
- * @version 1.0
+ *
  * @author B3tterTogeth3r
+ * @version 1.0
+ * @since 2.0
  */
 public interface IAuth {
 
@@ -42,40 +43,33 @@ public interface IAuth {
      * @return true, if a user is signed in
      * @since 1.0
      */
-    boolean isSignIn ();
+    boolean isSignIn();
 
     /**
-     * @param p
-     *         Person to change the password of
-     * @param newPW
-     *         the new password
-     * @param loader
-     *         result listener
+     * @param p      Person to change the password of
+     * @param newPW  the new password
+     * @param loader result listener
      * @since 1.0
      */
-    default void changePassword (Person p, String newPW, @NonNull Loader<Void> loader) {
-        changePassword(p, "Walhalla1684", newPW, loader);
+    default Loader<Boolean> changePassword(Person p, String newPW) {
+        return changePassword(p, "Walhalla1684", newPW);
     }
 
     /**
-     * @param p
-     *         Person to change the password of
-     * @param oldPW
-     *         the old password
-     * @param newPW
-     *         the new password
-     * @param loader
-     *         result listener
+     * @param p      Person to change the password of
+     * @param oldPW  the old password
+     * @param newPW  the new password
+     * @param loader result listener
      * @since 1.0
      */
-    void changePassword (Person p, String oldPW, String newPW, @NonNull Loader<Void> loader);
+    Loader<Boolean> changePassword(Person p, String oldPW, String newPW);
 
     /**
      * sign the current user out
      *
      * @since 1.0
      */
-    void signOut ();
+    void signOut();
 
     /**
      * change the ability of the app to log custom events and use analytics data to display custom
@@ -83,95 +77,95 @@ public interface IAuth {
      *
      * @since 1.0
      */
-    void changeLoggingData ();
+    void changeLoggingData();
 
     /**
      * @return the current signed in Firebase user or null
      * @since 1.0
      */
-    FirebaseUser getUser ();
+    FirebaseUser getUser();
 
     /**
      * send an email with a verification link to the email address of the signed in user
      *
      * @since 1.0
      */
-    void sendVerificationMail ();
+    void sendVerificationMail();
+
+    /**
+     * @param email email to check for
+     * @return true, if email is in auth
+     * @since 1.0
+     */
+    Loader<Boolean> exitsEmail(String email);
 
     /**
      * link the account with Google
      *
-     * @param loader
-     *         result listener
+     * @param loader result listener
      * @see <a href="https://firebase.google.com/docs/auth/android/google-signin">Authenticate with
      * Google on Android</a>
      * @since 1.0
      */
-    void linkGoogle (@NonNull Loader<Void> loader);
+    void linkGoogle(@NonNull Loader<Void> loader);
 
     /**
      * Link the account with Twitter
      *
-     * @param loader
-     *         result listener
+     * @param loader result listener
      * @see <a href="https://firebase.google.com/docs/auth/android/twitter-login">Authenticate Using
      * Twitter on Android</a>
      * @since 1.0
      */
-    void linkTwitter (@NonNull Loader<Void> loader);
+    void linkTwitter(@NonNull Loader<Void> loader);
 
     /**
      * Link the account with FaceBook
      *
-     * @param loader
-     *         result listener
+     * @param loader result listener
      * @see <a href="https://firebase.google.com/docs/auth/android/facebook-login">Authenticate
      * Using Facebook Login on Android</a>
      * @since 1.0
      */
-    void linkFacebook (@NonNull Loader<Void> loader);
+    void linkFacebook(@NonNull Loader<Void> loader);
 
     /**
      * Link the account with GitHub
      *
-     * @param loader
-     *         result listener
+     * @param loader result listener
      * @see <a href="https://firebase.google.com/docs/auth/android/github-auth">Authenticate Using
      * GitHub on Android</a>
      * @since 1.0
      */
-    void linkGithub (@NonNull Loader<Void> loader);
+    void linkGithub(@NonNull Loader<Void> loader);
 
     /**
      * Link the account with Apple
      *
-     * @param loader
-     *         result listener
+     * @param loader result listener
      * @see <a href="https://firebase.google.com/docs/auth/android/apple">Authenticate Using Apple
      * on Android</a>
      * @since 1.0
      */
-    void linkApple (@NonNull Loader<Void> loader);
+    void linkApple(@NonNull Loader<Void> loader);
 
     /**
      * Link the account with Microsoft
      *
-     * @param loader
-     *         result listener
+     * @param loader result listener
      * @see <a href="https://firebase.google.com/docs/auth/android/microsoft-oauth">Authenticate
      * Using Microsoft on Android</a>
      * @since 1.0
      */
-    void linkMicrosoft (@NonNull Loader<Void> loader);
+    void linkMicrosoft(@NonNull Loader<Void> loader);
 
     /**
      * Link the account with Yahoo
      *
-     * @param loader
-     *         result listener
+     * @param loader result listener
      * @see <a href="https://firebase.google.com/docs/auth/android/yahoo-oauth">Authenticate Using
      * Yahoo on Android</a>
      * @since 1.0
      */
-    void linkYahoo (@NonNull Loader<Void> loader);
+    void linkYahoo(@NonNull Loader<Void> loader);
 }

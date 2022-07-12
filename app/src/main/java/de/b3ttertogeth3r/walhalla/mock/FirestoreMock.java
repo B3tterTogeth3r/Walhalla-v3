@@ -124,7 +124,7 @@ public class FirestoreMock {
 
         @Override
         public Loader<ArrayList<BoardMember>> board(@NonNull Rank rank, String semesterID) {
-          Loader<ArrayList<BoardMember>> loader = new Loader<>();
+            Loader<ArrayList<BoardMember>> loader = new Loader<>();
             BoardMember bm1, bm2, bm3, bm4, bm5;
             switch (rank) {
                 case ACTIVE:
@@ -153,7 +153,7 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<ArrayList<Address>> address(String personID){
+        public Loader<ArrayList<Address>> address(String personID) {
             Loader<ArrayList<Address>> loader = new Loader<>();
             ArrayList<Address> results = new ArrayList<>();
             Address a1 = new Address("Mergentheimer Straße", "32 - 34a", "97082", "Würzburg",
@@ -509,6 +509,15 @@ public class FirestoreMock {
             if (event.validate()) {
                 // TODO: 16.05.22 upload event and send success or fail message to user
             }
+        }
+
+        @Override
+        public Loader<Boolean> person(@NonNull Person person, ArrayList<Address> addressList) {
+            Loader<Boolean> loader = new Loader<>();
+            if (person.validate()) {
+                return loader.done(true);
+            }
+            return loader.done(false);
         }
     }
 }

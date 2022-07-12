@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -40,46 +40,45 @@ public enum Chore {
     TENNIS_H_C;
 
     public String getDescription(Context context) {
-        // TODO: 16.05.22 fill rest of the case values
         switch (this) {
             case BAR_B:
                 return context.getString(R.string.chore_bar_b);
             case BAR_C:
-                break;
+                return context.getString(R.string.chore_bar_c);
             case BAR_1:
-                break;
+                return context.getString(R.string.chore_bar_1);
             case BAR_2:
-                break;
+                return context.getString(R.string.chore_bar_2);
             case BAR_3:
-                break;
+                return context.getString(R.string.chore_bar_3);
             case BAR_4:
-                break;
+                return context.getString(R.string.chore_bar_4);
             case KITCHEN_C:
-                break;
+                return context.getString(R.string.chore_kitchen_c);
             case KITCHEN_B:
-                break;
+                return context.getString(R.string.chore_kitchen_b);
             case FOOD_B:
-                break;
+                return context.getString(R.string.chore_food_b);
             case FOOD_C:
-                break;
+                return context.getString(R.string.chore_food_c);
             case OMNI_C:
-                break;
+                return context.getString(R.string.chore_omni_c);
             case OMNI_B:
-                break;
+                return context.getString(R.string.chore_omni_b);
             case GARDEN_C:
-                break;
+                return context.getString(R.string.chore_garden_c);
             case GARDEN_B:
-                break;
+                return context.getString(R.string.chore_garden_b);
             case CHAR:
-                break;
+                return context.getString(R.string.chore_char);
             case TENNIS_C:
-                break;
+                return context.getString(R.string.chore_tennis_c);
             case TENNIS_B:
-                break;
+                return context.getString(R.string.chore_tennis_b);
             case TENNIS_H_B:
-                break;
+                return context.getString(R.string.chore_tennis_h_b);
             case TENNIS_H_C:
-                break;
+                return context.getString(R.string.chore_tennis_h_c);
         }
         return "TODO";
     }

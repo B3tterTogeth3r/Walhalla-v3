@@ -14,7 +14,11 @@
 
 package de.b3ttertogeth3r.walhalla.exception;
 
+import androidx.annotation.NonNull;
+
 public class CreateDialogException extends Exception {
+    private static final String TAG = "CreateDialogException";
+
     public CreateDialogException() {
         super();
     }
@@ -29,5 +33,11 @@ public class CreateDialogException extends Exception {
 
     public CreateDialogException(String message, Throwable cause) {
         super(message, cause);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return TAG + ": " + getMessage();
     }
 }

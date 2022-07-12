@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -46,6 +46,7 @@ import de.b3ttertogeth3r.walhalla.fragment.common.PhilistinesBoard;
 import de.b3ttertogeth3r.walhalla.fragment.common.Program;
 import de.b3ttertogeth3r.walhalla.fragment.common.Rooms;
 import de.b3ttertogeth3r.walhalla.fragment.common.StudentBoard;
+import de.b3ttertogeth3r.walhalla.fragment.sign_in.SignInHome;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Balance;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Drinks;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Profile;
@@ -77,7 +78,7 @@ import de.b3ttertogeth3r.walhalla.old.fragments_main.HistoryFragment;
  *     PhilistinesBoard}</li>
  * </ul>
  * If no user is signed in, the next section is just the login menu
- * <ul><li>{@link Login}</li></ul>
+ * <ul><li>{@link de.b3ttertogeth3r.walhalla.fragment.sign_in.SignInHome SignInHome}</li></ul>
  * If a user is signed in, the following sites are displayed:
  * <ul>
  *     <li>{@link SignOut}</li>
@@ -86,7 +87,6 @@ import de.b3ttertogeth3r.walhalla.old.fragments_main.HistoryFragment;
  *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.signed_in.Chores Chores}</li>
  *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.signed_in.Drinks Drinks}</li>
  *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.signed_in.Transcript Transcript}</li>
- *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.signed_in.KeyCard KeyCard}</li>
  * </ul>
  * If the signed in user is an active board member the following sites are also available:
  * <ul>
@@ -132,7 +132,6 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
         TextView title = view.findViewById(R.id.nav_title);
         TextView street = view.findViewById(R.id.nav_street);
         TextView city = view.findViewById(R.id.nav_city);
-        IAuth auth = new AuthMock();
         if (auth.isSignIn()) {
             FirebaseUser user = auth.getUser();
             try {
@@ -144,7 +143,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
                 title.setText(user.getDisplayName());
                 street.setText(user.getEmail());
                 city.setText(user.getPhoneNumber());
-            } catch (Exception ignored) {
+            } catch (Exception e) {
                 image.setImageResource(R.drawable.wappen_2017);
                 title.setText(Walhalla.NAME.toString());
                 street.setText(Walhalla.ADH.toString());
@@ -261,6 +260,11 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
     public void changePage (int string_value_id, FragmentTransaction transaction) {
         int container = R.id.fragment_container;
         switch (string_value_id) {
+            case R.string.menu_login:
+                transaction.replace(container, new SignInHome())
+                        .addToBackStack(TAG)
+                        .commit();
+                break;
             case R.id.program:
             case R.string.menu_program:
                 transaction.replace(container, new Program())
@@ -343,7 +347,6 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
             case R.id.row2first:
             case R.id.login:
             case R.string.menu_home:
-            case R.string.menu_login:
             case R.string.menu_logout:
             default:
                 transaction.replace(container, new Home())

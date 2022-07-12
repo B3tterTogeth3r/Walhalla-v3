@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -15,9 +15,11 @@
 package de.b3ttertogeth3r.walhalla.object;
 
 import android.content.Context;
-import android.widget.TableLayout;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.firebase.Timestamp;
 
@@ -25,8 +27,8 @@ import java.text.SimpleDateFormat;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.design.Image;
+import de.b3ttertogeth3r.walhalla.design.ProfileRow;
 import de.b3ttertogeth3r.walhalla.design.TableRow;
-import de.b3ttertogeth3r.walhalla.design.Text;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.enums.TrafficLightColor;
 import de.b3ttertogeth3r.walhalla.interfaces.Validate;
@@ -34,6 +36,7 @@ import de.b3ttertogeth3r.walhalla.util.TrafficLight;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class Person implements Validate {
+    // TODO: 05.07.22 add possibility to ad titles i.e. a phd.
     private String first_Name;
     private String last_Name;
     private String origin;
@@ -49,12 +52,12 @@ public class Person implements Validate {
     private String id;
 
     //region constructors
-    public Person () {
+    public Person() {
     }
 
-    public Person (String first_Name, String last_Name, String origin, String major,
-                   String nickname, String passwordString, int joined, Timestamp birthday,
-                   Rank rank, boolean enabled, boolean password) {
+    public Person(String first_Name, String last_Name, String origin, String major,
+                  String nickname, String passwordString, int joined, Timestamp birthday,
+                  Rank rank, boolean enabled, boolean password) {
         this.first_Name = first_Name;
         this.last_Name = last_Name;
         this.origin = origin;
@@ -70,71 +73,62 @@ public class Person implements Validate {
     //endregion
 
     //region getter and setters
-    public String getMobile () {
+    public String getMobile() {
         return mobile;
     }
 
-    public void setMobile (String mobile) {
+    public void setMobile(String mobile) {
         this.mobile = mobile;
     }
 
-    public Timestamp getBirthday () {
-        return birthday;
-    }
-
-    public void setBirthday (Timestamp birthday) {
-        this.birthday = birthday;
-    }
-
-    public boolean isEnabled () {
+    public boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled (boolean enabled) {
+    public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
-    public boolean isPassword () {
+    public boolean isPassword() {
         return password;
     }
 
-    public void setPassword (boolean password) {
+    public void setPassword(boolean password) {
         this.password = password;
     }
 
-    public String getMail () {
+    public String getMail() {
         return mail;
     }
 
-    public void setMail (String mail) {
+    public void setMail(String mail) {
         this.mail = mail;
     }
 
-    public String getId () {
+    public String getId() {
         return id;
     }
 
-    public void setId (String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getPasswordString () {
+    public String getPasswordString() {
         return passwordString;
     }
 
-    public void setPasswordString (String passwordString) {
+    public void setPasswordString(String passwordString) {
         this.passwordString = passwordString;
     }
 
-    //region getView
-    public TableRow getViewAll (Context context) {
+    public TableRow getViewAll(Context context) {
         TableRow row = new TableRow(context);
         row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getFull_Name()));
         row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getNickname()));
         row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getRank().toString()));
         TrafficLight tl;
         if (!enabled) {
-            tl= new TrafficLight(context, TrafficLightColor.RED);
+            tl = new TrafficLight(context, TrafficLightColor.RED);
         } else if (!password) {
             tl = new TrafficLight(context, TrafficLightColor.YELLOW);
         } else {
@@ -145,153 +139,148 @@ public class Person implements Validate {
         return row;
     }
 
-    public String getFull_Name () {
+    public String getFull_Name() {
         return getFirst_Name() + " " + getLast_Name();
     }
 
-    public String getNickname () {
+    public String getNickname() {
         return nickname;
     }
 
-    public void setNickname (String nickname) {
+    public void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
-    public Rank getRank () {
+    public Rank getRank() {
         return rank;
     }
 
-    public void setRank (Rank rank) {
+    public void setRank(Rank rank) {
         this.rank = rank;
     }
 
-    public String getFirst_Name () {
+    public String getFirst_Name() {
         return first_Name;
     }
 
-    public void setFirst_Name (String first_Name) {
+    public void setFirst_Name(String first_Name) {
         this.first_Name = first_Name;
     }
 
-    public String getLast_Name () {
+    public String getLast_Name() {
         return last_Name;
     }
 
-    public void setLast_Name (String last_Name) {
+    public void setLast_Name(String last_Name) {
         this.last_Name = last_Name;
     }
 
     /**
-     * @param context
-     *         context to create the layout and the text fields
-     * @return TableLayout
+     * @param context context to create the layout and the text fields
+     * @return LinearLayout filled with {@link ProfileRow} elements
      */
-    public TableLayout getViewEdit (Context context) {
-        return designDisplayEdit(context, true);
+    public LinearLayout getViewEdit(Context context, View.OnClickListener listener) {
+        return designDisplayEdit(context, true, listener);
     }
 
     @NonNull
-    private TableLayout designDisplayEdit (Context context, boolean isEdit) {
-        TableLayout layout = new TableLayout(context);
-        TableRow name = new TableRow(context);
-        name.addView(new Text(context, context.getString(R.string.full_name)));
-        name.addView(new Text(context, getFull_Name()));
-        if (isEdit) {
-            name.addView(new Image(context, R.drawable.ic_arrow_right));
-            name.setOnClickListener(null);
-        }
-        layout.addView(name);
+    private LinearLayout designDisplayEdit(Context context, boolean isEdit, @Nullable View.OnClickListener listener) {
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
 
-        TableRow from = new TableRow(context);
-        from.addView(new Text(context, context.getString(R.string.full_name)));
-        from.addView(new Text(context, getOrigin()));
-        if (isEdit) {
-            from.addView(new Image(context, R.drawable.ic_arrow_right));
-            from.setOnClickListener(null);
+        if ((getFirst_Name() != null && getLast_Name() != null &&
+                !getFirst_Name().isEmpty() && !getLast_Name().isEmpty()) || isEdit) {
+            ProfileRow name = new ProfileRow(context, isEdit);
+            name.setTitle(R.string.full_name).setContent(getFull_Name()).setOnClickListener(listener);
+            layout.addView(name);
         }
-        layout.addView(from);
 
-        TableRow major = new TableRow(context);
-        major.addView(new Text(context, context.getString(R.string.full_name)));
-        major.addView(new Text(context, getMajor()));
-        if (isEdit) {
-            major.addView(new Image(context, R.drawable.ic_arrow_right));
-            major.setOnClickListener(null);
+        if (getOrigin() != null && !getOrigin().isEmpty() || isEdit) {
+            ProfileRow from = new ProfileRow(context, isEdit);
+            from.setTitle(R.string.pob).setContent(getOrigin()).setOnClickListener(listener);
+            layout.addView(from);
         }
-        layout.addView(major);
 
-        TableRow nick = new TableRow(context);
-        nick.addView(new Text(context, context.getString(R.string.full_name)));
-        nick.addView(new Text(context, getNickname()));
-        if (isEdit) {
-            nick.addView(new Image(context, R.drawable.ic_arrow_right));
-            nick.setOnClickListener(null);
+        if (getMajor() != null && !getMajor().isEmpty() || isEdit) {
+            ProfileRow major = new ProfileRow(context, isEdit);
+            major.setTitle(R.string.major).setContent(getMajor()).setOnClickListener(listener);
+            layout.addView(major);
         }
-        layout.addView(nick);
 
-        TableRow join = new TableRow(context);
-        join.addView(new Text(context, context.getString(R.string.full_name)));
-        join.addView(new Text(context, String.valueOf(getJoined())));
-        if (isEdit) {
-            join.addView(new Image(context, R.drawable.ic_arrow_right));
-            join.setOnClickListener(null);
+        if (getNickname() != null && !getNickname().isEmpty() || isEdit) {
+            ProfileRow nick = new ProfileRow(context, isEdit);
+            nick.setTitle(R.string.nickname).setContent(getNickname()).setOnClickListener(listener);
+            layout.addView(nick);
         }
-        layout.addView(join);
 
-        TableRow dob = new TableRow(context);
-        dob.addView(new Text(context, context.getString(R.string.full_name)));
-        SimpleDateFormat date = new SimpleDateFormat("dd.MM.yyyy", Values.LOCALE);
-        dob.addView(new Text(context, date.format(birthday.toDate())));
-        if (isEdit) {
-            dob.addView(new Image(context, R.drawable.ic_arrow_right));
-            dob.setOnClickListener(null);
+        if (getJoined() != 0 || isEdit) {
+            ProfileRow join = new ProfileRow(context, isEdit);
+            join.setTitle(R.string.joined).setContent(String.valueOf(getJoined())).setOnClickListener(listener);
+            layout.addView(join);
         }
-        layout.addView(dob);
 
-        TableRow ra = new TableRow(context);
-        ra.addView(new Text(context, context.getString(R.string.full_name)));
-        ra.addView(new Text(context, getRank().toString()));
-        if (isEdit) {
-            ra.addView(new Image(context, R.drawable.ic_arrow_right));
-            ra.setOnClickListener(null);
+        if (getBirthday() != null || isEdit) {
+            ProfileRow dob = new ProfileRow(context, isEdit);
+            SimpleDateFormat date = new SimpleDateFormat("dd.MM.yyyy", Values.LOCALE);
+            dob.setTitle(R.string.dob).setContent(date.format(getBirthday().toDate())).setOnClickListener(listener);
+            layout.addView(dob);
         }
-        layout.addView(ra);
+
+        if (getRank() != null || isEdit) {
+            ProfileRow ra = new ProfileRow(context, isEdit);
+            ra.setTitle(R.string.rank).setContent(getRank().toString()).setOnClickListener(listener);
+            layout.addView(ra);
+        }
 
         return layout;
     }
 
-    public String getOrigin () {
+    public String getOrigin() {
         return origin;
     }
 
-    public void setOrigin (String origin) {
+    public void setOrigin(String origin) {
         this.origin = origin;
     }
 
-    public String getMajor () {
+    public String getMajor() {
         return major;
     }
-    //endregion
 
-    public void setMajor (String major) {
+    public void setMajor(String major) {
         this.major = major;
     }
 
-    public int getJoined () {
+    public int getJoined() {
         return joined;
     }
 
-    public void setJoined (int joined) {
+    public Timestamp getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Timestamp birthday) {
+        this.birthday = birthday;
+    }
+
+    public void setJoined(int joined) {
         this.joined = joined;
     }
 
-    public TableLayout getViewDisplay (Context context) {
-        return designDisplayEdit(context, false);
+    public LinearLayout getViewDisplay(Context context) {
+        return designDisplayEdit(context, false, null);
     }
     //endregion
 
     @Override
-    public boolean validate () {
-        return false;
+    public boolean validate() {
+        return (this.first_Name != null && !this.first_Name.isEmpty() &&
+                this.last_Name != null && !this.last_Name.isEmpty() &&
+                rank != null && joined != 0);
+    }
+
+    public boolean validatePersonal() {
+        return (this.first_Name != null && !this.first_Name.isEmpty() &&
+                this.last_Name != null && !this.last_Name.isEmpty());
     }
 }

@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2022.
+  ~ Copyright (c) 2022-2022.
   ~
   ~ Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
   ~ except in compliance with the License. You may obtain a copy of the License at
@@ -135,7 +135,7 @@
     <string name="street">Straße</string>
     <string name="number">Nummer</string>
     <string name="full_name" translatable="false">Name</string>
-    <string name="address">Adresse:</string>
+    <string name="address">Adresse</string>
     <string name="dob">Geburtstag</string>
     <string name="pob">Herkunft</string>
     <string name="mobile">Handynummer</string>
@@ -216,5 +216,36 @@
     <string name="previous">Neuer</string>
     <string name="older">Älter</string>
     <string name="copied_to_clipboard">In zwischenablage gespeichert</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
+    <string name="password">Passwort eingeben</string>
+    <string name="info">Information</string>
+    <string name="country">Land</string>
+    <string name="state">Staat</string>
+    <string name="chore_bar_c">Bar aufräumen</string>
+    <string name="chore_bar_1">Bar Schicht 1</string>
+    <string name="chore_bar_2">Bar Schicht 2</string>
+    <string name="chore_bar_3">Bar Schicht 3</string>
+    <string name="chore_bar_4">Bar Schicht 4</string>
+    <string name="chore_kitchen_c">Küche aufräumen</string>
+    <string name="chore_kitchen_b">Küche aufbauen</string>
+    <string name="chore_food_b">Essen einkaufen</string>
+    <string name="chore_food_c">Essen zubereiten</string>
+    <string name="chore_omni_c">Omnibus aufräumen</string>
+    <string name="chore_omni_b">Omnibus aufbauen</string>
+    <string name="chore_garden_c">Garten aufrö#äumen</string>
+    <string name="chore_garden_b">Garten aufbauen</string>
+    <string name="chore_char">Chargieren</string>
+    <string name="chore_tennis_c">Tennisplatz aufräumen</string>
+    <string name="chore_tennis_b">Tennisplatz aufbauen</string>
+    <string name="chore_tennis_h_b">Tennishaus aufbauen</string>
+    <string name="chore_tennis_h_c">Tennishaus aufräumen</string>
+    <string name="nickname">Vulgo / Spitzname</string>
 
 </resources>

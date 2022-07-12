@@ -38,7 +38,7 @@ import java.text.SimpleDateFormat;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Dialog;
-import de.b3ttertogeth3r.walhalla.abstract_classes.TouchListener;
+import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
 import de.b3ttertogeth3r.walhalla.design.DEvent;
 import de.b3ttertogeth3r.walhalla.design.Text;
 import de.b3ttertogeth3r.walhalla.design.Title;
@@ -86,7 +86,7 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
             return dialog;
         } catch (Exception e) {
             Log.e(TAG, "unable to create dialog", e);
-            throw new CreateDialogException("", e);
+            throw new CreateDialogException("unable to create event details dialog.", e);
         }
     }
 
@@ -115,6 +115,7 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
         }
 
         // map
+        // FIXME: 30.06.22 android.view.InflateException: Binary XML file line #180 in de.b3ttertogeth3r.walhalla:layout/event_detail: Binary XML file line #180 in de.b3ttertogeth3r.walhalla:layout/event_detail: Error inflating class fragment
         SupportMapFragment mapFragment = (SupportMapFragment) requireActivity().getSupportFragmentManager()
                 .findFragmentById(R.id.maps_fragment);
         if (mapFragment != null) {
@@ -194,7 +195,8 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
                         for (Chore c : result) {
                             choresTable.addView(
                                     DEvent.create(requireActivity(), null, c)
-                                            .addTouchListener(new TouchListener<Chore>(c) {
+                                            .addTouchListener(new Touch() {
+
                                             }).show());
                         }
                     }
