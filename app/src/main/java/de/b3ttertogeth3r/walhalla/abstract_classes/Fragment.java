@@ -41,6 +41,7 @@ import de.b3ttertogeth3r.walhalla.util.ToastList;
 
 public abstract class Fragment extends androidx.fragment.app.Fragment implements FirebaseAuth.AuthStateListener, IFragment {
     private static final String TAG = "Fragment";
+    private final IAnalytics analytics;
     /**
      * A list to collect all realtime listeners into the Firestore database.
      *
@@ -62,30 +63,26 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
      */
     public LinearLayout customToolbar;
     public TextView customToolbarTitle;
-    private final IAnalytics analytics;
 
-    public Fragment () {
+    public Fragment() {
         analytics = new AnalyticsMock();
     }
 
     /**
-     * @param inflater
-     *         The LayoutInflater object that can be used to inflate any views in the fragment,
-     * @param container
-     *         If non-null, this is the parent view that the fragment's UI should be attached to.
-     *         The fragment should not add the view itself, but this can be used to generate the
-     *         LayoutParams of the view.
-     * @param savedInstanceState
-     *         If non-null, this fragment is being re-constructed from a previous saved state as
-     *         given here.
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     *                           The fragment should not add the view itself, but this can be used to generate the
+     *                           LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as
+     *                           given here.
      * @return Return the View for the fragment's UI, or null.
      * @deprecated use abstract {@link #createView(LinearLayout)} instead.
      */
     @Nullable
     @Override
-    public View onCreateView (@NonNull LayoutInflater inflater,
-                              @Nullable ViewGroup container,
-                              @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment, container, false);
         LinearLayout layout = view.findViewById(R.id.fragment_container);
         createView(layout);
@@ -93,16 +90,14 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
     }
 
     /**
-     * @param view
-     *         The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * @param savedInstanceState
-     *         If non-null, this fragment is being re-constructed from a previous saved state as
-     *         given here.
+     * @param view               The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state as
+     *                           given here.
      * @deprecated use abstract {@link #viewCreated()} instead
      */
     @Override
-    public void onViewCreated (@NonNull @NotNull View view,
-                               @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull @NotNull View view,
+                              @Nullable Bundle savedInstanceState) {
         try {
             toolbar = requireActivity().findViewById(R.id.toolbar);
             toolbar.setTitle("Walhalla");
@@ -123,7 +118,7 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
      * @deprecated use abstract {@link #start()} instead
      */
     @Override
-    public void onStart () {
+    public void onStart() {
         try {
             super.onStart();
             registration = new ArrayList<>();
@@ -134,7 +129,7 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
     }
 
     @Override
-    public void onResume () {
+    public void onResume() {
         super.onResume();
         try {
             toolbarContent();
@@ -147,7 +142,7 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
      * @deprecated use abstract {@link #stop()} instead
      */
     @Override
-    public void onStop () {
+    public void onStop() {
         super.onStop();
         stop();
         try {
@@ -171,11 +166,10 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
      * should check, if the then signed in user is allowed to see the selected fragment. If not,
      * navigate one up in the backstack.
      *
-     * @param firebaseAuth
-     *         the auth status from firebase
+     * @param firebaseAuth the auth status from firebase
      */
     @Override
-    public void onAuthStateChanged (@NonNull FirebaseAuth firebaseAuth) {
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         getParentFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, this)

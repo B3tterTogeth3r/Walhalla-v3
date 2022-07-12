@@ -38,7 +38,8 @@ public interface IFragment {
      *
      * @see #toolbar
      */
-    void toolbarContent();
+    default void toolbarContent() {
+    }
 
     /**
      * @see #onViewCreated(View, Bundle)
