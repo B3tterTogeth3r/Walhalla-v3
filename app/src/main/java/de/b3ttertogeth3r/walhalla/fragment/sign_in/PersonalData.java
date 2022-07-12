@@ -45,7 +45,7 @@ import de.b3ttertogeth3r.walhalla.dialog.AddressDialog;
 import de.b3ttertogeth3r.walhalla.dialog.InfoDialog;
 import de.b3ttertogeth3r.walhalla.dialog.ProfileEditDialog;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
-import de.b3ttertogeth3r.walhalla.interfaces.IOnBackPressed;
+import de.b3ttertogeth3r.walhalla.interfaces.activityMain.IOnBackPressed;
 import de.b3ttertogeth3r.walhalla.object.Address;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Person;

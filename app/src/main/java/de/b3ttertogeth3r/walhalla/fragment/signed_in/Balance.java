@@ -30,7 +30,7 @@ import de.b3ttertogeth3r.walhalla.design.Button;
 import de.b3ttertogeth3r.walhalla.design.LinearLayout;
 import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.design.Toast;
-import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreDownload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.Account;
 import de.b3ttertogeth3r.walhalla.object.Log;

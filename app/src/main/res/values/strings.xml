@@ -247,5 +247,6 @@
     <string name="chore_tennis_h_b">Tennishaus aufbauen</string>
     <string name="chore_tennis_h_c">Tennishaus aufräumen</string>
     <string name="nickname">Vulgo / Spitzname</string>
+    <string name="menu_greeting_long">Begrüßung\ndes Seniors</string>
 
 </resources>

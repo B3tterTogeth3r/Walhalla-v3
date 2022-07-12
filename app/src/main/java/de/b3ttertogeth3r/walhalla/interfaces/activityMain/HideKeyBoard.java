@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -12,10 +12,19 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.interfaces;
+package de.b3ttertogeth3r.walhalla.interfaces.activityMain;
 
-import android.content.Context;
 
-public interface IInit {
-    boolean init (Context context);
+/**
+ * Interface to access publicly on the according Activity to hide the soft keybaord.
+ *
+ * @author B3tterTogeth3r
+ * @see <a href="https://stackoverflow.com/questions/13593069/androidhide-keyboard-after-button-click">burmat</a>
+ * @since 3.0
+ */
+public interface HideKeyBoard {
+    /**
+     * function call to hide the keyboard.
+     */
+    void hide();
 }

@@ -22,7 +22,7 @@ import androidx.annotation.Nullable;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import de.b3ttertogeth3r.walhalla.interfaces.IInit;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 import de.b3ttertogeth3r.walhalla.object.Log;
 
 public class Firestore implements IInit {

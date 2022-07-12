@@ -30,7 +30,7 @@ import de.b3ttertogeth3r.walhalla.design.EditText;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.exception.UserDataError;
-import de.b3ttertogeth3r.walhalla.interfaces.IAuth;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.mock.AuthMock;
 import de.b3ttertogeth3r.walhalla.object.Log;
 

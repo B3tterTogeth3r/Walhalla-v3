@@ -32,16 +32,25 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 
 import com.google.firebase.database.annotations.NotNull;
+import com.google.firebase.firestore.DocumentReference;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
-import de.b3ttertogeth3r.walhalla.interfaces.IAuth;
+import de.b3ttertogeth3r.walhalla.design.Image;
+import de.b3ttertogeth3r.walhalla.design.SideNav;
+import de.b3ttertogeth3r.walhalla.enums.Rank;
+import de.b3ttertogeth3r.walhalla.exception.NoDataException;
+import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.mock.AuthMock;
+import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.Log;
 
 public class Home extends Fragment implements View.OnClickListener {
     private static final String TAG = "Home";
     private final IAuth auth;
+    private final IFirestoreDownload firestoreDownload;
     private int boxWidth;
     private int boxHeight;
     private RelativeLayout program;
@@ -56,6 +65,7 @@ public class Home extends Fragment implements View.OnClickListener {
 
     public Home() {
         auth = new AuthMock();
+        firestoreDownload = new FirestoreMock.Download();
     }
 
     @Override
@@ -71,7 +81,7 @@ public class Home extends Fragment implements View.OnClickListener {
         boxWidth = (int) (width / 2.5);
         boxHeight = (height / 4);
 
-        // region Add program
+        // region semester program
         RelativeLayout.LayoutParams programParams = boxParams();
         programParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         program = new RelativeLayout(requireContext());
@@ -80,11 +90,25 @@ public class Home extends Fragment implements View.OnClickListener {
         program.setId(R.id.program);
 
         // Add icon
-        // TODO: 10.08.21 maybe change that to the next event being displayed?
         program.addView(image(AppCompatResources.getDrawable(requireContext(),
                 R.drawable.ic_calendar), false));
         // Add description
-        program.addView(text(R.string.menu_program));
+        firestoreDownload.nextEvent()
+                .setOnSuccessListener(result -> {
+                    if (result != null /*&& result.validate()*/ && !result.getTitle().isEmpty()) {
+                        String string;
+                        try {
+                            string = result.getTitle().substring(0, 20);
+                        } catch (Exception e) {
+                            string = result.getTitle();
+                        }
+                        program.addView(text(string));
+                    }
+                })
+                .setOnFailListener(e -> {
+                    Log.e(TAG, "createView: loading next event did not work", e);
+                    program.addView(text(R.string.menu_program));
+                });
         frame.addView(program);
         // endregion
 
@@ -98,11 +122,27 @@ public class Home extends Fragment implements View.OnClickListener {
         greeting.setId(R.id.greeting);
 
         // Add icon
-        // TODO: 07.08.21 set to image of the current X
-        greeting.addView(image(AppCompatResources.getDrawable(requireContext(),
-                R.drawable.ic_greeting), true));
+        firestoreDownload.board(Rank.ACTIVE, RemoteConfig.getString("current_semester_id"))
+                .setOnSuccessListener(result -> {
+                    if (result == null || result.size() == 0) {
+                        throw new NoDataException("Download of chargen did not work");
+                    }
+                    DocumentReference ref = result.get(0).getImage();
+                    if (ref == null || ref.getPath().isEmpty()) {
+                        Log.d(TAG, "createView: charge of current semester has no image");
+                        greeting.addView(image(AppCompatResources.getDrawable(requireContext(),
+                                R.drawable.ic_greeting), true));
+                        return;
+                    }
+                    greeting.addView(new Image(requireContext()).setImage(result.get(0).getImage()));
+                })
+                .setOnFailListener(e -> {
+                    Log.e(TAG, "onFailureListener: download x", e);
+                    greeting.addView(image(AppCompatResources.getDrawable(requireContext(),
+                            R.drawable.ic_greeting), true));
+                });
         // Add description
-        greeting.addView(text(R.string.menu_greeting));
+        greeting.addView(text(R.string.menu_greeting_long));
         frame.addView(greeting);
         // endregion
 
@@ -256,8 +296,7 @@ public class Home extends Fragment implements View.OnClickListener {
     }
 
     @NonNull
-    @NotNull
-    private TextView text(@StringRes int resid) {
+    private TextView text(String value) {
         TextView text = new TextView(requireContext());
         RelativeLayout.LayoutParams params =
                 new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -269,13 +308,19 @@ public class Home extends Fragment implements View.OnClickListener {
         text.setGravity(Gravity.CENTER_HORIZONTAL);
         text.setTextAppearance(android.R.style.TextAppearance_Material_Subhead);
 
-        text.setText(resid);
+        text.setText(value);
         return text;
+    }
+
+    @NonNull
+    private TextView text(@StringRes int resid) {
+        return text(requireContext().getString(resid));
     }
     //endregion
 
     @Override
     public void onClick(View view) {
         // TODO: 12.07.22 switch page and add it to the backstack
+        SideNav.changePage(view.getId(), requireActivity().getSupportFragmentManager().beginTransaction());
     }
 }

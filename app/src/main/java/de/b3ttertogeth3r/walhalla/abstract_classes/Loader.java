@@ -17,9 +17,9 @@ package de.b3ttertogeth3r.walhalla.abstract_classes;
 import androidx.annotation.Nullable;
 
 import de.b3ttertogeth3r.walhalla.MainActivity;
-import de.b3ttertogeth3r.walhalla.interfaces.LoaderResultListener;
-import de.b3ttertogeth3r.walhalla.interfaces.OnFailureListener;
-import de.b3ttertogeth3r.walhalla.interfaces.OnSuccessListener;
+import de.b3ttertogeth3r.walhalla.interfaces.loader.LoaderResultListener;
+import de.b3ttertogeth3r.walhalla.interfaces.loader.OnFailureListener;
+import de.b3ttertogeth3r.walhalla.interfaces.loader.OnSuccessListener;
 
 /**
  * A listener for download results. It can display a loading circle over the whole ui to prevent the

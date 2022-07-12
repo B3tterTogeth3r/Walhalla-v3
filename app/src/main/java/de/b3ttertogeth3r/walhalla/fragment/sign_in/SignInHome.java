@@ -39,8 +39,8 @@ import de.b3ttertogeth3r.walhalla.design.Image;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.dialog.PasswordDialog;
 import de.b3ttertogeth3r.walhalla.fragment.Home;
-import de.b3ttertogeth3r.walhalla.interfaces.IAuth;
-import de.b3ttertogeth3r.walhalla.interfaces.IOnBackPressed;
+import de.b3ttertogeth3r.walhalla.interfaces.activityMain.IOnBackPressed;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.mock.AuthMock;
 import de.b3ttertogeth3r.walhalla.object.Log;
 

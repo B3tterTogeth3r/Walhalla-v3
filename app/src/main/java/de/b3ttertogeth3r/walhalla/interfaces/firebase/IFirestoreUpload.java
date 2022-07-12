@@ -12,7 +12,7 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.interfaces;
+package de.b3ttertogeth3r.walhalla.interfaces.firebase;
 
 import androidx.annotation.NonNull;
 

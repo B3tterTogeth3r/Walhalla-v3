@@ -28,7 +28,7 @@ import de.b3ttertogeth3r.walhalla.dialog.ChangeSemester;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
-import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreDownload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
 import de.b3ttertogeth3r.walhalla.object.Log;

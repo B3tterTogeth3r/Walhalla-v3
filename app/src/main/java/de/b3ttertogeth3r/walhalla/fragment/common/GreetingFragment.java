@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
-import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreDownload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Text;

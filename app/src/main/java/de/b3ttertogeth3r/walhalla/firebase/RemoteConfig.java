@@ -23,7 +23,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.interfaces.IInit;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 import de.b3ttertogeth3r.walhalla.object.Log;
 
 /**

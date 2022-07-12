@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -12,14 +12,13 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.interfaces;
+package de.b3ttertogeth3r.walhalla.interfaces.firebase;
 
-/**
- * Interface to control the loading circle via the MainActivity
- */
-public interface LoadingCircle {
-    /** Start the loading circle */
-    void start();
-    /** Stop the loading circle */
-    void stop();
+import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
+import de.b3ttertogeth3r.walhalla.object.File;
+
+public interface IStorageDownload {
+    Loader<byte[]> image(File file);
+
+    Loader<byte[]> file(File file);
 }

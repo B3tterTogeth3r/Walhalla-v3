@@ -38,8 +38,8 @@ import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.enums.TextType;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
-import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreUpload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreUpload;
 import de.b3ttertogeth3r.walhalla.object.Account;
 import de.b3ttertogeth3r.walhalla.object.Address;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
@@ -494,6 +494,14 @@ public class FirestoreMock {
             dml.add(dm5);
             dml.add(dm6);
             return loader.done(dml);
+        }
+
+        @Override
+        public Loader<Event> nextEvent() {
+            Loader<Event> loader = new Loader<>();
+            Event e = new Event();
+            e.setTitle("I'm the next event");
+            return loader.done(e);
         }
     }
 

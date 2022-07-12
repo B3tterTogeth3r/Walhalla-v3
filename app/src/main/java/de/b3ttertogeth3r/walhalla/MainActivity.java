@@ -38,12 +38,12 @@ import androidx.fragment.app.FragmentTransaction;
 import de.b3ttertogeth3r.walhalla.design.SideNav;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.enums.Walhalla;
-import de.b3ttertogeth3r.walhalla.interfaces.HideKeyBoard;
-import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.interfaces.IOnBackPressed;
-import de.b3ttertogeth3r.walhalla.interfaces.ISideNav;
-import de.b3ttertogeth3r.walhalla.interfaces.LoadingCircle;
-import de.b3ttertogeth3r.walhalla.interfaces.OpenExternal;
+import de.b3ttertogeth3r.walhalla.interfaces.activityMain.HideKeyBoard;
+import de.b3ttertogeth3r.walhalla.interfaces.activityMain.IOnBackPressed;
+import de.b3ttertogeth3r.walhalla.interfaces.activityMain.ISideNav;
+import de.b3ttertogeth3r.walhalla.interfaces.activityMain.OpenExternal;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
+import de.b3ttertogeth3r.walhalla.interfaces.loader.LoadingCircle;
 import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.Event;
 import de.b3ttertogeth3r.walhalla.object.File;
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
         toggle.syncState();
 
         if (savedInstanceState == null) {
-            navigationView.changePage(R.string.menu_home, fragmentManager.beginTransaction());
+            SideNav.changePage(R.string.menu_home, fragmentManager.beginTransaction());
         }
     }
 

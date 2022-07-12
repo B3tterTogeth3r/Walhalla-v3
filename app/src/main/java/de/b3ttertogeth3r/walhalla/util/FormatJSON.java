@@ -22,9 +22,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.enums.TextType;
-import de.b3ttertogeth3r.walhalla.interfaces.LoaderResultListener;
-import de.b3ttertogeth3r.walhalla.interfaces.OnFailureListener;
-import de.b3ttertogeth3r.walhalla.interfaces.OnSuccessListener;
+import de.b3ttertogeth3r.walhalla.interfaces.loader.LoaderResultListener;
+import de.b3ttertogeth3r.walhalla.interfaces.loader.OnFailureListener;
+import de.b3ttertogeth3r.walhalla.interfaces.loader.OnSuccessListener;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Text;
 

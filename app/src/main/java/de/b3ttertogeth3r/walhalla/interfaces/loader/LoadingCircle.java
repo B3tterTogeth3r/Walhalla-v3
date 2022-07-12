@@ -12,20 +12,14 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.interfaces;
+package de.b3ttertogeth3r.walhalla.interfaces.loader;
 
 /**
- * I think, this is the easiest way to implement multiple back stacks
- *
- * @author <a href="https://stackoverflow.com/users/6831069/maxime-jallu">Maxime Jallu</a>
- * @version <a href="https://stackoverflow.com/a/46425415/15488404">30/06/2022</a>
- * @since 3.0
+ * Interface to control the loading circle via the MainActivity
  */
-public interface IOnBackPressed {
-    /**
-     * If you return true the back press will not be taken into account, otherwise the activity will act naturally
-     *
-     * @return true if your processing has priority if not false
-     */
-    boolean onBackPressed();
+public interface LoadingCircle {
+    /** Start the loading circle */
+    void start();
+    /** Stop the loading circle */
+    void stop();
 }

@@ -12,9 +12,7 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.interfaces;
-
-import androidx.annotation.Nullable;
+package de.b3ttertogeth3r.walhalla.interfaces.loader;
 
 /**
  * Extracted Interface from {@link de.b3ttertogeth3r.walhalla.abstract_classes.Loader Loader}
@@ -25,18 +23,10 @@ import androidx.annotation.Nullable;
  * @since 2.0
  * @see de.b3ttertogeth3r.walhalla.abstract_classes.Loader Loader
  */
-public interface LoaderResultListener<T> {
-    /**
-     * @param result Result of the download or null
-     * @since 1.0
-     */
-    default void onSuccessListener(@Nullable T result) {
-    }
-
+public interface OnFailureListener<T> {
     /**
      * @param e Download threw an exception
      * @since 1.0
      */
-    default void onFailureListener(Exception e) {
-    }
+    void onFailureListener(Exception e);
 }

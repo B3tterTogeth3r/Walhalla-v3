@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -17,8 +17,7 @@ package de.b3ttertogeth3r.walhalla.object;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 
 public class Log {
-
-    public static void e (String TAG, String message) {
+    public static void e(String TAG, String message) {
         Crashlytics c = new Crashlytics();
         c.log(ILog.ERROR, TAG, message, null);
         de.b3ttertogeth3r.walhalla.util.Log l = new de.b3ttertogeth3r.walhalla.util.Log();
@@ -26,7 +25,7 @@ public class Log {
 
     }
 
-    public static void e (String TAG, String message, Throwable e) {
+    public static void e(String TAG, String message, Throwable e) {
         Crashlytics c = new Crashlytics();
         c.log(ILog.ERROR, TAG, message, e);
         de.b3ttertogeth3r.walhalla.util.Log l = new de.b3ttertogeth3r.walhalla.util.Log();
@@ -34,7 +33,7 @@ public class Log {
 
     }
 
-    public static void v (String TAG, String message) {
+    public static void v(String TAG, String message) {
         Crashlytics c = new Crashlytics();
         c.log(ILog.VERBOSE, TAG, message, null);
         de.b3ttertogeth3r.walhalla.util.Log l = new de.b3ttertogeth3r.walhalla.util.Log();
@@ -42,7 +41,7 @@ public class Log {
 
     }
 
-    public static void v (String TAG, String message, Throwable e) {
+    public static void v(String TAG, String message, Throwable e) {
         Crashlytics c = new Crashlytics();
         c.log(ILog.VERBOSE, TAG, message, e);
         de.b3ttertogeth3r.walhalla.util.Log l = new de.b3ttertogeth3r.walhalla.util.Log();
@@ -50,7 +49,7 @@ public class Log {
 
     }
 
-    public static void w (String TAG, String message) {
+    public static void w(String TAG, String message) {
         Crashlytics c = new Crashlytics();
         c.log(ILog.WARN, TAG, message, null);
         de.b3ttertogeth3r.walhalla.util.Log l = new de.b3ttertogeth3r.walhalla.util.Log();
@@ -58,7 +57,7 @@ public class Log {
 
     }
 
-    public static void w (String TAG, String message, Throwable e) {
+    public static void w(String TAG, String message, Throwable e) {
         Crashlytics c = new Crashlytics();
         c.log(ILog.WARN, TAG, message, e);
         de.b3ttertogeth3r.walhalla.util.Log l = new de.b3ttertogeth3r.walhalla.util.Log();
@@ -66,25 +65,24 @@ public class Log {
 
     }
 
-    public static void i (String TAG, String message) {
+    public static void i(String TAG, String message) {
         de.b3ttertogeth3r.walhalla.util.Log l = new de.b3ttertogeth3r.walhalla.util.Log();
         l.log(ILog.INFO, TAG, message, null);
     }
 
-    public static void i (String TAG, String message, Throwable e) {
+    public static void i(String TAG, String message, Throwable e) {
         de.b3ttertogeth3r.walhalla.util.Log l = new de.b3ttertogeth3r.walhalla.util.Log();
         l.log(ILog.INFO, TAG, message, e);
     }
 
-    public static void d (String TAG, String message) {
+    public static void d(String TAG, String message) {
         Crashlytics c = new Crashlytics();
         c.log(ILog.DEBUG, TAG, message, null);
         de.b3ttertogeth3r.walhalla.util.Log l = new de.b3ttertogeth3r.walhalla.util.Log();
         l.log(ILog.DEBUG, TAG, message, null);
-
     }
 
-    public static void d (String TAG, String message, Throwable e) {
+    public static void d(String TAG, String message, Throwable e) {
         Crashlytics c = new Crashlytics();
         c.log(ILog.DEBUG, TAG, message, e);
         de.b3ttertogeth3r.walhalla.util.Log l = new de.b3ttertogeth3r.walhalla.util.Log();
@@ -98,6 +96,6 @@ public class Log {
         int WARN = 5;
         int ERROR = 6;
 
-        void log (int type, String TAG, String message, Throwable e);
+        void log(int type, String TAG, String message, Throwable e);
     }
 }

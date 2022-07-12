@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -12,10 +12,20 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.interfaces;
+package de.b3ttertogeth3r.walhalla.interfaces.activityMain;
 
-import androidx.fragment.app.FragmentTransaction;
 
-public interface ISideNav {
-    FragmentTransaction clicked (int itemId);
+import de.b3ttertogeth3r.walhalla.object.Event;
+import de.b3ttertogeth3r.walhalla.object.File;
+
+public interface OpenExternal {
+    void link(String link);
+
+    void sendEmail(String[] recipient, String subject);
+
+    void saveInCalendar(Event event);
+
+    void file(File file);
+
+    void image(String link);
 }

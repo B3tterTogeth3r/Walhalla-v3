@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -16,7 +16,7 @@ package de.b3ttertogeth3r.walhalla.firebase;
 
 import android.content.Context;
 
-import de.b3ttertogeth3r.walhalla.interfaces.IInit;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 
 public class InAppMessaging implements IInit {
     @Override

@@ -12,19 +12,20 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.interfaces;
-
+package de.b3ttertogeth3r.walhalla.interfaces.activityMain;
 
 /**
- * Interface to access publicly on the according Activity to hide the soft keybaord.
+ * I think, this is the easiest way to implement multiple back stacks
  *
- * @author B3tterTogeth3r
- * @see <a href="https://stackoverflow.com/questions/13593069/androidhide-keyboard-after-button-click">burmat</a>
+ * @author <a href="https://stackoverflow.com/users/6831069/maxime-jallu">Maxime Jallu</a>
+ * @version <a href="https://stackoverflow.com/a/46425415/15488404">30/06/2022</a>
  * @since 3.0
  */
-public interface HideKeyBoard {
+public interface IOnBackPressed {
     /**
-     * function call to hide the keyboard.
+     * If you return true the back press will not be taken into account, otherwise the activity will act naturally
+     *
+     * @return true if your processing has priority if not false
      */
-    void hide();
+    boolean onBackPressed();
 }

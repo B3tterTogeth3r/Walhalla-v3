@@ -50,8 +50,8 @@ import de.b3ttertogeth3r.walhalla.fragment.sign_in.SignInHome;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Balance;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Drinks;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Profile;
-import de.b3ttertogeth3r.walhalla.interfaces.IAuth;
-import de.b3ttertogeth3r.walhalla.interfaces.ISideNav;
+import de.b3ttertogeth3r.walhalla.interfaces.activityMain.ISideNav;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.mock.AuthMock;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.old.fragments_main.HistoryFragment;
@@ -110,15 +110,15 @@ import de.b3ttertogeth3r.walhalla.old.fragments_main.HistoryFragment;
  * </p>
  *
  * @author B3tterTogeth3r
- * @version 1.0
+ * @version 1.1
  * @since 2.0
  */
 public class SideNav extends NavigationView implements NavigationView.OnNavigationItemSelectedListener, FirebaseAuth.AuthStateListener {
     private static final String TAG = "SideNav";
-    private final IAuth auth;
+    private static IAuth auth;
     private ISideNav listener;
 
-    public SideNav (@NonNull Context context) {
+    public SideNav(@NonNull Context context) {
         super(context);
         auth = new AuthMock();
         setNavigationItemSelectedListener(this);
@@ -126,7 +126,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
         fillSideNav();
     }
 
-    private void fillHeadView () {
+    private void fillHeadView() {
         View view = getHeaderView(0);
         ImageView image = view.findViewById(R.id.nav_headder);
         TextView title = view.findViewById(R.id.nav_title);
@@ -157,7 +157,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
         }
     }
 
-    private void fillSideNav () {
+    private void fillSideNav() {
         //Navigation Body
         getMenu().clear();
         Menu menu = getMenu();
@@ -223,7 +223,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
         invalidate();
     }
 
-    public SideNav (@NonNull Context context, @Nullable AttributeSet attrs) {
+    public SideNav(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         auth = new AuthMock();
         setNavigationItemSelectedListener(this);
@@ -231,7 +231,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
         fillSideNav();
     }
 
-    public SideNav (@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public SideNav(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         auth = new AuthMock();
         setNavigationItemSelectedListener(this);
@@ -239,25 +239,8 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
         fillSideNav();
     }
 
-    public void setListener (ISideNav listener) {
-        this.listener = listener;
-    }
-
-    @Override
-    public void onAuthStateChanged (@NonNull FirebaseAuth firebaseAuth) {
-        fillHeadView();
-        fillSideNav();
-    }
-
-    @Override
-    public boolean onNavigationItemSelected (@NonNull MenuItem item) {
-        Log.i(TAG, "Clicked menu item with the id of:" + item.getItemId());
-        changePage(item.getItemId(), listener.clicked(item.getItemId()));
-        return false;
-    }
-
     @SuppressLint("NonConstantResourceId")
-    public void changePage (int string_value_id, FragmentTransaction transaction) {
+    public static void changePage(int string_value_id, FragmentTransaction transaction) {
         int container = R.id.fragment_container;
         switch (string_value_id) {
             case R.string.menu_login:
@@ -345,14 +328,44 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
                         .commit();
                 break;
             case R.id.row2first:
+                if (auth.isSignIn()) {
+                    changePage(R.string.menu_balance, transaction);
+                } else {
+                    changePage(R.string.menu_rooms, transaction);
+                }
+                break;
             case R.id.login:
-            case R.string.menu_home:
+                if (auth.isSignIn()) {
+                    changePage(R.string.menu_logout, transaction);
+                } else {
+                    changePage(R.string.menu_login, transaction);
+                }
+                break;
             case R.string.menu_logout:
+                auth.signOut();
+            case R.string.menu_home:
             default:
                 transaction.replace(container, new Home())
                         .addToBackStack(TAG)
                         .commit();
                 break;
         }
+    }
+
+    public void setListener(ISideNav listener) {
+        this.listener = listener;
+    }
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        fillHeadView();
+        fillSideNav();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Log.i(TAG, "Clicked menu item with the id of:" + item.getItemId());
+        changePage(item.getItemId(), listener.clicked(item.getItemId()));
+        return false;
     }
 }

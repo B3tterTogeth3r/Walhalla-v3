@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -30,18 +30,13 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentReference;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
 import de.b3ttertogeth3r.walhalla.design.LinearLayout;
 import de.b3ttertogeth3r.walhalla.design.Text;
 import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.dialog.ChargenDetail;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
-import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.interfaces.IStorageDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.Validate;
-import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
-import de.b3ttertogeth3r.walhalla.mock.StorageMock;
 
 public class BoardMember implements Validate {
     private String full_name = "";
@@ -54,12 +49,12 @@ public class BoardMember implements Validate {
     private String uid = "";
     private String id = "";
 
-    public BoardMember (String full_name, Charge charge) {
+    public BoardMember(String full_name, Charge charge) {
         this.full_name = full_name;
         this.charge = charge;
     }
 
-    public BoardMember (@NonNull Person person) {
+    public BoardMember(@NonNull Person person) {
         this.full_name = person.getFull_Name();
         this.mobile = person.getMobile();
         this.major = person.getMajor();
@@ -68,8 +63,8 @@ public class BoardMember implements Validate {
         this.uid = person.getId();
     }
 
-    public BoardMember (String full_name, String mobile, String major, String mail, String from,
-                        Charge charge, DocumentReference image, String uid) {
+    public BoardMember(String full_name, String mobile, String major, String mail, String from,
+                       Charge charge, DocumentReference image, String uid) {
         this.full_name = full_name;
         this.mobile = mobile;
         this.major = major;
@@ -80,18 +75,18 @@ public class BoardMember implements Validate {
         this.uid = uid;
     }
 
-    public BoardMember () {
+    public BoardMember() {
     }
 
-    public String getId () {
+    public String getId() {
         return id;
     }
 
-    public void setId (String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public RelativeLayout getView (@NonNull FragmentActivity activity) {
+    public RelativeLayout getView(@NonNull FragmentActivity activity) {
         int padding = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 120f,
@@ -154,32 +149,17 @@ public class BoardMember implements Validate {
         layout.addView(imageView, imageParams);
 
         if (getImage() != null) {
-            IFirestoreDownload fileDownload = new FirestoreMock.Download();
-            fileDownload.file(getImage())
-                    .setOnSuccessListener(result -> {
-                    IStorageDownload imageDownload = new StorageMock.Download();
-                    imageDownload.image(null, new Loader<byte[]>(false) {
-                        @Override
-                        public void onSuccessListener (byte[] result) {
-                            Glide.with(activity)
-                                    .load(result)
-                                    .placeholder(R.drawable.wappen_2017)
-                                    .centerCrop()
-                                    .into(image);
-                            image.setBackground(ContextCompat.getDrawable(activity,
-                                    R.drawable.border_round_clear));
-                        }
-
-                        @Override
-                        public void onFailureListener (Exception e) {
-                            image.setImageDrawable(ContextCompat.getDrawable(activity,
-                                    R.drawable.wappen_2017));
-                        }
-                    });
-                }).setOnFailListener(e -> {
-                    image.setImageDrawable(ContextCompat.getDrawable(activity,
-                            R.drawable.wappen_2017));
-                });
+            Glide.with(activity)
+                    .load(getImage())
+                    .placeholder(R.drawable.wappen_2017)
+                    .centerCrop()
+                    .into(image);
+        } else {
+            Glide.with(activity)
+                    .load(R.drawable.wappen_2017)
+                    .placeholder(R.drawable.wappen_2017)
+                    .centerCrop()
+                    .into(image);
         }
 
         layout.setOnClickListener(v -> {
@@ -190,72 +170,72 @@ public class BoardMember implements Validate {
         return layout;
     }
 
-    public Charge getCharge () {
+    public Charge getCharge() {
         return charge;
     }
 
-    public String getFull_name () {
+    public String getFull_name() {
         return full_name;
     }
 
-    public void setFull_name (String full_name) {
+    public void setFull_name(String full_name) {
         this.full_name = full_name;
     }
 
-    public String getMajor () {
+    public String getMajor() {
         return major;
     }
 
-    public void setMajor (String major) {
+    public void setMajor(String major) {
         this.major = major;
     }
 
-    public String getFrom () {
+    public String getFrom() {
         return from;
     }
 
-    public String getMobile () {
+    public String getMobile() {
         return mobile;
     }
 
-    public void setMobile (String mobile) {
+    public void setMobile(String mobile) {
         this.mobile = mobile;
     }
 
-    public DocumentReference getImage () {
+    public DocumentReference getImage() {
         return image;
     }
 
-    public void setImage (DocumentReference image) {
+    public void setImage(DocumentReference image) {
         this.image = image;
     }
 
-    public void setFrom (String from) {
+    public void setFrom(String from) {
         this.from = from;
     }
 
-    public void setCharge (Charge charge) {
+    public void setCharge(Charge charge) {
         this.charge = charge;
     }
 
-    public String getMail () {
+    public String getMail() {
         return mail;
     }
 
-    public void setMail (String mail) {
+    public void setMail(String mail) {
         this.mail = mail;
     }
 
-    public String getUid () {
+    public String getUid() {
         return uid;
     }
 
-    public void setUid (String uid) {
+    public void setUid(String uid) {
         this.uid = uid;
     }
 
     @Override
-    public boolean validate () {
+    public boolean validate() {
         return false;
     }
 }

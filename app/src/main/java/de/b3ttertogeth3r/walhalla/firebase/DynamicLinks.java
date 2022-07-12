@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -22,7 +22,7 @@ import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
 import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
-import de.b3ttertogeth3r.walhalla.interfaces.IInit;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 
 public class DynamicLinks implements IInit {
     private static final String TAG = "DynamicLinks";

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -24,12 +24,12 @@ import androidx.core.content.ContextCompat;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
 import de.b3ttertogeth3r.walhalla.design.Toast;
-import de.b3ttertogeth3r.walhalla.interfaces.IStorageDownload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageDownload;
 import de.b3ttertogeth3r.walhalla.object.File;
-import de.b3ttertogeth3r.walhalla.old.App;
 import de.b3ttertogeth3r.walhalla.util.ToastList;
 
 public class StorageMock {
@@ -37,12 +37,13 @@ public class StorageMock {
     public static class Download implements IStorageDownload {
         private static final String TAG = "StorageMockDownload";
 
-        public Download () {
+        public Download() {
             ToastList.addToast(Toast.makeToast(App.getContext(), TAG + "-MOCK-DATA"));
         }
 
         @Override
-        public void image (File file, Loader<byte[]> loader) {
+        public Loader<byte[]> image(File file) {
+            Loader<byte[]> loader = new Loader<>();
             Drawable d = ContextCompat.getDrawable(App.getContext(), R.drawable.image_garden);
             if (d != null) {
                 Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
@@ -52,10 +53,12 @@ public class StorageMock {
             } else {
                 loader.onFailureListener(null);
             }
+            return loader;
         }
 
         @Override
-        public void file (@NonNull File file, Loader<byte[]> loader) {
+        public Loader<byte[]> file(@NonNull File file) {
+            Loader<byte[]> loader = new Loader<>();
             InputStream stream = App.getContext().getResources().openRawResource(
                     App.getContext().getResources().getIdentifier("FILENAME_WITHOUT_EXTENSION",
                             "raw", App.getContext().getPackageName()));
@@ -75,6 +78,7 @@ public class StorageMock {
             } else {
                 loader.onFailureListener(null);
             }
+            return loader;
         }
     }
 }

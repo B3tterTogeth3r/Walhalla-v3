@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -12,34 +12,31 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.interfaces;
+package de.b3ttertogeth3r.walhalla.interfaces.loader;
 
-import android.content.Context;
+import androidx.annotation.Nullable;
 
 /**
- * An interface to initialize all the firebase functions used in the app.
+ * Extracted Interface from {@link de.b3ttertogeth3r.walhalla.abstract_classes.Loader Loader}
  *
+ * @param <T> Type of Loader
  * @author B3tterTogeth3r
  * @version 1.0
  * @since 2.0
+ * @see de.b3ttertogeth3r.walhalla.abstract_classes.Loader Loader
  */
-public interface FirebaseInit {
+public interface LoaderResultListener<T> {
+    /**
+     * @param result Result of the download or null
+     * @since 1.0
+     */
+    default void onSuccessListener(@Nullable T result) {
+    }
 
-    void Analytics (Context context);
-
-    void Authentication (Context context);
-
-    void CloudMessaging (Context context);
-
-    void Crashlytics (Context context);
-
-    void DynamicLinks (Context context);
-
-    void Firestore (Context context);
-
-    void InAppMessaging (Context context);
-
-    void RemoteConfig (Context context);
-
-    void Storage (Context context);
+    /**
+     * @param e Download threw an exception
+     * @since 1.0
+     */
+    default void onFailureListener(Exception e) {
+    }
 }

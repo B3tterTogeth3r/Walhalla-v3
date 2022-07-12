@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -21,9 +21,9 @@ import androidx.annotation.NonNull;
 import com.google.firebase.storage.FirebaseStorage;
 
 import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
-import de.b3ttertogeth3r.walhalla.interfaces.IInit;
-import de.b3ttertogeth3r.walhalla.interfaces.IStorageDownload;
-import de.b3ttertogeth3r.walhalla.interfaces.IStorageUpload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageDownload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageUpload;
 import de.b3ttertogeth3r.walhalla.object.File;
 import de.b3ttertogeth3r.walhalla.object.Log;
 
@@ -39,26 +39,30 @@ public class Storage implements IInit {
 
     public static class Download implements IStorageDownload {
         @Override
-        public void image (@NonNull File file, Loader<byte[]> loader) {
-                Storage.storage
-                        .getReference(file.getPath())
-                        .getBytes(2048)
-                        .addOnCompleteListener(task -> {
-                            if(!task.isSuccessful()) {
-                                loader.done(task.getException());
-                                return;
-                            }
-                            Log.i(TAG, "Download complete");
-                            if(task.getResult().length != 0) {
+        public Loader<byte[]> image(@NonNull File file) {
+            Loader<byte[]> loader = new Loader<>();
+            Storage.storage
+                    .getReference(file.getPath())
+                    .getBytes(2048)
+                    .addOnCompleteListener(task -> {
+                        if (!task.isSuccessful()) {
+                            loader.done(task.getException());
+                            return;
+                        }
+                        Log.i(TAG, "Download complete");
+                        if (task.getResult().length != 0) {
                                 loader.done(task.getResult());
                             }
                             loader.done();
                         });
+            return loader;
         }
 
         @Override
-        public void file (File file, Loader<byte[]> loader) {
+        public Loader<byte[]> file(File file) {
+            Loader<byte[]> loader = new Loader<>();
 
+            return loader;
         }
     }
 

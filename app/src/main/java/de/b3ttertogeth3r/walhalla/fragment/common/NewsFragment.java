@@ -32,7 +32,7 @@ import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
 import de.b3ttertogeth3r.walhalla.design.Button;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
-import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreDownload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.News;
 

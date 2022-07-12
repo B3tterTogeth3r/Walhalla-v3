@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -12,13 +12,23 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.interfaces;
+package de.b3ttertogeth3r.walhalla.interfaces.loader;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
-import de.b3ttertogeth3r.walhalla.object.File;
+import androidx.annotation.Nullable;
 
-public interface IStorageUpload {
-    void image(File file, Loader<String> loader);
-
-    void file (File file, Loader<String> loader);
+/**
+ * Extracted Interface from {@link de.b3ttertogeth3r.walhalla.abstract_classes.Loader Loader}
+ *
+ * @param <T> Type of Loader
+ * @author B3tterTogeth3r
+ * @version 1.0
+ * @since 2.0
+ * @see de.b3ttertogeth3r.walhalla.abstract_classes.Loader Loader
+ */
+public interface OnSuccessListener<T> {
+    /**
+     * @param result Result of the download or null
+     * @since 1.0
+     */
+    void onSuccessListener(@Nullable T result) throws Exception;
 }

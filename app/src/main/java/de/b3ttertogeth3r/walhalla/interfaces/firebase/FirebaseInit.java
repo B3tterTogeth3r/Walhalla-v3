@@ -12,21 +12,34 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.interfaces;
+package de.b3ttertogeth3r.walhalla.interfaces.firebase;
+
+import android.content.Context;
 
 /**
- * Extracted Interface from {@link de.b3ttertogeth3r.walhalla.abstract_classes.Loader Loader}
+ * An interface to initialize all the firebase functions used in the app.
  *
- * @param <T> Type of Loader
  * @author B3tterTogeth3r
  * @version 1.0
  * @since 2.0
- * @see de.b3ttertogeth3r.walhalla.abstract_classes.Loader Loader
  */
-public interface OnFailureListener<T> {
-    /**
-     * @param e Download threw an exception
-     * @since 1.0
-     */
-    void onFailureListener(Exception e);
+public interface FirebaseInit {
+
+    void Analytics (Context context);
+
+    void Authentication (Context context);
+
+    void CloudMessaging (Context context);
+
+    void Crashlytics (Context context);
+
+    void DynamicLinks (Context context);
+
+    void Firestore (Context context);
+
+    void InAppMessaging (Context context);
+
+    void RemoteConfig (Context context);
+
+    void Storage (Context context);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -22,8 +22,8 @@ import androidx.annotation.NonNull;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import de.b3ttertogeth3r.walhalla.enums.Rank;
-import de.b3ttertogeth3r.walhalla.interfaces.IAnalytics;
-import de.b3ttertogeth3r.walhalla.interfaces.IInit;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAnalytics;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.old.utils.CacheData;
 

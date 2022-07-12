@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
 import de.b3ttertogeth3r.walhalla.design.Toast;
-import de.b3ttertogeth3r.walhalla.interfaces.IAuth;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.object.Person;
 import de.b3ttertogeth3r.walhalla.util.ToastList;
 

@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
-import de.b3ttertogeth3r.walhalla.interfaces.IAnalytics;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAnalytics;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.ToastList;
 

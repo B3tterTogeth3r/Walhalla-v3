@@ -33,7 +33,7 @@ import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
-import de.b3ttertogeth3r.walhalla.interfaces.IFirestoreDownload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.Event;
 import de.b3ttertogeth3r.walhalla.object.Log;
