@@ -46,6 +46,7 @@ import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.Address;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Person;
+import de.b3ttertogeth3r.walhalla.util.Cache;
 
 /**
  * A class to review the data set by the user previously before registering the user.
@@ -132,6 +133,7 @@ public class ReviewData extends Fragment implements IOnBackPressed {
                                     auth.signIn(p.getMail(), p.getPasswordString())
                                             .setOnSuccessListener(authResult -> {
                                                 if (authResult != null && authResult.getUser() != null) {
+                                                    Cache.saveUserData();
                                                     Log.i(TAG, "onClick: upload -> auth -> sign in: complete");
                                                     fm.beginTransaction()
                                                             .replace(R.id.fragment_container, new Home())

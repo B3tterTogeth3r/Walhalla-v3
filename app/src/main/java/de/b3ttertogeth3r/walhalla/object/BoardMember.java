@@ -36,7 +36,7 @@ import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.dialog.ChargenDetail;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
-import de.b3ttertogeth3r.walhalla.interfaces.Validate;
+import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
 
 public class BoardMember implements Validate {
     private String full_name = "";

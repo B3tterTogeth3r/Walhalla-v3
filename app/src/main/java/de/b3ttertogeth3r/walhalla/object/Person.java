@@ -31,11 +31,20 @@ import de.b3ttertogeth3r.walhalla.design.ProfileRow;
 import de.b3ttertogeth3r.walhalla.design.TableRow;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.enums.TrafficLightColor;
-import de.b3ttertogeth3r.walhalla.interfaces.Validate;
+import de.b3ttertogeth3r.walhalla.interfaces.object.IPerson;
+import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
 import de.b3ttertogeth3r.walhalla.util.TrafficLight;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
-public class Person implements Validate {
+/**
+ * @author B3tterTogeth3r
+ * @version 2.1
+ * @see Validate
+ * @see IPerson
+ * @since 1.0
+ */
+public class Person implements IPerson {
+    private static final String TAG = "Person";
     // TODO: 05.07.22 add possibility to ad titles i.e. a phd.
     private String first_Name;
     private String last_Name;
@@ -45,7 +54,7 @@ public class Person implements Validate {
     private String passwordString;
     private String mobile;
     private String mail;
-    private int joined;
+    private int joined = -1;
     private Timestamp birthday;
     private Rank rank;
     private boolean enabled, password;
@@ -72,21 +81,20 @@ public class Person implements Validate {
     }
     //endregion
 
-    //region getter and setters
+    public boolean isEnabled() {
+        return enabled;
+    }    //region getter and setters
+
     public String getMobile() {
         return mobile;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public boolean isPassword() {
@@ -95,14 +103,6 @@ public class Person implements Validate {
 
     public void setPassword(boolean password) {
         this.password = password;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
     }
 
     public String getId() {
@@ -121,24 +121,16 @@ public class Person implements Validate {
         this.passwordString = passwordString;
     }
 
-    public TableRow getViewAll(Context context) {
-        TableRow row = new TableRow(context);
-        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getFull_Name()));
-        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getNickname()));
-        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getRank().toString()));
-        TrafficLight tl;
-        if (!enabled) {
-            tl = new TrafficLight(context, TrafficLightColor.RED);
-        } else if (!password) {
-            tl = new TrafficLight(context, TrafficLightColor.YELLOW);
-        } else {
-            tl = new TrafficLight(context, TrafficLightColor.GREEN);
-        }
-        row.addView(tl);
-        row.addView(new Image(context, R.drawable.ic_arrow_right));
-        return row;
+    public String getMail() {
+        return mail;
     }
 
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+
+    @Override
     public String getFull_Name() {
         return getFirst_Name() + " " + getLast_Name();
     }
@@ -175,66 +167,6 @@ public class Person implements Validate {
         this.last_Name = last_Name;
     }
 
-    /**
-     * @param context context to create the layout and the text fields
-     * @return LinearLayout filled with {@link ProfileRow} elements
-     */
-    public LinearLayout getViewEdit(Context context, View.OnClickListener listener) {
-        return designDisplayEdit(context, true, listener);
-    }
-
-    @NonNull
-    private LinearLayout designDisplayEdit(Context context, boolean isEdit, @Nullable View.OnClickListener listener) {
-        LinearLayout layout = new LinearLayout(context);
-        layout.setOrientation(LinearLayout.VERTICAL);
-
-        if ((getFirst_Name() != null && getLast_Name() != null &&
-                !getFirst_Name().isEmpty() && !getLast_Name().isEmpty()) || isEdit) {
-            ProfileRow name = new ProfileRow(context, isEdit);
-            name.setTitle(R.string.full_name).setContent(getFull_Name()).setOnClickListener(listener);
-            layout.addView(name);
-        }
-
-        if (getOrigin() != null && !getOrigin().isEmpty() || isEdit) {
-            ProfileRow from = new ProfileRow(context, isEdit);
-            from.setTitle(R.string.pob).setContent(getOrigin()).setOnClickListener(listener);
-            layout.addView(from);
-        }
-
-        if (getMajor() != null && !getMajor().isEmpty() || isEdit) {
-            ProfileRow major = new ProfileRow(context, isEdit);
-            major.setTitle(R.string.major).setContent(getMajor()).setOnClickListener(listener);
-            layout.addView(major);
-        }
-
-        if (getNickname() != null && !getNickname().isEmpty() || isEdit) {
-            ProfileRow nick = new ProfileRow(context, isEdit);
-            nick.setTitle(R.string.nickname).setContent(getNickname()).setOnClickListener(listener);
-            layout.addView(nick);
-        }
-
-        if (getJoined() != 0 || isEdit) {
-            ProfileRow join = new ProfileRow(context, isEdit);
-            join.setTitle(R.string.joined).setContent(String.valueOf(getJoined())).setOnClickListener(listener);
-            layout.addView(join);
-        }
-
-        if (getBirthday() != null || isEdit) {
-            ProfileRow dob = new ProfileRow(context, isEdit);
-            SimpleDateFormat date = new SimpleDateFormat("dd.MM.yyyy", Values.LOCALE);
-            dob.setTitle(R.string.dob).setContent(date.format(getBirthday().toDate())).setOnClickListener(listener);
-            layout.addView(dob);
-        }
-
-        if (getRank() != null || isEdit) {
-            ProfileRow ra = new ProfileRow(context, isEdit);
-            ra.setTitle(R.string.rank).setContent(getRank().toString()).setOnClickListener(listener);
-            layout.addView(ra);
-        }
-
-        return layout;
-    }
-
     public String getOrigin() {
         return origin;
     }
@@ -267,20 +199,128 @@ public class Person implements Validate {
         this.joined = joined;
     }
 
+    //endregion
+
+    @Override
+    public TrafficLightColor getSecurity() {
+        if (!enabled) {
+            return TrafficLightColor.RED;
+        } else if (!password) {
+            return TrafficLightColor.YELLOW;
+        } else {
+            return TrafficLightColor.GREEN;
+        }
+    }
+
+    @Override
+    public String getValue(int value) {
+        return null;
+    }
+
+    @Override
+    public TableRow getViewAll(Context context) {
+        TableRow row = new TableRow(context);
+        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getFull_Name()));
+        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getNickname()));
+        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getRank().toString()));
+        row.addView(new TrafficLight(context, getSecurity()));
+        row.addView(new Image(context, R.drawable.ic_arrow_right));
+        return row;
+    }
+
+    /**
+     * @param context  context to create the layout and the text fields
+     * @param listener OnClickListener for the row
+     * @return LinearLayout filled with {@link ProfileRow} elements
+     * @since 2.0
+     */
+    public LinearLayout getViewEdit(Context context, View.OnClickListener listener) {
+        return designDisplayEdit(context, true, listener);
+    }
+
+    @NonNull
+    private LinearLayout designDisplayEdit(Context context, boolean isEdit, @Nullable View.OnClickListener listener) {
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        if (getMail() != null && !getMail().isEmpty()) {
+            ProfileRow name = new ProfileRow(context, false);
+            name.setTitle(R.string.mail).setContent(getMail()).setOnClickListener(listener);
+            layout.addView(name);
+        }
+
+        if ((getFirst_Name() != null && getLast_Name() != null &&
+                !getFirst_Name().isEmpty() && !getLast_Name().isEmpty()) || isEdit) {
+            ProfileRow name = new ProfileRow(context, isEdit);
+            name.setTitle(R.string.full_name).setContent(getFull_Name()).setOnClickListener(listener);
+            layout.addView(name);
+        }
+
+        if ((getMobile() != null && !getMobile().isEmpty()) || isEdit) {
+            ProfileRow name = new ProfileRow(context, isEdit);
+            name.setTitle(R.string.mobile).setContent(getMobile()).setOnClickListener(listener);
+            layout.addView(name);
+        }
+
+        if ((getOrigin() != null && !getOrigin().isEmpty()) || isEdit) {
+            ProfileRow from = new ProfileRow(context, isEdit);
+            from.setTitle(R.string.pob).setContent(getOrigin()).setOnClickListener(listener);
+            layout.addView(from);
+        }
+
+        if ((getMajor() != null && !getMajor().isEmpty()) || isEdit) {
+            ProfileRow major = new ProfileRow(context, isEdit);
+            major.setTitle(R.string.major).setContent(getMajor()).setOnClickListener(listener);
+            layout.addView(major);
+        }
+
+        if ((getNickname() != null && !getNickname().isEmpty()) || isEdit) {
+            ProfileRow nick = new ProfileRow(context, isEdit);
+            nick.setTitle(R.string.nickname).setContent(getNickname()).setOnClickListener(listener);
+            layout.addView(nick);
+        }
+
+        if (getJoined() != -1 || isEdit) {
+            ProfileRow join = new ProfileRow(context, isEdit);
+            join.setTitle(R.string.joined).setContent(String.valueOf(getJoined())).setOnClickListener(listener);
+            layout.addView(join);
+        }
+
+        if (getBirthday() != null || isEdit) {
+            ProfileRow dob = new ProfileRow(context, isEdit);
+            SimpleDateFormat date = new SimpleDateFormat("dd.MM.yyyy", Values.LOCALE);
+            dob.setTitle(R.string.dob).setContent(date.format(getBirthday().toDate())).setOnClickListener(listener);
+            layout.addView(dob);
+        }
+
+        if (getRank() != null || isEdit) {
+            ProfileRow ra = new ProfileRow(context, isEdit);
+            ra.setTitle(R.string.rank).setContent(getRank().toString()).setOnClickListener(listener);
+            layout.addView(ra);
+        }
+
+        return layout;
+    }
+
+    @Override
     public LinearLayout getViewDisplay(Context context) {
         return designDisplayEdit(context, false, null);
     }
-    //endregion
 
     @Override
     public boolean validate() {
         return (this.first_Name != null && !this.first_Name.isEmpty() &&
                 this.last_Name != null && !this.last_Name.isEmpty() &&
-                rank != null && joined != 0);
+                rank != null && joined != -1);
     }
 
     public boolean validatePersonal() {
         return (this.first_Name != null && !this.first_Name.isEmpty() &&
                 this.last_Name != null && !this.last_Name.isEmpty());
+    }
+
+    @Override
+    public boolean validateFratData() {
+        return (this.rank != null && joined != -1);
     }
 }

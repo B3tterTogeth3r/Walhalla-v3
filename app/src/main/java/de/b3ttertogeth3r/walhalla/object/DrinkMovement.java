@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -24,7 +24,7 @@ import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.MyObject;
 import de.b3ttertogeth3r.walhalla.design.TableRow;
 import de.b3ttertogeth3r.walhalla.design.Toast;
-import de.b3ttertogeth3r.walhalla.interfaces.Validate;
+import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
 import de.b3ttertogeth3r.walhalla.util.ToastList;
 
 /**

@@ -28,7 +28,7 @@ import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.old.utils.CacheData;
 
 public class Analytics implements IInit, IAnalytics {
-    private static final String TAG = "Analytics";
+    public static final String TAG = "Analytics";
     private static FirebaseAnalytics analytics;
 
     @Override
@@ -56,7 +56,7 @@ public class Analytics implements IInit, IAnalytics {
 
     @Override
     public void changeDataCollection (boolean value) {
-
+        analytics.setAnalyticsCollectionEnabled(value);
     }
 
     @Override

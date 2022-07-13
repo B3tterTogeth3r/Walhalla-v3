@@ -20,13 +20,13 @@ import de.b3ttertogeth3r.walhalla.abstract_classes.MyObject;
 import de.b3ttertogeth3r.walhalla.enums.Collar;
 import de.b3ttertogeth3r.walhalla.enums.Punctuality;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
-import de.b3ttertogeth3r.walhalla.interfaces.Validate;
+import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
 
 /**
  * @author B3tterTogeth3r
  * @version 3.0
  * @see de.b3ttertogeth3r.walhalla.abstract_classes.MyObject
- * @see de.b3ttertogeth3r.walhalla.interfaces.Validate
+ * @see Validate
  * @since 1.0
  */
 public class Event extends MyObject implements Validate, Cloneable {

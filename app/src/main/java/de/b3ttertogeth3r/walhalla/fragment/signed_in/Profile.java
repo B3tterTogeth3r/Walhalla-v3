@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -19,37 +19,47 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 
 import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
+import de.b3ttertogeth3r.walhalla.mock.AuthMock;
 
 public class Profile extends Fragment {
     private static final String TAG = "Profile";
+    private IAuth auth;
 
     @Override
-    public void start () {
-
+    public void preStart() {
+        auth = new AuthMock();
     }
 
     @Override
-    public String analyticsProperties () {
+    public String analyticsProperties() {
         return TAG;
     }
 
     @Override
-    public void stop () {
+    public void start() {
+        if (auth.isSignIn()) {
+            // TODO: 13.07.22 get person data from cache
+        }
+    }
+
+    @Override
+    public void toolbarContent() {
 
     }
 
     @Override
-    public void viewCreated () {
+    public void createView(@NonNull LinearLayout view) {
 
     }
 
     @Override
-    public void toolbarContent () {
+    public void viewCreated() {
 
     }
 
     @Override
-    public void createView (@NonNull LinearLayout view) {
+    public void stop() {
 
     }
 }

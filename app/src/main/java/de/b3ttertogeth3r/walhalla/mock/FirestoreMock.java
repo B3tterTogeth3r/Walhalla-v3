@@ -503,6 +503,21 @@ public class FirestoreMock {
             e.setTitle("I'm the next event");
             return loader.done(e);
         }
+
+        @Override
+        public Loader<Person> person(String uid) {
+            return null;
+        }
+
+        @Override
+        public Loader<ArrayList<Address>> personAddress(String uid) {
+            return null;
+        }
+
+        @Override
+        public Loader<File> personImage(String uid) {
+            return null;
+        }
     }
 
     public static class Upload implements IFirestoreUpload {

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.enums.TextType;
-import de.b3ttertogeth3r.walhalla.interfaces.Validate;
+import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
 
 public class Text implements Validate {
     int position;

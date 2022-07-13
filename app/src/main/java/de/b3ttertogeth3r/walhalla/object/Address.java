@@ -16,11 +16,16 @@ package de.b3ttertogeth3r.walhalla.object;
 
 import androidx.annotation.NonNull;
 
-import de.b3ttertogeth3r.walhalla.interfaces.Validate;
+import de.b3ttertogeth3r.walhalla.interfaces.object.IAddress;
 
-public class Address implements Validate {
-    private String street, number, zip, city, state, country;
-    private String id;
+/**
+ * @author B3tterTogeth3r
+ * @see de.b3ttertogeth3r.walhalla.interfaces.object.IAddress
+ * @see de.b3ttertogeth3r.walhalla.interfaces.object.Validate
+ */
+public class Address implements IAddress {
+    private static final String TAG = "Address";
+    private String id, street, number, zip, city, state, country;
 
     public Address() {
     }
@@ -114,6 +119,28 @@ public class Address implements Validate {
             return result;
         } else
             return "";
+    }
+
+    @Override
+    public String getValue(int valueId) {
+        switch (valueId) {
+            case ID:
+                return getId();
+            case STREET:
+                return getStreet();
+            case NUMBER:
+                return getNumber();
+            case ZIP:
+                return getZip();
+            case CITY:
+                return getCity();
+            case STATE:
+                return getState();
+            case COUNTRY:
+                return getCountry();
+            default:
+                return null;
+        }
     }
 
     @Override

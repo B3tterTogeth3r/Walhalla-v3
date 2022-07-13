@@ -22,8 +22,8 @@ import de.b3ttertogeth3r.walhalla.abstract_classes.MyObject;
 import de.b3ttertogeth3r.walhalla.design.LinearLayout;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
-import de.b3ttertogeth3r.walhalla.interfaces.Validate;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
+import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
 import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 
 /**

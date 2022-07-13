@@ -43,6 +43,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.activityMain.IOnBackPressed;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.mock.AuthMock;
 import de.b3ttertogeth3r.walhalla.object.Log;
+import de.b3ttertogeth3r.walhalla.util.Cache;
 
 public class SignInHome extends Fragment implements IOnBackPressed {
     private static final String TAG = "SignInHome";
@@ -53,11 +54,25 @@ public class SignInHome extends Fragment implements IOnBackPressed {
     private IAuth auth;
 
     public SignInHome() {
-
     }
 
     public SignInHome(String email) {
         this.emailStr = email;
+    }
+
+    @Override
+    public void preStart() {
+        auth = new AuthMock();
+    }
+
+    @Override
+    public String analyticsProperties() {
+        return TAG;
+    }
+
+    @Override
+    public void toolbarContent() {
+        toolbar.setTitle(R.string.menu_login);
     }
 
     @Override
@@ -90,11 +105,6 @@ public class SignInHome extends Fragment implements IOnBackPressed {
         // TODO: 29.06.22 add the buttons for the other services
     }
 
-    @Override
-    public void toolbarContent() {
-        toolbar.setTitle(R.string.menu_login);
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void viewCreated() {
@@ -123,32 +133,17 @@ public class SignInHome extends Fragment implements IOnBackPressed {
                                 openDialog();
                             } else {
                                 Log.i(TAG, "onSuccessListener: i do work and my existence is " + false);
-
                                 fm.beginTransaction()
                                         .replace(R.id.fragment_container, new PersonalData(emailStr))
                                         .addToBackStack("SignIn")
                                         .commit();
                             }
-                        }).setOnFailListener(e -> {
+                        })
+                        .setOnFailListener(e -> {
 
                         });
             }
         });
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public String analyticsProperties() {
-        return TAG;
-    }
-
-    @Override
-    public void start() {
-        auth = new AuthMock();
     }
 
     private void openDialog() {
@@ -158,10 +153,15 @@ public class SignInHome extends Fragment implements IOnBackPressed {
                         if (result == null || !result) {
                             throw new BadPasswordException("Password is empty or false");
                         }
-                        Log.i(TAG, "openDialog: password correct");
-                        fm.beginTransaction()
-                                .replace(R.id.fragment_container, new Home())
-                                .commit();
+                        Cache.saveUserData().setOnSuccessListener(done -> {
+                            fm.beginTransaction()
+                                    .replace(R.id.fragment_container, new Home())
+                                    .commit();
+                            Toast.makeToast(requireActivity(), R.string.sign_in_complete).show();
+                        }).setOnFailListener(e -> {
+                            Log.e(TAG, "openDialog: something went wrong", e);
+                            Toast.makeToast(requireActivity(), R.string.fui_trouble_signing_in).show();
+                        });
                     }).onFailureListener(e -> {
                                 Log.e(TAG, "openDialog: something went wrong", e);
                                 Toast.makeToast(requireActivity(), R.string.sign_in_failed).show();
@@ -169,6 +169,7 @@ public class SignInHome extends Fragment implements IOnBackPressed {
                     );
         } catch (Exception e) {
             Log.e(TAG, "openDialog: ", e);
+            Toast.makeToast(requireActivity(), R.string.error).show();
         }
     }
 

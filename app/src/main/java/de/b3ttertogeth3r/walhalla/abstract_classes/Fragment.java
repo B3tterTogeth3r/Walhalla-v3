@@ -66,6 +66,7 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
 
     public Fragment() {
         analytics = new AnalyticsMock();
+        preStart();
     }
 
     /**
@@ -123,7 +124,6 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
             super.onStart();
             registration = new ArrayList<>();
         } finally {
-            start();
             analytics.screenChange(analyticsProperties());
         }
     }

@@ -23,14 +23,24 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 
 public interface IFragment {
+
     /**
-     * Create the view and initialize the necessary variables for the site.
-     *
-     * @param view inflated View created in {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
-     * @implNote <b>DON'T CALL FUNCTIONS THAT WORK WITH DATA OF {@link #start()} IN HERE</b>
-     * @see #onViewCreated(View, Bundle)
+     * called inside the constructor
      */
-    void createView(@NonNull LinearLayout view);
+    default void preStart() {
+    }
+
+    /**
+     * Set the properties for firebase analytics. It will be run after {@link #start()}
+     */
+    String analyticsProperties();
+
+    /**
+     * called before {@link #createView(LinearLayout)} and {@link #viewCreated()}. In it
+     * {@link #registration} should be set before the site start.
+     */
+    default void start() {
+    }
 
     /**
      * Called before {@link #viewCreated() viewCreated} returns a result. This is to format the
@@ -40,6 +50,16 @@ public interface IFragment {
      */
     default void toolbarContent() {
     }
+
+    /**
+     * Create the view and initialize the necessary variables for the site.
+     *
+     * @param view inflated View created in {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
+     * @implNote <b>DON'T CALL FUNCTIONS THAT WORK WITH DATA OF {@link #start()} IN HERE</b>
+     * @see #onViewCreated(View, Bundle)
+     */
+    void createView(@NonNull LinearLayout view);
+
 
     /**
      * @see #onViewCreated(View, Bundle)
@@ -58,15 +78,4 @@ public interface IFragment {
     default void stop() {
     }
 
-    /**
-     * Set the properties for firebase analytics. It will be run after {@link #start()}
-     */
-    String analyticsProperties();
-
-    /**
-     * called before {@link #createView(LinearLayout)} and {@link #viewCreated()}. In it
-     * {@link #registration} should be set before the site start.
-     */
-    default void start() {
-    }
 }

@@ -133,4 +133,10 @@ public interface IFirestoreDownload {
     Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, String semester);
 
     Loader<Event> nextEvent();
+
+    Loader<Person> person(String uid);
+
+    Loader<ArrayList<Address>> personAddress(String uid);
+
+    Loader<File> personImage(String uid);
 }
