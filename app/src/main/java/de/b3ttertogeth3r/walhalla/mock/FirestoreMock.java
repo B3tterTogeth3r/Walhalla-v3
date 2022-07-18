@@ -53,6 +53,7 @@ import de.b3ttertogeth3r.walhalla.object.News;
 import de.b3ttertogeth3r.walhalla.object.Person;
 import de.b3ttertogeth3r.walhalla.object.Text;
 import de.b3ttertogeth3r.walhalla.util.List;
+import de.b3ttertogeth3r.walhalla.util.Paragraph;
 import de.b3ttertogeth3r.walhalla.util.ToastList;
 
 public class FirestoreMock {
@@ -323,9 +324,9 @@ public class FirestoreMock {
 
         @SuppressWarnings("unchecked")
         @Override
-        public Loader<ArrayList<Text>> semesterGreeting(String semesterID) {
-            Loader<ArrayList<Text>> loader = new Loader<>();
-            ArrayList<Text> list = new ArrayList<>();
+        public Loader<Paragraph<Text>> semesterGreeting(String semesterID) {
+            Loader<Paragraph<Text>> loader = new Loader<>();
+            Paragraph<Text> list = new Paragraph<>();
             Text one = new Text();
             one.setKind(TextType.TITLE);
             one.setPosition(0);
@@ -336,14 +337,16 @@ public class FirestoreMock {
 
             Text two = new Text();
             two.setKind(TextType.TEXT);
-            two.setPosition(0);
+            two.setPosition(1);
+            values = new ArrayList<>();
             values.add("Liebe Bundesbrüder, werte Kartellbrüder, verehrte Damen und liebe Leser,");
             two.setValue((ArrayList<String>) values.clone());
             list.add(two);
 
             Text three = new Text();
             three.setKind(TextType.TEXT);
-            three.setPosition(0);
+            three.setPosition(3);
+            values = new ArrayList<>();
             values.add("Hier kommt demnächst ein Grußwort rein.");
             three.setValue((ArrayList<String>) values.clone());
             list.add(three);
@@ -392,8 +395,7 @@ public class FirestoreMock {
         public Loader<ArrayList<Text>> semesterNotes(String semesterID) {
             Loader<ArrayList<Text>> loader = new Loader<>();
 
-            return loader;
-
+            return loader.done();
         }
 
         @Override
@@ -514,6 +516,21 @@ public class FirestoreMock {
         public Loader<File> personImage(String uid) {
             Loader<File> loader = new Loader<>();
             return loader.done();
+        }
+
+        @Override
+        public Loader<BoardMember> getSemesterBoardOne(int semesterId, @NonNull Charge charge) {
+            Loader<BoardMember> loader = new Loader<>();
+            if (charge.equals(Charge.AH_X)) {
+                BoardMember bm = new BoardMember();
+                bm.setFull_name("Thilo Berdami");
+                return loader.done(bm);
+            } else if (charge.equals(Charge.X)) {
+                BoardMember bm = new BoardMember();
+                bm.setFull_name("Tobias Tumbrink");
+                return loader.done(bm);
+            }
+            return loader.done(new NoDataException("No charge found in semester " + semesterId));
         }
     }
 

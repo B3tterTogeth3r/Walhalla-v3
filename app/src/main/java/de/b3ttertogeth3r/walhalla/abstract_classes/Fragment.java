@@ -122,6 +122,7 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
     public void onStart() {
         try {
             super.onStart();
+            start();
             registration = new ArrayList<>();
         } finally {
             analytics.screenChange(analyticsProperties());

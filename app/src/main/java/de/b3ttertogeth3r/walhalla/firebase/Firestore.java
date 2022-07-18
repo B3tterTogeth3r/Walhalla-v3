@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.Map;
 
 import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
+import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
@@ -50,6 +51,7 @@ import de.b3ttertogeth3r.walhalla.object.News;
 import de.b3ttertogeth3r.walhalla.object.Person;
 import de.b3ttertogeth3r.walhalla.object.Semester;
 import de.b3ttertogeth3r.walhalla.object.Text;
+import de.b3ttertogeth3r.walhalla.util.Paragraph;
 
 public class Firestore implements IInit {
     private static final String TAG = "Firestore";
@@ -227,9 +229,9 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<ArrayList<Text>> semesterGreeting(String semesterID) {
-            Loader<ArrayList<Text>> loader = new Loader<>();
-            ArrayList<Text> textList = new ArrayList<>();
+        public Loader<Paragraph<Text>> semesterGreeting(String semesterID) {
+            Loader<Paragraph<Text>> loader = new Loader<>();
+            Paragraph<Text> textList = new Paragraph<>();
             return loader.done(textList);
         }
 
@@ -304,6 +306,12 @@ public class Firestore implements IInit {
         @Override
         public Loader<File> personImage(String uid) {
             Loader<File> loader = new Loader<>();
+            return loader.done();
+        }
+
+        @Override
+        public Loader<BoardMember> getSemesterBoardOne(int semesterId, @NonNull Charge charge) {
+            Loader<BoardMember> loader = new Loader<>();
             return loader.done();
         }
     }

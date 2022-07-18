@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Text;
@@ -34,7 +35,7 @@ public class Fraternities_city extends Fragment {
 
     @Override
     public void start() {
-        new FormatJSON(RemoteConfig.getString("fraternity_wuerzburg"))
+        new FormatJSON(Firebase.remoteConfig().getString(RemoteConfig.FRATERNITY_CITY))
                 .setOnSuccessListener(this::fillView)
                 .setOnFailListener(e -> Log.e(TAG, "onFailureListener: ", e))
                 .start();

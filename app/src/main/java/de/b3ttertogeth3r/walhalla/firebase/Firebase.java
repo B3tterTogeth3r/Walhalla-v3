@@ -20,6 +20,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAnalytics;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreUpload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageUpload;
 import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
@@ -118,5 +119,9 @@ public interface Firebase {
     static IStorageDownload storageDownload() {
         //return new StorageMock.Download();
         return Storage.download;
+    }
+
+    static IRemoteConfig remoteConfig() {
+        return RemoteConfig.config;
     }
 }

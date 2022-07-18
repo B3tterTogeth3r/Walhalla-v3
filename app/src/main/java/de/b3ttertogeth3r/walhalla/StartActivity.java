@@ -36,6 +36,7 @@ import de.b3ttertogeth3r.walhalla.firebase.Authentication;
 import de.b3ttertogeth3r.walhalla.firebase.CloudMessaging;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.DynamicLinks;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.firebase.InAppMessaging;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
@@ -216,8 +217,8 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
     @Override
     public void RemoteConfig(Context context) {
         if (new RemoteConfig().init(context)) {
-            RemoteConfig.apply();
-            RemoteConfig.update();
+            Firebase.remoteConfig().apply();
+            Firebase.remoteConfig().update();
             updateProgressbar();
             Log.i(TAG, "RemoteConfig init complete");
             return;

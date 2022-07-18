@@ -57,7 +57,7 @@ public class PhilistinesBoard extends Fragment {
         {
             try {
                 ChangeSemester.display(getParentFragmentManager(),
-                                new Semester((int) RemoteConfig.getInt("current_semester_id")))
+                                new Semester(Firebase.remoteConfig().getInt(RemoteConfig.CURRENT_SEMESTER)))
                         .setOnSuccessListener(result -> {
                             assert result != null;
                             download(result);

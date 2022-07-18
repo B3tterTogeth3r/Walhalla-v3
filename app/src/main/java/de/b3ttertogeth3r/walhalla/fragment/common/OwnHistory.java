@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Text;
@@ -30,12 +31,11 @@ import de.b3ttertogeth3r.walhalla.util.Paragraph;
 
 public class OwnHistory extends Fragment {
     private static final String TAG = "OwnHistory";
-
     private LinearLayout view;
 
     @Override
     public void start() {
-        new FormatJSON(RemoteConfig.getString("history_short"))
+        new FormatJSON(Firebase.remoteConfig().getString(RemoteConfig.HISTORY_SHORT))
                 .setOnSuccessListener(this::fillView)
                 .setOnFailListener(e -> Log.e(TAG, "onFailureListener: ", e))
                 .start();

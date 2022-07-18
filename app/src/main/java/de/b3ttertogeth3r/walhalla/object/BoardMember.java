@@ -236,6 +236,6 @@ public class BoardMember implements Validate {
 
     @Override
     public boolean validate() {
-        return false;
+        return true;
     }
 }

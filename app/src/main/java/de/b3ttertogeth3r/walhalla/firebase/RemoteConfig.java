@@ -24,6 +24,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig;
 import de.b3ttertogeth3r.walhalla.object.Log;
 
 /**
@@ -34,8 +35,9 @@ import de.b3ttertogeth3r.walhalla.object.Log;
  * @since 2.0
  */
 @SuppressLint("StaticFieldLeak")
-public class RemoteConfig implements IInit {
+public class RemoteConfig implements IInit, IRemoteConfig {
     private static final String TAG = "RemoteConfig";
+    protected static IRemoteConfig config;
     private static FirebaseRemoteConfig remoteConfig;
 
     /**
@@ -44,7 +46,8 @@ public class RemoteConfig implements IInit {
      * @see <a href="https://firebase.google.com/docs/remote-config/loading">FirebaseRemoteConfig Loading</a>
      * @since 1.1
      */
-    public static void update() {
+    @Override
+    public void update() {
         remoteConfig.fetch();
     }
 
@@ -55,7 +58,8 @@ public class RemoteConfig implements IInit {
      * @see <a href="https://firebase.google.com/docs/remote-config/loading">FirebaseRemoteConfig Loading</a>
      * @since 1.1
      */
-    public static void apply() {
+    @Override
+    public void apply() {
         remoteConfig.activate().addOnCompleteListener(task -> {
             if (task.isCanceled() || task.isSuccessful()) {
                 return;
@@ -65,13 +69,20 @@ public class RemoteConfig implements IInit {
         });
     }
 
+    @Override
     @NonNull
-    public static String getString(String key) {
+    public String getString(String key) {
         return remoteConfig.getString(key);
     }
 
-    public static long getInt(String key) {
+    @Override
+    public long getLong(String key) {
         return remoteConfig.getLong(key);
+    }
+
+    @Override
+    public int getInt(String key) {
+        return (int) remoteConfig.getLong(key);
     }
 
     @Override
@@ -82,6 +93,7 @@ public class RemoteConfig implements IInit {
                 .build();
         remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults);
         remoteConfig.setConfigSettingsAsync(configSettings);
+        config = this;
         return true;
     }
 }

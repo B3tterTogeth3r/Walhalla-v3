@@ -37,6 +37,7 @@ import de.b3ttertogeth3r.walhalla.dialog.InfoDialog;
 import de.b3ttertogeth3r.walhalla.dialog.ProfileEditDialog;
 import de.b3ttertogeth3r.walhalla.dialog.RankSelectDialog;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.IOnBackPressed;
 import de.b3ttertogeth3r.walhalla.object.Address;
@@ -92,7 +93,7 @@ public class FraternityData extends Fragment implements IOnBackPressed {
                     public void onClick(View view) {
                         try {
                             // TODO: 07.07.22 save current semester in CacheData or RemoteConfig
-                            int currentSemester = (int) RemoteConfig.getInt("current_semester_id");
+                            int currentSemester = Firebase.remoteConfig().getInt(RemoteConfig.CURRENT_SEMESTER);
                             ChangeSemester dialog = ChangeSemester.display(fm, new Semester(currentSemester));
                             dialog.setOnSuccessListener(result -> {
                                 if (result == null) {

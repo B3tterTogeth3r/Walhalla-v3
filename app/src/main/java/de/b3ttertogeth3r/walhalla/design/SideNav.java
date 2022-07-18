@@ -41,7 +41,7 @@ import de.b3ttertogeth3r.walhalla.fragment.common.AboutUs;
 import de.b3ttertogeth3r.walhalla.fragment.common.Donation;
 import de.b3ttertogeth3r.walhalla.fragment.common.Fraternities_city;
 import de.b3ttertogeth3r.walhalla.fragment.common.Fraternities_germany;
-import de.b3ttertogeth3r.walhalla.fragment.common.GreetingFragment;
+import de.b3ttertogeth3r.walhalla.fragment.common.Greeting;
 import de.b3ttertogeth3r.walhalla.fragment.common.NewsFragment;
 import de.b3ttertogeth3r.walhalla.fragment.common.PhilistinesBoard;
 import de.b3ttertogeth3r.walhalla.fragment.common.Program;
@@ -261,7 +261,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
                 break;
             case R.id.greeting:
             case R.string.menu_greeting:
-                transaction.replace(container, new GreetingFragment())
+                transaction.replace(container, new Greeting())
                         .addToBackStack(TAG)
                         .commit();
                 break;

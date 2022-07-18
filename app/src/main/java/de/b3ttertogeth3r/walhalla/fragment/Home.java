@@ -126,7 +126,7 @@ public class Home extends Fragment implements View.OnClickListener {
         greeting.setId(R.id.greeting);
 
         // Add icon
-        firestoreDownload.board(Rank.ACTIVE, RemoteConfig.getString("current_semester_id"))
+        firestoreDownload.board(Rank.ACTIVE, Firebase.remoteConfig().getString(RemoteConfig.CURRENT_SEMESTER))
                 .setOnSuccessListener(result -> {
                     if (result == null || result.size() == 0) {
                         throw new NoDataException("Download of chargen did not work");

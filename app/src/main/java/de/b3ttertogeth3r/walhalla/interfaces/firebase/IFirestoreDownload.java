@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
+import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.object.Account;
@@ -37,6 +38,7 @@ import de.b3ttertogeth3r.walhalla.object.Movement;
 import de.b3ttertogeth3r.walhalla.object.News;
 import de.b3ttertogeth3r.walhalla.object.Person;
 import de.b3ttertogeth3r.walhalla.object.Text;
+import de.b3ttertogeth3r.walhalla.util.Paragraph;
 
 /**
  * Persistence methods to download data from the Firebase firestore database
@@ -106,7 +108,7 @@ public interface IFirestoreDownload {
      * @param semesterID semester to download the greeting from
      * @return listener to wait for the result
      */
-    Loader<ArrayList<Text>> semesterGreeting(String semesterID);
+    Loader<Paragraph<Text>> semesterGreeting(String semesterID);
 
     /**
      * Download a list of news entries according to their visibility.
@@ -137,4 +139,6 @@ public interface IFirestoreDownload {
     Loader<ArrayList<Address>> personAddress(String uid);
 
     Loader<File> personImage(String uid);
+
+    Loader<BoardMember> getSemesterBoardOne(int semesterId, @NonNull Charge charge);
 }
