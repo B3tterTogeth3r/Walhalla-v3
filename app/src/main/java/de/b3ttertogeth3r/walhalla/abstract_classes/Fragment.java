@@ -32,10 +32,10 @@ import com.google.firebase.firestore.ListenerRegistration;
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.interfaces.IFragment;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAnalytics;
-import de.b3ttertogeth3r.walhalla.mock.AnalyticsMock;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.ToastList;
 
@@ -65,8 +65,8 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
     public TextView customToolbarTitle;
 
     public Fragment() {
-        analytics = new AnalyticsMock();
-        preStart();
+        analytics = Firebase.analytics();
+        constructor();
     }
 
     /**

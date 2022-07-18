@@ -29,19 +29,44 @@ import de.b3ttertogeth3r.walhalla.object.Log;
 
 public class Storage implements IInit {
     private static final String TAG = "Storage";
-    private static FirebaseStorage storage;
+    protected static IStorageDownload download;
+    protected static IStorageUpload upload;
+    private FirebaseStorage storage;
 
     @Override
-    public boolean init (Context context) {
+    public boolean init(Context context) {
         storage = FirebaseStorage.getInstance();
+        download = new Download();
+        upload = new Upload();
         return true;
     }
 
-    public static class Download implements IStorageDownload {
+    public static class Upload implements IStorageUpload {
+
+        public Upload() {
+            upload = this;
+        }
+
+        @Override
+        public void image(File file, Loader<String> loader) {
+
+        }
+
+        @Override
+        public void file(File file, Loader<String> loader) {
+
+        }
+    }
+
+    public class Download implements IStorageDownload {
+        public Download() {
+            download = this;
+        }
+
         @Override
         public Loader<byte[]> image(@NonNull File file) {
             Loader<byte[]> loader = new Loader<>();
-            Storage.storage
+            storage
                     .getReference(file.getPath())
                     .getBytes(2048)
                     .addOnCompleteListener(task -> {
@@ -51,10 +76,10 @@ public class Storage implements IInit {
                         }
                         Log.i(TAG, "Download complete");
                         if (task.getResult().length != 0) {
-                                loader.done(task.getResult());
-                            }
-                            loader.done();
-                        });
+                            loader.done(task.getResult());
+                        }
+                        loader.done();
+                    });
             return loader;
         }
 
@@ -62,19 +87,7 @@ public class Storage implements IInit {
         public Loader<byte[]> file(File file) {
             Loader<byte[]> loader = new Loader<>();
 
-            return loader;
-        }
-    }
-
-    public static class Upload implements IStorageUpload {
-        @Override
-        public void image (File file, Loader<String> loader) {
-
-        }
-
-        @Override
-        public void file (File file, Loader<String> loader) {
-
+            return loader.done();
         }
     }
 }

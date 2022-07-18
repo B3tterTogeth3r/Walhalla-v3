@@ -38,12 +38,11 @@ import de.b3ttertogeth3r.walhalla.design.EditText;
 import de.b3ttertogeth3r.walhalla.design.Image;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.dialog.PasswordDialog;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.fragment.Home;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.IOnBackPressed;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
-import de.b3ttertogeth3r.walhalla.mock.AuthMock;
 import de.b3ttertogeth3r.walhalla.object.Log;
-import de.b3ttertogeth3r.walhalla.util.Cache;
 
 public class SignInHome extends Fragment implements IOnBackPressed {
     private static final String TAG = "SignInHome";
@@ -61,8 +60,8 @@ public class SignInHome extends Fragment implements IOnBackPressed {
     }
 
     @Override
-    public void preStart() {
-        auth = new AuthMock();
+    public void constructor() {
+        auth = Firebase.authentication();
     }
 
     @Override
@@ -140,7 +139,7 @@ public class SignInHome extends Fragment implements IOnBackPressed {
                             }
                         })
                         .setOnFailListener(e -> {
-
+                            Log.e(TAG, "onClick: sign in exception found", e);
                         });
             }
         });
@@ -153,15 +152,10 @@ public class SignInHome extends Fragment implements IOnBackPressed {
                         if (result == null || !result) {
                             throw new BadPasswordException("Password is empty or false");
                         }
-                        Cache.saveUserData().setOnSuccessListener(done -> {
-                            fm.beginTransaction()
-                                    .replace(R.id.fragment_container, new Home())
-                                    .commit();
-                            Toast.makeToast(requireActivity(), R.string.sign_in_complete).show();
-                        }).setOnFailListener(e -> {
-                            Log.e(TAG, "openDialog: something went wrong", e);
-                            Toast.makeToast(requireActivity(), R.string.fui_trouble_signing_in).show();
-                        });
+                        fm.beginTransaction()
+                                .replace(R.id.fragment_container, new Home())
+                                .commit();
+                        Toast.makeToast(requireActivity(), R.string.sign_in_complete).show();
                     }).onFailureListener(e -> {
                                 Log.e(TAG, "openDialog: something went wrong", e);
                                 Toast.makeToast(requireActivity(), R.string.sign_in_failed).show();

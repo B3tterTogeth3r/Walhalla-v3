@@ -24,15 +24,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
+import de.b3ttertogeth3r.walhalla.MainActivity;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Dialog;
 import de.b3ttertogeth3r.walhalla.design.EditText;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.exception.UserDataError;
+import de.b3ttertogeth3r.walhalla.firebase.Authentication;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
-import de.b3ttertogeth3r.walhalla.mock.AuthMock;
-import de.b3ttertogeth3r.walhalla.object.Log;
 
 public class PasswordDialog extends Dialog<Boolean> {
     private static final String TAG = "PasswordDialog";
@@ -42,7 +42,7 @@ public class PasswordDialog extends Dialog<Boolean> {
 
     public PasswordDialog(DialogSize size, String email) {
         super(size);
-        auth = new AuthMock();
+        auth = new Authentication();
         this.email = email;
     }
 
@@ -59,9 +59,11 @@ public class PasswordDialog extends Dialog<Boolean> {
 
     @Override
     public Boolean done() throws Exception {
+        MainActivity.hideKeyBoard.hide();
         if (e != null) {
-            Log.e(TAG, "done: exception found", e);
-            return null;
+            throw e;
+            /*Log.e(TAG, "done: exception found", e);
+            return null;*/
         } else {
             return true;
         }

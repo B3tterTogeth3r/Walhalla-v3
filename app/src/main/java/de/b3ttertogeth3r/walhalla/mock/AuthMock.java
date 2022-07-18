@@ -14,6 +14,8 @@
 
 package de.b3ttertogeth3r.walhalla.mock;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.AuthResult;
@@ -23,10 +25,11 @@ import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 import de.b3ttertogeth3r.walhalla.object.Person;
 import de.b3ttertogeth3r.walhalla.util.ToastList;
 
-public class AuthMock implements IAuth {
+public class AuthMock implements IAuth, IInit {
     private static final String TAG = "AuthMock";
 
     public AuthMock() {
@@ -41,7 +44,7 @@ public class AuthMock implements IAuth {
 
     @Override
     public boolean isSignIn() {
-        return true;
+        return false;
     }
 
     @Override
@@ -109,5 +112,10 @@ public class AuthMock implements IAuth {
     @Override
     public void linkYahoo(@NonNull Loader<Void> loader) {
         loader.done();
+    }
+
+    @Override
+    public boolean init(Context context) {
+        return false;
     }
 }

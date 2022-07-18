@@ -19,16 +19,16 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 
 import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
-import de.b3ttertogeth3r.walhalla.mock.AuthMock;
 
 public class Profile extends Fragment {
     private static final String TAG = "Profile";
     private IAuth auth;
 
     @Override
-    public void preStart() {
-        auth = new AuthMock();
+    public void constructor() {
+        auth = Firebase.authentication();
     }
 
     @Override

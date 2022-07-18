@@ -37,16 +37,14 @@ import de.b3ttertogeth3r.walhalla.dialog.SetPasswordDialog;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.exception.UploadError;
 import de.b3ttertogeth3r.walhalla.exception.UserDataError;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.fragment.Home;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.IOnBackPressed;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreUpload;
-import de.b3ttertogeth3r.walhalla.mock.AuthMock;
-import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.Address;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Person;
-import de.b3ttertogeth3r.walhalla.util.Cache;
 
 /**
  * A class to review the data set by the user previously before registering the user.
@@ -69,8 +67,18 @@ public class ReviewData extends Fragment implements IOnBackPressed {
     public ReviewData(Person p, ArrayList<Address> addressList) {
         this.p = p;
         this.addressList = addressList;
-        upload = new FirestoreMock.Upload();
-        auth = new AuthMock();
+        upload = Firebase.firestoreUpload();
+        auth = Firebase.authentication();
+    }
+
+    @Override
+    public String analyticsProperties() {
+        return TAG;
+    }
+
+    @Override
+    public void toolbarContent() {
+
     }
 
     @Override
@@ -133,7 +141,6 @@ public class ReviewData extends Fragment implements IOnBackPressed {
                                     auth.signIn(p.getMail(), p.getPasswordString())
                                             .setOnSuccessListener(authResult -> {
                                                 if (authResult != null && authResult.getUser() != null) {
-                                                    Cache.saveUserData();
                                                     Log.i(TAG, "onClick: upload -> auth -> sign in: complete");
                                                     fm.beginTransaction()
                                                             .replace(R.id.fragment_container, new Home())
@@ -169,16 +176,6 @@ public class ReviewData extends Fragment implements IOnBackPressed {
         buttonLayout.addView(next);
         view.addView(buttonLayout);
         //endregion
-    }
-
-    @Override
-    public void toolbarContent() {
-
-    }
-
-    @Override
-    public String analyticsProperties() {
-        return TAG;
     }
 
     @Override

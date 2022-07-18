@@ -23,10 +23,10 @@ import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 
 public class Crashlytics implements IInit, de.b3ttertogeth3r.walhalla.object.Log.ILog {
     private static final String TAG = "Crashlytics";
-    private static FirebaseCrashlytics CRASHLYTICS;
+    private FirebaseCrashlytics CRASHLYTICS;
 
     @Override
-    public boolean init (Context context) {
+    public boolean init(Context context) {
         try {
             CRASHLYTICS = FirebaseCrashlytics.getInstance();
             sendUnsent();
@@ -37,37 +37,40 @@ public class Crashlytics implements IInit, de.b3ttertogeth3r.walhalla.object.Log
         }
     }
 
-    @Override
-    public void log (int type, String TAG, String message, Throwable e) {
-        CRASHLYTICS.setCustomKey("class_name", TAG);
-        switch (type) {
-            case VERBOSE:
-                Crashlytics.CRASHLYTICS.setCustomKey("verbose_message", message);
-                break;
-            case DEBUG:
-                Crashlytics.CRASHLYTICS.setCustomKey("debug_message", message);
-            case ERROR:
-                Crashlytics.CRASHLYTICS.setCustomKey("error_message", message);
-                break;
-            case WARN:
-                Crashlytics.CRASHLYTICS.setCustomKey("warn_message", message);
-                break;
-            case INFO:
-            default:
-                Crashlytics.CRASHLYTICS.setCustomKey("info_message", message);
-                break;
-        }
-        if (e != null) {
-            CRASHLYTICS.recordException(e);
-        }
-        sendUnsent();
-    }
-
-    private void sendUnsent () {
+    private void sendUnsent() {
         try {
             CRASHLYTICS.sendUnsentReports();
         } catch (Exception e) {
             Log.e(TAG, "sending unsent reports did not work", e);
+        }
+    }
+
+    @Override
+    public void log(int type, String TAG, String message, Throwable e) {
+        try {
+            CRASHLYTICS.setCustomKey("class_name", TAG);
+            switch (type) {
+                case VERBOSE:
+                    CRASHLYTICS.setCustomKey("verbose_message", message);
+                    break;
+                case DEBUG:
+                    CRASHLYTICS.setCustomKey("debug_message", message);
+                case ERROR:
+                    CRASHLYTICS.setCustomKey("error_message", message);
+                    break;
+                case WARN:
+                    CRASHLYTICS.setCustomKey("warn_message", message);
+                    break;
+                case INFO:
+                default:
+                    CRASHLYTICS.setCustomKey("info_message", message);
+                    break;
+            }
+            if (e != null) {
+                CRASHLYTICS.recordException(e);
+            }
+            sendUnsent();
+        } catch (Exception ignored) {
         }
     }
 }

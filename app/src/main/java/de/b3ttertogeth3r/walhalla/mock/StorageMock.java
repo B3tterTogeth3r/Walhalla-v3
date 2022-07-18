@@ -29,6 +29,7 @@ import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageDownload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageUpload;
 import de.b3ttertogeth3r.walhalla.object.File;
 import de.b3ttertogeth3r.walhalla.util.ToastList;
 
@@ -79,6 +80,19 @@ public class StorageMock {
                 loader.onFailureListener(null);
             }
             return loader;
+        }
+    }
+
+    public static class Upload implements IStorageUpload {
+
+        @Override
+        public void image(File file, Loader<String> loader) {
+
+        }
+
+        @Override
+        public void file(File file, Loader<String> loader) {
+
         }
     }
 }

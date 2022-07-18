@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -19,8 +19,6 @@ import android.graphics.drawable.Drawable;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentReference;
-
-import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 
 public class Image extends androidx.appcompat.widget.AppCompatImageView {
     private static final String TAG = "Image";
@@ -52,8 +50,7 @@ public class Image extends androidx.appcompat.widget.AppCompatImageView {
     public Image (Context context, String refString) {
         super(context);
         this.context = context;
-        DocumentReference ref = Firestore.getReference(refString);
-        setImage(ref);
+        //setImage(refString);
     }
 
     public Image setImage (int resId) {

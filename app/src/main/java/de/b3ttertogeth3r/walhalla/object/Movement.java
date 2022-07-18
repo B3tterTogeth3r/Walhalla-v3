@@ -27,9 +27,9 @@ import de.b3ttertogeth3r.walhalla.abstract_classes.MyObject;
 import de.b3ttertogeth3r.walhalla.design.Image;
 import de.b3ttertogeth3r.walhalla.design.TableRow;
 import de.b3ttertogeth3r.walhalla.design.Text;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
-import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class Movement extends MyObject implements Validate {
@@ -82,7 +82,7 @@ public class Movement extends MyObject implements Validate {
             Image arrow = new Image(context);
             arrow.setImage(R.drawable.ic_arrow_right);
             row.addView(arrow);
-            IFirestoreDownload download = new FirestoreMock.Download();
+            IFirestoreDownload download = Firebase.firestoreDownload();
             arrow.setOnClickListener(v -> download.file(recipe)
                     .setOnSuccessListener(result -> MainActivity.openExternal.file(result))
                     .setOnFailListener(e -> Log.e(TAG, "File download didn't work", e)));

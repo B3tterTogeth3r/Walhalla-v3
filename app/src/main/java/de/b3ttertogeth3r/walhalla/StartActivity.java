@@ -23,7 +23,13 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.storage.FirebaseStorage;
 
 import de.b3ttertogeth3r.walhalla.firebase.Analytics;
 import de.b3ttertogeth3r.walhalla.firebase.Authentication;
@@ -36,24 +42,45 @@ import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.firebase.Storage;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.FirebaseInit;
 import de.b3ttertogeth3r.walhalla.object.Log;
+import de.b3ttertogeth3r.walhalla.util.Cache;
 
 
 public class StartActivity extends AppCompatActivity implements FirebaseInit {
     private static final String TAG = "StartActivity";
-    @SuppressWarnings("FieldCanBeLocal")
-    private final int TOTAL = 9;
+    private static final int TOTAL = 11;
     private int counter = 0;
     private int progress = 0;
     private ProgressBar progressBar;
 
     @Override
-    protected void onCreate (@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
         progressBar = findViewById(R.id.progressBar);
         progressBar.setProgress(0);
         progressBar.setVisibility(View.VISIBLE);
         new App();
+        App.setContext(getApplicationContext());
+        CacheInit(getApplicationContext());
+
+        //region use firebase emulator
+        // FIXME: 14.07.22 remove before publishing
+        try {
+            FirebaseAuth.getInstance().useEmulator("10.0.2.2", 9099);
+            FirebaseStorage.getInstance().useEmulator("10.0.2.2", 9199);
+            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+            firestore.useEmulator("10.0.2.2", 8080);
+
+            FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                    .setPersistenceEnabled(false)
+                    .build();
+            firestore.setFirestoreSettings(settings);
+            for (int i = 0; i < 100; i++) {
+                Log.e(TAG, "###################################### FIRESTORE LOCAL EMULATOR IN USE ######################################");
+            }
+        } catch (Exception ignored) {
+        }
+        //endregion
 
         //Init cacheData here
 
@@ -69,14 +96,7 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
         firebaseInit.RemoteConfig(getApplicationContext());
         firebaseInit.Storage(getApplicationContext());
 
-        /*
-        try {
-            CacheData.init(getApplicationContext());
-        } catch (Exception e) {
-            Log.e(TAG, "CacheData:", e);
-        }
-
-        if (!CacheData.getFirstStart() && !isOnline()) {
+        if (!Cache.CACHE_DATA.isFirstStart() && !isOnline()) {
             Log.d(TAG, "Comments: no internet on first start");
             //TODO Display dialog with message to get internet. Terminate app on cancel and dismiss
             AlertDialog.Builder internetDialog = new AlertDialog.Builder(this);
@@ -87,18 +107,17 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
                     .show();
         } else {
             updateProgressbar();
-            new de.b3ttertogeth3r.walhalla.old.App();
-        }*/
+        }
     }
 
-    public boolean isOnline () {
+    public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    private void updateProgressbar () {
+    private void updateProgressbar() {
         if (counter == TOTAL) {
             progressBar.setProgress(progress, true);
             /* Go to MainActivity */
@@ -115,18 +134,27 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
         }
     }
 
+    public void CacheInit(Context context) {
+        if (new Cache().init(context)) {
+            updateProgressbar();
+            Log.i(TAG, "Cache init complete");
+            return;
+        }
+        Log.e(TAG, "Cache init incomplete");
+    }
+
     @Override
-    public void Analytics (Context context) {
+    public void Analytics(Context context) {
         if (new Analytics().init(context)) {
             updateProgressbar();
             Log.i(TAG, "Analytics init complete");
             return;
         }
-        android.util.Log.e(TAG, "Analytics init incomplete");
+        Log.e(TAG, "Analytics init incomplete");
     }
 
     @Override
-    public void Authentication (Context context) {
+    public void Authentication(Context context) {
         if (new Authentication().init(context)) {
             updateProgressbar();
             Log.i(TAG, "Authentication init complete");
@@ -136,57 +164,57 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
     }
 
     @Override
-    public void CloudMessaging (Context context) {
+    public void CloudMessaging(Context context) {
         if (new CloudMessaging().init(context)) {
             updateProgressbar();
             Log.i(TAG, "CloudMessaging init complete");
             return;
         }
-        Log.i(TAG, "CloudMessaging init incomplete");
+        Log.e(TAG, "CloudMessaging init incomplete");
     }
 
     @Override
-    public void Crashlytics (Context context) {
+    public void Crashlytics(Context context) {
         if (new Crashlytics().init(context)) {
             updateProgressbar();
             Log.i(TAG, "Crashlytics init complete");
             return;
         }
-        Log.i(TAG, "Crashlytics init incomplete");
+        Log.e(TAG, "Crashlytics init incomplete");
     }
 
     @Override
-    public void DynamicLinks (Context context) {
+    public void DynamicLinks(Context context) {
         if (new DynamicLinks().init(context)) {
             updateProgressbar();
             Log.i(TAG, "DynamicLinks init complete");
             return;
         }
-        Log.i(TAG, "DynamicLinks init incomplete");
+        Log.e(TAG, "DynamicLinks init incomplete");
     }
 
     @Override
-    public void Firestore (Context context) {
+    public void Firestore(Context context) {
         if (new Firestore().init(context)) {
             updateProgressbar();
             Log.i(TAG, "Firestore init complete");
             return;
         }
-        Log.i(TAG, "Firestore init incomplete");
+        Log.e(TAG, "Firestore init incomplete");
     }
 
     @Override
-    public void InAppMessaging (Context context) {
+    public void InAppMessaging(Context context) {
         if (new InAppMessaging().init(context)) {
             updateProgressbar();
             Log.i(TAG, "InAppMessaging init complete");
             return;
         }
-        Log.i(TAG, "InAppMessaging init incomplete");
+        Log.e(TAG, "InAppMessaging init incomplete");
     }
 
     @Override
-    public void RemoteConfig (Context context) {
+    public void RemoteConfig(Context context) {
         if (new RemoteConfig().init(context)) {
             RemoteConfig.apply();
             RemoteConfig.update();
@@ -194,16 +222,16 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
             Log.i(TAG, "RemoteConfig init complete");
             return;
         }
-        Log.i(TAG, "RemoteConfig init incomplete");
+        Log.e(TAG, "RemoteConfig init incomplete");
     }
 
     @Override
-    public void Storage (Context context) {
+    public void Storage(Context context) {
         if (new Storage().init(context)) {
             updateProgressbar();
             Log.i(TAG, "Storage init complete");
             return;
         }
-        Log.i(TAG, "Storage init incomplete");
+        Log.e(TAG, "Storage init incomplete");
     }
 }

@@ -47,10 +47,9 @@ import de.b3ttertogeth3r.walhalla.enums.Collar;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.enums.Punctuality;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.mock.AuthMock;
-import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.Chore;
 import de.b3ttertogeth3r.walhalla.object.Event;
 import de.b3ttertogeth3r.walhalla.object.Log;
@@ -74,8 +73,8 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
     public EventDetails(DialogSize size, Event event) {
         super(size);
         this.event = event;
-        this.download = new FirestoreMock.Download();
-        this.auth = new AuthMock();
+        this.download = Firebase.firestoreDownload();
+        this.auth = Firebase.authentication();
     }
 
     @NonNull

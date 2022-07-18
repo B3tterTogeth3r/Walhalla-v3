@@ -29,21 +29,22 @@ import de.b3ttertogeth3r.walhalla.object.Text;
 
 public class GreetingFragment extends Fragment {
     private static final String TAG = "Greeting";
-    private final IFirestoreDownload download;
+    private IFirestoreDownload download;
     private ArrayList<Text> greeting;
     private LinearLayout view;
 
-    public GreetingFragment () {
+    @Override
+    public void constructor() {
         download = new FirestoreMock.Download();
         greeting = new ArrayList<>();
     }
 
     @Override
-    public void start () {
+    public void start() {
         download.semesterGreeting("0")
                 .setOnSuccessListener(result -> {
-                if(result != null && !result.isEmpty()) {
-                    greeting = result;
+                    if (result != null && !result.isEmpty()) {
+                        greeting = result;
                     loadGreeting();
                     return;
                 }

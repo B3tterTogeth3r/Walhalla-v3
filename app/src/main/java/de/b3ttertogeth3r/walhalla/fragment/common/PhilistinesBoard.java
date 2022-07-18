@@ -27,9 +27,9 @@ import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.dialog.ChangeSemester;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Semester;
@@ -39,8 +39,13 @@ public class PhilistinesBoard extends Fragment {
     private LinearLayout view;
 
     @Override
-    public void createView(@NonNull LinearLayout view) {
-        this.view = view;
+    public String analyticsProperties() {
+        return TAG;
+    }
+
+    @Override
+    public void start() {
+        download(1);
     }
 
     @Override
@@ -64,17 +69,12 @@ public class PhilistinesBoard extends Fragment {
     }
 
     @Override
-    public String analyticsProperties() {
-        return TAG;
-    }
-
-    @Override
-    public void start() {
-        download(1);
+    public void createView(@NonNull LinearLayout view) {
+        this.view = view;
     }
 
     private void download(int semId) {
-        IFirestoreDownload download = new FirestoreMock.Download();
+        IFirestoreDownload download = Firebase.firestoreDownload();
         download.board(Rank.PHILISTINES, String.valueOf(semId))
                 .setOnSuccessListener(result -> {
                     if (result == null) {

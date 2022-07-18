@@ -153,24 +153,6 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<ArrayList<Address>> address(String personID) {
-            Loader<ArrayList<Address>> loader = new Loader<>();
-            ArrayList<Address> results = new ArrayList<>();
-            Address a1 = new Address("Mergentheimer Straße", "32 - 34a", "97082", "Würzburg",
-                    "Bayern", "Deutschland");
-            Address a2 = new Address("Uhlandstraße", "9", "97072", "Würzburg", "Bayern",
-                    "Deutschland");
-            Address a3 = new Address("Sanderstraße", "24", "97070", "Würzburg", "Bayern",
-                    "Deutschland");
-
-            results.add(a1);
-            results.add(a2);
-            results.add(a3);
-
-            return loader.done(results);
-        }
-
-        @Override
         public Loader<ArrayList<Location>> locationList() {
             @NonNull Loader<ArrayList<Location>> loader = new Loader<>();
             Location l1 = new Location("Walhalla", new GeoPoint(49.784420, 9.924580));
@@ -205,7 +187,7 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<File> file(DocumentReference reference) {
+        public Loader<File> file(@NonNull DocumentReference reference) {
             Loader<File> loader = new Loader<>();
             return loader;
 
@@ -506,17 +488,32 @@ public class FirestoreMock {
 
         @Override
         public Loader<Person> person(String uid) {
-            return null;
+            Loader<Person> loader = new Loader<>();
+            return loader.done();
         }
 
         @Override
         public Loader<ArrayList<Address>> personAddress(String uid) {
-            return null;
+            Loader<ArrayList<Address>> loader = new Loader<>();
+            ArrayList<Address> results = new ArrayList<>();
+            Address a1 = new Address("Mergentheimer Straße", "32 - 34a", "97082", "Würzburg",
+                    "Bayern", "Deutschland");
+            Address a2 = new Address("Uhlandstraße", "9", "97072", "Würzburg", "Bayern",
+                    "Deutschland");
+            Address a3 = new Address("Sanderstraße", "24", "97070", "Würzburg", "Bayern",
+                    "Deutschland");
+
+            results.add(a1);
+            results.add(a2);
+            results.add(a3);
+
+            return loader.done(results);
         }
 
         @Override
         public Loader<File> personImage(String uid) {
-            return null;
+            Loader<File> loader = new Loader<>();
+            return loader.done();
         }
     }
 
@@ -528,10 +525,12 @@ public class FirestoreMock {
         }
 
         @Override
-        public void event(int semID, @NonNull Event event) {
+        public Loader<Boolean> event(int semID, @NonNull Event event) {
+            Loader<Boolean> loader = new Loader<>();
             if (event.validate()) {
-                // TODO: 16.05.22 upload event and send success or fail message to user
+                return loader.done(true);
             }
+            return loader.done(false);
         }
 
         @Override

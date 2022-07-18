@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -66,7 +66,7 @@ public class StartActivity extends AppCompatActivity implements SplashInterface 
         progressBar.setVisibility(View.VISIBLE);
         newDone = this;
         try {
-            CacheData.init(getApplicationContext());
+            //CacheData.init(getApplicationContext());
         } catch (Exception e) {
             Log.e(TAG, "CacheData:", e);
         }

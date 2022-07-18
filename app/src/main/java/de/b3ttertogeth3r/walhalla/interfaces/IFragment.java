@@ -27,7 +27,7 @@ public interface IFragment {
     /**
      * called inside the constructor
      */
-    default void preStart() {
+    default void constructor() {
     }
 
     /**

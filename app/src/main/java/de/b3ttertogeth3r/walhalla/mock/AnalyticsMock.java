@@ -14,16 +14,19 @@
 
 package de.b3ttertogeth3r.walhalla.mock;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAnalytics;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.ToastList;
 
-public class AnalyticsMock implements IAnalytics {
+public class AnalyticsMock implements IAnalytics, IInit {
     private static final String TAG = "AnalyticsMock";
     /**
      * true, if the user allowed data collection by Google's Firebase Analytics
@@ -31,7 +34,10 @@ public class AnalyticsMock implements IAnalytics {
     private boolean dataCollection;
 
     public AnalyticsMock() {
-        ToastList.addToast(Toast.makeToast(App.getContext(), TAG + "-MOCK-DATA"));
+        try {
+            ToastList.addToast(Toast.makeToast(App.getContext(), TAG + "-MOCK-DATA"));
+        } catch (Exception ignored) {
+        }
     }
 
     @Override
@@ -55,5 +61,10 @@ public class AnalyticsMock implements IAnalytics {
     @Override
     public void changeDataCollection(boolean value) {
         dataCollection = value;
+    }
+
+    @Override
+    public boolean init(Context context) {
+        return true;
     }
 }

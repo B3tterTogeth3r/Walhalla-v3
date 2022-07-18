@@ -30,8 +30,8 @@ import de.b3ttertogeth3r.walhalla.design.Button;
 import de.b3ttertogeth3r.walhalla.design.LinearLayout;
 import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.design.Toast;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.Account;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Movement;
@@ -50,14 +50,20 @@ import de.b3ttertogeth3r.walhalla.util.ToastList;
  */
 public class Balance extends Fragment implements View.OnClickListener {
     private static final String TAG = "Balance";
-    private final IFirestoreDownload download;
-    Button subscribe, payBill;
+    private Button subscribe, payBill;
+    private IFirestoreDownload download;
     private Account account;
     private Title balance;
     private TableLayout movements;
 
-    public Balance() {
-        download = new FirestoreMock.Download();
+    @Override
+    public void constructor() {
+        download = Firebase.firestoreDownload();
+    }
+
+    @Override
+    public String analyticsProperties() {
+        return TAG;
     }
 
     @Override
@@ -104,17 +110,6 @@ public class Balance extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public String analyticsProperties() {
-        return TAG;
-    }
-
-    @Override
-    public void viewCreated() {
-        subscribe.setOnClickListener(this);
-        payBill.setOnClickListener(this);
-    }
-
-    @Override
     public void toolbarContent() {
         toolbar.setTitle(R.string.menu_balance);
     }
@@ -151,6 +146,12 @@ public class Balance extends Fragment implements View.OnClickListener {
         // a banner ad on the bottom of the screen
         // TODO: 30.05.22 add app to GoogleAdMob
         //endregion
+    }
+
+    @Override
+    public void viewCreated() {
+        subscribe.setOnClickListener(this);
+        payBill.setOnClickListener(this);
     }
 
     @Override

@@ -32,18 +32,28 @@ import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
 import de.b3ttertogeth3r.walhalla.design.Button;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.News;
 
 public class NewsFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "News";
-    private final IFirestoreDownload download = new FirestoreMock.Download();
+    private IFirestoreDownload download;
     private LinearLayout newsLayout;
     private ArrayList<News> newsList = new ArrayList<>();
     private int position, padding;
     private int max_position = 0;
     private Button previous, next;
+
+    @Override
+    public void constructor() {
+        download = Firebase.firestoreDownload();
+    }
+
+    @Override
+    public String analyticsProperties() {
+        return TAG;
+    }
 
     @Override
     public void start() {
@@ -67,18 +77,6 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
         } catch (Exception e) {
             padding = 20;
         }
-    }
-
-    @Override
-    public String analyticsProperties() {
-        return TAG;
-    }
-
-    @Override
-    public void viewCreated() {
-        previous.setOnClickListener(this);
-        next.setOnClickListener(this);
-        //loadEntry(position);
     }
 
     @Override
@@ -129,6 +127,13 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
         adParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         adView.setLayoutParams(adParams);
         //endregion
+    }
+
+    @Override
+    public void viewCreated() {
+        previous.setOnClickListener(this);
+        next.setOnClickListener(this);
+        //loadEntry(position);
     }
 
     private void loadEntry(int number) {

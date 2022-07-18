@@ -63,13 +63,11 @@ public interface IFirestoreDownload {
      */
     Loader<ArrayList<BoardMember>> board(Rank rank, String semesterID);
 
-    Loader<ArrayList<Address>> address(String personID);
-
     Loader<ArrayList<Location>> locationList();
 
     Loader<Map<Integer, ArrayList<BoardMember>>> pastChargen(String personID);
 
-    Loader<File> file(DocumentReference reference);
+    Loader<File> file(@NonNull DocumentReference reference);
 
     Loader<ArrayList<Chore>> personUndoneChores(String personID);
 

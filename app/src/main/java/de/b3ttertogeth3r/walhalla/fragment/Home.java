@@ -40,11 +40,10 @@ import de.b3ttertogeth3r.walhalla.design.Image;
 import de.b3ttertogeth3r.walhalla.design.SideNav;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.mock.AuthMock;
-import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.Log;
 
 public class Home extends Fragment implements View.OnClickListener {
@@ -64,8 +63,13 @@ public class Home extends Fragment implements View.OnClickListener {
     private RelativeLayout login;
 
     public Home() {
-        auth = new AuthMock();
-        firestoreDownload = new FirestoreMock.Download();
+        auth = Firebase.authentication();
+        firestoreDownload = Firebase.firestoreDownload();
+    }
+
+    @Override
+    public String analyticsProperties() {
+        return TAG;
     }
 
     @Override
@@ -210,9 +214,9 @@ public class Home extends Fragment implements View.OnClickListener {
         login = new RelativeLayout(requireContext());
         login.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.border_round));
         login.setLayoutParams(loginParams);
-        login.setId(R.id.login);
         if (!auth.isSignIn()) { // No user is signed in
             // Add icon
+            login.setId(R.id.login);
             login.addView(image(AppCompatResources.getDrawable(requireContext(),
                             R.drawable.ic_login),
                     false));
@@ -227,6 +231,8 @@ public class Home extends Fragment implements View.OnClickListener {
             login.addView(text(R.string.menu_logout));
             // refresh site
             try {
+                login.setId(R.id.logout);
+                auth.signOut();
                 getParentFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, this)
@@ -252,11 +258,6 @@ public class Home extends Fragment implements View.OnClickListener {
             login.setOnClickListener(this);
         } catch (Exception ignored) {
         }
-    }
-
-    @Override
-    public String analyticsProperties() {
-        return TAG;
     }
 
     // region design params
@@ -319,8 +320,7 @@ public class Home extends Fragment implements View.OnClickListener {
     //endregion
 
     @Override
-    public void onClick(View view) {
-        // TODO: 12.07.22 switch page and add it to the backstack
+    public void onClick(@NonNull View view) {
         SideNav.changePage(view.getId(), requireActivity().getSupportFragmentManager().beginTransaction());
     }
 }

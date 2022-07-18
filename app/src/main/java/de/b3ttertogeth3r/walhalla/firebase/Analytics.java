@@ -22,18 +22,21 @@ import androidx.annotation.NonNull;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import de.b3ttertogeth3r.walhalla.enums.Rank;
+import de.b3ttertogeth3r.walhalla.interfaces.CacheData;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAnalytics;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 import de.b3ttertogeth3r.walhalla.object.Log;
-import de.b3ttertogeth3r.walhalla.old.utils.CacheData;
+import de.b3ttertogeth3r.walhalla.util.Cache;
 
 public class Analytics implements IInit, IAnalytics {
     public static final String TAG = "Analytics";
-    private static FirebaseAnalytics analytics;
+    protected static IAnalytics iAnalytics;
+    private FirebaseAnalytics analytics;
+    private CacheData cacheData;
 
     @Override
-    public void screenChange (@NonNull String fragment_name) {
-        if (CacheData.getAnalyticsCollection()) {
+    public void screenChange(@NonNull String fragment_name) {
+        if (cacheData.getAnalyticsCollection()) {
             Bundle bundle = new Bundle();
             bundle.putString("Fragment", fragment_name);
             analytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW, bundle);
@@ -42,27 +45,29 @@ public class Analytics implements IInit, IAnalytics {
     }
 
     @Override
-    public void changeStartPage (int res_string_value) {
-        // TODO: 26.05.22 change that to the name. In the cache the id and the name have to be
-        //  saved.
-        analytics.setUserProperty("start_page", String.valueOf(CacheData.getStartPage()));
+    public void changeStartPage(int res_string_value) {
+        analytics.setUserProperty("start_page",
+                String.valueOf(cacheData.getStartPage()));
+        analytics.setUserProperty("start_page_str",
+                String.valueOf(cacheData.getStartPageStr()));
+    }
+
+    @Override
+    public void setRank(@NonNull Rank rank) {
 
     }
 
     @Override
-    public void setRank (@NonNull Rank rank) {
-
-    }
-
-    @Override
-    public void changeDataCollection (boolean value) {
+    public void changeDataCollection(boolean value) {
         analytics.setAnalyticsCollectionEnabled(value);
     }
 
     @Override
-    public boolean init (Context context) {
+    public boolean init(Context context) {
         try {
             analytics = FirebaseAnalytics.getInstance(context);
+            iAnalytics = this;
+            cacheData = Cache.CACHE_DATA;
             return true;
         } catch (Exception e) {
             return false;

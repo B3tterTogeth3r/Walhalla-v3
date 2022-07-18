@@ -33,12 +33,12 @@ public class CloudMessaging extends FirebaseMessagingService implements IInit {
     private static final String TAG = "CloudMessaging";
     private FirebaseMessaging messaging;
 
-    public static void sendNotification (Person person, String message) {
+    public static void sendNotification(Person person, String message) {
         // TODO: 25.05.22 send it via a path in the realtime database together with cloud functions
     }
 
     @Override
-    public void onMessageReceived (@NonNull RemoteMessage remoteMessage) {
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
@@ -55,13 +55,13 @@ public class CloudMessaging extends FirebaseMessagingService implements IInit {
     }
 
     @Override
-    public void onNewToken (@NonNull String token) {
+    public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
         // TODO: 25.05.22 save token online
     }
 
     @Override
-    public boolean init (Context context) {
+    public boolean init(Context context) {
         try {
             messaging = FirebaseMessaging.getInstance();
             return true;
@@ -71,7 +71,7 @@ public class CloudMessaging extends FirebaseMessagingService implements IInit {
         }
     }
 
-    private void getToken () {
+    private void getToken() {
         Context context = App.getContext();
         messaging.getToken()
                 .addOnCompleteListener(task -> {

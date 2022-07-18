@@ -23,7 +23,7 @@ import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
 import de.b3ttertogeth3r.walhalla.object.Person;
 
 /**
- * Listener collection used by {@link de.b3ttertogeth3r.walhalla.firebase.Authentication
+ * Function collection used by {@link de.b3ttertogeth3r.walhalla.firebase.Authentication
  * Authentication}
  *
  * @author B3tterTogeth3r

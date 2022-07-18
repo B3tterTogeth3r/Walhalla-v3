@@ -32,25 +32,31 @@ import de.b3ttertogeth3r.walhalla.dialog.EventDetails;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.object.Event;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Semester;
 
 public class Program extends Fragment {
     private static final String TAG = "ProgramFragment";
-    private final IFirestoreDownload download;
+    private IFirestoreDownload download;
     private LinearLayout view;
 
-    public Program() {
-        this.download = new FirestoreMock.Download();
+    @Override
+    public void constructor() {
+        download = Firebase.firestoreDownload();
     }
 
     @Override
-    public void createView(@NonNull LinearLayout view) {
-        this.view = view;
+    public String analyticsProperties() {
+        return TAG;
+    }
+
+    @Override
+    public void start() {
+        download(1);
     }
 
     @Override
@@ -75,13 +81,8 @@ public class Program extends Fragment {
     }
 
     @Override
-    public String analyticsProperties() {
-        return TAG;
-    }
-
-    @Override
-    public void start() {
-        download(1);
+    public void createView(@NonNull LinearLayout view) {
+        this.view = view;
     }
 
     private void download(int semId) {

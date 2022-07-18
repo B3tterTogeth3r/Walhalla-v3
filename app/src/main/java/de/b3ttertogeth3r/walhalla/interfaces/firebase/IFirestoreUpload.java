@@ -25,7 +25,7 @@ import de.b3ttertogeth3r.walhalla.object.Person;
 
 public interface IFirestoreUpload {
 
-    void event(int semID, Event event);//, MainActivity.snackBar);
+    Loader<Boolean> event(int semID, Event event);
 
     /**
      * upload the person data of a user to Firestore

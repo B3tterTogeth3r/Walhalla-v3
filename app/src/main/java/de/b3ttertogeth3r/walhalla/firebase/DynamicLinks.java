@@ -29,7 +29,7 @@ public class DynamicLinks implements IInit {
     private static Context context;
     private static FirebaseDynamicLinks dynamicLinks;
 
-    public static void receivedDynamicLink (Intent intent, Loader<PendingDynamicLinkData> result) {
+    public static void receivedDynamicLink(Intent intent, Loader<PendingDynamicLinkData> result) {
         dynamicLinks.getDynamicLink(intent)
                 .addOnCompleteListener(task -> {
                     if (task.getException() != null) {
@@ -41,7 +41,7 @@ public class DynamicLinks implements IInit {
     }
 
     @Override
-    public boolean init (Context context) {
+    public boolean init(Context context) {
         try {
             DynamicLinks.context = context;
             dynamicLinks = FirebaseDynamicLinks.getInstance();

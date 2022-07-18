@@ -34,6 +34,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.enums.Walhalla;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.fragment.Home;
 import de.b3ttertogeth3r.walhalla.fragment.board.allUsers;
 import de.b3ttertogeth3r.walhalla.fragment.common.AboutUs;
@@ -52,7 +53,6 @@ import de.b3ttertogeth3r.walhalla.fragment.signed_in.Drinks;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Profile;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.ISideNav;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
-import de.b3ttertogeth3r.walhalla.mock.AuthMock;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.old.fragments_main.HistoryFragment;
 
@@ -120,7 +120,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
 
     public SideNav(@NonNull Context context) {
         super(context);
-        auth = new AuthMock();
+        auth = Firebase.authentication();
         setNavigationItemSelectedListener(this);
         fillHeadView();
         fillSideNav();
@@ -225,7 +225,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
 
     public SideNav(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        auth = new AuthMock();
+        auth = Firebase.authentication();
         setNavigationItemSelectedListener(this);
         fillHeadView();
         fillSideNav();
@@ -233,7 +233,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
 
     public SideNav(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        auth = new AuthMock();
+        auth = Firebase.authentication();
         setNavigationItemSelectedListener(this);
         fillHeadView();
         fillSideNav();
@@ -342,6 +342,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
                 }
                 break;
             case R.string.menu_logout:
+            case R.id.logout:
                 auth.signOut();
             case R.string.menu_home:
             default:
