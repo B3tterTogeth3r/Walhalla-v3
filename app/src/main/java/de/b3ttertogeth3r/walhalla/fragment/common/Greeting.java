@@ -14,9 +14,12 @@
 
 package de.b3ttertogeth3r.walhalla.fragment.common;
 
+import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -92,10 +95,27 @@ public class Greeting extends Fragment {
                         throw new NoDataException("Charge not found");
                     }
                     // TODO: 18.07.22 format so that it looks the same and is not depending on the length of the names.
-                    LinearLayout signing = new LinearLayout(requireContext());
-                    signing.setPadding(40, 0, 40, 0);
-                    signing.setOrientation(LinearLayout.HORIZONTAL);
+                    RelativeLayout row = new RelativeLayout(requireContext());
+
+                    int padding = (int) TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            4f,
+                            requireContext().getResources().getDisplayMetrics()
+                    );
+                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+                            RelativeLayout.LayoutParams.MATCH_PARENT,
+                            RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    params.setMargins(/*left*/padding,
+                            /*top*/padding,
+                            /*right*/(padding),
+                            /*bottom*/padding);
+                    row.setLayoutParams(params);
+                    row.setPadding(/*left*/padding,
+                            /*top*/padding,
+                            /*right*/padding,
+                            /*bottom*/padding);
                     LinearLayout x = new LinearLayout(requireContext());
+                    x.setId(R.id.x_left);
                     x.setOrientation(LinearLayout.VERTICAL);
                     TextView nameX = new TextView(requireContext());
                     nameX.setTextAppearance(R.style.TextAppearance_AppCompat_Subhead);
@@ -105,16 +125,24 @@ public class Greeting extends Fragment {
                     descX.setText(Charge.X.toLongString());
                     descX.setGravity(Gravity.CENTER_HORIZONTAL);
                     x.addView(descX);
-                    signing.addView(x);
+                    RelativeLayout.LayoutParams xParams = new RelativeLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    xParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    x.setLayoutParams(xParams);
+                    row.addView(x);
 
                     ImageView image = new ImageView(requireContext());
                     image.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.wappen_zirkel));
                     image.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                    LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
-                            120, 120
+                    RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(
+                            (padding * 30),
+                            (padding * 15)
                     );
+                    imageParams.addRule(RelativeLayout.CENTER_IN_PARENT);
                     image.setLayoutParams(imageParams);
-                    signing.addView(image);
+                    row.addView(image);
 
                     LinearLayout ahx = new LinearLayout(requireContext());
                     ahx.setOrientation(LinearLayout.VERTICAL);
@@ -126,8 +154,14 @@ public class Greeting extends Fragment {
                     descahX.setText(Charge.AH_X.toLongString());
                     descahX.setGravity(Gravity.CENTER_HORIZONTAL);
                     ahx.addView(descahX);
-                    signing.addView(ahx);
-                    layout.addView(signing);
+                    RelativeLayout.LayoutParams ahxParams = new RelativeLayout.LayoutParams(
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT
+                    );
+                    ahxParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    ahx.setLayoutParams(ahxParams);
+                    row.addView(ahx);
+                    layout.addView(row);
                 });
     }
 
