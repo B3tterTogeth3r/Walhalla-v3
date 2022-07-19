@@ -16,19 +16,17 @@ package de.b3ttertogeth3r.walhalla.fragment.common;
 
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.design.AdView;
 import de.b3ttertogeth3r.walhalla.design.Button;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
@@ -117,15 +115,8 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
 
         //region advertisement
         // TODO: 30.05.22 add app to GoogleAdMob
-        AdView adView = new AdView(requireContext());
-        adView.setAdSize(AdSize.BANNER);
-        adView.setAdUnitId(getString(R.string.adUnitId));
-        RelativeLayout.LayoutParams adParams = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-        adParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        adView.setLayoutParams(adParams);
+        AdView adView = new AdView(requireContext(), AdSize.BANNER);
+        view.addView(adView);
         //endregion
     }
 

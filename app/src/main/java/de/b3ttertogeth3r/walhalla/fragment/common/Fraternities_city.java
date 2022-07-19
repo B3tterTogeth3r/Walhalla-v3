@@ -22,6 +22,7 @@ import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.design.AdView;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.object.Log;
@@ -51,6 +52,7 @@ public class Fraternities_city extends Fragment {
                 layout.addView(t.getView(requireActivity()));
             }
             view.addView(layout);
+            view.addView(new AdView(requireContext()));
         }
     }
 

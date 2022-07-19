@@ -30,6 +30,7 @@ import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.design.AdView;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
@@ -162,6 +163,7 @@ public class Greeting extends Fragment {
                     ahx.setLayoutParams(ahxParams);
                     row.addView(ahx);
                     layout.addView(row);
+                    layout.addView(new AdView(requireContext()));
                 });
     }
 

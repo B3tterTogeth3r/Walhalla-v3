@@ -25,8 +25,8 @@
     <string name="fb_login_protocol_scheme" translatable="false">fb3078474742426626</string>
 
     <!-- # Adverd id -->
-    <string name="sampleID" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
-    <string name="adUnitId" translatable="false">ca-app-pub-1971318728377485/9144811322</string>
+    <string name="adUnitId" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <!--string name="adUnitId" translatable="false">ca-app-pub-1971318728377485/9144811322</string-->
 
     <!-- #Maps API-Key -->
     <string name="maps_api_key" translatable="false">AIzaSyARUfC6W1_yUAnmDzjdwL5R4QdjH7c2P_o</string>

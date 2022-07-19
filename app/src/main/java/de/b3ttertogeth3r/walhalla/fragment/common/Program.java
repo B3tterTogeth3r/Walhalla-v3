@@ -20,6 +20,11 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
@@ -123,15 +128,16 @@ public class Program extends Fragment {
                     .show());
             i++;
             if (i == 5) {
-                // TODO: 31.05.22 group by month and after every month there is an advert or like this
                 i = 0;
-                /*
-                AdView mAdView = new AdView(requireContext());
-                mAdView.setAdSize(AdSize.BANNER);
-                mAdView.setAdUnitId(Values.AD_UNIT_ID);
+                AdView adView = new AdView(requireContext());
+                adView.setAdSize(AdSize.LARGE_BANNER);
+                adView.setAdUnitId(getString(R.string.adUnitId));
+                MobileAds.initialize(requireContext(), initializationStatus -> {
+                });
+
                 AdRequest adRequest = new AdRequest.Builder().build();
-                mAdView.loadAd(adRequest);
-                view.addView(mAdView);*/
+                adView.loadAd(adRequest);
+                view.addView(adView);
             }
         }
     }

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.design.AdView;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.dialog.ChangeSemester;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
@@ -98,5 +99,6 @@ public class PhilistinesBoard extends Fragment {
         for (BoardMember bm : boardList) {
             view.addView(bm.getView(requireActivity()));
         }
+        view.addView(new AdView(requireContext()));
     }
 }

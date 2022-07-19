@@ -14,7 +14,6 @@
 
 package de.b3ttertogeth3r.walhalla.dialog;
 
-import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -26,6 +25,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -123,12 +125,14 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
             Log.e(TAG, "createDialog: creating maps fragment and api didn't work.");
         }
 
+        AdView adView = view.findViewById(R.id.adView);
+        MobileAds.initialize(requireContext(), initializationStatus -> {
+        });
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
         container.addView(view);
-    }
-
-    @Override
-    public void configDialog(@NonNull AlertDialog.Builder builder) {
-
     }
 
     @Override
