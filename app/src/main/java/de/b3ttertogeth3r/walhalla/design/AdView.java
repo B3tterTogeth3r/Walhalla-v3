@@ -23,11 +23,16 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.BaseAdView;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.VideoController;
 import com.google.android.gms.common.internal.Preconditions;
 
 import de.b3ttertogeth3r.walhalla.R;
 
+/**
+ * @author B3tterTogeth3r
+ * @version 1.0
+ * @see com.google.android.gms.ads.AdView
+ * @since 3.1
+ */
 public class AdView extends BaseAdView {
     private static final String TAG = "AdView";
 
@@ -58,8 +63,9 @@ public class AdView extends BaseAdView {
         design(context, AdSize.BANNER);
     }
 
+    @Override
     @NonNull
-    public final VideoController zza() {
-        return this.zza.zzf();
+    public String toString() {
+        return TAG;
     }
 }

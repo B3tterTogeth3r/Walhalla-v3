@@ -17,11 +17,14 @@ package de.b3ttertogeth3r.walhalla.fragment.common;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 import de.b3ttertogeth3r.walhalla.design.AdView;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
@@ -35,6 +38,11 @@ public class AboutUs extends Fragment {
     private LinearLayout view;
 
     @Override
+    public String analyticsProperties() {
+        return TAG;
+    }
+
+    @Override
     public void start() {
         String data = Firebase.remoteConfig().getString(RemoteConfig.ABOUT_US);
         new FormatJSON(data)
@@ -43,23 +51,9 @@ public class AboutUs extends Fragment {
                 .start();
     }
 
-    private void fillView(ArrayList<Paragraph<Text>> result) {
-        if(result == null || result.isEmpty() || view == null){
-            return;
-        }
-        for (Paragraph<Text> l : result) {
-            de.b3ttertogeth3r.walhalla.design.LinearLayout layout = new de.b3ttertogeth3r.walhalla.design.LinearLayout(requireContext());
-            for(Text t : l){
-                layout.addView(t.getView(requireActivity()));
-            }
-            view.addView(layout);
-            view.addView(new AdView(requireContext()));
-        }
-    }
-
     @Override
-    public String analyticsProperties() {
-        return TAG;
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 
     @Override
@@ -70,5 +64,19 @@ public class AboutUs extends Fragment {
     @Override
     public void createView(@NonNull LinearLayout view) {
         this.view = view;
+    }
+
+    private void fillView(ArrayList<Paragraph<Text>> result) {
+        if (result == null || result.isEmpty() || view == null) {
+            return;
+        }
+        for (Paragraph<Text> l : result) {
+            de.b3ttertogeth3r.walhalla.design.LinearLayout layout = new de.b3ttertogeth3r.walhalla.design.LinearLayout(requireContext());
+            for (Text t : l) {
+                layout.addView(t.getView(requireActivity()));
+            }
+            view.addView(layout);
+            view.addView(new AdView(requireContext()));
+        }
     }
 }

@@ -19,13 +19,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.ads.AdSize;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 import de.b3ttertogeth3r.walhalla.design.AdView;
 import de.b3ttertogeth3r.walhalla.design.Button;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
@@ -36,12 +38,22 @@ import de.b3ttertogeth3r.walhalla.object.News;
 
 public class NewsFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "News";
+    private final Visibility visibility;
     private IFirestoreDownload download;
     private LinearLayout newsLayout;
     private ArrayList<News> newsList = new ArrayList<>();
     private int position, padding;
     private int max_position = 0;
     private Button previous, next;
+
+
+    public NewsFragment(Visibility visibility) {
+        this.visibility = visibility;
+    }
+
+    public NewsFragment() {
+        visibility = Visibility.PUBLIC;
+    }
 
     @Override
     public void constructor() {
@@ -55,7 +67,7 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void start() {
-        download.news(Visibility.PUBLIC)
+        download.news(visibility)
                 .setOnSuccessListener(result -> {
                     newsList = result;
                     if (result != null) {
@@ -125,6 +137,11 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
         previous.setOnClickListener(this);
         next.setOnClickListener(this);
         //loadEntry(position);
+    }
+
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 
     private void loadEntry(int number) {

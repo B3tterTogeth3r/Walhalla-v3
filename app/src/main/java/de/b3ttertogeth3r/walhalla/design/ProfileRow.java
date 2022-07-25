@@ -26,7 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Touch;
 
 public class ProfileRow extends RelativeLayout {
     private static final String TAG = "ProfileRow";

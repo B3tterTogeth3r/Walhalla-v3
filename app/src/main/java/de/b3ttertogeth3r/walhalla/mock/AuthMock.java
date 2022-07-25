@@ -19,10 +19,11 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import de.b3ttertogeth3r.walhalla.App;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
@@ -115,7 +116,17 @@ public class AuthMock implements IAuth, IInit {
     }
 
     @Override
-    public boolean init(Context context) {
+    public void addAuthStateListener(FirebaseAuth.AuthStateListener authStateListener) {
+
+    }
+
+    @Override
+    public void removeAuthListener(FirebaseAuth.AuthStateListener authStateListener) {
+
+    }
+
+    @Override
+    public boolean init(Context context, boolean isEmulator) {
         return false;
     }
 }

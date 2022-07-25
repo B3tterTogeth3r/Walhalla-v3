@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +35,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import de.b3ttertogeth3r.walhalla.design.SideNav;
 import de.b3ttertogeth3r.walhalla.design.Toast;
@@ -50,7 +53,8 @@ import de.b3ttertogeth3r.walhalla.object.File;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.ProgressBarAnimation;
 
-public class MainActivity extends AppCompatActivity implements LoadingCircle, ISideNav, OpenExternal, HideKeyBoard {
+public class MainActivity extends AppCompatActivity implements LoadingCircle, ISideNav, OpenExternal,
+        HideKeyBoard, FirebaseAuth.AuthStateListener {
     private static final String TAG = "MainActivity";
     public static LoadingCircle loadingInterface;
     public static OpenExternal openExternal;
@@ -60,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
     private FragmentManager fragmentManager;
     private boolean doubleBackToExit = false;
     private DrawerLayout drawerLayout;
+    private FirebaseAuth.AuthStateListener authStateListener;
 
     public void hide() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -71,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
         super.onCreate(savedInstanceState);
         loadingInterface = this;
         hideKeyBoard = this;
+        authStateListener = this;
+        Firebase.authentication().addAuthStateListener(authStateListener);
         loadingCircle = findViewById(R.id.progressBarHolder);
         loadingAnimation = new ProgressBarAnimation(loadingCircle, 0, 20);
         fragmentManager = getSupportFragmentManager();
@@ -98,6 +105,13 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
         if (savedInstanceState == null) {
             SideNav.changePage(R.string.menu_home, fragmentManager.beginTransaction());
         }
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Firebase.authentication().removeAuthListener(authStateListener);
     }
 
     @Override
@@ -313,6 +327,15 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
         } else {
             Toast.makeToast(getApplicationContext(), "Image couldn't be opened. Try again later").show();
             Log.e(TAG, "Image couldn't be opened.");
+        }
+    }
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        try {
+            SideNav.reload.reload();
+        } catch (Exception e) {
+            Log.e(TAG, "onAuthStateChanged: ", e);
         }
     }
 }

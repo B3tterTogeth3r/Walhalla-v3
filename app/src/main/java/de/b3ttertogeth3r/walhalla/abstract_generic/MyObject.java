@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -12,15 +12,21 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.abstract_classes;
+package de.b3ttertogeth3r.walhalla.abstract_generic;
 
 import com.google.firebase.Timestamp;
 
 public abstract class MyObject {
-    /** time the sub-object is created */
+    /**
+     * time the sub-object is created
+     */
     protected Timestamp time;
 
-    public abstract Timestamp getTime();
+    public Timestamp getTime() {
+        return time;
+    }
 
-    public abstract void setTime(Timestamp time);
+    public void setTime(Timestamp time) {
+        this.time = time;
+    }
 }

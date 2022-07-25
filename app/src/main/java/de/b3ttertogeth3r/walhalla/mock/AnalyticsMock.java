@@ -64,7 +64,7 @@ public class AnalyticsMock implements IAnalytics, IInit {
     }
 
     @Override
-    public boolean init(Context context) {
+    public boolean init(Context context, boolean isEmulator) {
         return true;
     }
 }

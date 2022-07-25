@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -15,7 +15,7 @@
 package de.b3ttertogeth3r.walhalla.design;
 
 import android.content.Context;
-import android.util.TypedValue;
+import android.util.AttributeSet;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -32,12 +32,12 @@ public class TableRow extends android.widget.TableRow {
         design(context);
     }
 
+    public TableRow(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        design(context);
+    }
+
     private void design(Context context) {
-        int padding = (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                16f,
-                context.getResources().getDisplayMetrics()
-        );
         LayoutParams params = new LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -63,5 +63,15 @@ public class TableRow extends android.widget.TableRow {
             addView(new de.b3ttertogeth3r.walhalla.design.Text(context, s));
 
         }
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        String string = super.toString();
+        if (getChildCount() != 0) {
+            string = "TableRow Children: " + getChildCount();
+        }
+        return string;
     }
 }

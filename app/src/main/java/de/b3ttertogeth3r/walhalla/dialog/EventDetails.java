@@ -30,18 +30,21 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.text.SimpleDateFormat;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Dialog;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
-import de.b3ttertogeth3r.walhalla.design.DEvent;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Dialog;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Touch;
+import de.b3ttertogeth3r.walhalla.design.Event;
 import de.b3ttertogeth3r.walhalla.design.Text;
 import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.design.Toast;
@@ -53,7 +56,7 @@ import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.object.Chore;
-import de.b3ttertogeth3r.walhalla.object.Event;
+import de.b3ttertogeth3r.walhalla.object.Location;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
@@ -66,13 +69,13 @@ import de.b3ttertogeth3r.walhalla.util.Values;
  */
 public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
     private static final String TAG = "EventDetails";
-    private final Event event;
+    private final de.b3ttertogeth3r.walhalla.object.Event event;
     private final IAuth auth;
     private final IFirestoreDownload download;
     private RelativeLayout view;
     private TableLayout choresTable;
 
-    public EventDetails(DialogSize size, Event event) {
+    public EventDetails(DialogSize size, de.b3ttertogeth3r.walhalla.object.Event event) {
         super(size);
         this.event = event;
         this.download = Firebase.firestoreDownload();
@@ -80,7 +83,7 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
     }
 
     @NonNull
-    public static EventDetails display(FragmentManager fragmentManager, DialogSize size, Event event) throws CreateDialogException {
+    public static EventDetails display(FragmentManager fragmentManager, DialogSize size, de.b3ttertogeth3r.walhalla.object.Event event) throws CreateDialogException {
         try {
             EventDetails dialog = new EventDetails(size, event);
             dialog.show(fragmentManager, TAG);
@@ -116,11 +119,13 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
         }
 
         // map
-        // FIXME: 30.06.22 android.view.InflateException: Binary XML file line #180 in de.b3ttertogeth3r.walhalla:layout/event_detail: Binary XML file line #180 in de.b3ttertogeth3r.walhalla:layout/event_detail: Error inflating class fragment
-        SupportMapFragment mapFragment = (SupportMapFragment) requireActivity().getSupportFragmentManager()
-                .findFragmentById(R.id.maps_fragment);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
+        // TODO: 21.07.22 map is not displayed. WHY????
+        //https://stackoverflow.com/questions/16551458/android-google-maps-not-displaying
+        MapView map = view.findViewById(R.id.maps_fragment);
+        if (map != null) {
+            map.setVisibility(View.GONE);
+            map.getMapAsync(this);
+            map.setVisibility(View.VISIBLE);
         } else {
             Log.e(TAG, "createDialog: creating maps fragment and api didn't work.");
         }
@@ -197,24 +202,32 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
                     if (result != null && !result.isEmpty()) {
                         for (Chore c : result) {
                             choresTable.addView(
-                                    DEvent.create(requireActivity(), null, c)
+                                    Event.create(requireActivity(), null, c, true)
                                             .addTouchListener(new Touch() {
 
                                             }).show());
                         }
                     }
                     choresTable.invalidate();
-                });
+                }).setOnFailListener(e -> Log.e(TAG, "onFailureListener: ", e));
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        googleMap.setBuildingsEnabled(false);
+        try {
+            MapsInitializer.initialize(requireActivity());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         try {
             download.eventLocation(event.getId())
                     .setOnSuccessListener(location -> {
                         if (location == null) {
                             // TODO: 09.06.22 set result to the home a default location
-                            return;
+                            location = new Location("K.St.V. Walhalla", new GeoPoint(49.784420, 9.924580));
                         }
                         LatLng latLng = new LatLng(location.getCoordinates().getLatitude(),
                                 location.getCoordinates().getLongitude());

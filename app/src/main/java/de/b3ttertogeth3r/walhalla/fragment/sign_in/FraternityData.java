@@ -21,13 +21,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Touch;
 import de.b3ttertogeth3r.walhalla.design.Button;
 import de.b3ttertogeth3r.walhalla.design.ProfileRow;
 import de.b3ttertogeth3r.walhalla.design.Title;
@@ -60,6 +63,7 @@ public class FraternityData extends Fragment implements IOnBackPressed {
     private FragmentManager fm;
     private ProfileRow joined, rank, nickname;
 
+
     /**
      * Fragment to get the data the fraternity needs.
      *
@@ -70,6 +74,28 @@ public class FraternityData extends Fragment implements IOnBackPressed {
     public FraternityData(Person person, ArrayList<Address> addressList) {
         this.person = person;
         this.addressList = addressList;
+    }
+
+    @Override
+    public String analyticsProperties() {
+        return TAG;
+    }
+
+    @Override
+    public void toolbarContent() {
+        toolbar.setTitle("Verbindungsdaten");
+        toolbar.getMenu().clear();
+        toolbar.inflateMenu(R.menu.info);
+        toolbar.setOnMenuItemClickListener(item -> {
+            // TODO: 05.07.22 open dialog with description which data is needed and why
+            try {
+                InfoDialog dialog = new InfoDialog("I am an info text");
+                dialog.show(fm, TAG);
+            } catch (Exception e) {
+                Log.e(TAG, "toolbarContent: creating info dialog did not work", e);
+            }
+            return false;
+        });
     }
 
     @Override
@@ -212,23 +238,6 @@ public class FraternityData extends Fragment implements IOnBackPressed {
     }
 
     @Override
-    public void toolbarContent() {
-        toolbar.setTitle("Verbindungsdaten");
-        toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.info);
-        toolbar.setOnMenuItemClickListener(item -> {
-            // TODO: 05.07.22 open dialog with description which data is needed and why
-            try {
-                InfoDialog dialog = new InfoDialog("I am an info text");
-                dialog.show(fm, TAG);
-            } catch (Exception e) {
-                Log.e(TAG, "toolbarContent: creating info dialog did not work", e);
-            }
-            return false;
-        });
-    }
-
-    @Override
     public void viewCreated() {
         try {
             joined.setContent(String.valueOf(person.getJoined()));
@@ -239,8 +248,8 @@ public class FraternityData extends Fragment implements IOnBackPressed {
     }
 
     @Override
-    public String analyticsProperties() {
-        return TAG;
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 
     @Override

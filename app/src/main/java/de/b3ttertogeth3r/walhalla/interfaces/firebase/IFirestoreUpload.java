@@ -18,7 +18,7 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.object.Address;
 import de.b3ttertogeth3r.walhalla.object.Event;
 import de.b3ttertogeth3r.walhalla.object.Person;

@@ -21,7 +21,7 @@ import androidx.annotation.NonNull;
 import com.google.firebase.Timestamp;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.MyObject;
+import de.b3ttertogeth3r.walhalla.abstract_generic.MyObject;
 import de.b3ttertogeth3r.walhalla.design.TableRow;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
@@ -61,10 +61,10 @@ public class DrinkMovement extends MyObject implements Validate {
     /**
      * constructor for new created recipes
      *
-     * @param name Name of the drink
+     * @param name   Name of the drink
      * @param amount Amount of bottles the user consumed
-     * @param price Price of one bottle
-     * @param time Time the recipe was created
+     * @param price  Price of one bottle
+     * @param time   Time the recipe was created
      */
     public DrinkMovement(String name, int amount, float price, Timestamp time) {
         this.name = name;
@@ -95,7 +95,7 @@ public class DrinkMovement extends MyObject implements Validate {
         this.id = id;
     }
 
-    public String getName() {
+    public String getViewString() {
         return name;
     }
 
@@ -117,16 +117,6 @@ public class DrinkMovement extends MyObject implements Validate {
 
     public void setPrice(float price) {
         this.price = price;
-    }
-
-    @Override
-    public Timestamp getTime() {
-        return time;
-    }
-
-    @Override
-    public void setTime(Timestamp time) {
-        this.time = time;
     }
 
     @Override

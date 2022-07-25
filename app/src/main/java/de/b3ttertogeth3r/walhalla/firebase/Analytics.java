@@ -63,7 +63,7 @@ public class Analytics implements IInit, IAnalytics {
     }
 
     @Override
-    public boolean init(Context context) {
+    public boolean init(Context context, boolean isEmulator) {
         try {
             analytics = FirebaseAnalytics.getInstance(context);
             iAnalytics = this;

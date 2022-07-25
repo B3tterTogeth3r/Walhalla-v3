@@ -25,9 +25,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.ArrayList;
@@ -35,8 +37,8 @@ import java.util.Calendar;
 
 import de.b3ttertogeth3r.walhalla.MainActivity;
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Touch;
 import de.b3ttertogeth3r.walhalla.design.Button;
 import de.b3ttertogeth3r.walhalla.design.ProfileRow;
 import de.b3ttertogeth3r.walhalla.design.Title;
@@ -58,10 +60,38 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
     private ProfileRow firstName, lastName, address, mobile, birthday, major;
     private FragmentManager fm;
 
+
     public PersonalData(String email) {
         this.person = new Person();
         this.person.setMail(email);
         this.addressList = new ArrayList<>();
+    }
+
+    @Override
+    public String analyticsProperties() {
+        return TAG;
+    }
+
+    @Override
+    public void start() {
+        MainActivity.hideKeyBoard.hide();
+    }
+
+    @Override
+    public void toolbarContent() {
+        toolbar.setTitle("Persönliche Daten");
+        toolbar.getMenu().clear();
+        toolbar.inflateMenu(R.menu.info);
+        toolbar.setOnMenuItemClickListener(item -> {
+            // TODO: 05.07.22 open dialog with description which data is needed and why
+            try {
+                InfoDialog dialog = new InfoDialog("I am an info text");
+                dialog.show(fm, TAG);
+            } catch (Exception e) {
+                Log.e(TAG, "toolbarContent: creating info dialog did not work", e);
+            }
+            return false;
+        });
     }
 
     @Override
@@ -284,23 +314,6 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
     }
 
     @Override
-    public void toolbarContent() {
-        toolbar.setTitle("Persönliche Daten");
-        toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.info);
-        toolbar.setOnMenuItemClickListener(item -> {
-            // TODO: 05.07.22 open dialog with description which data is needed and why
-            try {
-                InfoDialog dialog = new InfoDialog("I am an info text");
-                dialog.show(fm, TAG);
-            } catch (Exception e) {
-                Log.e(TAG, "toolbarContent: creating info dialog did not work", e);
-            }
-            return false;
-        });
-    }
-
-    @Override
     public void viewCreated() {
         if (addressList.size() != 0) {
             address.setContent(addressList.get(0).toString());
@@ -322,13 +335,8 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
     }
 
     @Override
-    public String analyticsProperties() {
-        return TAG;
-    }
-
-    @Override
-    public void start() {
-        MainActivity.hideKeyBoard.hide();
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 
     @Override

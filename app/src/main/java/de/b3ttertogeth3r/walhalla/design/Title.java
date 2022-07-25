@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -23,13 +23,15 @@ import androidx.annotation.NonNull;
 import de.b3ttertogeth3r.walhalla.R;
 
 public class Title extends androidx.appcompat.widget.AppCompatTextView {
+    private static final String TAG = "Title";
+    private String text;
 
-    public Title (Context context) {
+    public Title(Context context) {
         super(context);
         design(context);
     }
 
-    private void design (@NonNull Context context) {
+    private void design(@NonNull Context context) {
         int padding = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 8f,
@@ -50,24 +52,45 @@ public class Title extends androidx.appcompat.widget.AppCompatTextView {
         setLayoutParams(params);
     }
 
-    public Title (Context context, String title) {
+    public Title(Context context, String title) {
         super(context);
         design(context);
         setText(title);
+        this.text = title;
     }
 
-    public Title setTitle (char text) {
+    public Title(Context context, int resId) {
+        super(context);
+        design(context);
+        setText(resId);
+        this.text = context.getString(resId);
+    }
+
+    public Title setTitle(char text) {
         this.setText(text);
+        this.text = Character.toString(text);
         return this;
     }
 
-    public Title setTile (int resid) {
+    public Title setTile(int resid) {
         setText(resid);
+        this.text = "" + resid;
         return this;
     }
 
-    public Title setTitle (String text) {
+    public Title setTitle(String text) {
         setText(text);
+        this.text = text;
         return this;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        String string = super.toString();
+        if (text != null && !text.isEmpty()) {
+            string = "Title: " + text;
+        }
+        return string;
     }
 }

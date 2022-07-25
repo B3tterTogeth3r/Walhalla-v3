@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -17,8 +17,11 @@ package de.b3ttertogeth3r.walhalla.fragment.board;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import com.google.firebase.auth.FirebaseAuth;
+
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 
 public class Account extends Fragment {
     private static final String TAG = "Account";
@@ -29,22 +32,27 @@ public class Account extends Fragment {
     }
 
     @Override
-    public String analyticsProperties () {
+    public String analyticsProperties() {
         return TAG;
     }
 
     @Override
-    public void stop () {
+    public void stop() {
 
     }
 
     @Override
-    public void viewCreated () {
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
+    }
+
+    @Override
+    public void viewCreated() {
 
     }
 
     @Override
-    public void toolbarContent () {
+    public void toolbarContent() {
 
     }
 

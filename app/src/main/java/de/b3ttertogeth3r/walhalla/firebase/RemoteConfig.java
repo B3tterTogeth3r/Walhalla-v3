@@ -86,7 +86,7 @@ public class RemoteConfig implements IInit, IRemoteConfig {
     }
 
     @Override
-    public boolean init(Context context) {
+    public boolean init(Context context, boolean isEmulator) {
         remoteConfig = FirebaseRemoteConfig.getInstance();
         FirebaseRemoteConfigSettings configSettings = new FirebaseRemoteConfigSettings.Builder()
                 .setMinimumFetchIntervalInSeconds(3600)

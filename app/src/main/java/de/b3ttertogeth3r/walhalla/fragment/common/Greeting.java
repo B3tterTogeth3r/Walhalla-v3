@@ -24,12 +24,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.InvalidObjectException;
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 import de.b3ttertogeth3r.walhalla.design.AdView;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
@@ -170,5 +173,10 @@ public class Greeting extends Fragment {
     @Override
     public void createView(@NonNull LinearLayout view) {
         this.view = view;
+    }
+
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 }

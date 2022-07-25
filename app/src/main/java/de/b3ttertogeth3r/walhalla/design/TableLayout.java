@@ -17,62 +17,52 @@ package de.b3ttertogeth3r.walhalla.design;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import de.b3ttertogeth3r.walhalla.R;
 
-public class LinearLayout extends android.widget.LinearLayout {
-    private static final String TAG = "LinearLayout";
+public class TableLayout extends android.widget.TableLayout {
+    private static final String TAG = "TableLayout";
+    private final Context context;
 
-    public LinearLayout(@NonNull Context context) {
+    public TableLayout(Context context) {
         super(context);
-        design(context);
+        this.context = context;
+        design();
     }
 
-    private void design(@NonNull Context context) {
+    private void design() {
+        setId(R.id.table);
+
         int padding = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
-                4f,
+                8f,
                 context.getResources().getDisplayMetrics()
         );
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(/*left*/padding,
-                /*top*/padding,
-                /*right*/(padding),
-                /*bottom*/padding);
+        android.widget.TableLayout.LayoutParams params = new android.widget.TableLayout.LayoutParams(
+                android.widget.TableLayout.LayoutParams.MATCH_PARENT,
+                android.widget.TableLayout.LayoutParams.WRAP_CONTENT);
         setPadding(/*left*/padding,
                 /*top*/padding,
                 /*right*/padding,
                 /*bottom*/padding);
         setLayoutParams(params);
         setOrientation(VERTICAL);
-        setBackground(ContextCompat.getDrawable(context, R.drawable.border_round));
     }
 
-    public LinearLayout(Context context, @Nullable AttributeSet attrs) {
+    public TableLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        design(context);
-    }
-
-    public LinearLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        design(context);
-    }
-
-    public LinearLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        design(context);
+        this.context = context;
+        design();
     }
 
     @NonNull
     @Override
     public String toString() {
-        return "Design/" + TAG + ": " + getChildCount();
+        if (getChildCount() != 0) {
+            return TAG + ": " + getChildCount();
+        }
+        return super.toString();
     }
 }

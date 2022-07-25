@@ -91,7 +91,7 @@ public class Cache implements IInit, CacheData {
     }
 
     @Override
-    public boolean init(Context context) {
+    public boolean init(Context context, boolean isEmulator) {
         try {
             this.context = context;
             Cache.SP = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);

@@ -20,7 +20,7 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.storage.FirebaseStorage;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageUpload;
@@ -34,8 +34,11 @@ public class Storage implements IInit {
     private FirebaseStorage storage;
 
     @Override
-    public boolean init(Context context) {
+    public boolean init(Context context, boolean isEmulator) {
         storage = FirebaseStorage.getInstance();
+        if (isEmulator) {
+            storage.useEmulator("10.0.2.2", 9199);
+        }
         download = new Download();
         upload = new Upload();
         return true;

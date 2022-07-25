@@ -30,12 +30,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.firestore.DocumentReference;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 import de.b3ttertogeth3r.walhalla.design.Image;
 import de.b3ttertogeth3r.walhalla.design.SideNav;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
@@ -224,22 +226,12 @@ public class Home extends Fragment implements View.OnClickListener {
             login.addView(text(R.string.menu_login));
         } else { // A user is signed in
             // A icon
+            login.setId(R.id.logout);
             login.addView(image(AppCompatResources.getDrawable(requireContext(),
                             R.drawable.ic_exit),
                     false));
             // Ad description
             login.addView(text(R.string.menu_logout));
-            // refresh site
-            try {
-                login.setId(R.id.logout);
-                auth.signOut();
-                getParentFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, this)
-                        .commit();
-            } catch (Exception e) {
-                Log.e(TAG, "refreshing fragment did not work", e);
-            }
         }
         frame.addView(login);
         // endregion
@@ -258,6 +250,11 @@ public class Home extends Fragment implements View.OnClickListener {
             login.setOnClickListener(this);
         } catch (Exception ignored) {
         }
+    }
+
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 
     // region design params

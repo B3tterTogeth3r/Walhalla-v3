@@ -18,7 +18,7 @@ import android.content.Context;
 
 import com.google.firebase.Timestamp;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.MyObject;
+import de.b3ttertogeth3r.walhalla.abstract_generic.MyObject;
 import de.b3ttertogeth3r.walhalla.design.LinearLayout;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
@@ -99,22 +99,12 @@ public class News extends MyObject implements Validate {
         return layout;
     }
 
-    @Override
-    public Timestamp getTime() {
-        return time;
-    }
-
     public String getId() {
         return id;
     }
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    @Override
-    public void setTime(Timestamp time) {
-        this.time = time;
     }
 
     public String getTitle() {

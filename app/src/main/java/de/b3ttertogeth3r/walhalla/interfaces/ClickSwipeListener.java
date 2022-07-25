@@ -16,7 +16,7 @@ package de.b3ttertogeth3r.walhalla.interfaces;
 
 import android.view.View;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Touch;
 
 /**
  * This class is to determine which motion was done on a view.

@@ -32,25 +32,24 @@ import com.google.firebase.Timestamp;
 import java.text.SimpleDateFormat;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Touch;
 import de.b3ttertogeth3r.walhalla.enums.Collar;
 import de.b3ttertogeth3r.walhalla.enums.Punctuality;
 import de.b3ttertogeth3r.walhalla.object.Chore;
-import de.b3ttertogeth3r.walhalla.object.Event;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
-public class DEvent {
+public class Event {
     private static final String TAG = "DEvent";
     private Timestamp timestamp;
     private TextView year, day, month, time, col, pun, description;
     private Title title;
     private RelativeLayout view;
-    private static DEvent dEvent;
+    private static Event dEvent;
 
-    private DEvent() {
+    private Event() {
     }
 
-    public DEvent(@NonNull Context context, @Nullable ViewGroup root) {
+    public Event(@NonNull Context context, @Nullable ViewGroup root) {
         LayoutInflater inflater = LayoutInflater.from(context);
         view = (RelativeLayout) inflater.inflate(R.layout.event_item, root);
         year = view.findViewById(R.id.item_event_year);
@@ -71,8 +70,8 @@ public class DEvent {
     }
 
     @NonNull
-    public static DEvent create(@NonNull FragmentActivity context, @Nullable ViewGroup root, @NonNull Event event) {
-        dEvent = new DEvent(context, root);
+    public static Event create(@NonNull FragmentActivity context, @Nullable ViewGroup root, @NonNull de.b3ttertogeth3r.walhalla.object.Event event) {
+        dEvent = new Event(context, root);
         dEvent.setTime(event.getTime());
         dEvent.setCol(event.getCollar());
         dEvent.setPun(event.getPunctuality());
@@ -82,11 +81,18 @@ public class DEvent {
     }
 
     @NonNull
-    public static DEvent create(@NonNull FragmentActivity context, @Nullable ViewGroup root, @NonNull Chore chore) {
-        dEvent = new DEvent(context, root);
+    public static Event create(@NonNull FragmentActivity context, @Nullable ViewGroup root, @NonNull Chore chore, boolean isEvent) {
+        dEvent = new Event(context, root);
         dEvent.setTime(chore.getTime());
         dEvent.setDescription(chore.getChore().toString());
-        dEvent.setTitle(chore.getPerson());
+        if (isEvent) {
+            dEvent.setTitle(chore.getPerson());
+        } else {
+            dEvent.setTitle(chore.getEvent());
+        }
+        if (chore.isDone()) {
+            dEvent.view.setAlpha(0.5f);
+        }
         dEvent.view.findViewById(R.id.item_event_time_layout).setVisibility(View.GONE);
         return dEvent;
     }
@@ -148,7 +154,7 @@ public class DEvent {
 
     @SuppressWarnings("rawtypes")
     @SuppressLint("ClickableViewAccessibility")
-    public DEvent addTouchListener(Touch touch) {
+    public Event addTouchListener(Touch touch) {
         if (dEvent != null && view != null) {
             view.setOnTouchListener(touch);
             return dEvent;

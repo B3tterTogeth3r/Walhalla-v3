@@ -12,10 +12,20 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.interfaces.firebase;
+package de.b3ttertogeth3r.walhalla.exception;
 
-import android.content.Context;
+public class SignInException extends Exception {
+    private static final String TAG = "SignInException";
 
-public interface IInit {
-    boolean init(Context context, boolean isEmulator);
+    public SignInException(String message) {
+        super(message);
+    }
+
+    public SignInException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public SignInException(Throwable cause) {
+        super(cause);
+    }
 }

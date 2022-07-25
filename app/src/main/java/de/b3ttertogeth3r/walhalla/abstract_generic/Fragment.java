@@ -12,7 +12,7 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.abstract_classes;
+package de.b3ttertogeth3r.walhalla.abstract_generic;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -27,29 +27,19 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.annotations.NotNull;
-import com.google.firebase.firestore.ListenerRegistration;
-
-import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
-import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.interfaces.IFragment;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAnalytics;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.ToastList;
 
-public abstract class Fragment extends androidx.fragment.app.Fragment implements FirebaseAuth.AuthStateListener, IFragment {
+public abstract class Fragment extends androidx.fragment.app.Fragment implements
+        FirebaseAuth.AuthStateListener, IFragment {
     private static final String TAG = "Fragment";
     private final IAnalytics analytics;
-    /**
-     * A list to collect all realtime listeners into the Firestore database.
-     *
-     * @see ListenerRegistration
-     * @see Firestore
-     * @since 1.0
-     */
-    public ArrayList<ListenerRegistration> registration;
+    private final FirebaseAuth.AuthStateListener authStateListener;
     /**
      * The top Toolbar of the whole application
      *
@@ -66,6 +56,8 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
 
     public Fragment() {
         analytics = Firebase.analytics();
+        authStateListener = this;
+        Firebase.authentication().addAuthStateListener(authStateListener);
         constructor();
     }
 
@@ -123,7 +115,6 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
         try {
             super.onStart();
             start();
-            registration = new ArrayList<>();
         } finally {
             analytics.screenChange(analyticsProperties());
         }
@@ -145,35 +136,33 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
     @Override
     public void onStop() {
         super.onStop();
+        toolbar.findViewById(R.id.custom_title).setVisibility(View.GONE);
+        toolbar.getMenu().clear();
+        toolbar.setTitle(R.string.app_name);
+        toolbar.setSubtitle("");
         stop();
-        try {
-            for (ListenerRegistration reg : registration) {
-                reg.remove();
-            }
-            registration.clear();
-        } catch (Exception e) {
-            Log.e(TAG, "Something went wrong while removing the snapshot listener",
-                    e);
-        } finally {
-            toolbar.findViewById(R.id.custom_title).setVisibility(View.GONE);
-            toolbar.getMenu().clear();
-            toolbar.setTitle(R.string.app_name);
-            toolbar.setSubtitle("");
-        }
+        Firebase.authentication().removeAuthListener(authStateListener);
     }
 
     /**
-     * this should reload the current fragment, if the users auth status changes. Every subclass
-     * should check, if the then signed in user is allowed to see the selected fragment. If not,
-     * navigate one up in the backstack.
+     * Reload the current fragment, if the auth status changes. Every subclass should check,
+     * if the then signed in user is allowed to see the selected fragment. If not, navigate one
+     * up in the backstack.
      *
      * @param firebaseAuth the auth status from firebase
      */
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        getParentFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, this)
-                .commit();
+        Log.i(TAG, "onAuthStateChanged: " + Firebase.authentication().isSignIn());
+        // TODO: 25.07.22 reload fragment
+        try {
+            authStatusChanged(firebaseAuth)
+                    .getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragment_container, this)
+                    .commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

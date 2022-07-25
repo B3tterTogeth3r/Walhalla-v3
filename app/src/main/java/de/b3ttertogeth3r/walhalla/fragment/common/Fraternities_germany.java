@@ -17,11 +17,14 @@ package de.b3ttertogeth3r.walhalla.fragment.common;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 import de.b3ttertogeth3r.walhalla.design.AdView;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
@@ -33,6 +36,11 @@ import de.b3ttertogeth3r.walhalla.util.Paragraph;
 public class Fraternities_germany extends Fragment {
     private static final String TAG = "Fraternities_germany";
     private LinearLayout view;
+
+    @Override
+    public String analyticsProperties() {
+        return TAG;
+    }
 
     @Override
     public void start() {
@@ -57,11 +65,6 @@ public class Fraternities_germany extends Fragment {
     }
 
     @Override
-    public String analyticsProperties() {
-        return TAG;
-    }
-
-    @Override
     public void toolbarContent() {
         toolbar.setTitle(R.string.menu_more_germany_frat);
     }
@@ -69,5 +72,10 @@ public class Fraternities_germany extends Fragment {
     @Override
     public void createView(@NonNull LinearLayout view) {
         this.view = view;
+    }
+
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 }

@@ -15,13 +15,13 @@
 package de.b3ttertogeth3r.walhalla.interfaces.loader;
 
 /**
- * Extracted Interface from {@link de.b3ttertogeth3r.walhalla.abstract_classes.Loader Loader}
+ * Extracted Interface from {@link de.b3ttertogeth3r.walhalla.abstract_generic.Loader Loader}
  *
  * @param <T> Type of Loader
  * @author B3tterTogeth3r
  * @version 1.0
+ * @see de.b3ttertogeth3r.walhalla.abstract_generic.Loader Loader
  * @since 2.0
- * @see de.b3ttertogeth3r.walhalla.abstract_classes.Loader Loader
  */
 public interface OnFailureListener<T> {
     /**

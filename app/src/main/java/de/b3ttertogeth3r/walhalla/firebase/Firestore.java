@@ -23,13 +23,13 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Map;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
@@ -62,9 +62,17 @@ public class Firestore implements IInit {
     public Firestore() {
     }
 
-    public boolean init(Context context) {
+    public boolean init(Context context, boolean isEmulator) {
         try {
             FBFS = FirebaseFirestore.getInstance();
+            if (isEmulator) {
+                FBFS.useEmulator("10.0.2.2", 8080);
+
+                FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                        .setPersistenceEnabled(false)
+                        .build();
+                FBFS.setFirestoreSettings(settings);
+            }
             download = new Download();
             upload = new Upload();
             //createSemesters();
@@ -127,31 +135,6 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<ArrayList<Person>> personList() {
-            Loader<ArrayList<Person>> loader = new Loader<>();
-            FBFS.collection("Person")
-                    .get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                        ArrayList<Person> personList = new ArrayList<>();
-                        if (queryDocumentSnapshots.isEmpty()) {
-                            loader.done(new NoDataException("No persons downloaded"));
-                            return;
-                        }
-                        for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
-                            try {
-                                Person p = ds.toObject(Person.class);
-                                personList.add(p);
-                            } catch (Exception e) {
-                                loader.done(e);
-                                return;
-                            }
-                        }
-                        loader.done(personList);
-                    }).addOnFailureListener(loader::done);
-            return loader;
-        }
-
-        @Override
         public Loader<ArrayList<BoardMember>> board(Rank rank, String semesterID) {
             Loader<ArrayList<BoardMember>> loader = new Loader<>();
             ArrayList<BoardMember> memberList = new ArrayList<>();
@@ -159,16 +142,16 @@ public class Firestore implements IInit {
         }
 
         @Override
+        public Loader<BoardMember> getSemesterBoardOne(int semesterId, @NonNull Charge charge) {
+            Loader<BoardMember> loader = new Loader<>();
+            return loader.done();
+        }
+
+        @Override
         public Loader<ArrayList<Location>> locationList() {
             Loader<ArrayList<Location>> loader = new Loader<>();
             ArrayList<Location> locationList = new ArrayList<>();
             return loader.done(locationList);
-        }
-
-        @Override
-        public Loader<Map<Integer, ArrayList<BoardMember>>> pastChargen(String personID) {
-            Loader<Map<Integer, ArrayList<BoardMember>>> loader = new Loader<>();
-            return loader.done();
         }
 
         @Override
@@ -188,20 +171,6 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<ArrayList<Chore>> personUndoneChores(String personID) {
-            Loader<ArrayList<Chore>> loader = new Loader<>();
-            ArrayList<Chore> choreList = new ArrayList<>();
-            return loader.done(choreList);
-        }
-
-        @Override
-        public Loader<ArrayList<Chore>> personAllChores(String personID) {
-            Loader<ArrayList<Chore>> loader = new Loader<>();
-            ArrayList<Chore> choreList = new ArrayList<>();
-            return loader.done(choreList);
-        }
-
-        @Override
         public Loader<ArrayList<Chore>> eventChores(String eventId) {
             Loader<ArrayList<Chore>> loader = new Loader<>();
             ArrayList<Chore> choreList = new ArrayList<>();
@@ -218,6 +187,12 @@ public class Firestore implements IInit {
         @Override
         public Loader<Location> eventLocation(String eventId) {
             Loader<Location> loader = new Loader<>();
+            return loader.done();
+        }
+
+        @Override
+        public Loader<Event> nextEvent() {
+            Loader<Event> loader = new Loader<>();
             return loader.done();
         }
 
@@ -257,20 +232,9 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public ListenerRegistration listenPersonBalance(String uid, Loader<Account> loader) {
-            return null;
-        }
-
-        @Override
-        public Loader<ArrayList<Movement>> getPersonMovements(String uid) {
-            Loader<ArrayList<Movement>> loader = new Loader<>();
-            ArrayList<Movement> movementList = new ArrayList<>();
-            return loader.done(movementList);
-        }
-
-        @Override
-        public ListenerRegistration semesterAccount(String semesterID, @NonNull Loader<Account> loader) {
-            return null;
+        public Loader<Account> semesterAccount(String semesterID) {
+            Loader<Account> loader = new Loader<>();
+            return loader.done();
         }
 
         @Override
@@ -281,19 +245,66 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, String semester) {
-            return null;
-        }
-
-        @Override
-        public Loader<Event> nextEvent() {
-            Loader<Event> loader = new Loader<>();
-            return loader.done();
+        public Loader<ArrayList<Person>> personList() {
+            Loader<ArrayList<Person>> loader = new Loader<>();
+            FBFS.collection("Person")
+                    .get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        ArrayList<Person> personList = new ArrayList<>();
+                        if (queryDocumentSnapshots.isEmpty()) {
+                            loader.done(new NoDataException("No persons downloaded"));
+                            return;
+                        }
+                        for (DocumentSnapshot ds : queryDocumentSnapshots.getDocuments()) {
+                            try {
+                                Person p = ds.toObject(Person.class);
+                                personList.add(p);
+                            } catch (Exception e) {
+                                loader.done(e);
+                                return;
+                            }
+                        }
+                        loader.done(personList);
+                    }).addOnFailureListener(loader::done);
+            return loader;
         }
 
         @Override
         public Loader<Person> person(String uid) {
             return null;
+        }
+
+        @Override
+        public Loader<ArrayList<Chore>> personChores(String uid, boolean showDoneChores) {
+            Loader<ArrayList<Chore>> loader = new Loader<>();
+            ArrayList<Chore> choreList = new ArrayList<>();
+            return loader.done(choreList);
+        }
+
+        @Override
+        public Loader<Map<Integer, ArrayList<BoardMember>>> pastChargen(String personID) {
+            Loader<Map<Integer, ArrayList<BoardMember>>> loader = new Loader<>();
+            return loader.done();
+        }
+
+        @Override
+        public Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester) {
+            Loader<ArrayList<DrinkMovement>> loader = new Loader<>();
+            ArrayList<DrinkMovement> movementList = new ArrayList<>();
+            return loader.done(movementList);
+        }
+
+        @Override
+        public Loader<Account> listenPersonBalance(String uid) {
+            Loader<Account> loader = new Loader<>();
+            return loader.done();
+        }
+
+        @Override
+        public Loader<ArrayList<Movement>> getPersonMovements(String uid) {
+            Loader<ArrayList<Movement>> loader = new Loader<>();
+            ArrayList<Movement> movementList = new ArrayList<>();
+            return loader.done(movementList);
         }
 
         @Override
@@ -306,12 +317,6 @@ public class Firestore implements IInit {
         @Override
         public Loader<File> personImage(String uid) {
             Loader<File> loader = new Loader<>();
-            return loader.done();
-        }
-
-        @Override
-        public Loader<BoardMember> getSemesterBoardOne(int semesterId, @NonNull Charge charge) {
-            Loader<BoardMember> loader = new Loader<>();
             return loader.done();
         }
     }

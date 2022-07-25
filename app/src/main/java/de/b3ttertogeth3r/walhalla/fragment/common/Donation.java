@@ -20,9 +20,12 @@ import android.content.Context;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 import de.b3ttertogeth3r.walhalla.design.Button;
 import de.b3ttertogeth3r.walhalla.design.Text;
 import de.b3ttertogeth3r.walhalla.design.Toast;
@@ -31,17 +34,17 @@ public class Donation extends Fragment {
     private static final String TAG = "Donation";
 
     @Override
-    public String analyticsProperties () {
+    public String analyticsProperties() {
         return TAG;
     }
 
     @Override
-    public void toolbarContent () {
+    public void toolbarContent() {
         toolbar.setTitle(TAG);
     }
 
     @Override
-    public void createView (@NonNull LinearLayout view) {
+    public void createView(@NonNull LinearLayout view) {
         // TODO: 22.06.22 nothing is displayed. WHY????
         ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         de.b3ttertogeth3r.walhalla.design.LinearLayout l1 = new de.b3ttertogeth3r.walhalla.design.LinearLayout(requireActivity());
@@ -102,5 +105,10 @@ public class Donation extends Fragment {
         view.addView(l3);
         view.addView(l4);
         view.invalidate();
+    }
+
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 }

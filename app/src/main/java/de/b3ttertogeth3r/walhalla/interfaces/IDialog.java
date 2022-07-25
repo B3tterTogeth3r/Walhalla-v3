@@ -28,7 +28,7 @@ public interface IDialog<T> {
      * the {@link DialogInterface#BUTTON_POSITIVE PositiveButton}
      *
      * @return default: null<br>if overridden: The value the background Fragment needs
-     * @implNote only available if {@link de.b3ttertogeth3r.walhalla.abstract_classes.Dialog#loader Dialog#loader} is not {@code null}
+     * @implNote only available if {@link de.b3ttertogeth3r.walhalla.abstract_generic.Dialog#loader Dialog#loader} is not {@code null}
      */
     default T done() throws Exception {
         return null;

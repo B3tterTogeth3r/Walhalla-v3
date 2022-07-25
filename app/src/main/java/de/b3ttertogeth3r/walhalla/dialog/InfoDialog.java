@@ -22,7 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Dialog;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Dialog;
 import de.b3ttertogeth3r.walhalla.design.Text;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 

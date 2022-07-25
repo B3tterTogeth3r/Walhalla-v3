@@ -24,8 +24,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
+import de.b3ttertogeth3r.walhalla.exception.SignInException;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 import de.b3ttertogeth3r.walhalla.object.Log;
@@ -34,37 +36,49 @@ import de.b3ttertogeth3r.walhalla.object.Person;
 public class Authentication implements IInit, IAuth {
     private static final String TAG = "Authentication";
     protected static IAuth iAuth;
-    private FirebaseAuth Auth = null;
+    private static FirebaseAuth AUTH;
 
     @Override
-    public boolean init(Context context) {
+    public boolean init(Context context, boolean isEmulator) {
         try {
-            Auth = FirebaseAuth.getInstance();
+            AUTH = FirebaseAuth.getInstance();
+            if (isEmulator) {
+                AUTH.useEmulator("10.0.2.2", 9099);
+            }
             iAuth = this;
         } catch (Exception e) {
             Log.e(TAG, "Init didn't work", e);
-            Auth = null;
+            AUTH = null;
         }
-        return Auth != null;
+        return AUTH != null;
     }
 
     @Override
     public Loader<AuthResult> signIn(String email, String password) {
         Loader<AuthResult> loader = new Loader<>();
-        Auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(task -> {
-                    if (task.getException() != null) {
-                        loader.done(task.getException());
-                        return;
-                    }
-                    loader.done(task.getResult());
-                });
+        AtomicInteger run = new AtomicInteger();
+        if (AUTH != null) {
+            AUTH.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (run.get() == 0) {
+                            run.set(1);
+                            if (task.getException() != null) {
+                                Exception e = task.getException();
+                                loader.done(e);
+                                return;
+                            }
+                            loader.done(task.getResult());
+                        }
+                    });
+        } else {
+            return loader.done(new NullPointerException("Auth == null"));
+        }
         return loader;
     }
 
     @Override
     public boolean isSignIn() {
-        return (Auth != null && Auth.getCurrentUser() != null);
+        return (AUTH != null && AUTH.getCurrentUser() != null);
     }
 
     @Override
@@ -80,7 +94,7 @@ public class Authentication implements IInit, IAuth {
 
     @Override
     public void signOut() {
-        Auth.signOut();
+        AUTH.signOut();
     }
 
     @Override
@@ -92,7 +106,7 @@ public class Authentication implements IInit, IAuth {
     @Nullable
     public FirebaseUser getUser() {
         if (isSignIn()) {
-            return Auth.getCurrentUser();
+            return AUTH.getCurrentUser();
         }
         return null;
     }
@@ -105,20 +119,29 @@ public class Authentication implements IInit, IAuth {
     @Override
     public Loader<Boolean> exitsEmail(String email) {
         Loader<Boolean> loader = new Loader<>();
-        Auth.signInWithEmailAndPassword(email, "Walhalla1864")
-                .addOnCompleteListener(task -> {
-                    if (task.getException() != null) {
-                        if (Objects.requireNonNull(task.getException().getMessage()).contains("deleted")) {
-                            loader.done(false);
-                        } else if (Objects.requireNonNull(task.getException().getMessage()).contains("password")) {
-                            loader.done(true);
-                        } else {
-                            loader.done(task.getException());
+        AtomicInteger run = new AtomicInteger();
+        if (AUTH != null) {
+            AUTH.signInWithEmailAndPassword(email, "Walhalla1864")
+                    .addOnCompleteListener(task -> {
+                        if (task.getException() != null && run.get() != 0) {
+                            Exception e = task.getException();
+                            if (Objects.requireNonNull(e.getMessage()).contains("deleted")) {
+                                loader.done(false);
+                            } else if (Objects.requireNonNull(e.getMessage()).contains("password")) {
+                                loader.done(true);
+                            } else if (Objects.requireNonNull(e.getMessage()).contains("to connect to")) {
+                                loader.done(new SignInException("app couldn't connect to the emulator"));//, e));
+                            } else {
+                                loader.done(e);
+                            }
+                            return;
                         }
-                        return;
-                    }
-                    loader.done(true);
-                });
+                        run.set(1);
+                        loader.done(true);
+                    });
+        } else {
+            return loader.done(new SignInException("Auth == null"));
+        }
         return loader;
     }
 
@@ -155,5 +178,15 @@ public class Authentication implements IInit, IAuth {
     @Override
     public void linkYahoo(@NonNull Loader<Void> loader) {
         loader.done();
+    }
+
+    @Override
+    public void addAuthStateListener(FirebaseAuth.AuthStateListener authStateListener) {
+        AUTH.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    public void removeAuthListener(FirebaseAuth.AuthStateListener authStateListener) {
+        AUTH.removeAuthStateListener(authStateListener);
     }
 }

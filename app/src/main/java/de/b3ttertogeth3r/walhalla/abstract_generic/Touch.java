@@ -12,7 +12,7 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.abstract_classes;
+package de.b3ttertogeth3r.walhalla.abstract_generic;
 
 import android.annotation.SuppressLint;
 import android.view.MotionEvent;

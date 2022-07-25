@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2022-2022.
   ~
   ~ Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
@@ -15,160 +14,148 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.widget.LinearLayout
-        android:id="@+id/program_details_layout"
+    <ScrollView
+        android:id="@+id/program_details_layout_sv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:layout_above="@id/bottom_layout"
+        android:layout_alignParentTop="true">
 
         <android.widget.LinearLayout
-            android:id="@+id/event_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <android.widget.LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="90dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:padding="4dp">
-
-            <RelativeLayout
-                android:id="@+id/event_date"
-                style="@style/Custom.Button"
-                android:layout_width="80dp"
-                android:layout_height="80dp">
-
-                <ImageView
-                    android:id="@+id/event_date_image"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:background="@color/colorPrimaryDark"
-                    android:contentDescription="@string/event_date"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_calendar"
-                    app:tint="@color/colorAccentLight" />
-
-                <TextView
-                    android:id="@+id/event_date_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/event_date_image"
-                    android:layout_marginTop="4dp"
-                    android:autoSizeTextType="uniform"
-                    android:gravity="center"
-                    android:text="@string/event_date"
-                    android:textColor="@color/colorAccentLight" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/event_time"
-                style="@style/Custom.Button"
-                android:layout_width="80dp"
-                android:layout_height="80dp">
-
-                <ImageView
-                    android:id="@+id/event_time_image"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:background="@color/colorPrimaryDark"
-                    android:contentDescription="@string/event_date"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_time"
-                    app:tint="@color/colorAccentLight" />
-
-                <TextView
-                    android:id="@+id/event_time_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/event_time_image"
-                    android:layout_marginTop="4dp"
-                    android:autoSizeTextType="uniform"
-                    android:gravity="center"
-                    android:text="@string/event_time"
-                    android:textColor="@color/colorAccentLight" />
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/event_collar"
-                style="@style/Custom.Button"
-                android:layout_width="80dp"
-                android:layout_height="80dp">
-
-                <ImageView
-                    android:id="@+id/event_collar_image"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:background="@color/colorPrimaryDark"
-                    android:contentDescription="@string/event_date"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/ic_tie"
-                    app:tint="@color/colorAccentLight" />
-
-                <TextView
-                    android:id="@+id/event_collar_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/event_collar_image"
-                    android:layout_marginTop="4dp"
-                    android:autoSizeTextType="uniform"
-                    android:gravity="center"
-                    android:text="@string/event_collar"
-                    android:textColor="@color/colorAccentLight" />
-            </RelativeLayout>
-        </android.widget.LinearLayout>
-
-        <de.b3ttertogeth3r.walhalla.design.LinearLayout
+            android:id="@+id/program_details_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/program_details_layout">
+            android:orientation="vertical"
+            android:padding="8dp">
 
-            <ScrollView
+            <android.widget.LinearLayout
+                android:id="@+id/event_title"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:ignore="SpeakableTextPresentCheck">
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <android.widget.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:padding="4dp">
+
+                <RelativeLayout
+                    android:id="@+id/event_date"
+                    style="@style/Custom.Button"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp">
+
+                    <ImageView
+                        android:id="@+id/event_date_image"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/colorPrimaryDark"
+                        android:contentDescription="@string/event_date"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_calendar"
+                        app:tint="@color/colorAccentLight" />
+
+                    <TextView
+                        android:id="@+id/event_date_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/event_date_image"
+                        android:layout_marginTop="4dp"
+                        android:autoSizeTextType="uniform"
+                        android:gravity="center"
+                        android:text="@string/event_date"
+                        android:textColor="@color/colorAccentLight" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/event_time"
+                    style="@style/Custom.Button"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp">
+
+                    <ImageView
+                        android:id="@+id/event_time_image"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/colorPrimaryDark"
+                        android:contentDescription="@string/event_date"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_time"
+                        app:tint="@color/colorAccentLight" />
+
+                    <TextView
+                        android:id="@+id/event_time_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/event_time_image"
+                        android:layout_marginTop="4dp"
+                        android:autoSizeTextType="uniform"
+                        android:gravity="center"
+                        android:text="@string/event_time"
+                        android:textColor="@color/colorAccentLight" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/event_collar"
+                    style="@style/Custom.Button"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp">
+
+                    <ImageView
+                        android:id="@+id/event_collar_image"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:background="@color/colorPrimaryDark"
+                        android:contentDescription="@string/event_date"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/ic_tie"
+                        app:tint="@color/colorAccentLight" />
+
+                    <TextView
+                        android:id="@+id/event_collar_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/event_collar_image"
+                        android:layout_marginTop="4dp"
+                        android:autoSizeTextType="uniform"
+                        android:gravity="center"
+                        android:text="@string/event_collar"
+                        android:textColor="@color/colorAccentLight" />
+                </RelativeLayout>
+            </android.widget.LinearLayout>
+
+            <de.b3ttertogeth3r.walhalla.design.LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/program_details_layout">
 
                 <android.widget.LinearLayout
                     android:id="@+id/event_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
-            </ScrollView>
-        </de.b3ttertogeth3r.walhalla.design.LinearLayout>
-
-    </android.widget.LinearLayout>
-
-    <android.widget.LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_below="@id/program_details_layout"
-        android:layout_above="@id/bottom_layout">
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:ignore="SpeakableTextPresentCheck">
+            </de.b3ttertogeth3r.walhalla.design.LinearLayout>
 
             <TableLayout
+                android:layout_marginTop="4dp"
                 android:id="@+id/event_chores_table"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_round" />
-        </ScrollView>
-    </android.widget.LinearLayout>
+        </android.widget.LinearLayout>
+    </ScrollView>
 
     <android.widget.LinearLayout
         android:id="@+id/bottom_layout"
@@ -177,11 +164,12 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
-        <fragment
+        <com.google.android.gms.maps.MapView
             android:id="@+id/maps_fragment"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_height="200dp"
+            android:contentDescription="@string/maps_api_key"
+            android:visibility="gone" />
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"

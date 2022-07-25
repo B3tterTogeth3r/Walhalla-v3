@@ -15,27 +15,37 @@
 package de.b3ttertogeth3r.walhalla.fragment.signed_in;
 
 import android.annotation.SuppressLint;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TableLayout;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
+import android.widget.TableRow;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 import de.b3ttertogeth3r.walhalla.design.Button;
 import de.b3ttertogeth3r.walhalla.design.LinearLayout;
+import de.b3ttertogeth3r.walhalla.design.SideNav;
+import de.b3ttertogeth3r.walhalla.design.TableLayout;
+import de.b3ttertogeth3r.walhalla.design.Text;
 import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.design.Toast;
+import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.object.Account;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Movement;
-import de.b3ttertogeth3r.walhalla.util.ToastList;
+import de.b3ttertogeth3r.walhalla.util.Values;
 
 /**
  * @author B3tterTogeth3r
@@ -54,11 +64,21 @@ public class Balance extends Fragment implements View.OnClickListener {
     private IFirestoreDownload download;
     private Account account;
     private Title balance;
-    private TableLayout movements;
+    private LinearLayout movements;
+    private String uid;
+    private ArrayList<Movement> movementList;
 
     @Override
     public void constructor() {
+        movementList = new ArrayList<>();
         download = Firebase.firestoreDownload();
+        IAuth auth = Firebase.authentication();
+        if (!auth.isSignIn()) {
+            Toast.makeToast(requireContext(), R.string.fui_error_session_expired).show();
+            SideNav.changePage(R.string.menu_home, requireActivity().getSupportFragmentManager().beginTransaction());
+            return;
+        }
+        uid = auth.getUser().getUid();
     }
 
     @Override
@@ -68,44 +88,69 @@ public class Balance extends Fragment implements View.OnClickListener {
 
     @Override
     public void start() {
-        registration.add(download.listenPersonBalance("1", new Loader<Account>(false) {
-            @Override
-            public void onSuccessListener(@Nullable Account result) {
-                account = result;
-                getMovements();
-                @SuppressLint("DefaultLocale")
-                String price = "€ " + String.format("%.2f", account.getAmount()).replace(".", ",");
-                balance.setText(price);
-            }
-
-            @Override
-            public void onFailureListener(Exception e) {
-                Log.e(TAG, "Listening to the account did not work", e);
-            }
-        }));
+        download.listenPersonBalance(uid)
+                .setOnSuccessListener(result -> {
+                    // TODO: 20.07.22 maybe make it into a realtime listener which is connected to the fragments lifecycle
+                    account = result;
+                    getMovements();
+                    String price = "€ " + String.format(Values.LOCALE, "%.2f", account.getAmount()).replace(".", ",");
+                    Log.i(TAG, "start: " + price);
+                    balance.setText(price);
+                })
+                .setOnFailListener(e -> Log.e(TAG, "onFailureListener: Listening to the account did not work", e));
     }
 
     private void getMovements() {
-        download.getPersonMovements("1")
+        download.getPersonMovements(uid)
                 .setOnSuccessListener(result -> {
                     if (result == null) {
-                        // TODO: 15.06.22 find where exceptions in here are thrown to
+                        throw new NoDataException("User has no movements");
+                    } else if (result.isEmpty()) {
+                        Movement m = new Movement();
+                        m.setPurpose("No movements");
+                        movementList.add(m);
+                        movementTable();
                         return;
                     }
-                    // movementList = new ArrayList<>(result);
-                    addMovementsToDesign(result);
+                    movementList = result;
+                    movementTable();
                 })
                 .setOnFailListener(e ->
                         Log.e(TAG, "Downloading the movements didn't work", e));
     }
 
-    private void addMovementsToDesign(@NonNull ArrayList<Movement> result) {
-        // TODO: 07.06.22 figure out why nothing is displayed... The list has the supposed size
-        movements.removeAllViews();
+    private void movementTable() {
+        // TODO: 20.07.22 WHY DOES IT NOT DISPLAY THE TABLE????
         movements.removeAllViewsInLayout();
-        for (Movement m : result) {
-            movements.addView(m.getView(getContext()));
+        movements.setLayoutParams(new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+        TableLayout table = new TableLayout(requireContext());
+        TableRow titleRow = (TableRow) LayoutInflater.from(requireContext()).inflate(R.layout.movement_layout, null);
+        Text date = titleRow.findViewById(R.id.date);
+        date.setTitle()
+                .setText(R.string.balance_date);
+        Text income = titleRow.findViewById(R.id.income);
+        income.setTitle().setText(R.string.balance_income);
+        Text expense = titleRow.findViewById(R.id.expense);
+        expense.setTitle().setText(R.string.balance_expense);
+        Text purpose = titleRow.findViewById(R.id.purpose);
+        purpose.setTitle().setText(R.string.balance_purpose);
+        Text add = titleRow.findViewById(R.id.add);
+        add.setTitle().setText("");
+        table.addView(titleRow);
+
+        if (!movementList.isEmpty()) {
+            for (Movement m : movementList) {
+                table.addView(
+                        de.b3ttertogeth3r.walhalla.design.Movement.create(
+                                        requireActivity(), null, m)
+                                .show()
+                );
+            }
         }
+        movements.addView(table);
         movements.invalidate();
     }
 
@@ -118,14 +163,31 @@ public class Balance extends Fragment implements View.OnClickListener {
     @SuppressLint("DefaultLocale")
     public void createView(@NonNull android.widget.LinearLayout view) {
         view.setOrientation(android.widget.LinearLayout.VERTICAL);
-        //region balance
-        balance = new Title(getContext());
-        String price = "€ " + String.format("%.2f", 0f).replace(".", ",");
-        balance.setText(price);
-        view.addView(balance);
-        //endregion
 
-        //region payment buttons
+        balance = new Title(getContext());
+        view.addView(balance);
+
+        //payButtons(view);
+
+        //region movement list
+        movements = new LinearLayout(requireContext());
+        HorizontalScrollView hsv = new HorizontalScrollView(requireContext());
+        hsv.addView(movements);
+        view.addView(hsv);
+        //endregion
+    }
+
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
+    }
+
+    /**
+     * TODO Integrate Google pay billing or a different way to pay the amount
+     *
+     * @see <a href="https://developer.android.com/google/play/billing">Google Pay biling</a>
+     */
+    private void payButtons(@NonNull android.widget.LinearLayout view) {
         LinearLayout paymentButtons = new LinearLayout(requireContext());
         paymentButtons.setOrientation(android.widget.LinearLayout.HORIZONTAL);
         subscribe = new Button(getContext());
@@ -135,33 +197,22 @@ public class Balance extends Fragment implements View.OnClickListener {
         paymentButtons.addView(subscribe);
         paymentButtons.addView(payBill);
         view.addView(paymentButtons);
-        //endregion
-
-        //region movement list
-        movements = new TableLayout(getContext());
-        view.addView(movements);
-        //endregion
-
-        //region advertisement
-        // a banner ad on the bottom of the screen
-        // TODO: 30.05.22 add app to GoogleAdMob
-        //endregion
-    }
-
-    @Override
-    public void viewCreated() {
         subscribe.setOnClickListener(this);
         payBill.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        // TODO: 30.05.22 implement in app payments
-        ToastList.addToast(Toast.makeToast(getContext(), R.string.error_dev));
         if (subscribe.equals(v)) {
-
+            Toast.makeToast(requireContext(), R.string.error_dev).show();
         } else if (payBill.equals(v)) {
-
+            Toast.makeToast(requireContext(), R.string.error_dev).show();
         }
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Fragment: Balance extends Fragment implements View.OnClickListener";
     }
 }

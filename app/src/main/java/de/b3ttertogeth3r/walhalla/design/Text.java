@@ -27,23 +27,16 @@ import androidx.core.content.ContextCompat;
 import de.b3ttertogeth3r.walhalla.R;
 
 public class Text extends AppCompatTextView {
+    private static final String TAG = "Text";
+    private final Context context;
 
-    public Text (Context context) {
+    public Text(Context context) {
         super(context);
-        design(context);
+        this.context = context;
+        design();
     }
 
-    public Text(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        design(context);
-    }
-
-    public Text(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        design(context);
-    }
-
-    private void design (@NonNull Context context) {
+    private void design() {
         int padding = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 16f,
@@ -59,16 +52,39 @@ public class Text extends AppCompatTextView {
         setLinkTextColor(ContextCompat.getColor(context, R.color.colorAccent));
     }
 
+    public Text(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        this.context = context;
+        design();
+    }
+
+    public Text(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.context = context;
+        design();
+    }
+
     public Text(Context context, String text) {
         super(context);
-        design(context);
+        this.context = context;
+        design();
         setText(text);
     }
 
     public Text(Context context, int resId) {
         super(context);
-        design(context);
+        this.context = context;
+        design();
         setText(resId);
     }
 
+    public Text setTitle() {
+        setTextAppearance(context, R.style.TextAppearance_AppCompat_Subhead);
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "design/" + TAG;
+    }
 }

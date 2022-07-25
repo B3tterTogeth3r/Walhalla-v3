@@ -20,7 +20,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 
 public class InAppMessaging implements IInit {
     @Override
-    public boolean init (Context context) {
+    public boolean init(Context context, boolean isEmulator) {
         return true;
     }
 }

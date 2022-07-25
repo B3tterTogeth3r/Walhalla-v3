@@ -17,12 +17,11 @@ package de.b3ttertogeth3r.walhalla.interfaces.firebase;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
@@ -56,8 +55,6 @@ public interface IFirestoreDownload {
      */
     Loader<ArrayList<Event>> semesterEvents(String semesterID);
 
-    Loader<ArrayList<Person>> personList();
-
     /**
      * @param rank       has to be {@link Rank#ACTIVE} or {@link Rank#PHILISTINES}
      * @param semesterID id of the semester
@@ -65,15 +62,11 @@ public interface IFirestoreDownload {
      */
     Loader<ArrayList<BoardMember>> board(Rank rank, String semesterID);
 
+    Loader<BoardMember> getSemesterBoardOne(int semesterId, @NonNull Charge charge);
+
     Loader<ArrayList<Location>> locationList();
 
-    Loader<Map<Integer, ArrayList<BoardMember>>> pastChargen(String personID);
-
     Loader<File> file(@NonNull DocumentReference reference);
-
-    Loader<ArrayList<Chore>> personUndoneChores(String personID);
-
-    Loader<ArrayList<Chore>> personAllChores(String personID);
 
     /**
      * Download a list of chores, if the event has any. If the list is empty, return an empty list.
@@ -100,6 +93,8 @@ public interface IFirestoreDownload {
      */
     Loader<Location> eventLocation(String eventId);
 
+    Loader<Event> nextEvent();
+
     Loader<ArrayList<File>> protocols(String semesterID);
 
     /**
@@ -122,23 +117,30 @@ public interface IFirestoreDownload {
 
     Loader<ArrayList<Text>> semesterNotes(String semesterID);
 
-    ListenerRegistration listenPersonBalance(String uid, Loader<Account> loader);
-
-    Loader<ArrayList<Movement>> getPersonMovements(String uid);
-
-    ListenerRegistration semesterAccount(String semesterID, @NonNull Loader<Account> loader);
+    Loader<Account> semesterAccount(String semesterID);
 
     Loader<ArrayList<Movement>> getSemesterMovements(String semesterId);
 
-    Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, String semester);
+    /**
+     * @return a list of all persons
+     */
+    Loader<ArrayList<Person>> personList();
 
-    Loader<Event> nextEvent();
-
+    //region PERSON
     Loader<Person> person(String uid);
+
+    Loader<ArrayList<Chore>> personChores(String uid, boolean showDoneChores);
+
+    Loader<Map<Integer, ArrayList<BoardMember>>> pastChargen(String personID);
+
+    Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester);
+
+    Loader<Account> listenPersonBalance(String uid);
+
+    Loader<ArrayList<Movement>> getPersonMovements(String uid);
 
     Loader<ArrayList<Address>> personAddress(String uid);
 
     Loader<File> personImage(String uid);
-
-    Loader<BoardMember> getSemesterBoardOne(int semesterId, @NonNull Charge charge);
+    //endregion
 }

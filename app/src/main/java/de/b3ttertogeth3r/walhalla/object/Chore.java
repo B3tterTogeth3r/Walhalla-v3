@@ -14,96 +14,79 @@
 
 package de.b3ttertogeth3r.walhalla.object;
 
-import android.content.Context;
-import android.widget.LinearLayout;
+import androidx.annotation.NonNull;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.MyObject;
-import de.b3ttertogeth3r.walhalla.design.Date;
-import de.b3ttertogeth3r.walhalla.design.TableRow;
-import de.b3ttertogeth3r.walhalla.design.Text;
-import de.b3ttertogeth3r.walhalla.design.TimeFrat;
+import de.b3ttertogeth3r.walhalla.abstract_generic.MyObject;
 import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
 
 public class Chore extends MyObject implements Validate {
     String id;
     DocumentReference toEvent;
-    Timestamp dueDate;
     boolean done;
     de.b3ttertogeth3r.walhalla.enums.Chore chore;
     String event;
     String person;
 
-    public Chore () {
+    public Chore() {
     }
 
-    public TableRow getView (Context context, boolean isEvent) {
-        TableRow row = new TableRow(context);
-        row.addView(new Date(context, dueDate));
-        row.addView(new TimeFrat(context, dueDate));
-        LinearLayout right = new LinearLayout(context);
-        right.setOrientation(LinearLayout.HORIZONTAL);
-        if(isEvent) {
-            Text eventName = new Text(context, event);
-            right.addView(eventName);
-        } else {
-            Text personName = new Text(context, person);
-            right.addView(personName);
-        }
-        Text choreName = new Text(context, chore.getDescription(context));
-        right.addView(choreName);
-        row.addView(right);
-        return row;
-    }
-
-    public String getId () {
-        return id;
-    }
-
-    public void setId (String id) {
-        this.id = id;
-    }
-
-    public DocumentReference getToEvent () {
+    public DocumentReference getToEvent() {
         return toEvent;
     }
 
-    public void setToEvent (DocumentReference toEvent) {
+    public void setToEvent(DocumentReference toEvent) {
         this.toEvent = toEvent;
     }
 
-    public Timestamp getDueDate () {
-        return dueDate;
+    public Timestamp getDueDate() {
+        return time;
     }
 
-    public void setDueDate (Timestamp dueDate) {
-        this.dueDate = dueDate;
+    public void setDueDate(Timestamp dueDate) {
+        this.time = dueDate;
     }
 
-    public boolean isDone () {
+    public boolean isDone() {
         return done;
     }
 
-    public void setDone (boolean done) {
+    public void setDone(boolean done) {
         this.done = done;
     }
 
-    public de.b3ttertogeth3r.walhalla.enums.Chore getChore () {
-        return chore;
-    }
-
-    public void setChore (de.b3ttertogeth3r.walhalla.enums.Chore chore) {
-        this.chore = chore;
-    }
-
-    public String getEvent () {
+    public String getEvent() {
         return event;
     }
 
-    public void setEvent (String event) {
+    public void setEvent(String event) {
         this.event = event;
+    }
+
+    @Override
+    public boolean validate() {
+        return false;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        if (getId() != null) {
+            return "Chore ID:" + getId();
+        } else if (getChore() != null) {
+            return "Chore: " + getChore().name();
+        }
+        return super.toString();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getPerson() {
@@ -114,17 +97,11 @@ public class Chore extends MyObject implements Validate {
         this.person = person;
     }
 
-    @Override
-    public Timestamp getTime () {
-        return time;
-    }
-    @Override
-    public void setTime (Timestamp time) {
-        this.time = time;
+    public de.b3ttertogeth3r.walhalla.enums.Chore getChore() {
+        return chore;
     }
 
-    @Override
-    public boolean validate () {
-        return false;
+    public void setChore(de.b3ttertogeth3r.walhalla.enums.Chore chore) {
+        this.chore = chore;
     }
 }

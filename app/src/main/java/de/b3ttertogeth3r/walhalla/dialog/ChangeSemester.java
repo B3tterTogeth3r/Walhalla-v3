@@ -29,7 +29,7 @@ import java.util.Calendar;
 
 import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Dialog;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Dialog;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;

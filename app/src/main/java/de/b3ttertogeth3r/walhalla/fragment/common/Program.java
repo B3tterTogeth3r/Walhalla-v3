@@ -18,19 +18,21 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
-import de.b3ttertogeth3r.walhalla.design.DEvent;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Touch;
+import de.b3ttertogeth3r.walhalla.design.Event;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.dialog.ChangeSemester;
 import de.b3ttertogeth3r.walhalla.dialog.EventDetails;
@@ -40,7 +42,6 @@ import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.object.Event;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Semester;
 
@@ -90,6 +91,11 @@ public class Program extends Fragment {
         this.view = view;
     }
 
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
+    }
+
     private void download(int semId) {
         download.semesterEvents(String.valueOf(semId))
                 .setOnSuccessListener(result -> {
@@ -108,12 +114,12 @@ public class Program extends Fragment {
                 });
     }
 
-    void listEvents(@NonNull ArrayList<Event> eventList) {
+    void listEvents(@NonNull ArrayList<de.b3ttertogeth3r.walhalla.object.Event> eventList) {
         view.removeAllViewsInLayout();
         view.removeAllViews();
         int i = 0;
-        for (Event e : eventList) {
-            view.addView(DEvent.create(requireActivity(), null, e)
+        for (de.b3ttertogeth3r.walhalla.object.Event e : eventList) {
+            view.addView(Event.create(requireActivity(), null, e)
                     .addTouchListener(new Touch() {
                         @Override
                         public void onClick(View view) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -17,8 +17,11 @@ package de.b3ttertogeth3r.walhalla.fragment.board;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import com.google.firebase.auth.FirebaseAuth;
+
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 
 public class AddChoresToEvent extends Fragment {
     private static final String TAG = "AddChoresToEvent";
@@ -44,12 +47,17 @@ public class AddChoresToEvent extends Fragment {
     }
 
     @Override
-    public void toolbarContent () {
+    public void toolbarContent() {
 
     }
 
     @Override
-    public void createView (@NonNull LinearLayout view) {
+    public void createView(@NonNull LinearLayout view) {
 
+    }
+
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 }

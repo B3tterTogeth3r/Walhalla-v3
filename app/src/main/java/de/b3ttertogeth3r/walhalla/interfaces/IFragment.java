@@ -21,6 +21,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public interface IFragment {
 
@@ -77,5 +80,7 @@ public interface IFragment {
      */
     default void stop() {
     }
+
+    FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth);
 
 }

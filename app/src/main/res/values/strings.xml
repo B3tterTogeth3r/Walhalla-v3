@@ -249,5 +249,12 @@
     <string name="nickname">Vulgo / Spitzname</string>
     <string name="menu_greeting_long">Begrüßung\ndes Seniors</string>
     <string name="sign_in_complete">Einloggen erfolgreich</string>
+    <string name="balance_date">Datum</string>
+    <string name="balance_income">Einkommen</string>
+    <string name="balance_expense">Ausgabe</string>
+    <string name="balance_purpose">Zweck</string>
+    <string name="balance_recipe">Beleg</string>
+    <string name="menu_chores">Aufgaben</string>
+    <string name="chore_none">Du hast keine Aufgaben.</string>
 
 </resources>

@@ -19,7 +19,6 @@ import androidx.annotation.NonNull;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,7 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.b3ttertogeth3r.walhalla.App;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.enums.Collar;
@@ -89,41 +88,6 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<ArrayList<Person>> personList() {
-            @NonNull Loader<ArrayList<Person>> loader = new Loader<>();
-            ArrayList<Person> result = new ArrayList<>();
-            Person p1 = new Person();
-            p1.setFirst_Name("Tobias");
-            p1.setLast_Name("Tumbrink");
-            p1.setNickname("");
-            p1.setEnabled(true);
-            p1.setPassword(true);
-            p1.setRank(Rank.ACTIVE);
-
-            Person p2 = new Person();
-            p2.setLast_Name("Jäckel");
-            p2.setFirst_Name("Maximilian");
-            p2.setNickname("Minimax");
-            p2.setEnabled(true);
-            p2.setPassword(false);
-            p1.setRank(Rank.ACTIVE);
-
-            Person p3 = new Person();
-            p3.setLast_Name("Beulich");
-            p3.setFirst_Name("Max");
-            p3.setNickname("Bimbo");
-            p3.setEnabled(false);
-            p3.setPassword(false);
-            p3.setRank(Rank.PHILISTINES);
-
-            result.add(p1);
-            result.add(p2);
-            result.add(p3);
-
-            return loader.done(result);
-        }
-
-        @Override
         public Loader<ArrayList<BoardMember>> board(@NonNull Rank rank, String semesterID) {
             Loader<ArrayList<BoardMember>> loader = new Loader<>();
             BoardMember bm1, bm2, bm3, bm4, bm5;
@@ -154,6 +118,21 @@ public class FirestoreMock {
         }
 
         @Override
+        public Loader<BoardMember> getSemesterBoardOne(int semesterId, @NonNull Charge charge) {
+            Loader<BoardMember> loader = new Loader<>();
+            if (charge.equals(Charge.AH_X)) {
+                BoardMember bm = new BoardMember();
+                bm.setFull_name("Thilo Berdami");
+                return loader.done(bm);
+            } else if (charge.equals(Charge.X)) {
+                BoardMember bm = new BoardMember();
+                bm.setFull_name("Tobias Tumbrink");
+                return loader.done(bm);
+            }
+            return loader.done(new NoDataException("No charge found in semester " + semesterId));
+        }
+
+        @Override
         public Loader<ArrayList<Location>> locationList() {
             @NonNull Loader<ArrayList<Location>> loader = new Loader<>();
             Location l1 = new Location("Walhalla", new GeoPoint(49.784420, 9.924580));
@@ -168,84 +147,10 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<Map<Integer, ArrayList<BoardMember>>> pastChargen(String personID) {
-            Loader<Map<Integer, ArrayList<BoardMember>>> loader = new Loader<>();
-            BoardMember bm1 = new BoardMember();
-            bm1.setCharge(Charge.X);
-            bm1.setFull_name("Tobias Tumbrink");
-            BoardMember bm2 = new BoardMember();
-            bm2.setCharge(Charge.XXX);
-            bm2.setFull_name("Tobias Tumbrink");
-
-            Map<Integer, ArrayList<BoardMember>> result = new HashMap<>();
-            result.put(310, new ArrayList<>(Collections.singletonList(bm1)));
-            result.put(311, new ArrayList<>(Collections.singletonList(bm2)));
-            result.put(312, new ArrayList<>(Collections.singletonList(bm2)));
-            result.put(313, new ArrayList<>(Collections.singletonList(bm2)));
-            result.put(314, new ArrayList<>(Collections.singletonList(bm2)));
-            result.put(315, new ArrayList<>(Collections.singletonList(bm1)));
-            return loader.done(result);
-        }
-
-        @Override
         public Loader<File> file(@NonNull DocumentReference reference) {
             Loader<File> loader = new Loader<>();
-            return loader;
+            return loader.done();
 
-        }
-
-        @Override
-        public Loader<ArrayList<Chore>> personUndoneChores(String personID) {
-            Loader<ArrayList<Chore>> loader = new Loader<>();
-            Chore c1, c3, c4, c6;
-            c1 = new Chore();
-            c1.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.BAR_1);
-            c1.setEvent("Event 1");
-            c1.setDone(false);
-            c3 = new Chore();
-            c3.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.CHAR);
-            c3.setEvent("Event 1");
-            c3.setDone(false);
-            c4 = new Chore();
-            c4.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.BAR_1);
-            c4.setEvent("Event 2");
-            c4.setDone(false);
-            c6 = new Chore();
-            c6.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.CHAR);
-            c6.setEvent("Event 3");
-            c6.setDone(false);
-            return loader.done(new ArrayList<>(Arrays.asList(c1, c3, c4, c6)));
-        }
-
-        @Override
-        public Loader<ArrayList<Chore>> personAllChores(String personID) {
-            Loader<ArrayList<Chore>> loader = new Loader<>();
-            Chore c1, c2, c3, c4, c5, c6;
-            c1 = new Chore();
-            c1.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.BAR_1);
-            c1.setEvent("Event 1");
-            c1.setDone(false);
-            c2 = new Chore();
-            c2.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.FOOD_B);
-            c2.setEvent("Event 1");
-            c2.setDone(true);
-            c3 = new Chore();
-            c3.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.CHAR);
-            c3.setEvent("Event 1");
-            c3.setDone(false);
-            c4 = new Chore();
-            c4.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.BAR_1);
-            c4.setEvent("Event 2");
-            c4.setDone(false);
-            c5 = new Chore();
-            c5.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.FOOD_B);
-            c5.setEvent("Event 2");
-            c5.setDone(true);
-            c6 = new Chore();
-            c6.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.CHAR);
-            c6.setEvent("Event 3");
-            c6.setDone(false);
-            return loader.done(new ArrayList<>(Arrays.asList(c1, c2, c3, c4, c5, c6)));
         }
 
         @Override
@@ -313,6 +218,14 @@ public class FirestoreMock {
             Loader<Location> loader = new Loader<>();
             Location l1 = new Location("Walhalla", new GeoPoint(49.784420, 9.924580));
             return loader.done(l1);
+        }
+
+        @Override
+        public Loader<Event> nextEvent() {
+            Loader<Event> loader = new Loader<>();
+            Event e = new Event();
+            e.setTitle("I'm the next event");
+            return loader.done(e);
         }
 
         @Override
@@ -399,35 +312,8 @@ public class FirestoreMock {
         }
 
         @Override
-        public ListenerRegistration listenPersonBalance(String uid,
-                                                        @NonNull Loader<Account> loader) {
-            loader.done(new Account(4.5f, 6, 15.5f, 11f));
-            return () -> {
-            };
-        }
-
-        @Override
-        public Loader<ArrayList<Movement>> getPersonMovements(String uid) {
-            Loader<ArrayList<Movement>> loader = new Loader<>();
-            Movement m1 = new Movement(new Timestamp(new Date()), 5.5, "2 Beer", "Payment", null);
-            Movement m2 = new Movement(new Timestamp(new Date()), 6.0, "1 Maß", "Payment", null);
-            Movement m3 = new Movement(new Timestamp(new Date()), -11.0, "", "Invoice", null);
-            Movement m4 = new Movement(new Timestamp(new Date()), 6.5, "2 Beer", "Payment", null);
-            Movement m5 = new Movement(new Timestamp(new Date()), 6.0, "1 Maß", "Payment", null);
-            Movement m6 = new Movement(new Timestamp(new Date()), -11.0, "", "Invoice", null);
-            List<Movement> mL = new List<>();
-            mL.add(m1);
-            mL.add(m3);
-            mL.add(m2);
-            mL.add(m4);
-            mL.add(m5);
-            mL.add(m6);
-            return loader.done(mL);
-        }
-
-        @Override
-        public ListenerRegistration semesterAccount(String semesterID,
-                                                    @NonNull Loader<Account> loader) {
+        public Loader<Account> semesterAccount(String semesterID) {
+            Loader<Account> loader = new Loader<>();
             Account head = new Account(3.0f, 6, 12.5f, 11f);
             loader.done(head);
             return null;
@@ -455,43 +341,149 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, String semester) {
-            Loader<ArrayList<DrinkMovement>> loader = new Loader<>();
+        public Loader<ArrayList<Person>> personList() {
+            @NonNull Loader<ArrayList<Person>> loader = new Loader<>();
+            ArrayList<Person> result = new ArrayList<>();
+            Person p1 = new Person();
+            p1.setFirst_Name("Tobias");
+            p1.setLast_Name("Tumbrink");
+            p1.setNickname("");
+            p1.setEnabled(true);
+            p1.setPassword(true);
+            p1.setRank(Rank.ACTIVE);
 
-            DrinkMovement dm1 = new DrinkMovement("Martinsbräu Pils", 102, 1,
-                    new Timestamp(new Date()));
-            DrinkMovement dm2 = new DrinkMovement("Martinsbräu Helles", 29, 1,
-                    new Timestamp(new Date()));
-            DrinkMovement dm3 = new DrinkMovement("Vollzahlung", 29, 1,
-                    new Timestamp(new Date()));
-            DrinkMovement dm4 = new DrinkMovement("Martinsbräu Weizen", 120, 1,
-                    new Timestamp(new Date()));
-            DrinkMovement dm5 = new DrinkMovement("Martinsbräu Märzen", 50, 1,
-                    new Timestamp(new Date()));
-            DrinkMovement dm6 = new DrinkMovement("Zahlung via Dauerauftrag", 5, 1,
-                    new Timestamp(new Date()));
-            List<DrinkMovement> dml = new List<>();
-            dml.add(dm1);
-            dml.add(dm2);
-            dml.add(dm3);
-            dml.add(dm4);
-            dml.add(dm5);
-            dml.add(dm6);
-            return loader.done(dml);
-        }
+            Person p2 = new Person();
+            p2.setLast_Name("Jäckel");
+            p2.setFirst_Name("Maximilian");
+            p2.setNickname("Minimax");
+            p2.setEnabled(true);
+            p2.setPassword(false);
+            p1.setRank(Rank.ACTIVE);
 
-        @Override
-        public Loader<Event> nextEvent() {
-            Loader<Event> loader = new Loader<>();
-            Event e = new Event();
-            e.setTitle("I'm the next event");
-            return loader.done(e);
+            Person p3 = new Person();
+            p3.setLast_Name("Beulich");
+            p3.setFirst_Name("Max");
+            p3.setNickname("Bimbo");
+            p3.setEnabled(false);
+            p3.setPassword(false);
+            p3.setRank(Rank.PHILISTINES);
+
+            result.add(p1);
+            result.add(p2);
+            result.add(p3);
+
+            return loader.done(result);
         }
 
         @Override
         public Loader<Person> person(String uid) {
             Loader<Person> loader = new Loader<>();
             return loader.done();
+        }
+
+        @Override
+        public Loader<ArrayList<Chore>> personChores(String uid, boolean showDoneChores) {
+            Loader<ArrayList<Chore>> loader = new Loader<>();
+            Chore c1, c2, c3, c4, c5, c6;
+            c1 = new Chore();
+            c1.setTime(Timestamp.now());
+            c1.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.BAR_1);
+            c1.setEvent("Event 1");
+            c1.setDone(false);
+            c2 = new Chore();
+            c2.setTime(Timestamp.now());
+            c2.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.FOOD_B);
+            c2.setEvent("Event 1");
+            c2.setDone(true);
+            c3 = new Chore();
+            c3.setTime(Timestamp.now());
+            c3.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.CHAR);
+            c3.setEvent("Event 1");
+            c3.setDone(false);
+            c4 = new Chore();
+            c4.setTime(Timestamp.now());
+            c4.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.BAR_1);
+            c4.setEvent("Event 2");
+            c4.setDone(false);
+            c5 = new Chore();
+            c5.setTime(Timestamp.now());
+            c5.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.FOOD_B);
+            c5.setEvent("Event 2");
+            c5.setDone(true);
+            c6 = new Chore();
+            c6.setTime(Timestamp.now());
+            c6.setChore(de.b3ttertogeth3r.walhalla.enums.Chore.CHAR);
+            c6.setEvent("Event 3");
+            c6.setDone(false);
+            ArrayList<Chore> result = new ArrayList<>(Arrays.asList(c1, c2, c3, c4, c5, c6));
+            if (!showDoneChores) {
+                result.removeIf(Chore::isDone);
+            }
+            return loader.done(result);
+        }
+
+        @Override
+        public Loader<Map<Integer, ArrayList<BoardMember>>> pastChargen(String personID) {
+            Loader<Map<Integer, ArrayList<BoardMember>>> loader = new Loader<>();
+            BoardMember bm1 = new BoardMember();
+            bm1.setCharge(Charge.X);
+            bm1.setFull_name("Tobias Tumbrink");
+            BoardMember bm2 = new BoardMember();
+            bm2.setCharge(Charge.XXX);
+            bm2.setFull_name("Tobias Tumbrink");
+
+            Map<Integer, ArrayList<BoardMember>> result = new HashMap<>();
+            result.put(310, new ArrayList<>(Collections.singletonList(bm1)));
+            result.put(311, new ArrayList<>(Collections.singletonList(bm2)));
+            result.put(312, new ArrayList<>(Collections.singletonList(bm2)));
+            result.put(313, new ArrayList<>(Collections.singletonList(bm2)));
+            result.put(314, new ArrayList<>(Collections.singletonList(bm2)));
+            result.put(315, new ArrayList<>(Collections.singletonList(bm1)));
+            return loader.done(result);
+        }
+
+        @Override
+        public Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester) {
+            Loader<ArrayList<DrinkMovement>> loader = new Loader<>();
+            DrinkMovement dm1 = new DrinkMovement("Martinsbräu Pils", 102, 1,
+                    new Timestamp(new Date()));
+            DrinkMovement dm2 = new DrinkMovement("Martinsbräu Helles", 29, 1,
+                    new Timestamp(new Date()));
+            DrinkMovement dm4 = new DrinkMovement("Martinsbräu Weizen", 120, 1,
+                    new Timestamp(new Date()));
+            DrinkMovement dm5 = new DrinkMovement("Martinsbräu Märzen", 50, 1,
+                    new Timestamp(new Date()));
+            List<DrinkMovement> dml = new List<>();
+            dml.add(dm1);
+            dml.add(dm2);
+            dml.add(dm4);
+            dml.add(dm5);
+            return loader.done(dml);
+        }
+
+        @Override
+        public Loader<Account> listenPersonBalance(String uid) {
+            Loader<Account> loader = new Loader<>();
+            return loader.done(new Account(4.5f, 6, 15.5f, 11f));
+        }
+
+        @Override
+        public Loader<ArrayList<Movement>> getPersonMovements(String uid) {
+            Loader<ArrayList<Movement>> loader = new Loader<>();
+            Movement m1 = new Movement("1", new Timestamp(new Date()), 5.5, "2 Beer", "Payment", null);
+            Movement m2 = new Movement("2", new Timestamp(new Date()), 6.0, "1 Maß", "Payment", null);
+            Movement m3 = new Movement("3", new Timestamp(new Date()), -11.0, "", "Invoice", null);
+            Movement m4 = new Movement("4", new Timestamp(new Date()), 6.5, "2 Beer", "Payment", null);
+            Movement m5 = new Movement("5", new Timestamp(new Date()), 6.0, "1 Maß", "Payment", null);
+            Movement m6 = new Movement("6", new Timestamp(new Date()), -11.0, "", "Invoice", null);
+            List<Movement> mL = new List<>();
+            mL.add(m1);
+            mL.add(m3);
+            mL.add(m2);
+            mL.add(m4);
+            mL.add(m5);
+            mL.add(m6);
+            return loader.done(mL);
         }
 
         @Override
@@ -516,21 +508,6 @@ public class FirestoreMock {
         public Loader<File> personImage(String uid) {
             Loader<File> loader = new Loader<>();
             return loader.done();
-        }
-
-        @Override
-        public Loader<BoardMember> getSemesterBoardOne(int semesterId, @NonNull Charge charge) {
-            Loader<BoardMember> loader = new Loader<>();
-            if (charge.equals(Charge.AH_X)) {
-                BoardMember bm = new BoardMember();
-                bm.setFull_name("Thilo Berdami");
-                return loader.done(bm);
-            } else if (charge.equals(Charge.X)) {
-                BoardMember bm = new BoardMember();
-                bm.setFull_name("Tobias Tumbrink");
-                return loader.done(bm);
-            }
-            return loader.done(new NoDataException("No charge found in semester " + semesterId));
         }
     }
 

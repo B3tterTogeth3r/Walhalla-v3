@@ -26,11 +26,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.storage.FirebaseStorage;
-
 import de.b3ttertogeth3r.walhalla.firebase.Analytics;
 import de.b3ttertogeth3r.walhalla.firebase.Authentication;
 import de.b3ttertogeth3r.walhalla.firebase.CloudMessaging;
@@ -49,6 +44,10 @@ import de.b3ttertogeth3r.walhalla.util.Cache;
 public class StartActivity extends AppCompatActivity implements FirebaseInit {
     private static final String TAG = "StartActivity";
     private static final int TOTAL = 11;
+    /**
+     * FIXME: 14.07.22 remove before publishing
+     */
+    private final boolean IS_EMULATOR = true;
     private int counter = 0;
     private int progress = 0;
     private ProgressBar progressBar;
@@ -64,26 +63,6 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
         App.setContext(getApplicationContext());
         CacheInit(getApplicationContext());
 
-        //region use firebase emulator
-        // FIXME: 14.07.22 remove before publishing
-        try {
-            FirebaseAuth.getInstance().useEmulator("10.0.2.2", 9099);
-            FirebaseStorage.getInstance().useEmulator("10.0.2.2", 9199);
-            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-            firestore.useEmulator("10.0.2.2", 8080);
-
-            FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                    .setPersistenceEnabled(false)
-                    .build();
-            firestore.setFirestoreSettings(settings);
-            for (int i = 0; i < 100; i++) {
-                Log.e(TAG, "###################################### FIRESTORE LOCAL EMULATOR IN USE ######################################");
-            }
-        } catch (Exception ignored) {
-        }
-        //endregion
-
-        //Init cacheData here
 
         FirebaseInit firebaseInit = this;
 
@@ -136,7 +115,7 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
     }
 
     public void CacheInit(Context context) {
-        if (new Cache().init(context)) {
+        if (new Cache().init(context, IS_EMULATOR)) {
             updateProgressbar();
             Log.i(TAG, "Cache init complete");
             return;
@@ -146,7 +125,7 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
 
     @Override
     public void Analytics(Context context) {
-        if (new Analytics().init(context)) {
+        if (new Analytics().init(context, IS_EMULATOR)) {
             updateProgressbar();
             Log.i(TAG, "Analytics init complete");
             return;
@@ -156,7 +135,7 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
 
     @Override
     public void Authentication(Context context) {
-        if (new Authentication().init(context)) {
+        if (new Authentication().init(context, IS_EMULATOR)) {
             updateProgressbar();
             Log.i(TAG, "Authentication init complete");
             return;
@@ -166,7 +145,7 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
 
     @Override
     public void CloudMessaging(Context context) {
-        if (new CloudMessaging().init(context)) {
+        if (new CloudMessaging().init(context, IS_EMULATOR)) {
             updateProgressbar();
             Log.i(TAG, "CloudMessaging init complete");
             return;
@@ -176,7 +155,7 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
 
     @Override
     public void Crashlytics(Context context) {
-        if (new Crashlytics().init(context)) {
+        if (new Crashlytics().init(context, IS_EMULATOR)) {
             updateProgressbar();
             Log.i(TAG, "Crashlytics init complete");
             return;
@@ -186,7 +165,7 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
 
     @Override
     public void DynamicLinks(Context context) {
-        if (new DynamicLinks().init(context)) {
+        if (new DynamicLinks().init(context, IS_EMULATOR)) {
             updateProgressbar();
             Log.i(TAG, "DynamicLinks init complete");
             return;
@@ -196,7 +175,7 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
 
     @Override
     public void Firestore(Context context) {
-        if (new Firestore().init(context)) {
+        if (new Firestore().init(context, IS_EMULATOR)) {
             updateProgressbar();
             Log.i(TAG, "Firestore init complete");
             return;
@@ -206,7 +185,7 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
 
     @Override
     public void InAppMessaging(Context context) {
-        if (new InAppMessaging().init(context)) {
+        if (new InAppMessaging().init(context, IS_EMULATOR)) {
             updateProgressbar();
             Log.i(TAG, "InAppMessaging init complete");
             return;
@@ -216,7 +195,7 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
 
     @Override
     public void RemoteConfig(Context context) {
-        if (new RemoteConfig().init(context)) {
+        if (new RemoteConfig().init(context, IS_EMULATOR)) {
             Firebase.remoteConfig().apply();
             Firebase.remoteConfig().update();
             updateProgressbar();
@@ -228,7 +207,7 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
 
     @Override
     public void Storage(Context context) {
-        if (new Storage().init(context)) {
+        if (new Storage().init(context, IS_EMULATOR)) {
             updateProgressbar();
             Log.i(TAG, "Storage init complete");
             return;

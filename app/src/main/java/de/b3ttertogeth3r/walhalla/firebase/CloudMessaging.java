@@ -61,7 +61,7 @@ public class CloudMessaging extends FirebaseMessagingService implements IInit {
     }
 
     @Override
-    public boolean init(Context context) {
+    public boolean init(Context context, boolean isEmulator) {
         try {
             messaging = FirebaseMessaging.getInstance();
             return true;

@@ -16,6 +16,8 @@ package de.b3ttertogeth3r.walhalla.object;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 
@@ -23,7 +25,7 @@ import java.text.SimpleDateFormat;
 
 import de.b3ttertogeth3r.walhalla.MainActivity;
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.MyObject;
+import de.b3ttertogeth3r.walhalla.abstract_generic.MyObject;
 import de.b3ttertogeth3r.walhalla.design.Image;
 import de.b3ttertogeth3r.walhalla.design.TableRow;
 import de.b3ttertogeth3r.walhalla.design.Text;
@@ -51,6 +53,15 @@ public class Movement extends MyObject implements Validate {
         this.recipe = recipe;
     }
 
+    public Movement(String id, Timestamp time, Double amount, String add, String purpose, DocumentReference recipe) {
+        this.id = id;
+        this.time = time;
+        this.amount = amount;
+        this.add = add;
+        this.purpose = purpose;
+        this.recipe = recipe;
+    }
+
     public String getId() {
         return id;
     }
@@ -67,11 +78,11 @@ public class Movement extends MyObject implements Validate {
             row.addView(new Text(context, "€ 0,00"));
             row.addView(new Text(context, "€ 0,00"));
         } else if (amount > 0) {
-            row.addView(new Text(context, getAmount().toString()));
+            row.addView(new Text(context, Double.toString(getAmount())));
             row.addView(new Text(context, "€ 0,00"));
         } else if (amount < 0) {
             row.addView(new Text(context, "€ 0,00"));
-            row.addView(new Text(context, amount.toString()));
+            row.addView(new Text(context, Double.toString(getAmount())));
         }
         Text desc = new Text(context);
         if (!purpose.isEmpty()) {
@@ -87,7 +98,7 @@ public class Movement extends MyObject implements Validate {
                     .setOnSuccessListener(result -> MainActivity.openExternal.file(result))
                     .setOnFailListener(e -> Log.e(TAG, "File download didn't work", e)));
         } else {
-            row.addView(new Text(context));
+            row.addView(new Text(context, ""));
         }
         return row;
     }
@@ -125,17 +136,18 @@ public class Movement extends MyObject implements Validate {
     }
 
     @Override
-    public Timestamp getTime() {
-        return time;
-    }
-
-    @Override
-    public void setTime(Timestamp time) {
-        this.time = time;
-    }
-
-    @Override
     public boolean validate() {
         return false;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        String string = super.toString();
+        if (id != null) {
+            string = "object/" + TAG + " " + id;
+        }
+
+        return string;
     }
 }

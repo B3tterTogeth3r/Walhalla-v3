@@ -26,7 +26,7 @@ public class Crashlytics implements IInit, de.b3ttertogeth3r.walhalla.object.Log
     private FirebaseCrashlytics CRASHLYTICS;
 
     @Override
-    public boolean init(Context context) {
+    public boolean init(Context context, boolean isEmulator) {
         try {
             CRASHLYTICS = FirebaseCrashlytics.getInstance();
             sendUnsent();

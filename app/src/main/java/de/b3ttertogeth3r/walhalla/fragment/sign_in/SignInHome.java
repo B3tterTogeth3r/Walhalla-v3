@@ -23,16 +23,18 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.itextpdf.text.exceptions.BadPasswordException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Touch;
 import de.b3ttertogeth3r.walhalla.design.Button;
 import de.b3ttertogeth3r.walhalla.design.EditText;
 import de.b3ttertogeth3r.walhalla.design.Image;
@@ -139,10 +141,15 @@ public class SignInHome extends Fragment implements IOnBackPressed {
                             }
                         })
                         .setOnFailListener(e -> {
-                            Log.e(TAG, "onClick: sign in exception found", e);
+                            Log.e(TAG, "onClick:existsEmail: sign in exception found", e);
                         });
             }
         });
+    }
+
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 
     private void openDialog() {
@@ -157,6 +164,10 @@ public class SignInHome extends Fragment implements IOnBackPressed {
                                 .commit();
                         Toast.makeToast(requireActivity(), R.string.sign_in_complete).show();
                     }).onFailureListener(e -> {
+                                if (e.getMessage() != null && e.getMessage().contains("invalid")) {
+                                    Toast.makeToast(requireActivity(), R.string.fui_error_invalid_password).show();
+                                    return;
+                                }
                                 Log.e(TAG, "openDialog: something went wrong", e);
                                 Toast.makeToast(requireActivity(), R.string.sign_in_failed).show();
                             }

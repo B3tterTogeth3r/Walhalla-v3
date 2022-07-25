@@ -27,7 +27,7 @@ import androidx.fragment.app.FragmentManager;
 import java.nio.channels.UnsupportedAddressTypeException;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Dialog;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Dialog;
 import de.b3ttertogeth3r.walhalla.design.EditText;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;

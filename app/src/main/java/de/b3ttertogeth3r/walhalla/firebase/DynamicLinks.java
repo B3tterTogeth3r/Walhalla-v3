@@ -21,7 +21,7 @@ import android.util.Log;
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
 import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 
 public class DynamicLinks implements IInit {
@@ -41,7 +41,7 @@ public class DynamicLinks implements IInit {
     }
 
     @Override
-    public boolean init(Context context) {
+    public boolean init(Context context, boolean isEmulator) {
         try {
             DynamicLinks.context = context;
             dynamicLinks = FirebaseDynamicLinks.getInstance();

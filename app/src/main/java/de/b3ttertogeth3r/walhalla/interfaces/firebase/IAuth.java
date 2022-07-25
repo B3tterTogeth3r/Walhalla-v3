@@ -17,9 +17,10 @@ package de.b3ttertogeth3r.walhalla.interfaces.firebase;
 import androidx.annotation.NonNull;
 
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.Loader;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.object.Person;
 
 /**
@@ -46,9 +47,9 @@ public interface IAuth {
     boolean isSignIn();
 
     /**
-     * @param p      Person to change the password of
-     * @param newPW  the new password
-     * @param loader result listener
+     * @param p     Person to change the password of
+     * @param newPW the new password
+     * @return loader result listener
      * @since 1.0
      */
     default Loader<Boolean> changePassword(Person p, String newPW) {
@@ -56,10 +57,10 @@ public interface IAuth {
     }
 
     /**
-     * @param p      Person to change the password of
-     * @param oldPW  the old password
-     * @param newPW  the new password
-     * @param loader result listener
+     * @param p     Person to change the password of
+     * @param oldPW the old password
+     * @param newPW the new password
+     * @return loader result listener
      * @since 1.0
      */
     Loader<Boolean> changePassword(Person p, String oldPW, String newPW);
@@ -168,4 +169,15 @@ public interface IAuth {
      * @since 1.0
      */
     void linkYahoo(@NonNull Loader<Void> loader);
+
+    /**
+     * Set a custom auth state listener
+     *
+     * @param authStateListener listener
+     * @see <a href="https://firebase.google.com/docs/reference/android/com/google/firebase/auth/FirebaseAuth.AuthStateListener">FirebaseAuth.AuthStateListener on Android</a>
+     * @since 1.0
+     */
+    void addAuthStateListener(FirebaseAuth.AuthStateListener authStateListener);
+
+    void removeAuthListener(FirebaseAuth.AuthStateListener authStateListener);
 }

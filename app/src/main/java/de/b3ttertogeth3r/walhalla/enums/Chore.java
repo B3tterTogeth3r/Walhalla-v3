@@ -16,6 +16,8 @@ package de.b3ttertogeth3r.walhalla.enums;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import de.b3ttertogeth3r.walhalla.R;
 
 public enum Chore {
@@ -81,5 +83,18 @@ public enum Chore {
                 return context.getString(R.string.chore_tennis_h_c);
         }
         return "TODO";
+    }
+
+
+    @NonNull
+    @Override
+    public String toString() {
+        try {
+            String name = super.toString().toLowerCase();
+            String s1 = name.substring(0, 1).toUpperCase();
+            return s1 + name.substring(1);
+        } catch (Exception e) {
+            return super.toString();
+        }
     }
 }

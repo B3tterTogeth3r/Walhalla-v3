@@ -49,8 +49,10 @@ import de.b3ttertogeth3r.walhalla.fragment.common.Rooms;
 import de.b3ttertogeth3r.walhalla.fragment.common.StudentBoard;
 import de.b3ttertogeth3r.walhalla.fragment.sign_in.SignInHome;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Balance;
+import de.b3ttertogeth3r.walhalla.fragment.signed_in.Chores;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Drinks;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Profile;
+import de.b3ttertogeth3r.walhalla.interfaces.ReloadSideNav;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.ISideNav;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.object.Log;
@@ -81,7 +83,7 @@ import de.b3ttertogeth3r.walhalla.old.fragments_main.HistoryFragment;
  * <ul><li>{@link de.b3ttertogeth3r.walhalla.fragment.sign_in.SignInHome SignInHome}</li></ul>
  * If a user is signed in, the following sites are displayed:
  * <ul>
- *     <li>{@link SignOut}</li>
+ *     <li>SignOut</li>
  *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.signed_in.Profile Profile}</li>
  *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.signed_in.Balance Balance}</li>
  *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.signed_in.Chores Chores}</li>
@@ -113,13 +115,16 @@ import de.b3ttertogeth3r.walhalla.old.fragments_main.HistoryFragment;
  * @version 1.1
  * @since 2.0
  */
-public class SideNav extends NavigationView implements NavigationView.OnNavigationItemSelectedListener, FirebaseAuth.AuthStateListener {
+public class SideNav extends NavigationView implements NavigationView.OnNavigationItemSelectedListener,
+        FirebaseAuth.AuthStateListener, ReloadSideNav {
     private static final String TAG = "SideNav";
+    public static ReloadSideNav reload;
     private static IAuth auth;
     private ISideNav listener;
 
     public SideNav(@NonNull Context context) {
         super(context);
+        reload = this;
         auth = Firebase.authentication();
         setNavigationItemSelectedListener(this);
         fillHeadView();
@@ -182,6 +187,9 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
             loginMenu.add(0, R.string.menu_drinks, 0, R.string.menu_drinks) //Change appearance
                     // depending on who is logged in
                     .setIcon(R.drawable.ic_beer);
+            loginMenu.add(0, R.string.menu_chores, 0, R.string.menu_chores) //Change appearance
+                    // depending on who is logged in
+                    .setIcon(R.drawable.ic_task);
             loginMenu.add(0, R.string.menu_balance, 0, R.string.menu_balance);
 
             //Only visible to members of the fraternity
@@ -190,7 +198,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
             menuLogin.add(0, R.string.menu_kartei, 0, R.string.menu_kartei).setIcon(R.drawable.ic_contacts);
 
             //Only visible to a active board member of the current semester
-            /* TODO 01.06.2022 create cache data saves
+            /* TODO 01.06.2022 get users rank and "charge"
             if (!CacheData.getCharge().getName().isEmpty()) {
                 Menu menuCharge = menu.addSubMenu(R.string.menu_board_only);
                 //menuCharge.add(0, R.string.menu_new_person, 0, R.string.menu_new_person)
@@ -225,6 +233,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
 
     public SideNav(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        reload = this;
         auth = Firebase.authentication();
         setNavigationItemSelectedListener(this);
         fillHeadView();
@@ -233,6 +242,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
 
     public SideNav(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        reload = this;
         auth = Firebase.authentication();
         setNavigationItemSelectedListener(this);
         fillHeadView();
@@ -327,6 +337,11 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
                         .addToBackStack(TAG)
                         .commit();
                 break;
+            case R.string.menu_chores:
+                transaction.replace(container, new Chores(false))
+                        .addToBackStack(TAG)
+                        .commit();
+                break;
             case R.id.row2first:
                 if (auth.isSignIn()) {
                     changePage(R.string.menu_balance, transaction);
@@ -353,14 +368,21 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
         }
     }
 
+    @Override
+    public void reload() {
+        fillHeadView();
+        fillSideNav();
+    }
+
     public void setListener(ISideNav listener) {
         this.listener = listener;
     }
 
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        fillHeadView();
+        // TODO: 22.07.22 why is this never called?
         fillSideNav();
+        fillHeadView();
     }
 
     @Override
@@ -368,5 +390,11 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
         Log.i(TAG, "Clicked menu item with the id of:" + item.getItemId());
         changePage(item.getItemId(), listener.clicked(item.getItemId()));
         return false;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return TAG;
     }
 }

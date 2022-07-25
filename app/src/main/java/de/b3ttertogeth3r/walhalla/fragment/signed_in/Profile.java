@@ -17,18 +17,31 @@ package de.b3ttertogeth3r.walhalla.fragment.signed_in;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
+import com.google.firebase.auth.FirebaseAuth;
+
+import de.b3ttertogeth3r.walhalla.R;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
+import de.b3ttertogeth3r.walhalla.design.SideNav;
+import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 
 public class Profile extends Fragment {
     private static final String TAG = "Profile";
     private IAuth auth;
+    private IFirestoreDownload download;
 
     @Override
     public void constructor() {
+        download = Firebase.firestoreDownload();
         auth = Firebase.authentication();
+        if (!auth.isSignIn()) {
+            Toast.makeToast(requireContext(), R.string.fui_error_session_expired).show();
+            SideNav.changePage(R.string.menu_home, requireActivity().getSupportFragmentManager().beginTransaction());
+        }
     }
 
     @Override
@@ -61,5 +74,10 @@ public class Profile extends Fragment {
     @Override
     public void stop() {
 
+    }
+
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 }

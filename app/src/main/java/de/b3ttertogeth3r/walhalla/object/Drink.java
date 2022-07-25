@@ -14,9 +14,7 @@
 
 package de.b3ttertogeth3r.walhalla.object;
 
-import com.google.firebase.Timestamp;
-
-import de.b3ttertogeth3r.walhalla.abstract_classes.MyObject;
+import de.b3ttertogeth3r.walhalla.abstract_generic.MyObject;
 import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
 
 /**
@@ -68,7 +66,7 @@ public class Drink extends MyObject implements Validate {
         this.priceBottle = priceBottle;
     }
 
-    public String getName() {
+    public String getViewString() {
         return name;
     }
 
@@ -106,16 +104,6 @@ public class Drink extends MyObject implements Validate {
 
     public void setPriceBottle(float priceBottle) {
         this.priceBottle = priceBottle;
-    }
-
-    @Override
-    public Timestamp getTime() {
-        return time;
-    }
-
-    @Override
-    public void setTime(Timestamp time) {
-        this.time = time;
     }
 
     @Override

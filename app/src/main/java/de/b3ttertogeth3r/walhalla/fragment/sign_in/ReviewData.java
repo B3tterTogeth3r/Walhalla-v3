@@ -21,15 +21,17 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.itextpdf.text.exceptions.BadPasswordException;
 
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Fragment;
-import de.b3ttertogeth3r.walhalla.abstract_classes.Touch;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Touch;
 import de.b3ttertogeth3r.walhalla.design.Button;
 import de.b3ttertogeth3r.walhalla.design.ProfileRow;
 import de.b3ttertogeth3r.walhalla.design.Toast;
@@ -176,6 +178,11 @@ public class ReviewData extends Fragment implements IOnBackPressed {
         buttonLayout.addView(next);
         view.addView(buttonLayout);
         //endregion
+    }
+
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 
     @Override
