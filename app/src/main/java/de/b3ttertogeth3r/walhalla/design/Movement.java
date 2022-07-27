@@ -153,7 +153,7 @@ public class Movement {
 
     public void setRecipe(DocumentReference ref) {
         this.recipe.setVisibility(ViewGroup.VISIBLE);
-        Firebase.firestoreDownload()
+        Firebase.Firestore.download()
                 .file(ref)
                 .setOnSuccessListener(result -> {
                     if (result != null && result.validate()) {

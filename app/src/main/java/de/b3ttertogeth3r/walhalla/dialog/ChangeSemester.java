@@ -34,6 +34,7 @@ import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.object.Semester;
+import de.b3ttertogeth3r.walhalla.util.Dev.SemesterRange;
 
 public class ChangeSemester extends Dialog<Integer> {
     private static final String TAG = "ChangeSemester";
@@ -59,6 +60,7 @@ public class ChangeSemester extends Dialog<Integer> {
     }
 
     @Override
+    @SemesterRange
     public Integer done() {
         float time;
         if (np_sem_kind.getValue() == 1) {
@@ -69,7 +71,7 @@ public class ChangeSemester extends Dialog<Integer> {
         int year = np_year.getValue();
 
         //somehow it is right this way, I forgot why :-)
-        return (int) ((time + year) * 2 - 1);
+        return (int) ((time + year) * 2 - 3);
     }
 
     @Override

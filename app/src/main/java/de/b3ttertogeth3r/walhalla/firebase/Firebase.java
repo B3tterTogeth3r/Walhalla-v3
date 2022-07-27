@@ -27,10 +27,20 @@ import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.mock.StorageMock;
 
 /**
- * A static interface to get the needed functions from the Firebase services
+ * A static interface to get the needed functions from the Firebase services. <br> It has the
+ * static functions:
+ * <ul>
+ *     <li>{@link #analytics()}</li>
+ *     <li>{@link #authentication()}</li>
+ *     <li>{@link #remoteConfig()}</li>
+ *     <li>{@link Firestore#download() Firestore.download()}</li>
+ *     <li>{@link Firestore#upload() Firestore.upload()}</li>
+ *     <li>{@link Storage#download() Storage.download()}</li>
+ *     <li>{@link Storage#upload() Storage.upload()}</li>
+ * </ul>
  *
  * @author B3tterTogeth3r
- * @version 1.0
+ * @version 1.2
  * @see IFirestoreUpload
  * @see IFirestoreDownload
  * @see IAnalytics
@@ -66,62 +76,87 @@ public interface Firebase {
     }
 
     /**
-     * Calls the interface inside the {@link Firestore.Download} class to pass on the public functions.
+     * Calls the {@link IRemoteConfig} interface to pass on the public functions
      *
      * @return The interface.
-     * @see Firestore
-     * @see IFirestoreDownload
-     * @see Firestore.Download
-     * @since {@link Firebase} version 1.0
+     * @see RemoteConfig
+     * @see IRemoteConfig
+     * @see <a href="https://firebase.google.com/docs/remote-config">Firebase Remote Config Documentation</a>
+     * @since {@link Firebase} version 1.1
      */
-    static IFirestoreDownload firestoreDownload() {
-        return new FirestoreMock.Download();
-        //return Firestore.download;
-    }
-
-    /**
-     * Calls the interface inside the {@link Firestore.Upload} class to pass on the public functions.
-     *
-     * @return The interface.
-     * @see Firestore
-     * @see IFirestoreUpload
-     * @see Firestore.Upload
-     * @since {@link Firebase} version 1.0
-     */
-    static IFirestoreUpload firestoreUpload() {
-        return new FirestoreMock.Upload();
-        //return Firestore.upload;
-    }
-
-    /**
-     * Calls the interface inside the {@link Storage.Upload} class to pass on the public functions.
-     *
-     * @return The interface.
-     * @see Storage
-     * @see IStorageUpload
-     * @see Storage.Upload
-     * @since {@link Firebase} version 1.0
-     */
-    static IStorageUpload storageUpload() {
-        return new StorageMock.Upload();
-        //return Storage.upload;
-    }
-
-    /**
-     * Calls the interface inside the {@link Storage.Download} class to pass on the public functions.
-     *
-     * @return The interface.
-     * @see Storage
-     * @see IStorageDownload
-     * @see Storage.Download
-     * @since {@link Firebase} version 1.0
-     */
-    static IStorageDownload storageDownload() {
-        //return new StorageMock.Download();
-        return Storage.download;
-    }
-
     static IRemoteConfig remoteConfig() {
         return RemoteConfig.config;
+    }
+
+    /**
+     * An interface collecting the Firestore interfaces used to upload and download data into the
+     * Firebase Firestore Database.
+     *
+     * @see <a href="https://firebase.google.com/docs/firestore">Firestore online Docs</a>
+     * @see de.b3ttertogeth3r.walhalla.firebase.Firestore Firestore
+     */
+    interface Firestore {
+
+        /**
+         * Calls the interface inside the {@link de.b3ttertogeth3r.walhalla.firebase.Firestore.Download Firestore.Download} class to pass on the public functions.
+         *
+         * @return The interface.
+         * @see IFirestoreDownload
+         * @see de.b3ttertogeth3r.walhalla.firebase.Firestore.Download Firestore.Download
+         * @since {@link Firebase} version 1.0
+         */
+        static IFirestoreDownload download() {
+            return new FirestoreMock.Download();
+            //return Firestore.download;
+        }
+
+        /**
+         * Calls the interface inside the {@link de.b3ttertogeth3r.walhalla.firebase.Firestore.Upload Firestore.Upload} class to pass on the public functions.
+         *
+         * @return The interface.
+         * @see IFirestoreUpload
+         * @see de.b3ttertogeth3r.walhalla.firebase.Firestore.Upload Firestore.Upload
+         * @since {@link Firebase} version 1.0
+         */
+        static IFirestoreUpload upload() {
+            return new FirestoreMock.Upload();
+            // return Firestore.upload;
+        }
+    }
+
+    /**
+     * An interface to collect the Storage interfaces used to upload and download data into the
+     * Firebase Cloud Storage Bucket.
+     *
+     * @see de.b3ttertogeth3r.walhalla.firebase.Storage Storage
+     * @since {@link Firebase} version 1.2
+     */
+    interface Storage {
+        /**
+         * Calls the interface inside the {@link de.b3ttertogeth3r.walhalla.firebase.Storage.Download Storage.Download} class to pass on the public functions.
+         *
+         * @return The interface.
+         * @see IStorageDownload
+         * @see de.b3ttertogeth3r.walhalla.firebase.Storage.Download Storage.Download
+         * @since {@link Firebase} version 1.0
+         */
+        static IStorageDownload download() {
+            return new StorageMock.Download();
+            // return de.b3ttertogeth3r.walhalla.firebase.Storage.download;
+        }
+
+
+        /**
+         * Calls the interface inside the {@link de.b3ttertogeth3r.walhalla.firebase.Storage.Upload Storage.Upload} class to pass on the public functions.
+         *
+         * @return The interface.
+         * @see IStorageUpload
+         * @see de.b3ttertogeth3r.walhalla.firebase.Storage.Upload Storage.Upload
+         * @since {@link Firebase} version 1.0
+         */
+        static IStorageUpload upload() {
+            return new StorageMock.Upload();
+            //return de.b3ttertogeth3r.walhalla.firebase.Storage.upload;
+        }
     }
 }

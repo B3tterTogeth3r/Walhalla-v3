@@ -19,13 +19,44 @@ import androidx.annotation.NonNull;
 import de.b3ttertogeth3r.walhalla.interfaces.object.IAddress;
 
 /**
+ * A class to save addresses. Every address needs at least the following values: {@link #STREET},
+ * {@link #NUMBER}, {@link #ZIP}, {@link #CITY}. Additional values are: {@link #STATE}, {@link #COUNTRY}.
+ * The {@link #ID} is the id in the Firestore database.
+ *
  * @author B3tterTogeth3r
  * @see de.b3ttertogeth3r.walhalla.interfaces.object.IAddress
- * @see de.b3ttertogeth3r.walhalla.interfaces.object.Validate
+ * @see de.b3ttertogeth3r.walhalla.interfaces.object.Validate Validate
  */
 public class Address implements IAddress {
     private static final String TAG = "Address";
-    private String id, street, number, zip, city, state, country;
+    /**
+     * ID of the {@link de.b3ttertogeth3r.walhalla.firebase.Firestore Firestore} path
+     */
+    private String id;
+    /**
+     * Name of the street.
+     */
+    private String street;
+    /**
+     * number of the house in the street.
+     */
+    private String number;
+    /**
+     * zip code of the city.
+     */
+    private String zip;
+    /**
+     * Name of the city.
+     */
+    private String city;
+    /**
+     * Name of the state in a country.
+     */
+    private String state;
+    /**
+     * Name of the country.
+     */
+    private String country;
 
     public Address() {
     }
@@ -45,6 +76,100 @@ public class Address implements IAddress {
         this.city = city;
         this.state = state;
         this.country = country;
+    }
+
+    public Address(String id, String street, String number, String zip, String city, String state, String country) {
+        this.id = id;
+        this.street = street;
+        this.number = number;
+        this.zip = zip;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        if (validate()) {
+            String result = "";
+            result = result + street + " " + number;
+            result = result + "\n" + zip + " " + city;
+            if (state != null && !state.isEmpty()) {
+                result = result + "\n" + state;
+            }
+            if (country != null && !country.isEmpty()) {
+                result = result + "\n" + country;
+            }
+            return result;
+        } else
+            return "";
+    }
+
+    /**
+     * Check for a valid address.
+     *
+     * @return true, if the necessary fields are set.
+     * @see Address
+     * @since 2.0
+     */
+    @Override
+    public boolean validate() {
+        return (street != null && !street.isEmpty() &&
+                number != null && !number.isEmpty() &&
+                city != null && !city.isEmpty() &&
+                zip != null && !zip.isEmpty());
+    }
+
+    @Override
+    public String getValue(int valueId) {
+        switch (valueId) {
+            case ID:
+                return getId();
+            case STREET:
+                return getStreet();
+            case NUMBER:
+                return getNumber();
+            case ZIP:
+                return getZip();
+            case CITY:
+                return getCity();
+            case STATE:
+                return getState();
+            case COUNTRY:
+                return getCountry();
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void setValue(int valueId, String value) {
+        switch (valueId) {
+            case ID:
+                setId(value);
+                break;
+            case STREET:
+                setStreet(value);
+                break;
+            case NUMBER:
+                setNumber(value);
+                break;
+            case ZIP:
+                setZip(value);
+                break;
+            case CITY:
+                setCity(value);
+                break;
+            case STATE:
+                setState(value);
+                break;
+            case COUNTRY:
+                setCountry(value);
+                break;
+            default:
+                break;
+        }
     }
 
     public String getId() {
@@ -101,53 +226,5 @@ public class Address implements IAddress {
 
     public void setCountry(String country) {
         this.country = country;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        if (validate()) {
-            String result = "";
-            result = result + street + " " + number;
-            result = result + "\n" + zip + " " + city;
-            if (state != null && !state.isEmpty()) {
-                result = result + "\n" + state;
-            }
-            if (country != null && !country.isEmpty()) {
-                result = result + "\n" + country;
-            }
-            return result;
-        } else
-            return "";
-    }
-
-    @Override
-    public String getValue(int valueId) {
-        switch (valueId) {
-            case ID:
-                return getId();
-            case STREET:
-                return getStreet();
-            case NUMBER:
-                return getNumber();
-            case ZIP:
-                return getZip();
-            case CITY:
-                return getCity();
-            case STATE:
-                return getState();
-            case COUNTRY:
-                return getCountry();
-            default:
-                return null;
-        }
-    }
-
-    @Override
-    public boolean validate() {
-        return (street != null && !street.isEmpty() &&
-                number != null && !number.isEmpty() &&
-                city != null && !city.isEmpty() &&
-                zip != null && !zip.isEmpty());
     }
 }

@@ -44,6 +44,7 @@ public class BoardMember implements Validate {
     private String major = "";
     private String mail = "";
     private String from = "";
+    private int semester = 0;
     private Charge charge = Charge.VOP;
     private DocumentReference image = null;
     private String uid = "";
@@ -64,13 +65,14 @@ public class BoardMember implements Validate {
     }
 
     public BoardMember(String full_name, String mobile, String major, String mail, String from,
-                       Charge charge, DocumentReference image, String uid) {
+                       Charge charge, int semester, DocumentReference image, String uid) {
         this.full_name = full_name;
         this.mobile = mobile;
         this.major = major;
         this.mail = mail;
         this.from = from;
         this.charge = charge;
+        this.semester = semester;
         this.image = image;
         this.uid = uid;
     }

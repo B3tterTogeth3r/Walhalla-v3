@@ -53,7 +53,7 @@ public class Chores extends Fragment {
 
     @Override
     public void constructor() {
-        download = Firebase.firestoreDownload();
+        download = Firebase.Firestore.download();
         IAuth auth = Firebase.authentication();
         if (!auth.isSignIn()) {
             Toast.makeToast(requireContext(), R.string.fui_error_session_expired).show();
@@ -70,7 +70,7 @@ public class Chores extends Fragment {
 
     @Override
     public void start() {
-        download.personChores(uid, showDoneChores)
+        download.getPersonChores(uid, showDoneChores)
                 .setOnSuccessListener(result -> {
                     if (result == null || result.isEmpty()) {
                         throw new NoDataException("User has no Chores");

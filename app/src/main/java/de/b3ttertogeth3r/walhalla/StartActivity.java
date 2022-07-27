@@ -63,7 +63,6 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
         App.setContext(getApplicationContext());
         CacheInit(getApplicationContext());
 
-
         FirebaseInit firebaseInit = this;
 
         firebaseInit.Analytics(getApplicationContext());
@@ -100,7 +99,7 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
     private void updateProgressbar() {
         if (counter == TOTAL) {
             progressBar.setProgress(progress, true);
-            /* Go to MainActivity */
+            // Go to MainActivity
             Intent mainIntent = new Intent(this, MainActivity.class);
             startActivity(mainIntent);
             finish();

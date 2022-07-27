@@ -224,10 +224,10 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
         hideKeyBoard.hide();
         //load the location and the full event description
         Toast errorToast = new Toast(getApplicationContext());
-        IFirestoreDownload downloader = Firebase.firestoreDownload();
-        downloader.eventDescription(event.getId())
+        IFirestoreDownload downloader = Firebase.Firestore.download();
+        downloader.getEventDescription(event.getId())
                 .setOnSuccessListener(description -> {
-                    downloader.eventLocation(event.getId())
+                    downloader.getEventLocation(event.getId())
                             .setOnSuccessListener(eventLocation -> {
                                 Intent calendarIntent = new Intent(Intent.ACTION_INSERT);
                                 calendarIntent.setData(CalendarContract.Events.CONTENT_URI);

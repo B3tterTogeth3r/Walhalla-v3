@@ -21,6 +21,7 @@ plugins {
 
 android {
     compileSdk 31
+    compileOptions.encoding ="UTF-8"
 
     defaultConfig {
         applicationId "de.b3ttertogeth3r.walhalla"
@@ -79,7 +80,7 @@ dependencies {
     // Firebase imports
     implementation 'com.firebaseui:firebase-ui-auth:7.2.0' // Firebase authentication ui
     implementation 'com.firebaseui:firebase-ui-storage:7.2.0' // FirebaseUI Storage only
-    implementation platform('com.google.firebase:firebase-bom:30.0.1')
+    implementation platform('com.google.firebase:firebase-bom:30.3.0')
     implementation 'com.google.firebase:firebase-config' // Remote Configuration
     implementation 'com.google.firebase:firebase-crashlytics' // Crashlytics
     implementation 'com.google.firebase:firebase-dynamic-links' // Dynamic links

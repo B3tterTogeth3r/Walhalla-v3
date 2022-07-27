@@ -256,5 +256,7 @@
     <string name="balance_recipe">Beleg</string>
     <string name="menu_chores">Aufgaben</string>
     <string name="chore_none">Du hast keine Aufgaben.</string>
+    <string name="no_event">Das ausgewählte Semester hat keine Veranstaltungen.</string>
+    <string name="no_board">Das ausgeählte Semester hat keinen Vorstand.</string>
 
 </resources>

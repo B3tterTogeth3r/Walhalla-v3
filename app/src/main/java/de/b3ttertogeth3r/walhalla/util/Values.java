@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -14,10 +14,17 @@
 
 package de.b3ttertogeth3r.walhalla.util;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.Timestamp;
+
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 
 import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.R;
+import de.b3ttertogeth3r.walhalla.object.Semester;
 
 public class Values {
     public static final Locale LOCALE = new Locale("de", "DE");
@@ -28,4 +35,44 @@ public class Values {
             App.getContext().getString(R.string.month_aug), App.getContext().getString(R.string.month_sep),
             App.getContext().getString(R.string.month_oct), App.getContext().getString(R.string.month_nov),
             App.getContext().getString(R.string.month_dec)};
+    /**
+     * Semester list of all semesters until SS 2064
+     */
+    public static final ArrayList<Semester> semesterList = getSemesters();
+
+    @NonNull
+    private static ArrayList<Semester> getSemesters() {
+        ArrayList<Semester> semesters = new ArrayList<>();
+        int l = 1864;
+        int s = 64;
+        for (int i = 0; i < 400; i++) {
+            Calendar start = Calendar.getInstance();
+            start.set(l, 9, 1, 0, 0, 0);
+            Calendar end = Calendar.getInstance();
+            end.set((l + 1), 2, 30, 23, 59, 59);
+            String longStr = "Wintersemester " + l + " / " + (l + 1);
+            String shortStr = "WS" + s + "/" + (s + 1);
+            semesters.add(new Semester(String.valueOf(i), longStr, shortStr,
+                    new Timestamp(start.getTime()), new Timestamp(end.getTime())));
+
+            i++;
+            s++;
+            l++;
+            if (s == 100) {
+                s = 0;
+            }
+            start.set(l, 3, 1, 0, 0, 0);
+            end.set(l, 8, 31, 23, 59, 59);
+            longStr = "Sommersemester " + l;
+            if (s > 10) {
+                shortStr = "SS0" + s;
+            } else {
+                shortStr = "SS" + s;
+            }
+            semesters.add(new Semester(String.valueOf(i), longStr, shortStr,
+                    new Timestamp(start.getTime()), new Timestamp(end.getTime())));
+
+        }
+        return semesters;
+    }
 }

@@ -18,7 +18,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,7 +32,6 @@ import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.interfaces.loader.OnSuccessListener;
 import de.b3ttertogeth3r.walhalla.object.DrinkMovement;
 import de.b3ttertogeth3r.walhalla.object.Log;
 
@@ -56,7 +54,7 @@ public class Drinks extends Fragment {
 
     @Override
     public void constructor() {
-        download = Firebase.firestoreDownload();
+        download = Firebase.Firestore.download();
         if (!Firebase.authentication().isSignIn()) {
             Toast.makeToast(requireContext(), R.string.fui_error_session_expired).show();
             SideNav.changePage(R.string.menu_home, requireActivity().getSupportFragmentManager().beginTransaction());
@@ -70,20 +68,27 @@ public class Drinks extends Fragment {
 
     @Override
     public void start() {
-        // TODO: 21.07.22 list all drinks of the current/selected semester grouped by kind above the table
         download.getPersonDrinkMovement(uid, currentSemester)
-                .setOnSuccessListener(new OnSuccessListener<ArrayList<DrinkMovement>>() {
-                    @Override
-                    public void onSuccessListener(@Nullable ArrayList<DrinkMovement> result) throws Exception {
-                        if (result == null || result.isEmpty()) {
-                            throw new NoDataException("No drink movements found");
-                        }
-                        displayDrinks(result);
+                .setOnSuccessListener(result -> {
+                    if (result == null || result.isEmpty()) {
+                        throw new NoDataException("No drink movements found");
                     }
+                    displayDrinksGroup(result);
+                    displayDrinks(result);
                 })
                 .setOnFailListener(e -> {
                     Log.e(TAG, "start: ", e);
                 });
+    }
+
+    private void displayDrinksGroup(ArrayList<DrinkMovement> result) {
+        // TODO: 21.07.22 list all drinks of the current/selected semester grouped by kind above the table
+        for (DrinkMovement dm : result) {
+            String name = dm.getViewString();
+            int amount = dm.getAmount();
+            float price = dm.getPrice();
+
+        }
     }
 
     @Override

@@ -154,15 +154,14 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         Log.i(TAG, "onAuthStateChanged: " + Firebase.authentication().isSignIn());
-        // TODO: 25.07.22 reload fragment
+        // reload fragment
         try {
             authStatusChanged(firebaseAuth)
                     .getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, this)
                     .commit();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
     }
 }

@@ -24,6 +24,15 @@ import java.util.function.UnaryOperator;
 
 import de.b3ttertogeth3r.walhalla.object.Text;
 
+/**
+ * A allways sorted List of {@link Text} Objects to be designed inside a
+ * {@link de.b3ttertogeth3r.walhalla.design.LinearLayout LinearLayout}
+ *
+ * @param <T> {@link Text}
+ * @author B3tterTogeth3r
+ * @version 1.0
+ * @since 3.0
+ */
 public class Paragraph<T extends Text> extends ArrayList<Text> {
 
     @Override
@@ -44,10 +53,6 @@ public class Paragraph<T extends Text> extends ArrayList<Text> {
         boolean result = super.add(text);
         sort();
         return result;
-    }
-
-    public void sort() {
-        super.sort(Comparator.comparingInt(Text::getPosition));
     }
 
     @Override
@@ -99,5 +104,9 @@ public class Paragraph<T extends Text> extends ArrayList<Text> {
     @Override
     public void sort(@Nullable Comparator<? super Text> c) {
         super.sort(c);
+    }
+
+    public void sort() {
+        super.sort(Comparator.comparingInt(Text::getPosition));
     }
 }

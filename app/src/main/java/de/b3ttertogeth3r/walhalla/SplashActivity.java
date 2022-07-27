@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -20,11 +20,20 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import de.b3ttertogeth3r.walhalla.old.StartActivity;
-
+/**
+ * This activity is just to remove the white loading screen and wait until all the necessary values
+ * and methods have been loaded before moving on to {@link StartActivity}.
+ *
+ * @author B3tterTogeth3r
+ * @version 1.0
+ * @see AppCompatActivity
+ * @since 1.0
+ */
 public class SplashActivity extends AppCompatActivity {
+    private static final String TAG = "SplashActivity";
+
     @Override
-    protected void onCreate (@Nullable Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent mainIntent = new Intent(this, StartActivity.class);
         startActivity(mainIntent);

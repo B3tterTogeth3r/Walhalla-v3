@@ -42,7 +42,7 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
     private IFirestoreDownload download;
     private LinearLayout newsLayout;
     private ArrayList<News> newsList = new ArrayList<>();
-    private int position, padding;
+    private int position;
     private int max_position = 0;
     private Button previous, next;
 
@@ -57,7 +57,7 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void constructor() {
-        download = Firebase.firestoreDownload();
+        download = Firebase.Firestore.download();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void start() {
-        download.news(visibility)
+        download.getNews(visibility)
                 .setOnSuccessListener(result -> {
                     newsList = result;
                     if (result != null) {
@@ -78,6 +78,7 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
                     loadEntry(0);
                 }).setOnFailListener(e -> {
                 });
+        int padding;
         try {
             padding = (int) TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
@@ -126,7 +127,6 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
         //endregion
 
         //region advertisement
-        // TODO: 30.05.22 add app to GoogleAdMob
         AdView adView = new AdView(requireContext(), AdSize.BANNER);
         view.addView(adView);
         //endregion

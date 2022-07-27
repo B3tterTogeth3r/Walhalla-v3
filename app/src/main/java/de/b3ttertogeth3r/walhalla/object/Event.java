@@ -14,13 +14,18 @@
 
 package de.b3ttertogeth3r.walhalla.object;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+
 import com.google.firebase.Timestamp;
 
 import de.b3ttertogeth3r.walhalla.abstract_generic.MyObject;
 import de.b3ttertogeth3r.walhalla.enums.Collar;
 import de.b3ttertogeth3r.walhalla.enums.Punctuality;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
+import de.b3ttertogeth3r.walhalla.interfaces.object.IEvent;
 import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
+import de.b3ttertogeth3r.walhalla.util.Dev.EventValue;
 
 /**
  * @author B3tterTogeth3r
@@ -29,16 +34,28 @@ import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
  * @see Validate
  * @since 1.0
  */
-public class Event extends MyObject implements Validate, Cloneable {
-    private Timestamp end;
+public class Event extends MyObject implements IEvent, Cloneable {
+    private String id;
     private String title;
     private String description;
+    private Timestamp end;
     private Collar collar;
     private Punctuality punctuality;
     private Visibility visibility;
-    private String id;
 
     public Event() {
+    }
+
+    public Event(String id, String title, String description, Timestamp start, Timestamp end,
+                 Collar collar, Punctuality punctuality, Visibility visibility) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.time = start;
+        this.end = end;
+        this.collar = collar;
+        this.punctuality = punctuality;
+        this.visibility = visibility;
     }
 
     public Event(Timestamp start, Timestamp end, String title, String description, Collar collar,
@@ -52,20 +69,30 @@ public class Event extends MyObject implements Validate, Cloneable {
         this.visibility = visibility;
     }
 
-    public String getId() {
-        return id;
+    @Override
+    public boolean validate() {
+        if (getVisibility() == null) {
+            setVisibility(Visibility.PUBLIC);
+        }
+        if (getPunctuality() == null) {
+            setPunctuality(Punctuality.CT);
+        }
+        if (getCollar() == null) {
+            setCollar(Collar.O);
+        }
+        return (getTime() != null && !getTitle().isEmpty());
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public Visibility getVisibility() {
+        return visibility;
     }
 
-    public Timestamp getEnd() {
-        return end;
+    public Punctuality getPunctuality() {
+        return punctuality;
     }
 
-    public void setEnd(Timestamp end) {
-        this.end = end;
+    public Collar getCollar() {
+        return collar;
     }
 
     public String getTitle() {
@@ -76,32 +103,12 @@ public class Event extends MyObject implements Validate, Cloneable {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Collar getCollar() {
-        return collar;
-    }
-
     public void setCollar(Collar collar) {
         this.collar = collar;
     }
 
-    public Punctuality getPunctuality() {
-        return punctuality;
-    }
-
     public void setPunctuality(Punctuality punctuality) {
         this.punctuality = punctuality;
-    }
-
-    public Visibility getVisibility() {
-        return visibility;
     }
 
     public void setVisibility(Visibility visibility) {
@@ -109,16 +116,99 @@ public class Event extends MyObject implements Validate, Cloneable {
     }
 
     @Override
-    public boolean validate() {
-        return false;
+    public de.b3ttertogeth3r.walhalla.design.Event getView(FragmentActivity context) {
+        return de.b3ttertogeth3r.walhalla.design.Event.create(context, null, this);
     }
 
     @Override
+    public Object getValue(@EventValue int valueID) {
+        switch (valueID) {
+            case ID:
+                return getId();
+            case TITLE:
+                return getTitle();
+            case DESCRIPTION:
+                return getDescription();
+            case COLLAR:
+                return getCollar();
+            case PUNCTUALITY:
+                return getPunctuality();
+            case TIME:
+                return getTime();
+            case END:
+                return getEnd();
+            case VISIBILITY:
+                return getVisibility();
+            default:
+                return null;
+        }
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Timestamp getEnd() {
+        return end;
+    }
+
+    public void setEnd(Timestamp end) {
+        this.end = end;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @Override
+    public void setValue(@EventValue int valueID, @NonNull Object object) {
+        try {
+            switch (valueID) {
+                case ID:
+                    setId((String) object);
+                    break;
+                case TITLE:
+                    setTitle((String) object);
+                    break;
+                case DESCRIPTION:
+                    setDescription((String) object);
+                    break;
+                case COLLAR:
+                    setCollar((Collar) object);
+                    break;
+                case PUNCTUALITY:
+                    setPunctuality((Punctuality) object);
+                    break;
+                case TIME:
+                    setTime((Timestamp) object);
+                    break;
+                case END:
+                    setEnd((Timestamp) object);
+                    break;
+                case VISIBILITY:
+                    setVisibility((Visibility) object);
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception ignored) {
+        }
+    }
+
+    @NonNull
+    @Override
     public Event clone() {
         try {
-            Event clone = (Event) super.clone();
             // TODO: copy mutable state here, so the clone can't change the internals of the original
-            return clone;
+            return (Event) super.clone();
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }

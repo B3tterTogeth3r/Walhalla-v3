@@ -37,6 +37,11 @@ import de.b3ttertogeth3r.walhalla.util.TrafficLight;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
 /**
+ * A class to store the data a person has saved in the Firestore database.
+ * <p>
+ * Also it can create a view of the given data if {@link #getViewAll(Context)},
+ * {@link #getViewDisplay(Context)} or {@link #getViewEdit(Context, View.OnClickListener)} is called.
+ *
  * @author B3tterTogeth3r
  * @version 2.1
  * @see Validate
@@ -65,6 +70,57 @@ public class Person implements IPerson {
     }
 
     public Person(String first_Name, String last_Name, String origin, String major,
+                  String nickname, String passwordString, String mobile, String mail,
+                  int joined, Timestamp birthday, Rank rank, boolean enabled, boolean password, String id) {
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
+        this.origin = origin;
+        this.major = major;
+        this.nickname = nickname;
+        this.passwordString = passwordString;
+        this.mobile = mobile;
+        this.mail = mail;
+        this.joined = joined;
+        this.birthday = birthday;
+        this.rank = rank;
+        this.enabled = enabled;
+        this.password = password;
+        this.id = id;
+    }
+
+    public Person(String first_Name, String last_Name, String origin, String major,
+                  String nickname, String mobile, String mail,
+                  int joined, Timestamp birthday, Rank rank, boolean enabled, boolean password) {
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
+        this.origin = origin;
+        this.major = major;
+        this.nickname = nickname;
+        this.mobile = mobile;
+        this.mail = mail;
+        this.joined = joined;
+        this.birthday = birthday;
+        this.rank = rank;
+        this.enabled = enabled;
+        this.password = password;
+    }
+
+    public Person(String first_Name, String last_Name, String origin, String major,
+                  String nickname, String mobile, String mail, int joined, Timestamp birthday,
+                  Rank rank) {
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
+        this.origin = origin;
+        this.major = major;
+        this.nickname = nickname;
+        this.mobile = mobile;
+        this.mail = mail;
+        this.joined = joined;
+        this.birthday = birthday;
+        this.rank = rank;
+    }
+
+    public Person(String first_Name, String last_Name, String origin, String major,
                   String nickname, String passwordString, int joined, Timestamp birthday,
                   Rank rank, boolean enabled, boolean password) {
         this.first_Name = first_Name;
@@ -83,18 +139,10 @@ public class Person implements IPerson {
 
     public boolean isEnabled() {
         return enabled;
-    }    //region getter and setters
-
-    public String getMobile() {
-        return mobile;
     }
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
     }
 
     public boolean isPassword() {
@@ -121,18 +169,62 @@ public class Person implements IPerson {
         this.passwordString = passwordString;
     }
 
-    public String getMail() {
-        return mail;
+    @NonNull
+    @Override
+    public String toString() {
+        return TAG + ": " + id + " - " + getFull_Name();
     }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
 
     @Override
     public String getFull_Name() {
         return getFirst_Name() + " " + getLast_Name();
+    }
+
+    public String getFirst_Name() {
+        return first_Name;
+    }
+
+    public void setFirst_Name(String first_Name) {
+        this.first_Name = first_Name;
+    }
+
+    public String getLast_Name() {
+        return last_Name;
+    }
+
+    public void setLast_Name(String last_Name) {
+        this.last_Name = last_Name;
+    }
+
+    @Override
+    public TrafficLightColor getSecurity() {
+        if (!enabled) {
+            return TrafficLightColor.RED;
+        } else if (!password) {
+            return TrafficLightColor.YELLOW;
+        } else {
+            return TrafficLightColor.GREEN;
+        }
+    }
+
+    @Override
+    public String getValue(int value) {
+        return null;
+    }
+
+    @Override
+    public void setValue(int value, String content) {
+    }
+
+    @Override
+    public TableRow getViewAll(@NonNull Context context) {
+        TableRow row = new TableRow(context);
+        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getFull_Name()));
+        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getNickname()));
+        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getRank().toString()));
+        row.addView(new TrafficLight(context, getSecurity()));
+        row.addView(new Image(context, R.drawable.ic_arrow_right));
+        return row;
     }
 
     public String getNickname() {
@@ -151,20 +243,110 @@ public class Person implements IPerson {
         this.rank = rank;
     }
 
-    public String getFirst_Name() {
-        return first_Name;
+    /**
+     * @param context  context to create the layout and the text fields
+     * @param listener OnClickListener for the row
+     * @return LinearLayout filled with {@link ProfileRow} elements
+     * @since 2.0
+     */
+    public LinearLayout getViewEdit(Context context, View.OnClickListener listener) {
+        return designDisplayEdit(context, true, listener);
     }
 
-    public void setFirst_Name(String first_Name) {
-        this.first_Name = first_Name;
+    @NonNull
+    private LinearLayout designDisplayEdit(Context context, boolean isEdit, @Nullable View.OnClickListener listener) {
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        if ((getMail() != null && !getMail().isEmpty()) || isEdit) {
+            ProfileRow name = new ProfileRow(context, false);
+            name.setId(R.id.email);
+            name.setTitle(R.string.mail).setContent(getMail()).setOnClickListener(listener);
+            layout.addView(name);
+        }
+
+        if ((getFirst_Name() != null && !getFirst_Name().isEmpty()) || isEdit) {
+            ProfileRow name = new ProfileRow(context, isEdit);
+            name.setId(R.id.first_name);
+            name.setTitle(R.string.first_name).setContent(getFirst_Name()).setOnClickListener(listener);
+            layout.addView(name);
+        }
+
+        if ((getLast_Name() != null && !getLast_Name().isEmpty()) || isEdit) {
+            ProfileRow name = new ProfileRow(context, isEdit);
+            name.setId(R.id.last_name);
+            name.setTitle(R.string.last_name).setContent(getLast_Name()).setOnClickListener(listener);
+            layout.addView(name);
+        }
+
+        if ((getMobile() != null && !getMobile().isEmpty()) || isEdit) {
+            ProfileRow name = new ProfileRow(context, isEdit);
+            name.setId(R.id.mobile);
+            name.setTitle(R.string.mobile).setContent(getMobile()).setOnClickListener(listener);
+            layout.addView(name);
+        }
+
+        if ((getOrigin() != null && !getOrigin().isEmpty()) || isEdit) {
+            ProfileRow from = new ProfileRow(context, isEdit);
+            from.setId(R.id.from);
+            from.setTitle(R.string.pob).setContent(getOrigin()).setOnClickListener(listener);
+            layout.addView(from);
+        }
+
+        if ((getMajor() != null && !getMajor().isEmpty()) || isEdit) {
+            ProfileRow major = new ProfileRow(context, isEdit);
+            major.setId(R.id.major);
+            major.setTitle(R.string.major).setContent(getMajor()).setOnClickListener(listener);
+            layout.addView(major);
+        }
+
+        if ((getNickname() != null && !getNickname().isEmpty()) || isEdit) {
+            ProfileRow nick = new ProfileRow(context, isEdit);
+            nick.setId(R.id.nickname);
+            nick.setTitle(R.string.nickname).setContent(getNickname()).setOnClickListener(listener);
+            layout.addView(nick);
+        }
+
+        if (getJoined() != -1 || isEdit) {
+            // TODO: 25.07.22 format semester from number into string
+            ProfileRow join = new ProfileRow(context, isEdit);
+            join.setId(R.id.joined);
+            String semName = context.getString(R.string.dialog_semester_select);
+            if (getJoined() != -1) {
+                semName = Values.semesterList.get(getJoined()).getName_long();
+            }
+            join.setTitle(R.string.joined).setContent(semName).setOnClickListener(listener);
+            layout.addView(join);
+        }
+
+        if (getBirthday() != null || isEdit) {
+            ProfileRow dob = new ProfileRow(context, isEdit);
+            SimpleDateFormat date = new SimpleDateFormat("dd.MM.yyyy", Values.LOCALE);
+            dob.setId(R.id.dob);
+            dob.setTitle(R.string.dob).setContent(date.format(getBirthday().toDate())).setOnClickListener(listener);
+            layout.addView(dob);
+        }
+
+        if (getRank() != null || isEdit) {
+            ProfileRow ra = new ProfileRow(context, isEdit);
+            ra.setId(R.id.rank);
+            ra.setTitle(R.string.rank).setContent(getRank().toString()).setOnClickListener(listener);
+            layout.addView(ra);
+        }
+
+        return layout;
     }
 
-    public String getLast_Name() {
-        return last_Name;
+    public String getMail() {
+        return mail;
     }
 
-    public void setLast_Name(String last_Name) {
-        this.last_Name = last_Name;
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     public String getOrigin() {
@@ -199,107 +381,8 @@ public class Person implements IPerson {
         this.joined = joined;
     }
 
-    //endregion
-
-    @Override
-    public TrafficLightColor getSecurity() {
-        if (!enabled) {
-            return TrafficLightColor.RED;
-        } else if (!password) {
-            return TrafficLightColor.YELLOW;
-        } else {
-            return TrafficLightColor.GREEN;
-        }
-    }
-
-    @Override
-    public String getValue(int value) {
-        return null;
-    }
-
-    @Override
-    public TableRow getViewAll(Context context) {
-        TableRow row = new TableRow(context);
-        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getFull_Name()));
-        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getNickname()));
-        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getRank().toString()));
-        row.addView(new TrafficLight(context, getSecurity()));
-        row.addView(new Image(context, R.drawable.ic_arrow_right));
-        return row;
-    }
-
-    /**
-     * @param context  context to create the layout and the text fields
-     * @param listener OnClickListener for the row
-     * @return LinearLayout filled with {@link ProfileRow} elements
-     * @since 2.0
-     */
-    public LinearLayout getViewEdit(Context context, View.OnClickListener listener) {
-        return designDisplayEdit(context, true, listener);
-    }
-
-    @NonNull
-    private LinearLayout designDisplayEdit(Context context, boolean isEdit, @Nullable View.OnClickListener listener) {
-        LinearLayout layout = new LinearLayout(context);
-        layout.setOrientation(LinearLayout.VERTICAL);
-
-        if (getMail() != null && !getMail().isEmpty()) {
-            ProfileRow name = new ProfileRow(context, false);
-            name.setTitle(R.string.mail).setContent(getMail()).setOnClickListener(listener);
-            layout.addView(name);
-        }
-
-        if ((getFirst_Name() != null && getLast_Name() != null &&
-                !getFirst_Name().isEmpty() && !getLast_Name().isEmpty()) || isEdit) {
-            ProfileRow name = new ProfileRow(context, isEdit);
-            name.setTitle(R.string.full_name).setContent(getFull_Name()).setOnClickListener(listener);
-            layout.addView(name);
-        }
-
-        if ((getMobile() != null && !getMobile().isEmpty()) || isEdit) {
-            ProfileRow name = new ProfileRow(context, isEdit);
-            name.setTitle(R.string.mobile).setContent(getMobile()).setOnClickListener(listener);
-            layout.addView(name);
-        }
-
-        if ((getOrigin() != null && !getOrigin().isEmpty()) || isEdit) {
-            ProfileRow from = new ProfileRow(context, isEdit);
-            from.setTitle(R.string.pob).setContent(getOrigin()).setOnClickListener(listener);
-            layout.addView(from);
-        }
-
-        if ((getMajor() != null && !getMajor().isEmpty()) || isEdit) {
-            ProfileRow major = new ProfileRow(context, isEdit);
-            major.setTitle(R.string.major).setContent(getMajor()).setOnClickListener(listener);
-            layout.addView(major);
-        }
-
-        if ((getNickname() != null && !getNickname().isEmpty()) || isEdit) {
-            ProfileRow nick = new ProfileRow(context, isEdit);
-            nick.setTitle(R.string.nickname).setContent(getNickname()).setOnClickListener(listener);
-            layout.addView(nick);
-        }
-
-        if (getJoined() != -1 || isEdit) {
-            ProfileRow join = new ProfileRow(context, isEdit);
-            join.setTitle(R.string.joined).setContent(String.valueOf(getJoined())).setOnClickListener(listener);
-            layout.addView(join);
-        }
-
-        if (getBirthday() != null || isEdit) {
-            ProfileRow dob = new ProfileRow(context, isEdit);
-            SimpleDateFormat date = new SimpleDateFormat("dd.MM.yyyy", Values.LOCALE);
-            dob.setTitle(R.string.dob).setContent(date.format(getBirthday().toDate())).setOnClickListener(listener);
-            layout.addView(dob);
-        }
-
-        if (getRank() != null || isEdit) {
-            ProfileRow ra = new ProfileRow(context, isEdit);
-            ra.setTitle(R.string.rank).setContent(getRank().toString()).setOnClickListener(listener);
-            layout.addView(ra);
-        }
-
-        return layout;
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     @Override

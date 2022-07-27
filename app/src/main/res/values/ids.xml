@@ -49,4 +49,13 @@
     <item name="country" type="id" />
     <item name="state" type="id" />
     <item name="logout" type="id" />
+    <item name="mobile" type="id" />
+    <item name="from" type="id" />
+    <item name="major" type="id" />
+    <item name="nickname" type="id" />
+    <item name="joined" type="id" />
+    <item name="dob" type="id" />
+    <item name="rank" type="id" />
+    <item name="first_name" type="id" />
+    <item name="last_name" type="id" />
 </resources>

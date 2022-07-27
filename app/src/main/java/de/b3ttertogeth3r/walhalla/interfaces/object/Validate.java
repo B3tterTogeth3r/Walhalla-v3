@@ -14,6 +14,20 @@
 
 package de.b3ttertogeth3r.walhalla.interfaces.object;
 
+/**
+ * An interface to make a validation check always the same.<br>
+ * Has the function: {@link #validate()}
+ *
+ * @author B3tterTogeth3r
+ * @version 1.0
+ * @since 2.0
+ */
 public interface Validate {
+    /**
+     * Check for a valid field.
+     *
+     * @return true, if the necessary fields are set.
+     * @since 2.0
+     */
     boolean validate();
 }

@@ -48,6 +48,9 @@ import de.b3ttertogeth3r.walhalla.object.Movement;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
 /**
+ * <h1>This Fragment should only be accessible, if a user is signed in</h1><br>
+ * This Fragment displays the current balance of a user and its last movements.
+ *
  * @author B3tterTogeth3r
  * @see Fragment
  * @see de.b3ttertogeth3r.walhalla.old.firebase.Firestore Firestore
@@ -71,7 +74,7 @@ public class Balance extends Fragment implements View.OnClickListener {
     @Override
     public void constructor() {
         movementList = new ArrayList<>();
-        download = Firebase.firestoreDownload();
+        download = Firebase.Firestore.download();
         IAuth auth = Firebase.authentication();
         if (!auth.isSignIn()) {
             Toast.makeToast(requireContext(), R.string.fui_error_session_expired).show();
@@ -88,7 +91,7 @@ public class Balance extends Fragment implements View.OnClickListener {
 
     @Override
     public void start() {
-        download.listenPersonBalance(uid)
+        download.getPersonBalance(uid)
                 .setOnSuccessListener(result -> {
                     // TODO: 20.07.22 maybe make it into a realtime listener which is connected to the fragments lifecycle
                     account = result;
@@ -120,7 +123,6 @@ public class Balance extends Fragment implements View.OnClickListener {
     }
 
     private void movementTable() {
-        // TODO: 20.07.22 WHY DOES IT NOT DISPLAY THE TABLE????
         movements.removeAllViewsInLayout();
         movements.setLayoutParams(new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,

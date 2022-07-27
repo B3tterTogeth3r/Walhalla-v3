@@ -33,6 +33,7 @@ import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Touch;
 import de.b3ttertogeth3r.walhalla.design.Event;
+import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.dialog.ChangeSemester;
 import de.b3ttertogeth3r.walhalla.dialog.EventDetails;
@@ -52,7 +53,7 @@ public class Program extends Fragment {
 
     @Override
     public void constructor() {
-        download = Firebase.firestoreDownload();
+        download = Firebase.Firestore.download();
     }
 
     @Override
@@ -97,14 +98,16 @@ public class Program extends Fragment {
     }
 
     private void download(int semId) {
-        download.semesterEvents(String.valueOf(semId))
+        download.getSemesterEvents(semId)
                 .setOnSuccessListener(result -> {
                     if (result == null) {
                         throw new NoDataException("Download failed");
                     } else if (result.isEmpty()) {
-                        // TODO: 31.05.22 add text with content like "this semester didn't have any
-                        //  events or so
                         Log.e(TAG, "download: ", new NoDataException("The Semester has no events"));
+                        view.removeAllViewsInLayout();
+                        view.removeAllViews();
+                        view.addView(new Title(requireContext(), getString(R.string.no_event)));
+                        view.invalidate();
                         return;
                     }
                     listEvents(result);

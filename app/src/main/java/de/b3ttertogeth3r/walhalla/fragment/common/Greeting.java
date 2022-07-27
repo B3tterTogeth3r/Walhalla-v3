@@ -52,7 +52,7 @@ public class Greeting extends Fragment {
 
     @Override
     public void constructor() {
-        download = Firebase.firestoreDownload();
+        download = Firebase.Firestore.download();
         greeting = new ArrayList<>();
         semesterId = Firebase.remoteConfig().getInt(RemoteConfig.CURRENT_SEMESTER);
     }
@@ -64,7 +64,7 @@ public class Greeting extends Fragment {
 
     @Override
     public void start() {
-        download.semesterGreeting(String.valueOf(semesterId))
+        download.getSemesterGreeting(String.valueOf(semesterId))
                 .setOnSuccessListener(result -> {
                     if (result != null && !result.isEmpty()) {
                         greeting = result;
@@ -98,7 +98,6 @@ public class Greeting extends Fragment {
                     if (philX == null || !philX.validate()) {
                         throw new NoDataException("Charge not found");
                     }
-                    // TODO: 18.07.22 format so that it looks the same and is not depending on the length of the names.
                     RelativeLayout row = new RelativeLayout(requireContext());
 
                     int padding = (int) TypedValue.applyDimension(

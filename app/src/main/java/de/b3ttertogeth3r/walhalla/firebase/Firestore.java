@@ -19,14 +19,12 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Map;
 
 import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
@@ -51,7 +49,9 @@ import de.b3ttertogeth3r.walhalla.object.News;
 import de.b3ttertogeth3r.walhalla.object.Person;
 import de.b3ttertogeth3r.walhalla.object.Semester;
 import de.b3ttertogeth3r.walhalla.object.Text;
+import de.b3ttertogeth3r.walhalla.util.Dev.SemesterRange;
 import de.b3ttertogeth3r.walhalla.util.Paragraph;
+import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class Firestore implements IInit {
     private static final String TAG = "Firestore";
@@ -84,40 +84,11 @@ public class Firestore implements IInit {
     }
 
     private void createSemesters() {
-        int l = 1864;
-        int s = 64;
-        for (int i = 0; i < 400; i++) {
-            Calendar start = Calendar.getInstance();
-            start.set(l, 9, 1, 0, 0, 0);
-            Calendar end = Calendar.getInstance();
-            end.set((l + 1), 2, 30, 23, 59, 59);
-            String longStr = "Wintersemester " + l + " / " + (l + 1);
-            String shortStr = "WS" + s + "/" + (s + 1);
-            Semester sem = new Semester(String.valueOf(i), longStr, shortStr,
-                    new Timestamp(start.getTime()), new Timestamp(end.getTime()));
+        for (Semester s : Values.semesterList) {
             FBFS.collection("Semester")
-                    .document(String.valueOf(i))
-                    .set(sem);
+                    .document(s.getId())
+                    .set(s);
 
-            i++;
-            s++;
-            l++;
-            if (s == 100) {
-                s = 0;
-            }
-            start.set(l, 3, 1, 0, 0, 0);
-            end.set(l, 8, 31, 23, 59, 59);
-            longStr = "Sommersemester " + l;
-            if (s > 10) {
-                shortStr = "SS0" + s;
-            } else {
-                shortStr = "SS" + s;
-            }
-            sem = new Semester(String.valueOf(i), longStr, shortStr,
-                    new Timestamp(start.getTime()), new Timestamp(end.getTime()));
-            FBFS.collection("Semester")
-                    .document(String.valueOf(i))
-                    .set(sem);
         }
     }
 
@@ -128,17 +99,17 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<ArrayList<Event>> semesterEvents(String semesterID) {
-            Loader<ArrayList<Event>> loader = new Loader<>();
-            ArrayList<Event> eventList = new ArrayList<>();
-            return loader.done(eventList);
+        public Loader<ArrayList<File>> getSemesterProtocols(String semesterID) {
+            Loader<ArrayList<File>> loader = new Loader<>();
+            ArrayList<File> fileList = new ArrayList<>();
+            return loader.done(fileList);
         }
 
         @Override
-        public Loader<ArrayList<BoardMember>> board(Rank rank, String semesterID) {
-            Loader<ArrayList<BoardMember>> loader = new Loader<>();
-            ArrayList<BoardMember> memberList = new ArrayList<>();
-            return loader.done(memberList);
+        public Loader<Paragraph<Text>> getSemesterGreeting(String semesterID) {
+            Loader<Paragraph<Text>> loader = new Loader<>();
+            Paragraph<Text> textList = new Paragraph<>();
+            return loader.done(textList);
         }
 
         @Override
@@ -171,81 +142,132 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<ArrayList<Chore>> eventChores(String eventId) {
-            Loader<ArrayList<Chore>> loader = new Loader<>();
-            ArrayList<Chore> choreList = new ArrayList<>();
-            return loader.done(choreList);
-        }
-
-        @Override
-        public Loader<ArrayList<Text>> eventDescription(String eventId) {
+        public Loader<ArrayList<Text>> getSemesterNotes(int semesterID) {
             Loader<ArrayList<Text>> loader = new Loader<>();
             ArrayList<Text> textList = new ArrayList<>();
             return loader.done(textList);
         }
 
         @Override
-        public Loader<Location> eventLocation(String eventId) {
-            Loader<Location> loader = new Loader<>();
-            return loader.done();
-        }
-
-        @Override
-        public Loader<Event> nextEvent() {
-            Loader<Event> loader = new Loader<>();
-            return loader.done();
-        }
-
-        @Override
-        public Loader<ArrayList<File>> protocols(String semesterID) {
-            Loader<ArrayList<File>> loader = new Loader<>();
-            ArrayList<File> fileList = new ArrayList<>();
-            return loader.done(fileList);
-        }
-
-        @Override
-        public Loader<Paragraph<Text>> semesterGreeting(String semesterID) {
-            Loader<Paragraph<Text>> loader = new Loader<>();
-            Paragraph<Text> textList = new Paragraph<>();
-            return loader.done(textList);
-        }
-
-        @Override
-        public Loader<ArrayList<News>> news(Visibility visibility) {
-            Loader<ArrayList<News>> loader = new Loader<>();
-            ArrayList<News> newsList = new ArrayList<>();
-            return loader.done(newsList);
-        }
-
-        @Override
-        public Loader<ArrayList<Text>> newsText(String newsId) {
-            Loader<ArrayList<Text>> loader = new Loader<>();
-            ArrayList<Text> textList = new ArrayList<>();
-            return loader.done(textList);
-        }
-
-        @Override
-        public Loader<ArrayList<Text>> semesterNotes(String semesterID) {
-            Loader<ArrayList<Text>> loader = new Loader<>();
-            ArrayList<Text> textList = new ArrayList<>();
-            return loader.done(textList);
-        }
-
-        @Override
-        public Loader<Account> semesterAccount(String semesterID) {
+        public Loader<Account> getSemesterAccount(int semesterID) {
             Loader<Account> loader = new Loader<>();
             return loader.done();
         }
 
         @Override
-        public Loader<ArrayList<Movement>> getSemesterMovements(String semesterId) {
+        public Loader<ArrayList<Movement>> getSemesterMovements(int semesterId) {
             Loader<ArrayList<Movement>> loader = new Loader<>();
             ArrayList<Movement> movementList = new ArrayList<>();
             return loader.done(movementList);
         }
 
         @Override
-        public Loader<ArrayList<Person>> personList() {
+        public Loader<ArrayList<BoardMember>> getSemesterBoard(int semesterID, Rank rank) {
+            Loader<ArrayList<BoardMember>> loader = new Loader<>();
+            ArrayList<BoardMember> memberList = new ArrayList<>();
+            return loader.done(memberList);
+        }
+
+        @Override
+        public Loader<ArrayList<Chore>> getEventChores(String eventId) {
+            Loader<ArrayList<Chore>> loader = new Loader<>();
+            ArrayList<Chore> choreList = new ArrayList<>();
+            return loader.done(choreList);
+        }
+
+        @Override
+        public Loader<ArrayList<Text>> getEventDescription(String eventId) {
+            Loader<ArrayList<Text>> loader = new Loader<>();
+            ArrayList<Text> textList = new ArrayList<>();
+            return loader.done(textList);
+        }
+
+        @Override
+        public Loader<Location> getEventLocation(String eventId) {
+            Loader<Location> loader = new Loader<>();
+            return loader.done();
+        }
+
+        @Override
+        public Loader<Event> getNextEvent() {
+            Loader<Event> loader = new Loader<>();
+            return loader.done();
+        }
+
+        @Override
+        public Loader<ArrayList<Chore>> getPersonChores(String uid, boolean showDoneChores) {
+            Loader<ArrayList<Chore>> loader = new Loader<>();
+            ArrayList<Chore> choreList = new ArrayList<>();
+            return loader.done(choreList);
+        }
+
+        @Override
+        public Loader<Map<Integer, ArrayList<BoardMember>>> getPersonPastChargen(String personID) {
+            Loader<Map<Integer, ArrayList<BoardMember>>> loader = new Loader<>();
+            return loader.done();
+        }
+
+        @Override
+        public Loader<Account> getPersonBalance(String uid) {
+            Loader<Account> loader = new Loader<>();
+            return loader.done();
+        }
+
+        @Override
+        public Loader<File> getPersonImage(String uid) {
+            Loader<File> loader = new Loader<>();
+            return loader.done();
+        }
+
+        @Override
+        public Loader<Person> person(String uid) {
+            return null;
+        }
+
+        @Override
+        public Loader<ArrayList<Text>> getNewsText(String newsID) {
+            Loader<ArrayList<Text>> loader = new Loader<>();
+            ArrayList<Text> textList = new ArrayList<>();
+            return loader.done(textList);
+        }
+
+        @Override
+        public Loader<ArrayList<News>> getNews(Visibility visibility) {
+            Loader<ArrayList<News>> loader = new Loader<>();
+            ArrayList<News> newsList = new ArrayList<>();
+            return loader.done(newsList);
+        }
+
+        @Override
+        public Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester) {
+            Loader<ArrayList<DrinkMovement>> loader = new Loader<>();
+            ArrayList<DrinkMovement> movementList = new ArrayList<>();
+            return loader.done(movementList);
+        }
+
+        @Override
+        public Loader<ArrayList<Event>> getSemesterEvents(int semesterID) {
+            Loader<ArrayList<Event>> loader = new Loader<>();
+            ArrayList<Event> eventList = new ArrayList<>();
+            return loader.done(eventList);
+        }
+
+        @Override
+        public Loader<ArrayList<Movement>> getPersonMovements(String uid) {
+            Loader<ArrayList<Movement>> loader = new Loader<>();
+            ArrayList<Movement> movementList = new ArrayList<>();
+            return loader.done(movementList);
+        }
+
+        @Override
+        public Loader<ArrayList<Address>> personAddress(String uid) {
+            Loader<ArrayList<Address>> loader = new Loader<>();
+            ArrayList<Address> addressList = new ArrayList<>();
+            return loader.done(addressList);
+        }
+
+        @Override
+        public Loader<ArrayList<Person>> getPersonList() {
             Loader<ArrayList<Person>> loader = new Loader<>();
             FBFS.collection("Person")
                     .get()
@@ -268,57 +290,6 @@ public class Firestore implements IInit {
                     }).addOnFailureListener(loader::done);
             return loader;
         }
-
-        @Override
-        public Loader<Person> person(String uid) {
-            return null;
-        }
-
-        @Override
-        public Loader<ArrayList<Chore>> personChores(String uid, boolean showDoneChores) {
-            Loader<ArrayList<Chore>> loader = new Loader<>();
-            ArrayList<Chore> choreList = new ArrayList<>();
-            return loader.done(choreList);
-        }
-
-        @Override
-        public Loader<Map<Integer, ArrayList<BoardMember>>> pastChargen(String personID) {
-            Loader<Map<Integer, ArrayList<BoardMember>>> loader = new Loader<>();
-            return loader.done();
-        }
-
-        @Override
-        public Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester) {
-            Loader<ArrayList<DrinkMovement>> loader = new Loader<>();
-            ArrayList<DrinkMovement> movementList = new ArrayList<>();
-            return loader.done(movementList);
-        }
-
-        @Override
-        public Loader<Account> listenPersonBalance(String uid) {
-            Loader<Account> loader = new Loader<>();
-            return loader.done();
-        }
-
-        @Override
-        public Loader<ArrayList<Movement>> getPersonMovements(String uid) {
-            Loader<ArrayList<Movement>> loader = new Loader<>();
-            ArrayList<Movement> movementList = new ArrayList<>();
-            return loader.done(movementList);
-        }
-
-        @Override
-        public Loader<ArrayList<Address>> personAddress(String uid) {
-            Loader<ArrayList<Address>> loader = new Loader<>();
-            ArrayList<Address> addressList = new ArrayList<>();
-            return loader.done(addressList);
-        }
-
-        @Override
-        public Loader<File> personImage(String uid) {
-            Loader<File> loader = new Loader<>();
-            return loader.done();
-        }
     }
 
     public class Upload implements IFirestoreUpload {
@@ -327,7 +298,12 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<Boolean> event(int semID, Event event) {
+        public Loader<Boolean> setBoard(@SemesterRange int semID, @NonNull ArrayList<BoardMember> boardMembers) {
+            return null;
+        }
+
+        @Override
+        public Loader<Boolean> setEvent(@SemesterRange int semID, @NonNull Event event) {
             Loader<Boolean> loader = new Loader<>();
             FBFS.collection("Semester")
                     .document(String.valueOf(semID))
@@ -344,10 +320,63 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<Boolean> person(@NonNull Person person, ArrayList<Address> addressList) {
-            Loader<Boolean> loader = new Loader<>();
+        public Loader<Boolean> setEventChore(@NonNull String eventID, @NonNull Chore chore) {
+            return null;
+        }
 
-            return loader.done();
+        @Override
+        public Loader<Boolean> setEventLocation(@NonNull String eventID, @NonNull Location location) {
+            return null;
+        }
+
+        @Override
+        public Loader<Boolean> setEventDescription(@NonNull String eventID, @NonNull ArrayList<Paragraph<Text>> description) {
+            return null;
+        }
+
+        @Override
+        public Loader<Boolean> addSemesterMovement(@SemesterRange int semID, @NonNull Movement movement) {
+            return null;
+        }
+
+        @Override
+        public Loader<Boolean> addSemesterProtocol(@SemesterRange int semID, @NonNull File file) {
+            return null;
+        }
+
+        @Override
+        public Loader<Boolean> addNewsEntry(@NonNull News news, @NonNull ArrayList<Text> text) {
+            return null;
+        }
+
+        @Override
+        public Loader<Boolean> setPerson(@NonNull Person person) {
+            return null;
+        }
+
+        @Override
+        public Loader<Boolean> setPersonAddress(@NonNull String personID, @NonNull ArrayList<Address> addressList) {
+            return null;
+        }
+
+        @Override
+        public Loader<Boolean> setPersonChore(@NonNull String personID, @NonNull Chore chore) {
+            return null;
+        }
+
+        @Override
+        public Loader<Boolean> setPersonCharge(@NonNull String personID, @SemesterRange int semester, @NonNull BoardMember boardMember) {
+            return null;
+        }
+
+        @Override
+        public Loader<Boolean> addPersonMovement(@NonNull String personID, @NonNull Movement movement) {
+            return null;
+        }
+
+        @Override
+        public Loader<Boolean> addPersonPicture(@NonNull String personID, @NonNull File file) {
+            return null;
         }
     }
 }

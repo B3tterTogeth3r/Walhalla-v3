@@ -16,9 +16,29 @@ package de.b3ttertogeth3r.walhalla.object;
 
 import com.google.firebase.Timestamp;
 
-public class Semester {
-    private String id, name_long, name_short;
-    private Timestamp start, end;
+import de.b3ttertogeth3r.walhalla.interfaces.object.ISemester;
+
+public class Semester implements ISemester {
+    /**
+     * the ID of the semester
+     */
+    private String id;
+    /**
+     * The long name of the semester
+     */
+    private String name_long;
+    /**
+     * The short name of the semester
+     */
+    private String name_short;
+    /**
+     * The time the semester starts.
+     */
+    private Timestamp start;
+    /**
+     * The time the semester ends.
+     */
+    private Timestamp end;
 
     public Semester() {
     }
@@ -38,43 +58,43 @@ public class Semester {
         this.end = end;
     }
 
-    public String getId () {
+    public String getId() {
         return id;
     }
 
-    public void setId (String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getName_long () {
+    public String getName_long() {
         return name_long;
     }
 
-    public void setName_long (String name_long) {
+    public void setName_long(String name_long) {
         this.name_long = name_long;
     }
 
-    public String getName_short () {
+    public String getName_short() {
         return name_short;
     }
 
-    public void setName_short (String name_short) {
+    public void setName_short(String name_short) {
         this.name_short = name_short;
     }
 
-    public Timestamp getStart () {
+    public Timestamp getStart() {
         return start;
     }
 
-    public void setStart (Timestamp start) {
+    public void setStart(Timestamp start) {
         this.start = start;
     }
 
-    public Timestamp getEnd () {
+    public Timestamp getEnd() {
         return end;
     }
 
-    public void setEnd (Timestamp end) {
+    public void setEnd(Timestamp end) {
         this.end = end;
     }
 }

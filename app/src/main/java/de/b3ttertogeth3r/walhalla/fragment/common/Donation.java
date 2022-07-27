@@ -45,7 +45,6 @@ public class Donation extends Fragment {
 
     @Override
     public void createView(@NonNull LinearLayout view) {
-        // TODO: 22.06.22 nothing is displayed. WHY????
         ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         de.b3ttertogeth3r.walhalla.design.LinearLayout l1 = new de.b3ttertogeth3r.walhalla.design.LinearLayout(requireActivity());
         de.b3ttertogeth3r.walhalla.design.LinearLayout l2 = new de.b3ttertogeth3r.walhalla.design.LinearLayout(requireActivity());

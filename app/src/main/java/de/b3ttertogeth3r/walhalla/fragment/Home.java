@@ -66,7 +66,7 @@ public class Home extends Fragment implements View.OnClickListener {
 
     public Home() {
         auth = Firebase.authentication();
-        firestoreDownload = Firebase.firestoreDownload();
+        firestoreDownload = Firebase.Firestore.download();
     }
 
     @Override
@@ -99,7 +99,7 @@ public class Home extends Fragment implements View.OnClickListener {
         program.addView(image(AppCompatResources.getDrawable(requireContext(),
                 R.drawable.ic_calendar), false));
         // Add description
-        firestoreDownload.nextEvent()
+        firestoreDownload.getNextEvent()
                 .setOnSuccessListener(result -> {
                     if (result != null /*&& result.validate()*/ && !result.getTitle().isEmpty()) {
                         String string;
@@ -128,7 +128,7 @@ public class Home extends Fragment implements View.OnClickListener {
         greeting.setId(R.id.greeting);
 
         // Add icon
-        firestoreDownload.board(Rank.ACTIVE, Firebase.remoteConfig().getString(RemoteConfig.CURRENT_SEMESTER))
+        firestoreDownload.getSemesterBoard(Firebase.remoteConfig().getInt(RemoteConfig.CURRENT_SEMESTER), Rank.ACTIVE)
                 .setOnSuccessListener(result -> {
                     if (result == null || result.size() == 0) {
                         throw new NoDataException("Download of chargen did not work");

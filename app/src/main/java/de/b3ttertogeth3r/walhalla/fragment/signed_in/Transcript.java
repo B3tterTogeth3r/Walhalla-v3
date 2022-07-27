@@ -31,13 +31,11 @@ import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 
 public class Transcript extends Fragment {
     private static final String TAG = "Transcript";
-    private IAuth auth;
-    private IFirestoreDownload download;
 
     @Override
     public void constructor() {
-        download = Firebase.firestoreDownload();
-        auth = Firebase.authentication();
+        IFirestoreDownload download = Firebase.Firestore.download();
+        IAuth auth = Firebase.authentication();
         if (!auth.isSignIn()) {
             Toast.makeToast(requireContext(), R.string.fui_error_session_expired).show();
             SideNav.changePage(R.string.menu_home, requireActivity().getSupportFragmentManager().beginTransaction());

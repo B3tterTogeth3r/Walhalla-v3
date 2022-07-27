@@ -84,8 +84,8 @@ public class News extends MyObject implements Validate {
         layout.addView(title);
         layout.addView(time);
 
-        IFirestoreDownload contentDownload = Firebase.firestoreDownload();
-        contentDownload.newsText(getId())
+        IFirestoreDownload contentDownload = Firebase.Firestore.download();
+        contentDownload.getNewsText(getId())
                 .setOnSuccessListener(result -> {
                     if (result != null)
                         for (Text t : result) {

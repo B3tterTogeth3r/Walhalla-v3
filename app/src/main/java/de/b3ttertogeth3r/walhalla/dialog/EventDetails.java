@@ -78,7 +78,7 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
     public EventDetails(DialogSize size, de.b3ttertogeth3r.walhalla.object.Event event) {
         super(size);
         this.event = event;
-        this.download = Firebase.firestoreDownload();
+        this.download = Firebase.Firestore.download();
         this.auth = Firebase.authentication();
     }
 
@@ -123,7 +123,6 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
         //https://stackoverflow.com/questions/16551458/android-google-maps-not-displaying
         MapView map = view.findViewById(R.id.maps_fragment);
         if (map != null) {
-            map.setVisibility(View.GONE);
             map.getMapAsync(this);
             map.setVisibility(View.VISIBLE);
         } else {
@@ -175,7 +174,7 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
     }
 
     private void loadDescription(LinearLayout description) {
-        download.eventDescription(event.getId())
+        download.getEventDescription(event.getId())
                 .setOnSuccessListener(result -> {
                     if (result == null || result.isEmpty()) {
                         return;
@@ -196,7 +195,7 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
     }
 
     private void loadChores() {
-        download.eventChores(event.getId())
+        download.getEventChores(event.getId())
                 .setOnSuccessListener(result -> {
                     choresTable.removeAllViewsInLayout();
                     if (result != null && !result.isEmpty()) {
@@ -223,10 +222,10 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
         }
 
         try {
-            download.eventLocation(event.getId())
+            download.getEventLocation(event.getId())
                     .setOnSuccessListener(location -> {
-                        if (location == null) {
-                            // TODO: 09.06.22 set result to the home a default location
+                        if (location == null || !location.validate()) {
+                            // set result to the home a default location
                             location = new Location("K.St.V. Walhalla", new GeoPoint(49.784420, 9.924580));
                         }
                         LatLng latLng = new LatLng(location.getCoordinates().getLatitude(),

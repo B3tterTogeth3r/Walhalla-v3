@@ -24,11 +24,32 @@ import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.object.Person;
 
 /**
- * Function collection used by {@link de.b3ttertogeth3r.walhalla.firebase.Authentication
+ * Interface collection used by {@link de.b3ttertogeth3r.walhalla.firebase.Authentication
  * Authentication}
+ * <br>It contains the functions:
+ * <ul>
+ *     <li>{@link #signIn(String, String)}</li>
+ *     <li>{@link #isSignIn()}</li>
+ *     <li>{@link #changePassword(Person, String)}</li>
+ *     <li>{@link #changePassword(Person, String, String)}</li>
+ *     <li>{@link #signOut()}</li>
+ *     <li>{@link #changeLoggingData()}</li>
+ *     <li>{@link #getUser()}</li>
+ *     <li>{@link #sendVerificationMail()}</li>
+ *     <li>{@link #exitsEmail(String)}</li>
+ *     <li>{@link #linkGoogle(Loader)}</li>
+ *     <li>{@link #linkGithub(Loader)}</li>
+ *     <li>{@link #linkTwitter(Loader)}</li>
+ *     <li>{@link #linkFacebook(Loader)}</li>
+ *     <li>{@link #linkApple(Loader)}</li>
+ *     <li>{@link #linkMicrosoft(Loader)}</li>
+ *     <li>{@link #linkYahoo(Loader)}</li>
+ *     <li>{@link #addAuthStateListener(FirebaseAuth.AuthStateListener)}</li>
+ *     <li>{@link #removeAuthListener(FirebaseAuth.AuthStateListener)}</li>
+ * </ul>
  *
  * @author B3tterTogeth3r
- * @version 1.0
+ * @version 1.1
  * @since 2.0
  */
 public interface IAuth {
@@ -175,9 +196,16 @@ public interface IAuth {
      *
      * @param authStateListener listener
      * @see <a href="https://firebase.google.com/docs/reference/android/com/google/firebase/auth/FirebaseAuth.AuthStateListener">FirebaseAuth.AuthStateListener on Android</a>
-     * @since 1.0
+     * @since 1.1
      */
     void addAuthStateListener(FirebaseAuth.AuthStateListener authStateListener);
 
+    /**
+     * Remove a custom auth state listener
+     *
+     * @param authStateListener listener
+     * @see <a href="https://firebase.google.com/docs/reference/android/com/google/firebase/auth/FirebaseAuth.AuthStateListener">FirebaseAuth.AuthStateListener on Android</a>
+     * @since 1.1
+     */
     void removeAuthListener(FirebaseAuth.AuthStateListener authStateListener);
 }

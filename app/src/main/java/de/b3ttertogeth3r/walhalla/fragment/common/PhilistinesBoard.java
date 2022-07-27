@@ -27,10 +27,12 @@ import java.util.ArrayList;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 import de.b3ttertogeth3r.walhalla.design.AdView;
+import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.dialog.ChangeSemester;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
+import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
@@ -83,14 +85,17 @@ public class PhilistinesBoard extends Fragment {
     }
 
     private void download(int semId) {
-        IFirestoreDownload download = Firebase.firestoreDownload();
-        download.board(Rank.PHILISTINES, String.valueOf(semId))
+        IFirestoreDownload download = Firebase.Firestore.download();
+        download.getSemesterBoard(semId, Rank.PHILISTINES)
                 .setOnSuccessListener(result -> {
                     if (result == null) {
                         throw new NullPointerException("Result list is null");
                     } else if (result.isEmpty()) {
-                        // TODO: 31.05.22 add text with content like "this semester did't
-                        //  have a board" or so
+                        Log.e(TAG, "download: ", new NoDataException("The Semester has no philistines board"));
+                        view.removeAllViewsInLayout();
+                        view.removeAllViews();
+                        view.addView(new Title(requireContext(), getString(R.string.no_board)));
+                        view.invalidate();
                         return;
                     }
                     listMembers(result);

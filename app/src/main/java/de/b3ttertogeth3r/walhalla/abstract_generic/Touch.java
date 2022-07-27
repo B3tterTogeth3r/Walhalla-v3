@@ -41,7 +41,8 @@ public class Touch implements OnTouchListener, ClickSwipeListener {
     private static final String TAG = "TouchListen";
     private static final int MIN_DISTANCE = 100;
     private static final int HALF_SECOND_IN_NANO = 800000000;
-    private float downX, downY, upX, upY;
+    private float downX;
+    private float downY;
     private Timestamp startTime;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -54,8 +55,8 @@ public class Touch implements OnTouchListener, ClickSwipeListener {
                 return true;
             }
             case MotionEvent.ACTION_UP: {
-                upX = event.getX();
-                upY = event.getY();
+                float upX = event.getX();
+                float upY = event.getY();
 
                 float deltaX = downX - upX;
                 float deltaY = downY - upY;

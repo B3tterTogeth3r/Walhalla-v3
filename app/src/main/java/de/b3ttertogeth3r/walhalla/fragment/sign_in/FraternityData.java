@@ -47,6 +47,7 @@ import de.b3ttertogeth3r.walhalla.object.Address;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Person;
 import de.b3ttertogeth3r.walhalla.object.Semester;
+import de.b3ttertogeth3r.walhalla.util.Values;
 
 
 /**
@@ -100,10 +101,8 @@ public class FraternityData extends Fragment implements IOnBackPressed {
 
     @Override
     public void createView(@NonNull LinearLayout view) {
-        // TODO: 29.06.22 create view for the user to fill out all the necessary data the fraternity needs
-        //  1. joined and rank are necessary
-        //  2. nickname is mandatory
-        //  3. at some point create a way to add other fraternities as well as the possibility to have a different "A-Bund"
+        // create view for the user to fill out all the necessary data the fraternity needs
+        // TODO: 26.07.22 at some point create a way to add other fraternities as well as the possibility to have a different "A-Bund"
         fm = getParentFragmentManager();
         view.setOrientation(LinearLayout.VERTICAL);
 
@@ -118,16 +117,14 @@ public class FraternityData extends Fragment implements IOnBackPressed {
                     @Override
                     public void onClick(View view) {
                         try {
-                            // TODO: 07.07.22 save current semester in CacheData or RemoteConfig
                             int currentSemester = Firebase.remoteConfig().getInt(RemoteConfig.CURRENT_SEMESTER);
                             ChangeSemester dialog = ChangeSemester.display(fm, new Semester(currentSemester));
                             dialog.setOnSuccessListener(result -> {
-                                if (result == null) {
-                                    throw new NullPointerException("Semester id cannot be null");
+                                if (result == null || result == -1) {
+                                    throw new NullPointerException("Semester id cannot be null, 0 or -1");
                                 }
                                 person.setJoined(result);
-                                joined.setContent(String.valueOf(result));
-                                // TODO: 07.07.22 format the int into the name of the semester
+                                joined.setContent(Values.semesterList.get(result).getName_long());
                             });
                         } catch (CreateDialogException e) {
                             e.printStackTrace();
@@ -220,7 +217,7 @@ public class FraternityData extends Fragment implements IOnBackPressed {
             @Override
             public void onClick(View view) {
                 if (joined.getContent().length() != 0 && rank.getContent().length() != 0) {
-                    // TODO: 06.07.22 change to fragment to review data
+                    // change to fragment to review data
                     fm.beginTransaction()
                             .replace(R.id.fragment_container, new ReviewData(person, addressList))
                             .addToBackStack("SignIn")

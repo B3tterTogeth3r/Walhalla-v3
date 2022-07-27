@@ -43,6 +43,7 @@ import de.b3ttertogeth3r.walhalla.fragment.common.Fraternities_city;
 import de.b3ttertogeth3r.walhalla.fragment.common.Fraternities_germany;
 import de.b3ttertogeth3r.walhalla.fragment.common.Greeting;
 import de.b3ttertogeth3r.walhalla.fragment.common.NewsFragment;
+import de.b3ttertogeth3r.walhalla.fragment.common.OwnHistory;
 import de.b3ttertogeth3r.walhalla.fragment.common.PhilistinesBoard;
 import de.b3ttertogeth3r.walhalla.fragment.common.Program;
 import de.b3ttertogeth3r.walhalla.fragment.common.Rooms;
@@ -56,7 +57,6 @@ import de.b3ttertogeth3r.walhalla.interfaces.ReloadSideNav;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.ISideNav;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.object.Log;
-import de.b3ttertogeth3r.walhalla.old.fragments_main.HistoryFragment;
 
 
 /**
@@ -307,7 +307,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
                         .commit();
                 break;
             case R.string.menu_more_history:
-                transaction.replace(container, new HistoryFragment())
+                transaction.replace(container, new OwnHistory())
                         .addToBackStack(TAG)
                         .commit();
                 break;
@@ -380,7 +380,6 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
 
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        // TODO: 22.07.22 why is this never called?
         fillSideNav();
         fillHeadView();
     }

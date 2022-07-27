@@ -152,6 +152,7 @@ public class Event {
         this.title.setText(title);
     }
 
+
     @SuppressWarnings("rawtypes")
     @SuppressLint("ClickableViewAccessibility")
     public Event addTouchListener(Touch touch) {

@@ -14,18 +14,10 @@
 
 package de.b3ttertogeth3r.walhalla.object;
 
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-
 import com.google.firebase.Timestamp;
 
-import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_generic.MyObject;
-import de.b3ttertogeth3r.walhalla.design.TableRow;
-import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
-import de.b3ttertogeth3r.walhalla.util.ToastList;
 
 /**
  * Like {@link Movement} but just for {@link Drink}s and not for income and other movements
@@ -79,12 +71,6 @@ public class DrinkMovement extends MyObject implements Validate {
         this.amount = amount;
         this.price = price;
         this.time = time;
-    }
-
-    public TableRow getView(@NonNull Context context) {
-        TableRow view = new TableRow(context);
-        ToastList.addToast(Toast.makeToast(context, R.string.error_dev));
-        return view;
     }
 
     public String getId() {

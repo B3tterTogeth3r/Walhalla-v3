@@ -1,16 +1,16 @@
-// Copyright 2019 Google LLC
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Copyright (c) 2022.
+ *
+ * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the
+ *  License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ *  either express or implied. See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 
 package com.google.android.ads.nativetemplates;
 
@@ -26,8 +26,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
 import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
@@ -284,17 +286,17 @@ public class TemplateView extends FrameLayout {
   @Override
   public void onFinishInflate() {
     super.onFinishInflate();
-    nativeAdView = (NativeAdView) findViewById(R.id.native_ad_view);
-    primaryView = (TextView) findViewById(R.id.primary);
-    secondaryView = (TextView) findViewById(R.id.secondary);
-    tertiaryView = (TextView) findViewById(R.id.body);
+    nativeAdView = findViewById(R.id.native_ad_view);
+    primaryView = findViewById(R.id.primary);
+    secondaryView = findViewById(R.id.secondary);
+    tertiaryView = findViewById(R.id.body);
 
-    ratingBar = (RatingBar) findViewById(R.id.rating_bar);
+    ratingBar = findViewById(R.id.rating_bar);
     ratingBar.setEnabled(false);
 
-    callToActionView = (Button) findViewById(R.id.cta);
-    iconView = (ImageView) findViewById(R.id.icon);
-    mediaView = (MediaView) findViewById(R.id.media_view);
-    background = (ConstraintLayout) findViewById(R.id.background);
+    callToActionView = findViewById(R.id.cta);
+    iconView = findViewById(R.id.icon);
+    mediaView = findViewById(R.id.media_view);
+    background = findViewById(R.id.background);
   }
 }

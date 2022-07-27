@@ -93,7 +93,7 @@ public class Movement extends MyObject implements Validate {
             Image arrow = new Image(context);
             arrow.setImage(R.drawable.ic_arrow_right);
             row.addView(arrow);
-            IFirestoreDownload download = Firebase.firestoreDownload();
+            IFirestoreDownload download = Firebase.Firestore.download();
             arrow.setOnClickListener(v -> download.file(recipe)
                     .setOnSuccessListener(result -> MainActivity.openExternal.file(result))
                     .setOnFailListener(e -> Log.e(TAG, "File download didn't work", e)));

@@ -21,13 +21,36 @@ package de.b3ttertogeth3r.walhalla.interfaces.object;
  * @since 3.1
  */
 public interface IAddress extends Validate {
+    /**
+     * ID of the {@link de.b3ttertogeth3r.walhalla.firebase.Firestore Firestore} path
+     */
     int ID = -1;
+    /**
+     * Name of the street.
+     */
     int STREET = 0;
+    /**
+     * number of the house in the street.
+     */
     int NUMBER = 1;
+    /**
+     * zip code of the city.
+     */
     int ZIP = 2;
+    /**
+     * Name of the city.
+     */
     int CITY = 3;
+    /**
+     * Name of the state in a country.
+     */
     int STATE = 4;
+    /**
+     * Name of the country.
+     */
     int COUNTRY = 5;
 
     String getValue(int valueId);
+
+    void setValue(int valueId, String value);
 }

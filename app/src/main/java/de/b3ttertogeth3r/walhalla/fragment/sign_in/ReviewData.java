@@ -69,7 +69,7 @@ public class ReviewData extends Fragment implements IOnBackPressed {
     public ReviewData(Person p, ArrayList<Address> addressList) {
         this.p = p;
         this.addressList = addressList;
-        upload = Firebase.firestoreUpload();
+        upload = Firebase.Firestore.upload();
         auth = Firebase.authentication();
     }
 
@@ -138,11 +138,12 @@ public class ReviewData extends Fragment implements IOnBackPressed {
                         if (result != null) {
                             p.setPasswordString(result);
                             // TODO: 07.07.22 upload data to firebase and sign user in
-                            upload.person(p, addressList).setOnSuccessListener(result1 -> {
+                            upload.setPerson(p).setOnSuccessListener(result1 -> {
                                 if (result1 != null && result1) {
                                     auth.signIn(p.getMail(), p.getPasswordString())
                                             .setOnSuccessListener(authResult -> {
                                                 if (authResult != null && authResult.getUser() != null) {
+                                                    uploadAddress(authResult.getUser().getUid());
                                                     Log.i(TAG, "onClick: upload -> auth -> sign in: complete");
                                                     fm.beginTransaction()
                                                             .replace(R.id.fragment_container, new Home())
@@ -158,7 +159,6 @@ public class ReviewData extends Fragment implements IOnBackPressed {
                                 }
                                 throw new UploadError("Upload of user data unsuccessful.");
                             }).setOnFailListener(e -> {
-                                e.printStackTrace();
                                 Log.e(TAG, "onFailureListener: upload data", e);
                             });
                             return;
@@ -178,6 +178,17 @@ public class ReviewData extends Fragment implements IOnBackPressed {
         buttonLayout.addView(next);
         view.addView(buttonLayout);
         //endregion
+    }
+
+    private void uploadAddress(@NonNull String uid) {
+        //noinspection ConstantConditions
+        upload.setPersonAddress(uid, addressList)
+                .setOnSuccessListener(result1 -> {
+                    if (result1 == null || !result1) {
+                        throw new UploadError("Upload of user addresses unsuccessful.");
+                    }
+                })
+                .setOnFailListener(e -> Log.e(TAG, "onFailureListener: upload data", e));
     }
 
     @Override

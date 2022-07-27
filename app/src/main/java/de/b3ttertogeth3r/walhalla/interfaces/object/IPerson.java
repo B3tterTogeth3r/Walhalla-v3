@@ -18,8 +18,12 @@ import android.content.Context;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+
 import de.b3ttertogeth3r.walhalla.design.TableRow;
 import de.b3ttertogeth3r.walhalla.enums.TrafficLightColor;
+import de.b3ttertogeth3r.walhalla.object.Person;
+import de.b3ttertogeth3r.walhalla.util.Dev.PersonValue;
 
 /**
  * @author B3tterTogeth3r
@@ -51,9 +55,22 @@ public interface IPerson extends Validate {
 
     TrafficLightColor getSecurity();
 
-    String getValue(int value);
+    String getValue(@PersonValue int value);
 
-    TableRow getViewAll(Context context);
+    void setValue(@PersonValue int value, String content);
+
+    /**
+     * Creates a {@link TableRow} designed like:
+     * -------------------------------------------------------------------------------------------<br>
+     * | {@link #getFull_Name()} | {@link Person#getNickname()} | {@link Person#getRank()} |
+     * {@link de.b3ttertogeth3r.walhalla.util.TrafficLight TrafficLight} | > |<br>
+     * -------------------------------------------------------------------------------------------<br>
+     *
+     * @param context {@link Context} to create the row and its content
+     * @return {@link TableRow}
+     * @since 1.0
+     */
+    TableRow getViewAll(@NonNull Context context);
 
     LinearLayout getViewEdit(Context context, View.OnClickListener listener);
 
@@ -65,4 +82,6 @@ public interface IPerson extends Validate {
     boolean validatePersonal();
 
     boolean validateFratData();
+
+
 }
