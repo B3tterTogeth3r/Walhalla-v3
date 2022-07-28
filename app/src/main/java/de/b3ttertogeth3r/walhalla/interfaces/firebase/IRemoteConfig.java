@@ -14,6 +14,14 @@
 
 package de.b3ttertogeth3r.walhalla.interfaces.firebase;
 
+import de.b3ttertogeth3r.walhalla.util.Dev.RemoteConfigKeys;
+
+/**
+ * Interface to communicate with Firebase Remote Config.
+ * @author B3tterTogeth3r
+ * @since 2.0
+ * @version 1.1
+ */
 public interface IRemoteConfig {
     String CURRENT_SEMESTER = "current_semester_id";
     String SEMESTER_NOTES = "semester_notes";
@@ -42,9 +50,9 @@ public interface IRemoteConfig {
      */
     void apply();
 
-    String getString(String key);
+    String getString(@RemoteConfigKeys String key);
 
-    long getLong(String key);
+    long getLong(@RemoteConfigKeys String key);
 
-    int getInt(String key);
+    int getInt(@RemoteConfigKeys String key);
 }

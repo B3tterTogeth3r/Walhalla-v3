@@ -38,6 +38,7 @@ import de.b3ttertogeth3r.walhalla.object.Log;
 
 public abstract class Dialog<T> extends DialogFragment implements DialogInterface.OnClickListener,
         IDialog<T> {
+    // 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
     private static final String TAG = "Dialog";
     private final DialogSize size;
     private final Loader<T> loader;

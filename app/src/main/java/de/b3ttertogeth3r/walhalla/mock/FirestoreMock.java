@@ -333,7 +333,7 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<Map<Integer, ArrayList<BoardMember>>> getPersonPastChargen(String personID) {
+        public Loader<Map<Integer, ArrayList<BoardMember>>> getPersonPastChargen(String uid) {
             Loader<Map<Integer, ArrayList<BoardMember>>> loader = new Loader<>();
             BoardMember bm1 = new BoardMember(new Person("Tobias", "Tumbrink", "Oberursel (Taunus)",
                     "aer-inf.", "Tobi", "", 316, Timestamp.now(),

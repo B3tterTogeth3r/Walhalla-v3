@@ -16,6 +16,21 @@ package de.b3ttertogeth3r.walhalla.interfaces.activityMain;
 
 import androidx.fragment.app.FragmentTransaction;
 
+/**
+ * An interface to communicate with the {@link de.b3ttertogeth3r.walhalla.design.SideNav}
+ * inside the {@link de.b3ttertogeth3r.walhalla.MainActivity}.
+ *
+ * @author B3tterTogeth3r
+ * @version 1.0
+ * @since 2.1
+ */
 public interface ISideNav {
-    FragmentTransaction clicked (int itemId);
+    /**
+     * An item got clicked.
+     *
+     * @param itemId Id of the clicked element.
+     * @return {@link FragmentTransaction} created in the Activity.
+     * @since 1.0
+     */
+    FragmentTransaction clicked(int itemId);
 }

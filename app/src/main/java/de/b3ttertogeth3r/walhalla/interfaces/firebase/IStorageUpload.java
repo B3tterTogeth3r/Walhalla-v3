@@ -17,8 +17,15 @@ package de.b3ttertogeth3r.walhalla.interfaces.firebase;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.object.File;
 
+/**
+ * Interface to upload data to the Firebase Storage Bucket.
+ *
+ * @author B3tterTogeth3r
+ * @version 1.1
+ * @since 2.0
+ */
 public interface IStorageUpload {
-    void image(File file, Loader<String> loader);
+    Loader<Boolean> image(File file);
 
-    void file (File file, Loader<String> loader);
+    Loader<Boolean> file(File file);
 }

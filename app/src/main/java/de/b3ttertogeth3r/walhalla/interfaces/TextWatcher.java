@@ -16,6 +16,14 @@ package de.b3ttertogeth3r.walhalla.interfaces;
 
 import android.text.Editable;
 
+/**
+ * An interface to make code easier to read. Almost never do I need all 3 functions the native
+ * {@link android.text.TextWatcher} has, so I created this interface.
+ *
+ * @author B3tterTogeth3r
+ * @version 1.0
+ * @since 1.3
+ */
 public interface TextWatcher extends android.text.TextWatcher {
 
     @Override

@@ -25,21 +25,66 @@ import android.content.Context;
  */
 public interface FirebaseInit {
 
-    void Analytics (Context context);
+    /**
+     * Initialize the given Firebase service.
+     *
+     * @param context Application context
+     */
+    void Analytics(Context context);
 
-    void Authentication (Context context);
+    /**
+     * Initialize the given Firebase service.
+     *
+     * @param context Application context
+     */
+    void Authentication(Context context);
 
-    void CloudMessaging (Context context);
+    /**
+     * Initialize the given Firebase service.
+     *
+     * @param context Application context
+     */
+    void CloudMessaging(Context context);
 
-    void Crashlytics (Context context);
+    /**
+     * Initialize the given Firebase service.
+     *
+     * @param context Application context
+     */
+    void Crashlytics(Context context);
 
-    void DynamicLinks (Context context);
+    /**
+     * Initialize the given Firebase service.
+     *
+     * @param context Application context
+     */
+    void DynamicLinks(Context context);
 
-    void Firestore (Context context);
+    /**
+     * Initialize the given Firebase service.
+     *
+     * @param context Application context
+     */
+    void Firestore(Context context);
 
-    void InAppMessaging (Context context);
+    /**
+     * Initialize the given Firebase service.
+     *
+     * @param context Application context
+     */
+    void InAppMessaging(Context context);
 
-    void RemoteConfig (Context context);
+    /**
+     * Initialize the given Firebase service.
+     *
+     * @param context Application context
+     */
+    void RemoteConfig(Context context);
 
-    void Storage (Context context);
+    /**
+     * Initialize the given Firebase service.
+     *
+     * @param context Application context
+     */
+    void Storage(Context context);
 }

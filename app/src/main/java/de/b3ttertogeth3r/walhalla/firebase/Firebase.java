@@ -106,8 +106,8 @@ public interface Firebase {
          * @since {@link Firebase} version 1.0
          */
         static IFirestoreDownload download() {
-            return new FirestoreMock.Download();
-            //return Firestore.download;
+            //return new FirestoreMock.Download();
+            return de.b3ttertogeth3r.walhalla.firebase.Firestore.download;
         }
 
         /**
@@ -120,7 +120,7 @@ public interface Firebase {
          */
         static IFirestoreUpload upload() {
             return new FirestoreMock.Upload();
-            // return Firestore.upload;
+            //return de.b3ttertogeth3r.walhalla.firebase.Firestore.upload;
         }
     }
 

@@ -51,8 +51,18 @@ public interface IPerson extends Validate {
     int ENABLED = 11;
     int PASSWORD = 12;
 
+    /**
+     * @return the value of {@link Person#getFirst_Name()} and {@link Person#getLast_Name()}.
+     */
     String getFull_Name();
 
+    /**
+     * If the account is not enabled, it returns {@link TrafficLightColor#RED}<br>
+     * If the account has no password, it returns {@link TrafficLightColor#YELLOW}<br>
+     * Otherwise it returns {@link TrafficLightColor#GREEN}
+     *
+     * @return {@link TrafficLightColor}
+     */
     TrafficLightColor getSecurity();
 
     String getValue(@PersonValue int value);
@@ -76,11 +86,22 @@ public interface IPerson extends Validate {
 
     LinearLayout getViewDisplay(Context context);
 
-    @Override
-    boolean validate();
-
+    /**
+     * Called while registering a new person.
+     * returns true, if the following fields are <code>NOT null</code>:<br>
+     * {@link #FIRST_NAME}, {@link #LAST_NAME}
+     *
+     * @return {@link Boolean}
+     */
     boolean validatePersonal();
 
+    /**
+     * Called while registering a new person.
+     * returns true, if the following fields are <code>NOT null</code>:<br>
+     * {@link #RANK}, {@link #JOINED}
+     *
+     * @return {@link Boolean}
+     */
     boolean validateFratData();
 
 

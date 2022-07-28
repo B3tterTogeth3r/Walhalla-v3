@@ -81,6 +81,11 @@ public interface IFragment {
     default void stop() {
     }
 
+    /**
+     * Needed to make the code shorter.
+     *
+     * @param firebaseAuth {@link FirebaseAuth} object
+     * @return The Activity of the Fragment.
+     */
     FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth);
-
 }

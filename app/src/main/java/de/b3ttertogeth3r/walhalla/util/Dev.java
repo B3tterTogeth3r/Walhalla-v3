@@ -14,6 +14,15 @@
 
 package de.b3ttertogeth3r.walhalla.util;
 
+import static de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig.ABOUT_US;
+import static de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig.CHARGEN_DESCRIPTION;
+import static de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig.CURRENT_SEMESTER;
+import static de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig.FRATERNITY_CITY;
+import static de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig.FRATERNITY_GERMANY;
+import static de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig.HISTORY_SHORT;
+import static de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig.IBAN_VALUES;
+import static de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig.ROOMS;
+import static de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig.SEMESTER_NOTES;
 import static de.b3ttertogeth3r.walhalla.interfaces.object.IEvent.COLLAR;
 import static de.b3ttertogeth3r.walhalla.interfaces.object.IEvent.DESCRIPTION;
 import static de.b3ttertogeth3r.walhalla.interfaces.object.IEvent.END;
@@ -38,6 +47,7 @@ import static de.b3ttertogeth3r.walhalla.interfaces.object.IPerson.RANK;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.IntRange;
+import androidx.annotation.StringDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -60,5 +70,10 @@ public class Dev {
      */
     @IntRange(from = 0, to = 399)
     public @interface SemesterRange {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({CURRENT_SEMESTER, SEMESTER_NOTES, FRATERNITY_GERMANY, FRATERNITY_CITY, ROOMS, ABOUT_US, IBAN_VALUES, HISTORY_SHORT, CHARGEN_DESCRIPTION})
+    public @interface RemoteConfigKeys {
     }
 }

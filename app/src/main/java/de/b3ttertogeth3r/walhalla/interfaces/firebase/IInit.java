@@ -16,6 +16,18 @@ package de.b3ttertogeth3r.walhalla.interfaces.firebase;
 
 import android.content.Context;
 
+/**
+ * Interface to make initialization of the firebase apis the same in every instance.
+ *
+ * @author B3tterTogeth3r
+ * @version 1.0
+ * @since 2.1
+ */
 public interface IInit {
+    /**
+     * @param context    Application context
+     * @param isEmulator TODO CHANGE TO FALSE BEFORE PUBLISHING
+     * @return {@link Boolean}
+     */
     boolean init(Context context, boolean isEmulator);
 }

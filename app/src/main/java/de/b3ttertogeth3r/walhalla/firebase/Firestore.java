@@ -18,12 +18,12 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -113,35 +113,6 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<BoardMember> getSemesterBoardOne(int semesterId, @NonNull Charge charge) {
-            Loader<BoardMember> loader = new Loader<>();
-            return loader.done();
-        }
-
-        @Override
-        public Loader<ArrayList<Location>> locationList() {
-            Loader<ArrayList<Location>> loader = new Loader<>();
-            ArrayList<Location> locationList = new ArrayList<>();
-            return loader.done(locationList);
-        }
-
-        @Override
-        public Loader<File> file(@NonNull DocumentReference reference) {
-            Loader<File> loader = new Loader<>();
-            reference.get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (!documentSnapshot.exists()) {
-                            loader.done(new NoDataException("File download failed"));
-                            return;
-                        }
-                        File f = documentSnapshot.toObject(File.class);
-                        loader.done(f);
-                    })
-                    .addOnFailureListener(loader::done);
-            return loader;
-        }
-
-        @Override
         public Loader<ArrayList<Text>> getSemesterNotes(int semesterID) {
             Loader<ArrayList<Text>> loader = new Loader<>();
             ArrayList<Text> textList = new ArrayList<>();
@@ -166,6 +137,12 @@ public class Firestore implements IInit {
             Loader<ArrayList<BoardMember>> loader = new Loader<>();
             ArrayList<BoardMember> memberList = new ArrayList<>();
             return loader.done(memberList);
+        }
+
+        @Override
+        public Loader<BoardMember> getSemesterBoardOne(int semesterId, @NonNull Charge charge) {
+            Loader<BoardMember> loader = new Loader<>();
+            return loader.done();
         }
 
         @Override
@@ -195,6 +172,11 @@ public class Firestore implements IInit {
         }
 
         @Override
+        public Loader<Person> person(String uid) {
+            return null;
+        }
+
+        @Override
         public Loader<ArrayList<Chore>> getPersonChores(String uid, boolean showDoneChores) {
             Loader<ArrayList<Chore>> loader = new Loader<>();
             ArrayList<Chore> choreList = new ArrayList<>();
@@ -202,9 +184,16 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<Map<Integer, ArrayList<BoardMember>>> getPersonPastChargen(String personID) {
+        public Loader<Map<Integer, ArrayList<BoardMember>>> getPersonPastChargen(String uid) {
             Loader<Map<Integer, ArrayList<BoardMember>>> loader = new Loader<>();
             return loader.done();
+        }
+
+        @Override
+        public Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester) {
+            Loader<ArrayList<DrinkMovement>> loader = new Loader<>();
+            ArrayList<DrinkMovement> movementList = new ArrayList<>();
+            return loader.done(movementList);
         }
 
         @Override
@@ -214,14 +203,23 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<File> getPersonImage(String uid) {
-            Loader<File> loader = new Loader<>();
-            return loader.done();
+        public Loader<ArrayList<Movement>> getPersonMovements(String uid) {
+            Loader<ArrayList<Movement>> loader = new Loader<>();
+            ArrayList<Movement> movementList = new ArrayList<>();
+            return loader.done(movementList);
         }
 
         @Override
-        public Loader<Person> person(String uid) {
-            return null;
+        public Loader<ArrayList<Address>> personAddress(String uid) {
+            Loader<ArrayList<Address>> loader = new Loader<>();
+            ArrayList<Address> addressList = new ArrayList<>();
+            return loader.done(addressList);
+        }
+
+        @Override
+        public Loader<File> getPersonImage(String uid) {
+            Loader<File> loader = new Loader<>();
+            return loader.done();
         }
 
         @Override
@@ -239,31 +237,10 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester) {
-            Loader<ArrayList<DrinkMovement>> loader = new Loader<>();
-            ArrayList<DrinkMovement> movementList = new ArrayList<>();
-            return loader.done(movementList);
-        }
-
-        @Override
         public Loader<ArrayList<Event>> getSemesterEvents(int semesterID) {
             Loader<ArrayList<Event>> loader = new Loader<>();
             ArrayList<Event> eventList = new ArrayList<>();
             return loader.done(eventList);
-        }
-
-        @Override
-        public Loader<ArrayList<Movement>> getPersonMovements(String uid) {
-            Loader<ArrayList<Movement>> loader = new Loader<>();
-            ArrayList<Movement> movementList = new ArrayList<>();
-            return loader.done(movementList);
-        }
-
-        @Override
-        public Loader<ArrayList<Address>> personAddress(String uid) {
-            Loader<ArrayList<Address>> loader = new Loader<>();
-            ArrayList<Address> addressList = new ArrayList<>();
-            return loader.done(addressList);
         }
 
         @Override
@@ -290,6 +267,29 @@ public class Firestore implements IInit {
                     }).addOnFailureListener(loader::done);
             return loader;
         }
+
+        @Override
+        public Loader<ArrayList<Location>> locationList() {
+            Loader<ArrayList<Location>> loader = new Loader<>();
+            ArrayList<Location> locationList = new ArrayList<>();
+            return loader.done(locationList);
+        }
+
+        @Override
+        public Loader<File> file(@NonNull DocumentReference reference) {
+            Loader<File> loader = new Loader<>();
+            reference.get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (!documentSnapshot.exists()) {
+                            loader.done(new NoDataException("File download failed"));
+                            return;
+                        }
+                        File f = documentSnapshot.toObject(File.class);
+                        loader.done(f);
+                    })
+                    .addOnFailureListener(loader::done);
+            return loader;
+        }
     }
 
     public class Upload implements IFirestoreUpload {
@@ -305,17 +305,16 @@ public class Firestore implements IInit {
         @Override
         public Loader<Boolean> setEvent(@SemesterRange int semID, @NonNull Event event) {
             Loader<Boolean> loader = new Loader<>();
-            FBFS.collection("Semester")
-                    .document(String.valueOf(semID))
-                    .collection("Event")
-                    .add(event)
-                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference reference) {
-                            loader.done(true);
-                        }
-                    })
-                    .addOnFailureListener(loader::done);
+            if (event.validate()) {
+                FBFS.collection("Semester")
+                        .document(String.valueOf(semID))
+                        .collection("Event")
+                        .add(event)
+                        .addOnSuccessListener(reference -> loader.done(true))
+                        .addOnFailureListener(loader::done);
+            } else {
+                return loader.done(new InvalidParameterException("Not all necessary fields are set"));
+            }
             return loader;
         }
 

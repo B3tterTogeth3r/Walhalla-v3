@@ -14,6 +14,12 @@
 
 package de.b3ttertogeth3r.walhalla.interfaces.object;
 
+/**
+ * An interface for the {@link de.b3ttertogeth3r.walhalla.object.Semester Semester} Object.
+ *
+ * @author B3tterTogeth3r
+ * @version 1.0
+ */
 public interface ISemester {
     /**
      * The ID of the semester

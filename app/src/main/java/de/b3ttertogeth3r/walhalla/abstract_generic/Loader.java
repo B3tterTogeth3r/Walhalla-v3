@@ -77,6 +77,7 @@ public class Loader<T> implements LoaderResultListener<T> {
     public void onSuccessListener(@Nullable T result) {
         try {
             resultListenerSuccess.onSuccessListener(result);
+            this.result = null;
         } catch (Exception ex) {
             onFailureListener(ex);
         }
@@ -84,7 +85,11 @@ public class Loader<T> implements LoaderResultListener<T> {
 
     @Override
     public void onFailureListener(Exception e) {
-        resultListenerFail.onFailureListener(e);
+        try {
+            resultListenerFail.onFailureListener(e);
+        } catch (Exception exception) {
+            this.e = null;
+        }
     }
 
     /**

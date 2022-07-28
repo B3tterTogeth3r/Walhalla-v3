@@ -84,15 +84,16 @@ public class StorageMock {
     }
 
     public static class Upload implements IStorageUpload {
-
         @Override
-        public void image(File file, Loader<String> loader) {
-
+        public Loader<Boolean> image(File file) {
+            Loader<Boolean> loader = new Loader<>();
+            return loader.done();
         }
 
         @Override
-        public void file(File file, Loader<String> loader) {
-
+        public Loader<Boolean> file(File file) {
+            Loader<Boolean> loader = new Loader<>();
+            return loader.done();
         }
     }
 }

@@ -18,14 +18,48 @@ package de.b3ttertogeth3r.walhalla.interfaces.activityMain;
 import de.b3ttertogeth3r.walhalla.object.Event;
 import de.b3ttertogeth3r.walhalla.object.File;
 
+/**
+ * Interface to open external pages, files or apps.
+ *
+ * @author B3tterTogeth3r
+ * @version 3.0
+ * @
+ * @since 1.0
+ */
 public interface OpenExternal {
+    /**
+     * Open a website in the devices default web-browser.
+     *
+     * @param link Link of the web site
+     */
     void link(String link);
 
+    /**
+     * Send an email via the devices default email application.
+     *
+     * @param recipient Array of recipient email addresses.
+     * @param subject   Subject of the email.
+     */
     void sendEmail(String[] recipient, String subject);
 
+    /**
+     * Save an event in the devices default calendar application.
+     *
+     * @param event The {@link Event} to save in the calendar.
+     */
     void saveInCalendar(Event event);
 
+    /**
+     * Open a {@link File} in the devices PDF or gallery.
+     *
+     * @param file The file to open.
+     */
     void file(File file);
 
+    /**
+     * Open an image in the devices default gallery.
+     *
+     * @param link todo change this to something the device can open
+     */
     void image(String link);
 }

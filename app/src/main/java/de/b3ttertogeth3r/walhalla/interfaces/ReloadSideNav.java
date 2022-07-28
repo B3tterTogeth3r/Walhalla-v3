@@ -14,6 +14,18 @@
 
 package de.b3ttertogeth3r.walhalla.interfaces;
 
+/**
+ * An interface to reload the {@link de.b3ttertogeth3r.walhalla.design.SideNav SidenNav}
+ *
+ * @author B3tterTogeth3r
+ * @version 1.0
+ * @since 3.0
+ */
 public interface ReloadSideNav {
+    /**
+     * Fire to reload the Side navigation.
+     *
+     * @since 1.0
+     */
     void reload();
 }

@@ -45,19 +45,16 @@ public class Storage implements IInit {
     }
 
     public static class Upload implements IStorageUpload {
-
-        public Upload() {
-            upload = this;
+        @Override
+        public Loader<Boolean> image(File file) {
+            Loader<Boolean> loader = new Loader<>();
+            return loader.done();
         }
 
         @Override
-        public void image(File file, Loader<String> loader) {
-
-        }
-
-        @Override
-        public void file(File file, Loader<String> loader) {
-
+        public Loader<Boolean> file(File file) {
+            Loader<Boolean> loader = new Loader<>();
+            return loader.done();
         }
     }
 

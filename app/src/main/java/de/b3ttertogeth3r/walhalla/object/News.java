@@ -24,7 +24,7 @@ import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
+import de.b3ttertogeth3r.walhalla.interfaces.object.INews;
 
 /**
  * A news entry. it has nested online the content of the news entry as a list of {@link Text}
@@ -34,7 +34,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
  * @version 1.0
  * @since 2.0
  */
-public class News extends MyObject implements Validate {
+public class News extends MyObject implements INews {
     /**
      * title of the news entry
      */
@@ -65,13 +65,7 @@ public class News extends MyObject implements Validate {
         this.time = timestamp;
     }
 
-    /**
-     * Display the news entry and download the description/content
-     *
-     * @param context context to create sub views inside the layout
-     * @return Layout displaying this entry
-     * @since 2.0
-     */
+    @Override
     public LinearLayout getView(Context context) throws NoDataException {
         LinearLayout layout = new LinearLayout(context);
         de.b3ttertogeth3r.walhalla.design.Title title =

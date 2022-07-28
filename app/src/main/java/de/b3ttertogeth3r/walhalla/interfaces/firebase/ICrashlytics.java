@@ -14,5 +14,8 @@
 
 package de.b3ttertogeth3r.walhalla.interfaces.firebase;
 
+/**
+ * Interface to connect with custom Crashlytics functions.
+ */
 public interface ICrashlytics {
 }

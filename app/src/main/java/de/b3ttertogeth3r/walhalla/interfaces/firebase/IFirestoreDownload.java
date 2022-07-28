@@ -92,6 +92,9 @@ import de.b3ttertogeth3r.walhalla.util.Paragraph;
  * @since 2.0
  */
 public interface IFirestoreDownload {
+    interface Test{
+        String tester(String test);
+    }
     //region SEMESTER
     Loader<ArrayList<File>> getSemesterProtocols(String semesterID);
 
@@ -191,26 +194,70 @@ public interface IFirestoreDownload {
     //endregion
 
     //region PERSON
+
+    /**
+     * Download data belonging to one Person
+     *
+     * @param uid {@link Person#ID}
+     * @return {@link Loader} with one {@link Person}
+     */
     Loader<Person> person(String uid);
 
+    /**
+     * Download the Chores a person has to do.
+     *
+     * @param uid            {@link Person#ID}
+     * @param showDoneChores true, if all chores shall be downloaded.
+     * @return {@link Loader} with a {@link Chore}s filled {@link ArrayList}
+     */
     Loader<ArrayList<Chore>> getPersonChores(String uid, boolean showDoneChores);
 
-    Loader<Map<Integer, ArrayList<BoardMember>>> getPersonPastChargen(String personID);
+    /**
+     * Download the past {@link BoardMember Chargen} of a person
+     *
+     * @param uid {@link Person#ID}
+     * @return {@link Loader} with {@link Map}<{@link Integer}, {@link ArrayList}<{@link BoardMember}>
+     */
+    Loader<Map<Integer, ArrayList<BoardMember>>> getPersonPastChargen(String uid);
 
+    /**
+     * Download the movements of a specific user in a given semester.
+     *
+     * @param uid      {@link Person#ID}
+     * @param semester {@link Semester#ID}
+     * @return {@link Loader} with a {@link DrinkMovement} filled {@link ArrayList}
+     */
     Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester);
 
+    /**
+     * Download the current balance of a given person.
+     *
+     * @param uid {@link Person#ID}
+     * @return {@link Loader} with an {@link Account} element
+     */
     Loader<Account> getPersonBalance(String uid);
 
+    /**
+     * Download all {@link Movement}s of a person.
+     *
+     * @param uid {@link Person#ID}
+     * @return {@link Loader} with a {@link Movement} filled {@link ArrayList}
+     */
     Loader<ArrayList<Movement>> getPersonMovements(String uid);
 
+    /**
+     * Download all {@link Address} of a person.
+     *
+     * @param uid {@link Person#ID}
+     * @return {@link Loader} with an {@link Address} filled {@link ArrayList}
+     */
     Loader<ArrayList<Address>> personAddress(String uid);
 
     /**
-     * download the class which has the files data saved.
+     * Download the class which has the files data saved.
      *
-     * @param uid user id
-     * @return File object loader
-     * @see File
+     * @param uid {@link Person#ID}
+     * @return {@link Loader} with one {@link File}
      */
     Loader<File> getPersonImage(String uid);
     //endregion

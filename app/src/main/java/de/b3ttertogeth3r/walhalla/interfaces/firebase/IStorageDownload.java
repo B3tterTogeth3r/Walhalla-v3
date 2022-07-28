@@ -17,6 +17,13 @@ package de.b3ttertogeth3r.walhalla.interfaces.firebase;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.object.File;
 
+/**
+ * Interface to download data from the Firebase Storage bucket.
+ *
+ * @author B3tterTogeth3r
+ * @version 1.1
+ * @since 2.0
+ */
 public interface IStorageDownload {
     Loader<byte[]> image(File file);
 
