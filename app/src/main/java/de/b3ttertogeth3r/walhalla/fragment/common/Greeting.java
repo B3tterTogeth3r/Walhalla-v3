@@ -41,7 +41,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Text;
-import de.b3ttertogeth3r.walhalla.util.Values;
+import de.b3ttertogeth3r.walhalla.util.Cache;
 
 public class Greeting extends Fragment {
     private static final String TAG = "Greeting";
@@ -54,7 +54,7 @@ public class Greeting extends Fragment {
     public void constructor() {
         download = Firebase.Firestore.download();
         greeting = new ArrayList<>();
-        semesterId = Values.currentSemester.getId();
+        semesterId = Cache.CACHE_DATA.getChosenSemester();
     }
 
     @Override

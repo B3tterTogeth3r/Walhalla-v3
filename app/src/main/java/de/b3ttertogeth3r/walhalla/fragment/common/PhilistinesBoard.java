@@ -38,12 +38,11 @@ import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Semester;
-import de.b3ttertogeth3r.walhalla.util.Values;
+import de.b3ttertogeth3r.walhalla.util.Cache;
 
 public class PhilistinesBoard extends Fragment {
     private static final String TAG = "PhilistinesBoard";
     private LinearLayout view;
-    private int semesterId;
 
     @Override
     public String analyticsProperties() {
@@ -52,8 +51,7 @@ public class PhilistinesBoard extends Fragment {
 
     @Override
     public void start() {
-        semesterId = Values.currentSemester.getId();
-        download(semesterId);
+        download(Cache.CACHE_DATA.getChosenSemester());
     }
 
     @Override
@@ -61,15 +59,14 @@ public class PhilistinesBoard extends Fragment {
         toolbar.setTitle("");
         customToolbar.setVisibility(View.VISIBLE);
         customToolbarTitle.setText(R.string.menu_chargen_phil);
-        customToolbar.setOnClickListener(v ->
-        {
+        customToolbar.setOnClickListener(v -> {
             try {
                 ChangeSemester.display(getParentFragmentManager(),
-                                new Semester(semesterId))
+                                new Semester(Cache.CACHE_DATA.getChosenSemester()))
                         .setOnSuccessListener(result -> {
                             assert result != null;
                             download(result);
-                            this.semesterId = result;
+                            Cache.CACHE_DATA.setChosenSemester(result);
                         });
             } catch (CreateDialogException e) {
                 Log.e(TAG, "toolbarContent: ", e);

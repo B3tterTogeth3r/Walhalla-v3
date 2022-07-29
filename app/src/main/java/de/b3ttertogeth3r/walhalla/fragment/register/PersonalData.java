@@ -12,7 +12,7 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.fragment.sign_in;
+package de.b3ttertogeth3r.walhalla.fragment.register;
 
 import android.app.DatePickerDialog;
 import android.icu.text.SimpleDateFormat;

@@ -38,7 +38,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Semester;
-import de.b3ttertogeth3r.walhalla.util.Values;
+import de.b3ttertogeth3r.walhalla.util.Cache;
 
 public class StudentBoard extends Fragment {
     private static final String TAG = "StudentBoard";
@@ -58,7 +58,7 @@ public class StudentBoard extends Fragment {
 
     @Override
     public void start() {
-        semesterID = Values.currentSemester.getId();
+        semesterID = Cache.CACHE_DATA.getChosenSemester();
         download(semesterID);
     }
 

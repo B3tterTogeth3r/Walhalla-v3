@@ -12,7 +12,7 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.fragment.sign_in;
+package de.b3ttertogeth3r.walhalla.fragment.register;
 
 import android.annotation.SuppressLint;
 import android.text.InputType;
@@ -140,9 +140,7 @@ public class SignInHome extends Fragment implements IOnBackPressed {
                                         .commit();
                             }
                         })
-                        .setOnFailListener(e -> {
-                            Log.e(TAG, "onClick:existsEmail: sign in exception found", e);
-                        });
+                        .setOnFailListener(e -> Log.e(TAG, "onClick:existsEmail: sign in exception found", e));
             }
         });
     }

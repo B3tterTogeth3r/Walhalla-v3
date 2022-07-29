@@ -12,7 +12,7 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.fragment.sign_in;
+package de.b3ttertogeth3r.walhalla.fragment.register;
 
 import android.util.TypedValue;
 import android.view.View;
@@ -137,7 +137,7 @@ public class ReviewData extends Fragment implements IOnBackPressed {
                     SetPasswordDialog.display(fm).setOnSuccessListener(result -> {
                         if (result != null) {
                             p.setPasswordString(result);
-                            // TODO: 07.07.22 upload data to firebase and sign user in
+                            // Upload data to firebase and sign user in
                             upload.setPerson(p).setOnSuccessListener(result1 -> {
                                 if (result1 != null && result1) {
                                     auth.signIn(p.getMail(), p.getPasswordString())
@@ -152,15 +152,11 @@ public class ReviewData extends Fragment implements IOnBackPressed {
                                                 }
                                                 throw new UserDataError("Sign in not possible");
                                             })
-                                            .setOnFailListener(e -> {
-                                                Log.e(TAG, "onClick: upload -> auth -> sign in", e);
-                                            });
+                                            .setOnFailListener(e -> Log.e(TAG, "onClick: upload -> auth -> sign in", e));
                                     return;
                                 }
                                 throw new UploadError("Upload of user data unsuccessful.");
-                            }).setOnFailListener(e -> {
-                                Log.e(TAG, "onFailureListener: upload data", e);
-                            });
+                            }).setOnFailListener(e -> Log.e(TAG, "onFailureListener: upload data", e));
                             return;
                         }
                         throw new BadPasswordException("Password is null");
@@ -181,7 +177,6 @@ public class ReviewData extends Fragment implements IOnBackPressed {
     }
 
     private void uploadAddress(@NonNull String uid) {
-        //noinspection ConstantConditions
         upload.setPersonAddress(uid, addressList)
                 .setOnSuccessListener(result1 -> {
                     if (result1 == null || !result1) {

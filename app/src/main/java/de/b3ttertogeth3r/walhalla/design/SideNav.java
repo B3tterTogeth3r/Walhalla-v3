@@ -48,7 +48,7 @@ import de.b3ttertogeth3r.walhalla.fragment.common.PhilistinesBoard;
 import de.b3ttertogeth3r.walhalla.fragment.common.Program;
 import de.b3ttertogeth3r.walhalla.fragment.common.Rooms;
 import de.b3ttertogeth3r.walhalla.fragment.common.StudentBoard;
-import de.b3ttertogeth3r.walhalla.fragment.sign_in.SignInHome;
+import de.b3ttertogeth3r.walhalla.fragment.register.SignInHome;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Balance;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Chores;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Drinks;
@@ -80,7 +80,7 @@ import de.b3ttertogeth3r.walhalla.object.Log;
  *     PhilistinesBoard}</li>
  * </ul>
  * If no user is signed in, the next section is just the login menu
- * <ul><li>{@link de.b3ttertogeth3r.walhalla.fragment.sign_in.SignInHome SignInHome}</li></ul>
+ * <ul><li>{@link de.b3ttertogeth3r.walhalla.fragment.register.SignInHome SignInHome}</li></ul>
  * If a user is signed in, the following sites are displayed:
  * <ul>
  *     <li>SignOut</li>

@@ -82,7 +82,7 @@ public class Cache implements IInit, CacheData {
 
     @Override
     public int getChosenSemester() {
-        return SP.getInt(CHOSEN_SEMESTER, 0);
+        return SP.getInt(CHOSEN_SEMESTER, Values.currentSemester.getId());
     }
 
     @Override
@@ -97,6 +97,7 @@ public class Cache implements IInit, CacheData {
             Cache.SP = context.getSharedPreferences(TAG, Context.MODE_PRIVATE);
             analytics = Firebase.analytics();
             CACHE_DATA = this;
+            setChosenSemester(Values.currentSemester.getId());
             return true;
         } catch (Exception e) {
             e.printStackTrace();

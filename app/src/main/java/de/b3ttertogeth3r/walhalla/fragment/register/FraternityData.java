@@ -12,7 +12,7 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.fragment.sign_in;
+package de.b3ttertogeth3r.walhalla.fragment.register;
 
 import android.util.TypedValue;
 import android.view.View;
