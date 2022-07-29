@@ -96,7 +96,7 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
 
     @Override
     public void createView(@NonNull LinearLayout view) {
-        fm = getParentFragmentManager();
+        fm = getChildFragmentManager();
         view.setOrientation(LinearLayout.VERTICAL);
 
         Title register = new Title(requireContext());
@@ -114,7 +114,6 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
                     @Override
                     public void onClick(View view) {
                         // Create dialog to change the content of the view
-                        FragmentManager fm = getChildFragmentManager();
                         try {
                             ProfileEditDialog dialog = ProfileEditDialog.display(fm, firstName.getContent());
                             dialog.setOnSuccessListener(result -> {
@@ -138,7 +137,6 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
                     @Override
                     public void onClick(View view) {
                         // Create dialog to change the content of the view
-                        FragmentManager fm = getChildFragmentManager();
                         try {
                             ProfileEditDialog dialog = ProfileEditDialog.display(fm, lastName.getContent());
                             dialog.setOnSuccessListener(result -> {
@@ -162,8 +160,6 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
                     @Override
                     public void onClick(View view) {
                         // Create dialog to change the content of the view
-                        // TODO: 03.07.22 change field to an address field
-                        FragmentManager fm = getChildFragmentManager();
                         try {
                             AddressDialog dialog;
                             if (addressList.size() == 0) {
@@ -196,8 +192,6 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
                     @Override
                     public void onClick(View view) {
                         // Create dialog to change the content of the view
-                        // TODO: 03.07.22 change input style to phone number
-                        FragmentManager fm = getChildFragmentManager();
                         try {
                             ProfileEditDialog dialog = ProfileEditDialog.display(fm, mobile.getContent());
                             dialog.changeInputType(InputType.TYPE_CLASS_PHONE)
@@ -239,7 +233,6 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
                     @Override
                     public void onClick(View view) {
                         // Create dialog to change the content of the view
-                        FragmentManager fm = getChildFragmentManager();
                         try {
                             ProfileEditDialog dialog = ProfileEditDialog.display(fm, major.getContent());
                             dialog.setOnSuccessListener(result -> {
@@ -327,11 +320,6 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
             birthday.setContent(sdf.format(person.getBirthday().toDate()));
         } catch (Exception ignored) {
         }
-    }
-
-    @Override
-    public void stop() {
-
     }
 
     @Override

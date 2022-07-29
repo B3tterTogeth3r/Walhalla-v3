@@ -92,9 +92,6 @@ import de.b3ttertogeth3r.walhalla.util.Paragraph;
  * @since 2.0
  */
 public interface IFirestoreDownload {
-    interface Test{
-        String tester(String test);
-    }
     //region SEMESTER
     Loader<ArrayList<File>> getSemesterProtocols(String semesterID);
 

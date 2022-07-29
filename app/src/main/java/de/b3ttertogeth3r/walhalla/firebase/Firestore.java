@@ -86,7 +86,7 @@ public class Firestore implements IInit {
     private void createSemesters() {
         for (Semester s : Values.semesterList) {
             FBFS.collection("Semester")
-                    .document(s.getId())
+                    .document(String.valueOf(s.getId()))
                     .set(s);
 
         }

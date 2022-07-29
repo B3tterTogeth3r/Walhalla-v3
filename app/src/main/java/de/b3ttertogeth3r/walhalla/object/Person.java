@@ -308,7 +308,6 @@ public class Person implements IPerson {
         }
 
         if (getJoined() != -1 || isEdit) {
-            // TODO: 25.07.22 format semester from number into string
             ProfileRow join = new ProfileRow(context, isEdit);
             join.setId(R.id.joined);
             String semName = context.getString(R.string.dialog_semester_select);
@@ -390,13 +389,6 @@ public class Person implements IPerson {
         return designDisplayEdit(context, false, null);
     }
 
-    @Override
-    public boolean validate() {
-        return (this.first_Name != null && !this.first_Name.isEmpty() &&
-                this.last_Name != null && !this.last_Name.isEmpty() &&
-                rank != null && joined != -1);
-    }
-
     public boolean validatePersonal() {
         return (this.first_Name != null && !this.first_Name.isEmpty() &&
                 this.last_Name != null && !this.last_Name.isEmpty());
@@ -405,5 +397,12 @@ public class Person implements IPerson {
     @Override
     public boolean validateFratData() {
         return (this.rank != null && joined != -1);
+    }
+
+    @Override
+    public boolean validate() {
+        return (this.first_Name != null && !this.first_Name.isEmpty() &&
+                this.last_Name != null && !this.last_Name.isEmpty() &&
+                rank != null && joined != -1);
     }
 }

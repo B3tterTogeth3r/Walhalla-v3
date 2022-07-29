@@ -41,15 +41,15 @@ import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
-import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.object.Log;
-import de.b3ttertogeth3r.walhalla.object.Semester;
+import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class Program extends Fragment {
     private static final String TAG = "ProgramFragment";
     private IFirestoreDownload download;
     private LinearLayout view;
+    private int semesterId;
 
     @Override
     public void constructor() {
@@ -63,7 +63,8 @@ public class Program extends Fragment {
 
     @Override
     public void start() {
-        download(1);
+        semesterId = Values.currentSemester.getId();
+        download(semesterId);
     }
 
     @Override
@@ -71,20 +72,19 @@ public class Program extends Fragment {
         toolbar.setTitle("");
         customToolbar.setVisibility(View.VISIBLE);
         customToolbarTitle.setText(R.string.menu_program);
-        customToolbar.setOnClickListener(v ->
-                {
-                    try {
-                        ChangeSemester.display(getParentFragmentManager(),
-                                        new Semester(Firebase.remoteConfig().getInt(RemoteConfig.CURRENT_SEMESTER)))
-                                .setOnSuccessListener(result -> {
-                                    assert result != null;
-                                    download(result);
-                                });
-                    } catch (CreateDialogException e) {
-                        e.printStackTrace();
-                    }
-                }
-        );
+        customToolbar.setOnClickListener(v -> displayDialog());
+    }
+
+    private void displayDialog() {
+        try {
+            ChangeSemester.display(getParentFragmentManager(), Values.semesterList.get(semesterId))
+                    .setOnSuccessListener(result -> {
+                        assert result != null;
+                        download(result);
+                    });
+        } catch (CreateDialogException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -100,6 +100,7 @@ public class Program extends Fragment {
     private void download(int semId) {
         download.getSemesterEvents(semId)
                 .setOnSuccessListener(result -> {
+                    semesterId = semId;
                     if (result == null) {
                         throw new NoDataException("Download failed");
                     } else if (result.isEmpty()) {
@@ -120,6 +121,9 @@ public class Program extends Fragment {
     void listEvents(@NonNull ArrayList<de.b3ttertogeth3r.walhalla.object.Event> eventList) {
         view.removeAllViewsInLayout();
         view.removeAllViews();
+        Title semester = new Title(requireContext());
+        semester.setTitle(Values.semesterList.get(semesterId).getName_long());
+        view.addView(semester);
         int i = 0;
         for (de.b3ttertogeth3r.walhalla.object.Event e : eventList) {
             view.addView(Event.create(requireActivity(), null, e)

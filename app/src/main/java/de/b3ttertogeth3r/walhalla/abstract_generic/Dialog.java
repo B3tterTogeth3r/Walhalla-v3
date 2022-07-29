@@ -43,7 +43,7 @@ public abstract class Dialog<T> extends DialogFragment implements DialogInterfac
     private final DialogSize size;
     private final Loader<T> loader;
     public Exception e = null;
-    private int buttonClickListener = 0;
+    private int buttonClickListener = DialogInterface.BUTTON_NEGATIVE;
     private T result;
 
     public Dialog(DialogSize size) {

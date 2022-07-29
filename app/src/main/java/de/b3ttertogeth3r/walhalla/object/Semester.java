@@ -17,12 +17,13 @@ package de.b3ttertogeth3r.walhalla.object;
 import com.google.firebase.Timestamp;
 
 import de.b3ttertogeth3r.walhalla.interfaces.object.ISemester;
+import de.b3ttertogeth3r.walhalla.util.Dev.SemesterRange;
 
 public class Semester implements ISemester {
     /**
      * the ID of the semester
      */
-    private String id;
+    private int id = 0;
     /**
      * The long name of the semester
      */
@@ -44,12 +45,12 @@ public class Semester implements ISemester {
     }
 
     public Semester(int id) {
-        this.id = String.valueOf(id);
+        this.id = id;
         this.start = Timestamp.now();
         this.end = Timestamp.now();
     }
 
-    public Semester(String id, String name_long, String name_short, Timestamp start,
+    public Semester(int id, String name_long, String name_short, Timestamp start,
                     Timestamp end) {
         this.id = id;
         this.name_long = name_long;
@@ -58,11 +59,12 @@ public class Semester implements ISemester {
         this.end = end;
     }
 
-    public String getId() {
+    @SemesterRange
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(@SemesterRange int id) {
         this.id = id;
     }
 

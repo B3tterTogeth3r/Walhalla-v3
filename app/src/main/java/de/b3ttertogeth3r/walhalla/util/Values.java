@@ -24,6 +24,8 @@ import java.util.Locale;
 
 import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.R;
+import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig;
 import de.b3ttertogeth3r.walhalla.object.Semester;
 
 public class Values {
@@ -37,8 +39,23 @@ public class Values {
             App.getContext().getString(R.string.month_dec)};
     /**
      * Semester list of all semesters until SS 2064
+     *
+     * @see de.b3ttertogeth3r.walhalla.util.Dev.SemesterRange SemesterRange
      */
     public static final ArrayList<Semester> semesterList = getSemesters();
+    public static Semester currentSemester = getCurrentSemester();
+
+    @NonNull
+    private static Semester getCurrentSemester() {
+        Timestamp time = Timestamp.now();
+        for (Semester s : Values.semesterList) {
+            if (s.getStart().toDate().before(time.toDate()) &&
+                    s.getEnd().toDate().after(time.toDate())) {
+                return s;
+            }
+        }
+        return getSemesters().get(Firebase.remoteConfig().getInt(IRemoteConfig.CURRENT_SEMESTER));
+    }
 
     @NonNull
     private static ArrayList<Semester> getSemesters() {
@@ -52,7 +69,7 @@ public class Values {
             end.set((l + 1), 2, 30, 23, 59, 59);
             String longStr = "Wintersemester " + l + " / " + (l + 1);
             String shortStr = "WS" + s + "/" + (s + 1);
-            semesters.add(new Semester(String.valueOf(i), longStr, shortStr,
+            semesters.add(new Semester(i, longStr, shortStr,
                     new Timestamp(start.getTime()), new Timestamp(end.getTime())));
 
             i++;
@@ -69,7 +86,7 @@ public class Values {
             } else {
                 shortStr = "SS" + s;
             }
-            semesters.add(new Semester(String.valueOf(i), longStr, shortStr,
+            semesters.add(new Semester(i, longStr, shortStr,
                     new Timestamp(start.getTime()), new Timestamp(end.getTime())));
 
         }

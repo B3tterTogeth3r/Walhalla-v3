@@ -14,6 +14,7 @@
 
 package de.b3ttertogeth3r.walhalla.dialog;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,13 +72,13 @@ public class ChangeSemester extends Dialog<Integer> {
         int year = np_year.getValue();
 
         //somehow it is right this way, I forgot why :-)
-        return (int) ((time + year) * 2 - 3);
+        return (int) ((time + year) * 2 - 2);
     }
 
     @Override
     public void createDialog(@NonNull RelativeLayout container, @NonNull LayoutInflater inflater) {
 
-        RelativeLayout numberPickers =
+        @SuppressLint("InflateParams") RelativeLayout numberPickers =
                 (RelativeLayout) inflater.inflate(R.layout.dialog_item_sem_change, null);
         numberPickers.findViewById(R.id.np_left).setVisibility(View.GONE);
 
@@ -98,16 +99,16 @@ public class ChangeSemester extends Dialog<Integer> {
 
         int semId;
         try {
-            semId = Integer.parseInt(semester.getId()) + 2;
+            semId = semester.getId();
         } catch (Exception npe) {
             semId = 0;
         }
         if ((semId % 2) == 0) {
             np_year.setDisplayedValues(createYearsWS());
-            np_year.setValue(((int) (semId / 2f) - 1));
+            np_year.setValue(((int) (semId / 2f)) + 1);
         } else {
             np_sem_kind.setValue(1);
-            np_year.setValue((semId / 2) - 1);
+            np_year.setValue((semId / 2) + 1);
         }
         np_sem_kind.setOnValueChangedListener((picker, oldVal, newVal) -> {
             if (newVal == 0) {
@@ -123,7 +124,7 @@ public class ChangeSemester extends Dialog<Integer> {
     @Override
     public void configDialog(@NonNull AlertDialog.Builder builder) {
         builder.setPositiveButton(R.string.send, this);
-        builder.setNegativeButton(R.string.abort, this);
+        builder.setNegativeButton(R.string.abort, null);
         builder.setCancelable(false);
     }
 

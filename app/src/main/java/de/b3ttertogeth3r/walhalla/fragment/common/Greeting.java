@@ -37,11 +37,11 @@ import de.b3ttertogeth3r.walhalla.design.AdView;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
-import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Text;
+import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class Greeting extends Fragment {
     private static final String TAG = "Greeting";
@@ -54,7 +54,7 @@ public class Greeting extends Fragment {
     public void constructor() {
         download = Firebase.Firestore.download();
         greeting = new ArrayList<>();
-        semesterId = Firebase.remoteConfig().getInt(RemoteConfig.CURRENT_SEMESTER);
+        semesterId = Values.currentSemester.getId();
     }
 
     @Override

@@ -40,8 +40,6 @@ import de.b3ttertogeth3r.walhalla.dialog.InfoDialog;
 import de.b3ttertogeth3r.walhalla.dialog.ProfileEditDialog;
 import de.b3ttertogeth3r.walhalla.dialog.RankSelectDialog;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase;
-import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.IOnBackPressed;
 import de.b3ttertogeth3r.walhalla.object.Address;
 import de.b3ttertogeth3r.walhalla.object.Log;
@@ -63,6 +61,7 @@ public class FraternityData extends Fragment implements IOnBackPressed {
     private final ArrayList<Address> addressList;
     private FragmentManager fm;
     private ProfileRow joined, rank, nickname;
+    private Semester currentSemester;
 
 
     /**
@@ -75,6 +74,7 @@ public class FraternityData extends Fragment implements IOnBackPressed {
     public FraternityData(Person person, ArrayList<Address> addressList) {
         this.person = person;
         this.addressList = addressList;
+        this.currentSemester = Values.currentSemester;
     }
 
     @Override
@@ -117,14 +117,14 @@ public class FraternityData extends Fragment implements IOnBackPressed {
                     @Override
                     public void onClick(View view) {
                         try {
-                            int currentSemester = Firebase.remoteConfig().getInt(RemoteConfig.CURRENT_SEMESTER);
-                            ChangeSemester dialog = ChangeSemester.display(fm, new Semester(currentSemester));
+                            ChangeSemester dialog = ChangeSemester.display(fm, currentSemester);
                             dialog.setOnSuccessListener(result -> {
                                 if (result == null || result == -1) {
                                     throw new NullPointerException("Semester id cannot be null, 0 or -1");
                                 }
                                 person.setJoined(result);
                                 joined.setContent(Values.semesterList.get(result).getName_long());
+                                currentSemester = Values.semesterList.get(result);
                             });
                         } catch (CreateDialogException e) {
                             e.printStackTrace();

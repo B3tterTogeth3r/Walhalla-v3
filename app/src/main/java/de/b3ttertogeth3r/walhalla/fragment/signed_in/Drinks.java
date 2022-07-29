@@ -23,17 +23,22 @@ import androidx.fragment.app.FragmentActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 import de.b3ttertogeth3r.walhalla.design.SideNav;
 import de.b3ttertogeth3r.walhalla.design.TableLayout;
+import de.b3ttertogeth3r.walhalla.design.TableRow;
+import de.b3ttertogeth3r.walhalla.design.Text;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.object.DrinkMovement;
 import de.b3ttertogeth3r.walhalla.object.Log;
+import de.b3ttertogeth3r.walhalla.util.Values;
 
 /**
  * <h1>This Fragment should only be accessible, if a user is signed in</h1>
@@ -50,6 +55,7 @@ public class Drinks extends Fragment {
     String uid;
     LinearLayout view;
     private de.b3ttertogeth3r.walhalla.design.LinearLayout movements;
+    private de.b3ttertogeth3r.walhalla.design.LinearLayout groupTable;
     private IFirestoreDownload download;
 
     @Override
@@ -76,38 +82,36 @@ public class Drinks extends Fragment {
                     displayDrinksGroup(result);
                     displayDrinks(result);
                 })
-                .setOnFailListener(e -> {
-                    Log.e(TAG, "start: ", e);
-                });
+                .setOnFailListener(e -> Log.e(TAG, "start: ", e));
     }
 
-    private void displayDrinksGroup(ArrayList<DrinkMovement> result) {
+    @SuppressWarnings("ConstantConditions")
+    private void displayDrinksGroup(@NonNull ArrayList<DrinkMovement> result) {
         // TODO: 21.07.22 list all drinks of the current/selected semester grouped by kind above the table
+        Map<String, Float> groupList = new HashMap<>();
         for (DrinkMovement dm : result) {
             String name = dm.getViewString();
             int amount = dm.getAmount();
             float price = dm.getPrice();
-
+            if (groupList.containsKey(name)) {
+                float current = groupList.getOrDefault(name, 0f) + (amount * price);
+                groupList.replace(name, current);
+            } else {
+                groupList.put(name, (amount * price));
+            }
         }
-    }
+        groupTable.removeAllViewsInLayout();
+        TableLayout table = new TableLayout(requireContext());
+        for (String key : groupList.keySet()) {
+            TableRow row = new TableRow(requireContext());
+            row.addView(new Text(requireContext(), key));
+            float value = groupList.getOrDefault(key, 0f);
 
-    @Override
-    public void toolbarContent() {
-        toolbar.setTitle(R.string.menu_drinks);
-        // TODO: 30.05.22 add menu to manage drinks, if the user is a board member
-    }
-
-    @Override
-    public void createView(@NonNull LinearLayout view) {
-        movements = new de.b3ttertogeth3r.walhalla.design.LinearLayout(requireContext());
-        HorizontalScrollView hsv = new HorizontalScrollView(requireContext());
-        hsv.addView(movements);
-        view.addView(hsv);
-    }
-
-    @Override
-    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
-        return requireActivity();
+            String s = "€ " + String.format(Values.LOCALE, "%.2f", value).replace(".", ",");
+            row.addView(new Text(requireContext(), s));
+            table.addView(row);
+        }
+        groupTable.addView(table);
     }
 
     private void displayDrinks(@NonNull ArrayList<DrinkMovement> drinkMovements) {
@@ -120,6 +124,30 @@ public class Drinks extends Fragment {
                             .show());
         }
         movements.addView(table);
+    }
+
+    @Override
+    public void toolbarContent() {
+        toolbar.setTitle(R.string.menu_drinks);
+        // TODO: 30.05.22 add menu to manage drinks, if the user is a board member
+    }
+
+    @Override
+    public void createView(@NonNull LinearLayout view) {
+        view.setOrientation(LinearLayout.VERTICAL);
+        groupTable = new de.b3ttertogeth3r.walhalla.design.LinearLayout(requireContext());
+        HorizontalScrollView hsv = new HorizontalScrollView(requireContext());
+        hsv.addView(groupTable);
+        view.addView(hsv);
+        movements = new de.b3ttertogeth3r.walhalla.design.LinearLayout(requireContext());
+        HorizontalScrollView hsv2 = new HorizontalScrollView(requireContext());
+        hsv2.addView(movements);
+        view.addView(hsv2);
+    }
+
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 
     @NonNull

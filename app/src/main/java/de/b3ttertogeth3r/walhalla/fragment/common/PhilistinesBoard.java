@@ -34,15 +34,16 @@ import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
-import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Semester;
+import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class PhilistinesBoard extends Fragment {
     private static final String TAG = "PhilistinesBoard";
     private LinearLayout view;
+    private int semesterId;
 
     @Override
     public String analyticsProperties() {
@@ -51,7 +52,8 @@ public class PhilistinesBoard extends Fragment {
 
     @Override
     public void start() {
-        download(1);
+        semesterId = Values.currentSemester.getId();
+        download(semesterId);
     }
 
     @Override
@@ -63,10 +65,11 @@ public class PhilistinesBoard extends Fragment {
         {
             try {
                 ChangeSemester.display(getParentFragmentManager(),
-                                new Semester(Firebase.remoteConfig().getInt(RemoteConfig.CURRENT_SEMESTER)))
+                                new Semester(semesterId))
                         .setOnSuccessListener(result -> {
                             assert result != null;
                             download(result);
+                            this.semesterId = result;
                         });
             } catch (CreateDialogException e) {
                 Log.e(TAG, "toolbarContent: ", e);

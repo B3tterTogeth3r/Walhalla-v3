@@ -106,8 +106,8 @@ public interface Firebase {
          * @since {@link Firebase} version 1.0
          */
         static IFirestoreDownload download() {
-            //return new FirestoreMock.Download();
-            return de.b3ttertogeth3r.walhalla.firebase.Firestore.download;
+            return new FirestoreMock.Download();
+            //return de.b3ttertogeth3r.walhalla.firebase.Firestore.download;
         }
 
         /**

@@ -478,6 +478,9 @@ public class FirestoreMock {
             eventList.add(e1.clone());
             eventList.add(e2.clone());
             eventList.add(e3.clone());
+            eventList.add(e1.clone());
+            eventList.add(e2.clone());
+            eventList.add(e3.clone());
             return loader.done(eventList);
         }
 
