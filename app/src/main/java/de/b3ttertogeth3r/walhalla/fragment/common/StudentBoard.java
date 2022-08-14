@@ -98,7 +98,7 @@ public class StudentBoard extends Fragment {
                     if (result == null) {
                         throw new NullPointerException("Result list is null");
                     } else if (result.isEmpty()) {
-                        Log.e(TAG, "download: ", new NoDataException("The Semester has no student board"));
+                        Log.w(TAG, "download: ", new NoDataException("The Semester has no student board"));
                         view.removeAllViewsInLayout();
                         view.removeAllViews();
                         view.addView(new Title(requireContext(), getString(R.string.no_board)));

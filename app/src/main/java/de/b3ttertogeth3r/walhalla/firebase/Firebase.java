@@ -18,12 +18,12 @@ import org.jetbrains.annotations.Contract;
 
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAnalytics;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.ICloudFunctions;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreUpload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageUpload;
-import de.b3ttertogeth3r.walhalla.mock.FirestoreMock;
 import de.b3ttertogeth3r.walhalla.mock.StorageMock;
 
 /**
@@ -40,7 +40,7 @@ import de.b3ttertogeth3r.walhalla.mock.StorageMock;
  * </ul>
  *
  * @author B3tterTogeth3r
- * @version 1.2
+ * @version 1.3
  * @see IFirestoreUpload
  * @see IFirestoreDownload
  * @see IAnalytics
@@ -60,6 +60,19 @@ public interface Firebase {
      */
     static IAnalytics analytics() {
         return Analytics.iAnalytics;
+    }
+
+    /**
+     * Calls the interface inside the {@link CloudFunctions} class to pass on the public functions.
+     *
+     * @return The interface
+     * @see ICloudFunctions
+     * @see CloudFunctions
+     * @see <a href="https://firebase.google.com/docs/functions/callable">Cloud Functions call direct via app</a>
+     * @since {@link Firebase} version 1.3
+     */
+    static ICloudFunctions cloudFunctions() {
+        return CloudFunctions.iCloudFunctions;
     }
 
     /**
@@ -106,8 +119,8 @@ public interface Firebase {
          * @since {@link Firebase} version 1.0
          */
         static IFirestoreDownload download() {
-            return new FirestoreMock.Download();
-            //return de.b3ttertogeth3r.walhalla.firebase.Firestore.download;
+            //return new FirestoreMock.Download();
+            return de.b3ttertogeth3r.walhalla.firebase.Firestore.download;
         }
 
         /**
@@ -119,8 +132,8 @@ public interface Firebase {
          * @since {@link Firebase} version 1.0
          */
         static IFirestoreUpload upload() {
-            return new FirestoreMock.Upload();
-            //return de.b3ttertogeth3r.walhalla.firebase.Firestore.upload;
+            //return new FirestoreMock.Upload();
+            return de.b3ttertogeth3r.walhalla.firebase.Firestore.upload;
         }
     }
 

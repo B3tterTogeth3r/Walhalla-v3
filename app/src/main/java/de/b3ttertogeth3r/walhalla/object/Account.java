@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -19,15 +19,6 @@ public class Account {
     private float amount = 0f;
     private float income = 0f;
     private float expense = 0f;
-    private String id;
-
-    public String getId () {
-        return id;
-    }
-
-    public void setId (String id) {
-        this.id = id;
-    }
 
     public Account (float amount, int movements, float income, float expense) {
         this.amount = amount;

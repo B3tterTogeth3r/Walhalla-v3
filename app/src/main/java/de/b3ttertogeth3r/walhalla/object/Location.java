@@ -26,6 +26,8 @@ public class Location implements Validate {
     private String id;
 
     public Location () {
+        this.name = "K.St.V. Walhalla";
+        this.coordinates = new GeoPoint(49.784420, 9.924580);
     }
 
     public Location (String name, GeoPoint coordinates) {

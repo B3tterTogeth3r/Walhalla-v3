@@ -56,6 +56,13 @@ public interface FirebaseInit {
     /**
      * Initialize the given Firebase service.
      *
+     * @param context Application Context
+     */
+    void CloudFunctions(Context context);
+
+    /**
+     * Initialize the given Firebase service.
+     *
      * @param context Application context
      */
     void DynamicLinks(Context context);

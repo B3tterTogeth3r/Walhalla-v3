@@ -109,7 +109,9 @@ public class Home extends Fragment implements View.OnClickListener {
                             string = result.getTitle();
                         }
                         program.addView(text(string));
+                        return;
                     }
+                    program.addView(text(R.string.menu_program));
                 })
                 .setOnFailListener(e -> {
                     Log.e(TAG, "createView: loading next event did not work", e);
@@ -143,7 +145,7 @@ public class Home extends Fragment implements View.OnClickListener {
                     greeting.addView(new Image(requireContext()).setImage(result.get(0).getImage()));
                 })
                 .setOnFailListener(e -> {
-                    Log.e(TAG, "onFailureListener: download x", e);
+                    Log.w(TAG, "onFailureListener: download x", e);
                     greeting.addView(image(AppCompatResources.getDrawable(requireContext(),
                             R.drawable.ic_greeting), true));
                 });

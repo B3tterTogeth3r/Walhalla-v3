@@ -45,6 +45,7 @@ import de.b3ttertogeth3r.walhalla.fragment.Home;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.IOnBackPressed;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.object.Log;
+import de.b3ttertogeth3r.walhalla.util.Cache;
 
 public class SignInHome extends Fragment implements IOnBackPressed {
     private static final String TAG = "SignInHome";
@@ -161,6 +162,33 @@ public class SignInHome extends Fragment implements IOnBackPressed {
                                 .replace(R.id.fragment_container, new Home())
                                 .commit();
                         Toast.makeToast(requireActivity(), R.string.sign_in_complete).show();
+                        String uid = Firebase.authentication().getUser().getUid();
+                        try {
+                            Firebase.Firestore.download().person(uid)
+                                    .setOnSuccessListener(result2 -> {
+                                        if (result2 != null) {
+                                            Cache.CACHE_DATA.setRank(result2.getRank());
+                                        }
+                                    });
+                        } catch (Exception e) {
+                            Log.e(TAG, "Firestore: ", e);
+                        }
+                        try {
+                            Firebase.cloudFunctions().checkBoardMember(uid)
+                                    .setOnSuccessListener(result1 -> {
+                                        if (result1 != null) {
+                                            Cache.CACHE_DATA.setBoardMember(result1);
+                                            Log.i(TAG, "CF: setBoardMember: " + result1);
+                                            return;
+                                        }
+                                        Cache.CACHE_DATA.setBoardMember(false);
+                                    }).setOnFailListener(e -> {
+                                        Log.e(TAG, "onFailureListener: CF: ", e);
+                                        Cache.CACHE_DATA.setBoardMember(false);
+                                    });
+                        } catch (Exception e) {
+                            Log.e(TAG, "signIn: CloudFunctions ", e);
+                        }
                     }).onFailureListener(e -> {
                                 if (e.getMessage() != null && e.getMessage().contains("invalid")) {
                                     Toast.makeToast(requireActivity(), R.string.fui_error_invalid_password).show();
@@ -174,6 +202,11 @@ public class SignInHome extends Fragment implements IOnBackPressed {
             Log.e(TAG, "openDialog: ", e);
             Toast.makeToast(requireActivity(), R.string.error).show();
         }
+    }
+
+    @Override
+    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+        //uid = cArR58nHmYs9wrDuMRet
     }
 
     @Override

@@ -30,11 +30,11 @@ import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 import de.b3ttertogeth3r.walhalla.design.SideNav;
 import de.b3ttertogeth3r.walhalla.design.TableLayout;
-import de.b3ttertogeth3r.walhalla.design.TableRow;
-import de.b3ttertogeth3r.walhalla.design.Text;
+import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.object.DrinkMovement;
 import de.b3ttertogeth3r.walhalla.object.Log;
@@ -51,9 +51,7 @@ import de.b3ttertogeth3r.walhalla.util.Values;
  */
 public class Drinks extends Fragment {
     private static final String TAG = "Drinks";
-    int currentSemester;
-    String uid;
-    LinearLayout view;
+    private String uid;
     private de.b3ttertogeth3r.walhalla.design.LinearLayout movements;
     private de.b3ttertogeth3r.walhalla.design.LinearLayout groupTable;
     private IFirestoreDownload download;
@@ -61,10 +59,12 @@ public class Drinks extends Fragment {
     @Override
     public void constructor() {
         download = Firebase.Firestore.download();
-        if (!Firebase.authentication().isSignIn()) {
+        IAuth auth = Firebase.authentication();
+        if (!auth.isSignIn()) {
             Toast.makeToast(requireContext(), R.string.fui_error_session_expired).show();
             SideNav.changePage(R.string.menu_home, requireActivity().getSupportFragmentManager().beginTransaction());
         }
+        uid = auth.getUser().getUid();
     }
 
     @Override
@@ -74,7 +74,7 @@ public class Drinks extends Fragment {
 
     @Override
     public void start() {
-        download.getPersonDrinkMovement(uid, currentSemester)
+        download.getPersonDrinkMovement(uid, Values.currentSemester.getId())
                 .setOnSuccessListener(result -> {
                     if (result == null || result.isEmpty()) {
                         throw new NoDataException("No drink movements found");
@@ -87,7 +87,6 @@ public class Drinks extends Fragment {
 
     @SuppressWarnings("ConstantConditions")
     private void displayDrinksGroup(@NonNull ArrayList<DrinkMovement> result) {
-        // TODO: 21.07.22 list all drinks of the current/selected semester grouped by kind above the table
         Map<String, Float> groupList = new HashMap<>();
         for (DrinkMovement dm : result) {
             String name = dm.getViewString();
@@ -101,21 +100,22 @@ public class Drinks extends Fragment {
             }
         }
         groupTable.removeAllViewsInLayout();
+        groupTable.addView(new Title(requireContext(), R.string.drink_total));
         TableLayout table = new TableLayout(requireContext());
         for (String key : groupList.keySet()) {
-            TableRow row = new TableRow(requireContext());
-            row.addView(new Text(requireContext(), key));
             float value = groupList.getOrDefault(key, 0f);
-
-            String s = "€ " + String.format(Values.LOCALE, "%.2f", value).replace(".", ",");
-            row.addView(new Text(requireContext(), s));
-            table.addView(row);
+            String valueS = "€ " + String.format(Values.LOCALE, "%.2f", value)
+                    .replace(".", ",");
+            table.addView(de.b3ttertogeth3r.walhalla.design.Movement.create(
+                            requireActivity(), null, key, valueS)
+                    .show());
         }
         groupTable.addView(table);
     }
 
     private void displayDrinks(@NonNull ArrayList<DrinkMovement> drinkMovements) {
         movements.removeAllViewsInLayout();
+        movements.addView(new Title(requireContext(), R.string.drink_total_detail));
         TableLayout table = new TableLayout(requireContext());
         for (DrinkMovement dm : drinkMovements) {
             table.addView(

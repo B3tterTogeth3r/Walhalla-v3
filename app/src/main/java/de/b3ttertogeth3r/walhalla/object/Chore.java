@@ -25,20 +25,18 @@ import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
 public class Chore extends MyObject implements Validate {
     String id;
     DocumentReference toEvent;
-    boolean done;
+    boolean done = false;
     de.b3ttertogeth3r.walhalla.enums.Chore chore;
+    /**
+     * {@link Event#ID Event.ID} of the event
+     */
     String event;
+    /**
+     * {@link de.b3ttertogeth3r.walhalla.object.Person#ID Person.ID} of the Person
+     */
     String person;
 
     public Chore() {
-    }
-
-    public DocumentReference getToEvent() {
-        return toEvent;
-    }
-
-    public void setToEvent(DocumentReference toEvent) {
-        this.toEvent = toEvent;
     }
 
     public Timestamp getDueDate() {
@@ -67,7 +65,32 @@ public class Chore extends MyObject implements Validate {
 
     @Override
     public boolean validate() {
-        return false;
+        return (getToEvent() != null && getChore() != null
+                && !getPerson().isEmpty());
+    }
+
+    public DocumentReference getToEvent() {
+        return toEvent;
+    }
+
+    public void setToEvent(DocumentReference toEvent) {
+        this.toEvent = toEvent;
+    }
+
+    public de.b3ttertogeth3r.walhalla.enums.Chore getChore() {
+        return chore;
+    }
+
+    public String getPerson() {
+        return person;
+    }
+
+    public void setPerson(String person) {
+        this.person = person;
+    }
+
+    public void setChore(de.b3ttertogeth3r.walhalla.enums.Chore chore) {
+        this.chore = chore;
     }
 
     @NonNull
@@ -87,21 +110,5 @@ public class Chore extends MyObject implements Validate {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getPerson() {
-        return person;
-    }
-
-    public void setPerson(String person) {
-        this.person = person;
-    }
-
-    public de.b3ttertogeth3r.walhalla.enums.Chore getChore() {
-        return chore;
-    }
-
-    public void setChore(de.b3ttertogeth3r.walhalla.enums.Chore chore) {
-        this.chore = chore;
     }
 }

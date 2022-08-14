@@ -25,7 +25,7 @@ import java.util.Collections;
 import de.b3ttertogeth3r.walhalla.object.Text;
 
 public enum Charge {
-    X, VX, FM, XX, XXX, AH_X, AH_XXX, AH_XX, AH_HW, VOP, VVOP;
+    NONE, X, VX, FM, XX, XXX, AH_X, AH_XXX, AH_XX, AH_HW, VOP, VVOP, ADMIN;
 
     /**
      * The List contains two items.
@@ -33,12 +33,12 @@ public enum Charge {
      *     <li>The title and abbreviation of the object</li>
      *     <li>The short description of the job</li>
      * </ol>
-     * @return the full description of the
      *
+     * @return the full description of the
      */
     @NonNull
     @Contract(" -> new")
-    public ArrayList<Text> getDescription () {
+    public ArrayList<Text> getDescription() {
         Text title = new Text();
         Text description = new Text();
         switch (this) {
@@ -118,7 +118,6 @@ public enum Charge {
             case AH_XXX:
             case AH_XX:
             case AH_HW:
-            default:
                 title.setValue(new ArrayList<>(Collections.singletonList("Philistervorstand")));
                 title.setPosition(0);
                 title.setKind(TextType.TITLE);
@@ -131,6 +130,8 @@ public enum Charge {
                         "Verwaltung des Verbindungshauses und um die Mitgliederbeiträge. Außerdem" +
                         " steht er der Aktivitas mit Rat und Tat zur Seite.")));
                 break;
+            default:
+                break;
         }
         return new ArrayList<>(Arrays.asList(title, description));
     }
@@ -140,7 +141,7 @@ public enum Charge {
      */
     @NonNull
     @Override
-    public String toString () {
+    public String toString() {
         return super.toString().replace("_", " ");
     }
 
@@ -150,7 +151,7 @@ public enum Charge {
     @NonNull
     @Contract(pure = true)
     public String toLongString() {
-        switch (this){
+        switch (this) {
             case X:
                 return "Senior";
             case VX:
@@ -173,6 +174,8 @@ public enum Charge {
                 return "Vorortspräsident";
             case VVOP:
                 return "Vizevorortspräsident";
+            case ADMIN:
+                return "Administrator";
             default:
                 return "";
         }

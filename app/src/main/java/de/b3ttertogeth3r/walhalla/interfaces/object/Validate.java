@@ -14,6 +14,8 @@
 
 package de.b3ttertogeth3r.walhalla.interfaces.object;
 
+import com.google.firebase.database.Exclude;
+
 /**
  * An interface to make a validation check always the same.<br>
  * Has the function: {@link #validate()}
@@ -29,5 +31,6 @@ public interface Validate {
      * @return true, if the necessary fields are set.
      * @since 2.0
      */
+    @Exclude
     boolean validate();
 }

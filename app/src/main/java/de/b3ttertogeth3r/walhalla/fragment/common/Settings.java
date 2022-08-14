@@ -12,7 +12,7 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.fragment.board;
+package de.b3ttertogeth3r.walhalla.fragment.common;
 
 import android.widget.LinearLayout;
 
@@ -21,39 +21,24 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 
-public class AddChoresToEvent extends Fragment {
-    private static final String TAG = "AddChoresToEvent";
+public class Settings extends Fragment {
+    private static final String TAG = "Settings";
 
     @Override
-    public void start () {
-
-    }
-
-    @Override
-    public String analyticsProperties () {
+    public String analyticsProperties() {
         return TAG;
     }
 
     @Override
-    public void stop () {
-
-    }
-
-    @Override
-    public void viewCreated () {
-
-    }
-
-    @Override
     public void toolbarContent() {
-
+        toolbar.setTitle(R.string.menu_settings);
     }
 
     @Override
     public void createView(@NonNull LinearLayout view) {
-
     }
 
     @Override

@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 import de.b3ttertogeth3r.walhalla.design.AdView;
+import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
@@ -64,7 +65,7 @@ public class Greeting extends Fragment {
 
     @Override
     public void start() {
-        download.getSemesterGreeting(String.valueOf(semesterId))
+        download.getSemesterGreeting(semesterId)
                 .setOnSuccessListener(result -> {
                     if (result != null && !result.isEmpty()) {
                         greeting = result;
@@ -73,7 +74,31 @@ public class Greeting extends Fragment {
                     }
                     throw new NoDataException("Greeting is empty or null");
                 })
-                .setOnFailListener(e -> Log.e(TAG, "Loading greeting did not work", e));
+                .setOnFailListener(e -> {
+                    Log.w(TAG, "Loading greeting of semester " + semesterId + " did not work", e);
+                    Title noGreeting = new Title(requireContext());
+                    noGreeting.setText(R.string.greeting_no_data);
+                    view.addView(noGreeting);
+                });
+    }
+
+    @Override
+    public void toolbarContent() {
+        toolbar.setTitle(R.string.menu_greeting_long);
+        Log.i(TAG, "toolbarContent: Cache.CACHE_DATA.isBoardMember: " + Cache.CACHE_DATA.isBoardMember());
+        if (Cache.CACHE_DATA.isBoardMember()) {
+            // TODO: 29.07.22 add menu to edit greeting
+        }
+    }
+
+    @Override
+    public void createView(@NonNull LinearLayout view) {
+        this.view = view;
+    }
+
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
     }
 
     private void loadGreeting() {
@@ -167,15 +192,5 @@ public class Greeting extends Fragment {
                     layout.addView(row);
                     layout.addView(new AdView(requireContext()));
                 });
-    }
-
-    @Override
-    public void createView(@NonNull LinearLayout view) {
-        this.view = view;
-    }
-
-    @Override
-    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
-        return requireActivity();
     }
 }

@@ -14,6 +14,8 @@
 
 package de.b3ttertogeth3r.walhalla.interfaces.object;
 
+import de.b3ttertogeth3r.walhalla.annotation.SemesterRange;
+
 /**
  * An interface for the {@link de.b3ttertogeth3r.walhalla.object.Semester Semester} Object.
  *
@@ -24,7 +26,7 @@ public interface ISemester {
     /**
      * The ID of the semester
      *
-     * @see de.b3ttertogeth3r.walhalla.util.Dev.SemesterRange SemesterRange
+     * @see de.b3ttertogeth3r.walhalla.annotation.SemesterRange SemesterRange
      */
     int ID = -1;
     /**
@@ -43,4 +45,9 @@ public interface ISemester {
      * The time the semester ends.
      */
     int END_TIME = 3;
+
+    @SemesterRange
+    int getId();
+
+    void setId(@SemesterRange int id);
 }

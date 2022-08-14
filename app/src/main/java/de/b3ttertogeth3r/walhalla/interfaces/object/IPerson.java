@@ -20,10 +20,12 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.database.Exclude;
+
+import de.b3ttertogeth3r.walhalla.annotation.PersonValue;
 import de.b3ttertogeth3r.walhalla.design.TableRow;
 import de.b3ttertogeth3r.walhalla.enums.TrafficLightColor;
 import de.b3ttertogeth3r.walhalla.object.Person;
-import de.b3ttertogeth3r.walhalla.util.Dev.PersonValue;
 
 /**
  * @author B3tterTogeth3r
@@ -54,6 +56,7 @@ public interface IPerson extends Validate {
     /**
      * @return the value of {@link Person#getFirst_Name()} and {@link Person#getLast_Name()}.
      */
+    @Exclude
     String getFull_Name();
 
     /**
@@ -63,27 +66,33 @@ public interface IPerson extends Validate {
      *
      * @return {@link TrafficLightColor}
      */
+    @Exclude
     TrafficLightColor getSecurity();
 
+    @Exclude
     String getValue(@PersonValue int value);
 
+    @Exclude
     void setValue(@PersonValue int value, String content);
 
     /**
      * Creates a {@link TableRow} designed like:
      * -------------------------------------------------------------------------------------------<br>
      * | {@link #getFull_Name()} | {@link Person#getNickname()} | {@link Person#getRank()} |
-     * {@link de.b3ttertogeth3r.walhalla.util.TrafficLight TrafficLight} | > |<br>
+     * {@link de.b3ttertogeth3r.walhalla.util.TrafficLight TrafficLight} | Arrow right |<br>
      * -------------------------------------------------------------------------------------------<br>
      *
      * @param context {@link Context} to create the row and its content
      * @return {@link TableRow}
      * @since 1.0
      */
-    TableRow getViewAll(@NonNull Context context);
+    @Exclude
+    View getViewAll(@NonNull Context context);
 
+    @Exclude
     LinearLayout getViewEdit(Context context, View.OnClickListener listener);
 
+    @Exclude
     LinearLayout getViewDisplay(Context context);
 
     /**
@@ -93,6 +102,7 @@ public interface IPerson extends Validate {
      *
      * @return {@link Boolean}
      */
+    @Exclude
     boolean validatePersonal();
 
     /**
@@ -102,7 +112,6 @@ public interface IPerson extends Validate {
      *
      * @return {@link Boolean}
      */
+    @Exclude
     boolean validateFratData();
-
-
 }

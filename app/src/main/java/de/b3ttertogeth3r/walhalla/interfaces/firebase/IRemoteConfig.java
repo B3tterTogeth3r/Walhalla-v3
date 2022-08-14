@@ -14,13 +14,14 @@
 
 package de.b3ttertogeth3r.walhalla.interfaces.firebase;
 
-import de.b3ttertogeth3r.walhalla.util.Dev.RemoteConfigKeys;
+import de.b3ttertogeth3r.walhalla.annotation.RemoteConfigKeys;
 
 /**
  * Interface to communicate with Firebase Remote Config.
+ *
  * @author B3tterTogeth3r
- * @since 2.0
  * @version 1.1
+ * @since 2.0
  */
 public interface IRemoteConfig {
     String CURRENT_SEMESTER = "current_semester_id";

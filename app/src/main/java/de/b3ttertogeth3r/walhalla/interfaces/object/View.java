@@ -20,7 +20,6 @@ import androidx.fragment.app.FragmentActivity;
  * @param <T> type of the Design
  * @author B3tterTogeth3r
  * @version 1.0
- * @implNote TEST CLASS
  * An interface to simplify the creation of a view of an Object.
  * @since 3.1
  */

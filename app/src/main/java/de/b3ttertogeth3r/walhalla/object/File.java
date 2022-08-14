@@ -15,13 +15,15 @@
 package de.b3ttertogeth3r.walhalla.object;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
 import de.b3ttertogeth3r.walhalla.abstract_generic.MyObject;
-import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
+import de.b3ttertogeth3r.walhalla.design.ProfileRow;
+import de.b3ttertogeth3r.walhalla.interfaces.object.IFile;
 
 /**
- * Object to store values a file has in Firestore. Every file has an {@link #id}, a {@link #name},
- * a {@link #path}, a {@link #uploadedBy} and a {@link #description}.
+ * Object to store values a file has in Firestore. Every file has an {@link #ID}, a {@link #NAME},
+ * a {@link #PATH}, a {@link #UPLOADED_BY} and a {@link #DESCRIPTION}.
  *
  * @author B3tterTogeth3r
  * @version 1.0
@@ -29,26 +31,11 @@ import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
  * @see de.b3ttertogeth3r.walhalla.abstract_generic.MyObject
  * @since 2.0
  */
-public class File extends MyObject implements Validate {
-    /**
-     * name of the file
-     **/
+public class File extends MyObject implements IFile {
     private String name;
-    /**
-     * path in the firebase storage bucket
-     */
     private String path;
-    /**
-     * uid of the user who uploaded it
-     */
     private String uploadedBy;
-    /**
-     * description of the file
-     */
     private String description;
-    /**
-     * id of the firestore path
-     */
     private String id;
 
     public File() {
@@ -80,10 +67,6 @@ public class File extends MyObject implements Validate {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getPath() {
         return path;
     }
@@ -100,16 +83,32 @@ public class File extends MyObject implements Validate {
         this.uploadedBy = uploadedBy;
     }
 
+    @Override
+    public boolean validate() {
+        return false;
+    }
+
+    @Override
+    public ProfileRow getView(FragmentActivity activity) {
+        ProfileRow row = new ProfileRow(activity, true);
+        row.setTitle(getName());
+        row.setContent(getDescription());
+        return row;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    @Override
-    public boolean validate() {
-        return false;
     }
 }

@@ -72,6 +72,9 @@ public class PhilistinesBoard extends Fragment {
                 Log.e(TAG, "toolbarContent: ", e);
             }
         });
+        if (Cache.CACHE_DATA.isBoardMember()) {
+            // TODO: 29.07.22 add menu to edit board members
+        }
     }
 
     @Override

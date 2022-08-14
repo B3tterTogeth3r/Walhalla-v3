@@ -108,6 +108,6 @@ public class Drink extends MyObject implements Validate {
 
     @Override
     public boolean validate() {
-        return false;
+        return (!name.isEmpty());
     }
 }

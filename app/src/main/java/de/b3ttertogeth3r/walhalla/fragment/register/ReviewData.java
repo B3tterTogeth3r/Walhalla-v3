@@ -47,6 +47,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreUpload;
 import de.b3ttertogeth3r.walhalla.object.Address;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Person;
+import de.b3ttertogeth3r.walhalla.util.Cache;
 
 /**
  * A class to review the data set by the user previously before registering the user.
@@ -137,13 +138,16 @@ public class ReviewData extends Fragment implements IOnBackPressed {
                     SetPasswordDialog.display(fm).setOnSuccessListener(result -> {
                         if (result != null) {
                             p.setPasswordString(result);
-                            // Upload data to firebase and sign user in
+                            // Upload data to firebase
+                            // CF will create the user with the set password.
+                            // and sign user in
                             upload.setPerson(p).setOnSuccessListener(result1 -> {
                                 if (result1 != null && result1) {
                                     auth.signIn(p.getMail(), p.getPasswordString())
                                             .setOnSuccessListener(authResult -> {
                                                 if (authResult != null && authResult.getUser() != null) {
                                                     uploadAddress(authResult.getUser().getUid());
+                                                    Cache.CACHE_DATA.setRank(p.getRank());
                                                     Log.i(TAG, "onClick: upload -> auth -> sign in: complete");
                                                     fm.beginTransaction()
                                                             .replace(R.id.fragment_container, new Home())

@@ -28,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import de.b3ttertogeth3r.walhalla.firebase.Analytics;
 import de.b3ttertogeth3r.walhalla.firebase.Authentication;
+import de.b3ttertogeth3r.walhalla.firebase.CloudFunctions;
 import de.b3ttertogeth3r.walhalla.firebase.CloudMessaging;
 import de.b3ttertogeth3r.walhalla.firebase.Crashlytics;
 import de.b3ttertogeth3r.walhalla.firebase.DynamicLinks;
@@ -36,20 +37,24 @@ import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.firebase.InAppMessaging;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.firebase.Storage;
+import de.b3ttertogeth3r.walhalla.interfaces.IStartActivity;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.FirebaseInit;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.Cache;
 
-
-public class StartActivity extends AppCompatActivity implements FirebaseInit {
+/**
+ * Activity to initialize the app and the necessary APIs.
+ *
+ * @author B3tterTogeth3r
+ * @version 3.4
+ * @since 2.0
+ */
+public class StartActivity extends AppCompatActivity implements IStartActivity {
     private static final String TAG = "StartActivity";
-    private static final int TOTAL = 11;
-    /**
-     * FIXME: 14.07.22 remove before publishing
-     */
-    private final boolean IS_EMULATOR = true;
-    private int counter = 0;
-    private int progress = 0;
+    public int TOTAL = 13;
+    public int COUNTER = 0;
+    public int PROGRESS = 0;
     private ProgressBar progressBar;
 
     @Override
@@ -59,22 +64,28 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
         progressBar = findViewById(R.id.progressBar);
         progressBar.setProgress(0);
         progressBar.setVisibility(View.VISIBLE);
+        start();
+    }
+
+    @Override
+    public void initApp() {
         new App();
         App.setContext(getApplicationContext());
-        CacheInit(getApplicationContext());
 
-        FirebaseInit firebaseInit = this;
+    }
 
-        firebaseInit.Analytics(getApplicationContext());
-        firebaseInit.Crashlytics(getApplicationContext());
-        firebaseInit.Authentication(getApplicationContext());
-        firebaseInit.CloudMessaging(getApplicationContext());
-        firebaseInit.DynamicLinks(getApplicationContext());
-        firebaseInit.Firestore(getApplicationContext());
-        firebaseInit.InAppMessaging(getApplicationContext());
-        firebaseInit.RemoteConfig(getApplicationContext());
-        firebaseInit.Storage(getApplicationContext());
+    @Override
+    public void initCache() {
+        if (new Cache().init(getApplicationContext(), IS_EMULATOR)) {
+            updateProgressbar();
+            Log.i(TAG, "Cache init complete");
+            return;
+        }
+        Log.e(TAG, "Cache init incomplete");
+    }
 
+    @Override
+    public void checkFirstStart() {
         if (!Cache.CACHE_DATA.isFirstStart() && !isOnline()) {
             Log.d(TAG, "Comments: no internet on first start");
             //TODO Display dialog with message to get internet. Terminate app on cancel and dismiss
@@ -89,6 +100,52 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
         }
     }
 
+    @Override
+    public void initFirebase() {
+        FirebaseInit firebaseInit = this;
+
+        firebaseInit.Analytics(getApplicationContext());
+        firebaseInit.Crashlytics(getApplicationContext());
+        firebaseInit.CloudFunctions(getApplicationContext());
+        firebaseInit.Authentication(getApplicationContext());
+        firebaseInit.CloudMessaging(getApplicationContext());
+        firebaseInit.DynamicLinks(getApplicationContext());
+        firebaseInit.Firestore(getApplicationContext());
+        firebaseInit.InAppMessaging(getApplicationContext());
+        firebaseInit.RemoteConfig(getApplicationContext());
+        firebaseInit.Storage(getApplicationContext());
+    }
+
+    @Override
+    public void checkRank() {
+        IAuth auth = Firebase.authentication();
+        if (auth.isSignIn() && !auth.getUser().getUid().isEmpty()) {
+            String uid = Firebase.authentication().getUser().getUid();
+            Firebase.cloudFunctions()
+                    .checkBoardMember(uid)
+                    .setOnSuccessListener(result -> {
+                        if (result != null) {
+                            Cache.CACHE_DATA.setBoardMember(result);
+                        }
+                        updateProgressbar();
+                        TOTAL++;
+                        getCharge(uid);
+                    })
+                    .setOnFailListener(e -> {
+                        Log.e(TAG, "onFailureListener: CheckBoardMember dis not work " +
+                                " or the user is no board member", e);
+                        Cache.CACHE_DATA.setBoardMember(false);
+                        updateProgressbar();
+                    });
+        } else {
+            Log.e(TAG, "CloudFunctions: no user is signed in, so the user cannot be a board member");
+            Cache.CACHE_DATA.setBoardMember(false);
+            updateProgressbar();
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -96,30 +153,36 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    private void updateProgressbar() {
-        if (counter == TOTAL) {
-            progressBar.setProgress(progress, true);
+    @Override
+    public void updateProgressbar() {
+        if (COUNTER == TOTAL) {
+            progressBar.setProgress(PROGRESS, true);
             // Go to MainActivity
             Intent mainIntent = new Intent(this, MainActivity.class);
             startActivity(mainIntent);
             finish();
         } else {
-            counter++;
-            progress = progress + (100 / TOTAL);
-            progressBar.setProgress(progress, true);
-            if (counter == TOTAL) {
+            COUNTER++;
+            PROGRESS = PROGRESS + (100 / TOTAL);
+            progressBar.setProgress(PROGRESS, true);
+            if (COUNTER == TOTAL) {
                 updateProgressbar();
             }
         }
     }
 
-    public void CacheInit(Context context) {
-        if (new Cache().init(context, IS_EMULATOR)) {
-            updateProgressbar();
-            Log.i(TAG, "Cache init complete");
-            return;
-        }
-        Log.e(TAG, "Cache init incomplete");
+    private void getCharge(String uid) {
+        Firebase.cloudFunctions().getCharge(uid)
+                .setOnSuccessListener(result -> {
+                    if (result != null) {
+                        Cache.CACHE_DATA.setCharge(result);
+                    }
+                    updateProgressbar();
+                })
+                .setOnFailListener(e -> {
+                    updateProgressbar();
+                });
+
     }
 
     @Override
@@ -160,6 +223,16 @@ public class StartActivity extends AppCompatActivity implements FirebaseInit {
             return;
         }
         Log.e(TAG, "Crashlytics init incomplete");
+    }
+
+    @Override
+    public void CloudFunctions(Context context) {
+        if (new CloudFunctions().init(context, IS_EMULATOR)) {
+            updateProgressbar();
+            Log.i(TAG, "CloudFunctions init complete");
+            return;
+        }
+        Log.e(TAG, "CloudFunctions init incomplete");
     }
 
     @Override

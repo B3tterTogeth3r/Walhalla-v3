@@ -86,7 +86,6 @@ public abstract class Dialog<T> extends DialogFragment implements DialogInterfac
         return dialog;
     }
 
-
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         try {

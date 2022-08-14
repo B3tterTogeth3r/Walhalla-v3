@@ -22,18 +22,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.Exclude;
 
 import java.text.SimpleDateFormat;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.design.Image;
 import de.b3ttertogeth3r.walhalla.design.ProfileRow;
-import de.b3ttertogeth3r.walhalla.design.TableRow;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.enums.TrafficLightColor;
 import de.b3ttertogeth3r.walhalla.interfaces.object.IPerson;
 import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
-import de.b3ttertogeth3r.walhalla.util.TrafficLight;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
 /**
@@ -62,7 +60,8 @@ public class Person implements IPerson {
     private int joined = -1;
     private Timestamp birthday;
     private Rank rank;
-    private boolean enabled, password;
+    private boolean enabled = false;
+    private boolean password = false;
     private String id;
 
     //region constructors
@@ -176,6 +175,15 @@ public class Person implements IPerson {
     }
 
     @Override
+    @Exclude
+    public boolean validate() {
+        return (this.first_Name != null && !this.first_Name.isEmpty() &&
+                this.last_Name != null && !this.last_Name.isEmpty() &&
+                rank != null && joined != -1);
+    }
+
+    @Override
+    @Exclude
     public String getFull_Name() {
         return getFirst_Name() + " " + getLast_Name();
     }
@@ -197,7 +205,11 @@ public class Person implements IPerson {
     }
 
     @Override
+    @Exclude
     public TrafficLightColor getSecurity() {
+        if (!validateFratData() || !validatePersonal()) {
+            return TrafficLightColor.BLACK;
+        }
         if (!enabled) {
             return TrafficLightColor.RED;
         } else if (!password) {
@@ -208,23 +220,20 @@ public class Person implements IPerson {
     }
 
     @Override
+    @Exclude
     public String getValue(int value) {
         return null;
     }
 
     @Override
+    @Exclude
     public void setValue(int value, String content) {
     }
 
     @Override
-    public TableRow getViewAll(@NonNull Context context) {
-        TableRow row = new TableRow(context);
-        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getFull_Name()));
-        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getNickname()));
-        row.addView(new de.b3ttertogeth3r.walhalla.design.Text(context, getRank().toString()));
-        row.addView(new TrafficLight(context, getSecurity()));
-        row.addView(new Image(context, R.drawable.ic_arrow_right));
-        return row;
+    @Exclude
+    public View getViewAll(@NonNull Context context) {
+        return new ProfileRow(context, getFull_Name(), getNickname(), getSecurity());
     }
 
     public String getNickname() {
@@ -249,10 +258,12 @@ public class Person implements IPerson {
      * @return LinearLayout filled with {@link ProfileRow} elements
      * @since 2.0
      */
+    @Exclude
     public LinearLayout getViewEdit(Context context, View.OnClickListener listener) {
         return designDisplayEdit(context, true, listener);
     }
 
+    @Exclude
     @NonNull
     private LinearLayout designDisplayEdit(Context context, boolean isEdit, @Nullable View.OnClickListener listener) {
         LinearLayout layout = new LinearLayout(context);
@@ -385,24 +396,22 @@ public class Person implements IPerson {
     }
 
     @Override
+    @Exclude
     public LinearLayout getViewDisplay(Context context) {
         return designDisplayEdit(context, false, null);
     }
 
+    @Exclude
     public boolean validatePersonal() {
         return (this.first_Name != null && !this.first_Name.isEmpty() &&
                 this.last_Name != null && !this.last_Name.isEmpty());
     }
 
     @Override
+    @Exclude
     public boolean validateFratData() {
         return (this.rank != null && joined != -1);
     }
 
-    @Override
-    public boolean validate() {
-        return (this.first_Name != null && !this.first_Name.isEmpty() &&
-                this.last_Name != null && !this.last_Name.isEmpty() &&
-                rank != null && joined != -1);
-    }
+
 }

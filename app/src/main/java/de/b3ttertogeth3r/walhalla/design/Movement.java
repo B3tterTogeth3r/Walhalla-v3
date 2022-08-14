@@ -62,14 +62,26 @@ public class Movement {
     public Movement(@NonNull Context context, @Nullable ViewGroup root) {
         this.context = context;
         LayoutInflater inflater = LayoutInflater.from(context);
+        //region set final variables
         view = (TableRow) inflater.inflate(R.layout.movement_layout, root);
         time = view.findViewById(R.id.date);
         expense = view.findViewById(R.id.expense);
         income = view.findViewById(R.id.income);
         purpose = view.findViewById(R.id.purpose);
-        add = view.findViewById(R.id.add);
+        add = view.findViewById(R.id.info);
         recipe = view.findViewById(R.id.recipe);
+        //endregion
 
+        //region set visibility gone
+        time.setVisibility(View.GONE);
+        expense.setVisibility(View.GONE);
+        income.setVisibility(View.GONE);
+        purpose.setVisibility(View.GONE);
+        add.setVisibility(View.GONE);
+        recipe.setVisibility(View.GONE);
+        //endregion
+
+        //region design
         final int DIVIDER = 2;
 
         time.setPadding((time.getPaddingLeft() / DIVIDER),
@@ -96,6 +108,7 @@ public class Movement {
                 (recipe.getTop() / DIVIDER),
                 (recipe.getPaddingRight() / DIVIDER),
                 (recipe.getPaddingBottom()) / DIVIDER);
+        //endregion
     }
 
     @NonNull
@@ -127,28 +140,31 @@ public class Movement {
         return movement;
     }
 
-    public void setIncome(double amount) {
-        if (amount == 0) {
-            return;
-        }
-        String s = "€ " + String.format(Values.LOCALE, "%.2f", amount).replace(".", ",");
-        this.income.setText(s);
-    }
-
-    public void setExpense(double amount) {
-        if (amount == 0) {
-            return;
-        }
-        String s = "€ " + String.format(Values.LOCALE, "%.2f", amount).replace(".", ",");
-        this.expense.setText(s);
+    @NonNull
+    public static Movement create(FragmentActivity context, ViewGroup root, String key, String value) {
+        Movement movement = new Movement(context, root);
+        movement.setPurpose(key);
+        movement.setAdd(value);
+        return movement;
     }
 
     public void setPurpose(String purpose) {
+        this.purpose.setVisibility(ViewGroup.VISIBLE);
         this.purpose.setText(purpose);
     }
 
     public void setAdd(String add) {
+        this.add.setVisibility(ViewGroup.VISIBLE);
         this.add.setText(add);
+    }
+
+    public void setIncome(double amount) {
+        if (amount == 0) {
+            return;
+        }
+        String s = "&#128; " + String.format(Values.LOCALE, "%.2f", amount).replace(".", ",");
+        this.income.setVisibility(View.VISIBLE);
+        this.income.setText(s);
     }
 
     public void setRecipe(DocumentReference ref) {
@@ -175,6 +191,15 @@ public class Movement {
         movement.setPurpose(context.getString(R.string.menu_drink_invoice));
         movement.setAdd(dm.getAmount() + " " + dm.getViewString());
         return movement;
+    }
+
+    public void setExpense(double amount) {
+        if (amount == 0) {
+            return;
+        }
+        String s = "€ " + String.format(Values.LOCALE, "%.2f", amount).replace(".", ",");
+        this.expense.setVisibility(ViewGroup.VISIBLE);
+        this.expense.setText(s);
     }
 
     public TableRow show() {

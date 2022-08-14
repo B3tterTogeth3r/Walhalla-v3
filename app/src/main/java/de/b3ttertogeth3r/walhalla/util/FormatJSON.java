@@ -46,10 +46,11 @@ public class FormatJSON implements LoaderResultListener<ArrayList<Paragraph<Text
                 JSONObject paragraph_list = config.getJSONObject("paragraph_" + i);
                 if (paragraph_list.length() != 0) {
                     list.add(toList(paragraph_list));
-                    if (resultListenerSuccess != null) {
-                        resultListenerSuccess.onSuccessListener(list);
-                    }
+
                 }
+            }
+            if (resultListenerSuccess != null) {
+                resultListenerSuccess.onSuccessListener(list);
             }
         } catch (Exception e) {
             Log.e(TAG, "chargen_description: ", e);

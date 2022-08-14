@@ -33,9 +33,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import de.b3ttertogeth3r.walhalla.R;
+import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.enums.Walhalla;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.fragment.Home;
+import de.b3ttertogeth3r.walhalla.fragment.board.AddChores;
 import de.b3ttertogeth3r.walhalla.fragment.board.allUsers;
 import de.b3ttertogeth3r.walhalla.fragment.common.AboutUs;
 import de.b3ttertogeth3r.walhalla.fragment.common.Donation;
@@ -53,10 +55,12 @@ import de.b3ttertogeth3r.walhalla.fragment.signed_in.Balance;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Chores;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Drinks;
 import de.b3ttertogeth3r.walhalla.fragment.signed_in.Profile;
+import de.b3ttertogeth3r.walhalla.fragment.signed_in.Transcript;
 import de.b3ttertogeth3r.walhalla.interfaces.ReloadSideNav;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.ISideNav;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.object.Log;
+import de.b3ttertogeth3r.walhalla.util.Cache;
 
 
 /**
@@ -93,7 +97,7 @@ import de.b3ttertogeth3r.walhalla.object.Log;
  * If the signed in user is an active board member the following sites are also available:
  * <ul>
  *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.board.Account Account}</li>
- *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.board.AddChoresToEvent AddChoresToEvent
+ *     <li>{@link AddChores AddChoresToEvent
  *     }</li>
  *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.board.allUsers allUsers}</li>
  *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.board.EditEvent EditEvent}</li>
@@ -107,9 +111,8 @@ import de.b3ttertogeth3r.walhalla.object.Log;
  *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.common.Fraternities_germany
  *     FraternitiesGermany}</li>
  *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.common.Donation Donate}</li>
- *     <li>{@link Settings}</li>
+ *     <li>{@link de.b3ttertogeth3r.walhalla.fragment.common.Settings Settings}</li>
  * </ul>
- * </p>
  *
  * @author B3tterTogeth3r
  * @version 1.1
@@ -160,93 +163,6 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
             street.setText(Walhalla.ADH.toString());
             city.setVisibility(View.GONE);
         }
-    }
-
-    private void fillSideNav() {
-        //Navigation Body
-        getMenu().clear();
-        Menu menu = getMenu();
-        menu.clear();
-        //Public area
-        menu.add(0, R.string.menu_home, 0, R.string.menu_home)
-                //.setChecked(true)
-                .setIcon(R.drawable.ic_home);
-        menu.add(0, R.string.menu_about_us, 0, R.string.menu_about_us).setIcon(R.drawable.ic_info);
-        menu.add(0, R.string.menu_rooms, 0, R.string.menu_rooms).setIcon(R.drawable.ic_rooms);
-        menu.add(0, R.string.menu_program, 0, R.string.menu_program).setIcon(R.drawable.ic_calendar);
-        menu.add(0, R.string.menu_messages, 0, R.string.menu_messages).setIcon(R.drawable.ic_message);
-        menu.add(0, R.string.menu_chargen, 0, R.string.menu_chargen).setIcon(R.drawable.ic_group);
-        menu.add(0, R.string.menu_chargen_phil, 0, R.string.menu_chargen_phil).setIcon(R.drawable.ic_group_line);
-
-        /* Login/Sign up, Logout */
-        Menu loginMenu = menu.addSubMenu(R.string.menu_user_editing);
-        if (auth.isSignIn()) {
-            loginMenu.add(1, R.string.menu_logout, 0, R.string.menu_logout).setIcon(R.drawable.ic_exit).setCheckable(false);
-            loginMenu.add(0, R.string.menu_profile, 0, R.string.menu_profile).setIcon(R.drawable.ic_person);
-
-            loginMenu.add(0, R.string.menu_drinks, 0, R.string.menu_drinks) //Change appearance
-                    // depending on who is logged in
-                    .setIcon(R.drawable.ic_beer);
-            loginMenu.add(0, R.string.menu_chores, 0, R.string.menu_chores) //Change appearance
-                    // depending on who is logged in
-                    .setIcon(R.drawable.ic_task);
-            loginMenu.add(0, R.string.menu_balance, 0, R.string.menu_balance);
-
-            //Only visible to members of the fraternity
-            Menu menuLogin = menu.addSubMenu(R.string.menu_intern);
-            menuLogin.add(0, R.string.menu_transcript, 0, R.string.menu_transcript).setIcon(R.drawable.ic_scriptor);
-            menuLogin.add(0, R.string.menu_kartei, 0, R.string.menu_kartei).setIcon(R.drawable.ic_contacts);
-
-            //Only visible to a active board member of the current semester
-            /* TODO 01.06.2022 get users rank and "charge"
-            if (!CacheData.getCharge().getName().isEmpty()) {
-                Menu menuCharge = menu.addSubMenu(R.string.menu_board_only);
-                //menuCharge.add(0, R.string.menu_new_person, 0, R.string.menu_new_person)
-                // .setIcon(R.drawable.ic_person_add);
-                //menuCharge.add(0, R.string.menu_user, 0, R.string.menu_user)
-                //        .setIcon(R.drawable.ic_user_add); * /
-                menuCharge.add(0, R.string.menu_all_profiles, 0, R.string.menu_all_profiles)
-                        .setIcon(R.drawable.ic_supervised_user);
-                //menuCharge.add(0, R.string.menu_new_semester, 0, R.string.menu_new_semester);
-            }*/
-
-        } else {
-            loginMenu.add(1, R.string.menu_login, 0, R.string.menu_login)
-                    ///.setCheckable(false)
-                    .setIcon(R.drawable.ic_exit);
-        }
-
-        loginMenu.setGroupCheckable(1, false, true);
-
-        Menu moreMenu = menu.addSubMenu(R.string.menu_more);
-        moreMenu.add(1, R.string.menu_more_history, 1, R.string.menu_more_history);
-        moreMenu.add(1, R.string.menu_more_frat_wue, 1, R.string.menu_more_frat_wue);
-        moreMenu.add(1, R.string.menu_more_frat_organisation, 1,
-                R.string.menu_more_frat_organisation);
-
-        Menu menuEnd = menu.addSubMenu(R.string.menu_other);
-        menuEnd.add(0, R.string.menu_settings, 0, R.string.menu_settings).setIcon(R.drawable.ic_settings).setCheckable(false);
-        menuEnd.add(0, R.string.menu_donate, 0, R.string.menu_donate).setCheckable(false).setIcon(R.drawable.ic_donate);
-
-        invalidate();
-    }
-
-    public SideNav(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        reload = this;
-        auth = Firebase.authentication();
-        setNavigationItemSelectedListener(this);
-        fillHeadView();
-        fillSideNav();
-    }
-
-    public SideNav(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        reload = this;
-        auth = Firebase.authentication();
-        setNavigationItemSelectedListener(this);
-        fillHeadView();
-        fillSideNav();
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -301,6 +217,11 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
                         .addToBackStack(TAG)
                         .commit();
                 break;
+            case R.string.menu_kartei:
+                transaction.replace(container, new allUsers())
+                        .addToBackStack(TAG)
+                        .commit();
+                break;
             case R.string.menu_about_us:
                 transaction.replace(container, new AboutUs())
                         .addToBackStack(TAG)
@@ -342,6 +263,11 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
                         .addToBackStack(TAG)
                         .commit();
                 break;
+            case R.string.menu_transcript:
+                transaction.replace(container, new Transcript())
+                        .addToBackStack(TAG)
+                        .commit();
+                break;
             case R.id.row2first:
                 if (auth.isSignIn()) {
                     changePage(R.string.menu_balance, transaction);
@@ -366,6 +292,96 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
                         .commit();
                 break;
         }
+    }
+
+    public SideNav(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        reload = this;
+        auth = Firebase.authentication();
+        setNavigationItemSelectedListener(this);
+        fillHeadView();
+        fillSideNav();
+    }
+
+    public SideNav(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        reload = this;
+        auth = Firebase.authentication();
+        setNavigationItemSelectedListener(this);
+        fillHeadView();
+        fillSideNav();
+    }
+
+    private void fillSideNav() {
+        //Navigation Body
+        getMenu().clear();
+        Menu menu = getMenu();
+        menu.clear();
+        //Public area
+        menu.add(0, R.string.menu_home, 0, R.string.menu_home)
+                //.setChecked(true)
+                .setIcon(R.drawable.ic_home);
+        menu.add(0, R.string.menu_about_us, 0, R.string.menu_about_us).setIcon(R.drawable.ic_info);
+        menu.add(0, R.string.menu_rooms, 0, R.string.menu_rooms).setIcon(R.drawable.ic_rooms);
+        menu.add(0, R.string.menu_program, 0, R.string.menu_program).setIcon(R.drawable.ic_calendar);
+        menu.add(0, R.string.menu_messages, 0, R.string.menu_messages).setIcon(R.drawable.ic_message);
+        menu.add(0, R.string.menu_chargen, 0, R.string.menu_chargen).setIcon(R.drawable.ic_group);
+        menu.add(0, R.string.menu_chargen_phil, 0, R.string.menu_chargen_phil).setIcon(R.drawable.ic_group_line);
+
+        /* Login/Sign up, Logout */
+        Menu loginMenu = menu.addSubMenu(R.string.menu_user_editing);
+        if (auth.isSignIn()) {
+            loginMenu.add(1, R.string.menu_logout, 0, R.string.menu_logout).setIcon(R.drawable.ic_exit).setCheckable(false);
+            loginMenu.add(0, R.string.menu_profile, 0, R.string.menu_profile).setIcon(R.drawable.ic_person);
+
+            loginMenu.add(0, R.string.menu_drinks, 0, R.string.menu_drinks) //Change appearance
+                    // depending on who is logged in
+                    .setIcon(R.drawable.ic_beer);
+            loginMenu.add(0, R.string.menu_chores, 0, R.string.menu_chores) //Change appearance
+                    // depending on who is logged in
+                    .setIcon(R.drawable.ic_task);
+            loginMenu.add(0, R.string.menu_balance, 0, R.string.menu_balance);
+
+            //Only visible to members of the fraternity
+            if (Cache.CACHE_DATA.getRank().canSee(Visibility.SIGNED_IN)) {
+                Menu menuLogin = menu.addSubMenu(R.string.menu_intern);
+                menuLogin.add(0, R.string.menu_transcript, 0, R.string.menu_transcript).setIcon(R.drawable.ic_scriptor);
+                menuLogin.add(0, R.string.menu_kartei, 0, R.string.menu_kartei).setIcon(R.drawable.ic_contacts);
+            }
+
+            //Only visible to a active board member of the current semester
+            if (Cache.CACHE_DATA.isBoardMember()) {
+                // TODO: 03.08.22 create and fill fragments
+                Menu menuCharge = menu.addSubMenu(R.string.menu_board_only);
+                menuCharge.add(0, R.string.menu_new_person, 0, R.string.menu_new_person)
+                        .setIcon(R.drawable.ic_person_add);
+                //I forgot what I wanted to do with this menu point...
+                // ? menuCharge.add(0, R.string.menu_user, 0, R.string.menu_user)
+                //        .setIcon(R.drawable.ic_user_add);
+                menuCharge.add(0, R.string.menu_all_profiles, 0, R.string.menu_all_profiles)
+                        .setIcon(R.drawable.ic_supervised_user);
+                menuCharge.add(0, R.string.menu_new_semester, 0, R.string.menu_new_semester);
+            }
+
+        } else {
+            loginMenu.add(1, R.string.menu_login, 0, R.string.menu_login)
+                    ///.setCheckable(false)
+                    .setIcon(R.drawable.ic_exit);
+        }
+
+        loginMenu.setGroupCheckable(1, false, true);
+
+        Menu moreMenu = menu.addSubMenu(R.string.menu_more);
+        moreMenu.add(1, R.string.menu_more_history, 1, R.string.menu_more_history);
+        moreMenu.add(1, R.string.menu_more_frat_wue, 1, R.string.menu_more_frat_wue);
+        moreMenu.add(1, R.string.menu_more_frat_organisation, 1,
+                R.string.menu_more_frat_organisation);
+
+        Menu menuEnd = menu.addSubMenu(R.string.menu_other);
+        menuEnd.add(0, R.string.menu_settings, 0, R.string.menu_settings).setIcon(R.drawable.ic_settings).setCheckable(false);
+        menuEnd.add(0, R.string.menu_donate, 0, R.string.menu_donate).setCheckable(false).setIcon(R.drawable.ic_donate);
+
+        invalidate();
     }
 
     @Override

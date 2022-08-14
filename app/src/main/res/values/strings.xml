@@ -258,5 +258,11 @@
     <string name="chore_none">Du hast keine Aufgaben.</string>
     <string name="no_event">Das ausgewählte Semester hat keine Veranstaltungen.</string>
     <string name="no_board">Das ausgeählte Semester hat keinen Vorstand.</string>
+    <string name="drink_total">Gesammt Getränke</string>
+    <string name="drink_total_detail">Genaue aufstellung</string>
+    <string name="transcript_no_files">Keine Protokolle vorhanden</string>
+    <string name="greeting_no_data">Für dieses Semester wurde keine Begrüßung erstellt.</string>
+    <string name="messages_none">Es existieren keine Mitteilungen</string>
+    <string name="traffic_explanation">TODO Explain 4 different colors</string>
 
 </resources>

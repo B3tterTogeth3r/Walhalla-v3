@@ -15,6 +15,7 @@
 package de.b3ttertogeth3r.walhalla.interfaces.firebase;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import de.b3ttertogeth3r.walhalla.enums.Rank;
 
@@ -44,8 +45,10 @@ public interface IAnalytics {
 
     /**
      * Set the users custom start page as user property
+     *
+     * @param string_value the string res value of the start page.
      */
-    void changeStartPage(int string_value);
+    void changeStartPage(@StringRes int string_value);
 
     /**
      * Set the users {@link Rank} as a user property in Google analytics.
@@ -56,6 +59,7 @@ public interface IAnalytics {
     void setRank(@NonNull Rank rank);
 
     /**
+     * @param value true or false
      * @see <a href="https://firebase.google.com/docs/analytics/configure-data-collection?platform=android">Data
      * Collection</a>
      * @since 1.0

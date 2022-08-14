@@ -35,12 +35,13 @@ public interface IFragment {
 
     /**
      * Set the properties for firebase analytics. It will be run after {@link #start()}
+     *
+     * @return String the TAG of the Fragment
      */
     String analyticsProperties();
 
     /**
-     * called before {@link #createView(LinearLayout)} and {@link #viewCreated()}. In it
-     * {@link #registration} should be set before the site start.
+     * Called before {@link #createView(LinearLayout)} and {@link #viewCreated()}
      */
     default void start() {
     }
@@ -49,7 +50,7 @@ public interface IFragment {
      * Called before {@link #viewCreated() viewCreated} returns a result. This is to format the
      * toolbar in every Subclass the same way.
      *
-     * @see #toolbar
+     * @see de.b3ttertogeth3r.walhalla.abstract_generic.Fragment#toolbar
      */
     default void toolbarContent() {
     }
@@ -57,26 +58,23 @@ public interface IFragment {
     /**
      * Create the view and initialize the necessary variables for the site.
      *
-     * @param view inflated View created in {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}
-     * @implNote <b>DON'T CALL FUNCTIONS THAT WORK WITH DATA OF {@link #start()} IN HERE</b>
-     * @see #onViewCreated(View, Bundle)
+     * @param view inflated View created in {@link de.b3ttertogeth3r.walhalla.abstract_generic.Fragment#onCreateView(LayoutInflater, ViewGroup, Bundle)}
+     * @see de.b3ttertogeth3r.walhalla.abstract_generic.Fragment#onViewCreated(View, Bundle)
      */
     void createView(@NonNull LinearLayout view);
 
 
     /**
-     * @see #onViewCreated(View, Bundle)
+     * @see de.b3ttertogeth3r.walhalla.abstract_generic.Fragment#onViewCreated(View, Bundle)
      */
     default void viewCreated() {
     }
 
     /**
-     * Called when the Fragment is no longer started.  This is generally tied to {@link #onStop()
+     * Called when the Fragment is no longer started.  This is generally tied to {@link de.b3ttertogeth3r.walhalla.abstract_generic.Fragment#onStop()
      * onStop} of the containing Fragment's lifecycle.
      *
-     * @implNote Called after every entry in {@link #registration} got stopped and the list
-     * cleared.
-     * @see #onStop()
+     * @see de.b3ttertogeth3r.walhalla.abstract_generic.Fragment#onStop()
      */
     default void stop() {
     }

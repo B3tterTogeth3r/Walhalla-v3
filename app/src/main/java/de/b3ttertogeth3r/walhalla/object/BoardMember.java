@@ -30,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentReference;
 
 import de.b3ttertogeth3r.walhalla.R;
+import de.b3ttertogeth3r.walhalla.annotation.SemesterRange;
 import de.b3ttertogeth3r.walhalla.design.LinearLayout;
 import de.b3ttertogeth3r.walhalla.design.Text;
 import de.b3ttertogeth3r.walhalla.design.Title;
@@ -44,6 +45,7 @@ public class BoardMember implements Validate {
     private String major = "";
     private String mail = "";
     private String from = "";
+    @SemesterRange
     private int semester = 0;
     private Charge charge = Charge.VOP;
     private DocumentReference image = null;
@@ -234,6 +236,15 @@ public class BoardMember implements Validate {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    @SemesterRange
+    public int getSemester() {
+        return semester;
+    }
+
+    public void setSemester(@SemesterRange int semester) {
+        this.semester = semester;
     }
 
     @Override

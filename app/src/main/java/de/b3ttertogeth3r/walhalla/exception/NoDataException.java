@@ -41,6 +41,10 @@ public class NoDataException extends Exception {
         super(message);
     }
 
+    public NoDataException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     @NonNull
     @Override
     public String toString() {

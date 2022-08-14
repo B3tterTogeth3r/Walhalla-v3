@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -26,22 +26,53 @@ import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.design.Image;
 import de.b3ttertogeth3r.walhalla.design.LinearLayout;
 import de.b3ttertogeth3r.walhalla.enums.TrafficLightColor;
+import de.b3ttertogeth3r.walhalla.object.Log;
 
 public class TrafficLight extends LinearLayout {
     private static final String TAG = "TrafficLight";
+    private final Context context;
     private final TrafficLightColor tlc;
-    Image red, yellow, green;
+    private Image light;
 
     public TrafficLight(Context context, @Nullable AttributeSet attrs, TrafficLightColor tlc) {
         super(context, attrs);
+        this.context = context;
         this.tlc = tlc;
         design(context);
         setLight();
     }
 
+    void design(Context context) {
+        light = new Image(context, R.drawable.ic_circle);
+
+        light.setVisibility(View.INVISIBLE);
+
+        addView(light);
+    }
+
+    public void setLight() {
+        Log.i(TAG, "setLight: " + tlc.name());
+        light.setVisibility(View.VISIBLE);
+        switch (tlc) {
+            case GREEN:
+                light.setColorFilter(ContextCompat.getColor(context, R.color.green));
+                break;
+            case YELLOW:
+                light.setColorFilter(ContextCompat.getColor(context, R.color.yellow));
+                break;
+            case BLACK:
+                light.setColorFilter(ContextCompat.getColor(context, R.color.black));
+                break;
+            case RED:
+            default:
+                light.setColorFilter(ContextCompat.getColor(context, R.color.red));
+        }
+    }
+
     public TrafficLight(Context context, @Nullable AttributeSet attrs, int defStyleAttr, TrafficLightColor tlc) {
         super(context, attrs, defStyleAttr);
         this.tlc = tlc;
+        this.context = context;
         design(context);
         setLight();
     }
@@ -49,53 +80,16 @@ public class TrafficLight extends LinearLayout {
     public TrafficLight(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes, TrafficLightColor tlc) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.tlc = tlc;
+        this.context = context;
         design(context);
         setLight();
-    }
-
-    void design (Context context) {
-        setOrientation(VERTICAL);
-        red = new Image(context, R.drawable.ic_circle);
-        yellow = new Image(context, R.drawable.ic_circle);
-        green = new Image(context, R.drawable.ic_circle);
-
-        red.setColorFilter(ContextCompat.getColor(context, R.color.red));
-        yellow.setColorFilter(ContextCompat.getColor(context, R.color.yellow));
-        green.setColorFilter(ContextCompat.getColor(context, R.color.green));
-
-        red.setVisibility(View.INVISIBLE);
-        yellow.setVisibility(View.INVISIBLE);
-        green.setVisibility(View.INVISIBLE);
-
-        addView(red);
-        addView(yellow);
-        addView(green);
     }
 
     public TrafficLight (@NonNull Context context, TrafficLightColor tlc) {
         super(context);
         this.tlc = tlc;
+        this.context = context;
         design(context);
         setLight();
-    }
-
-    public void setLight () {
-        switch (tlc) {
-            case GREEN:
-                red.setVisibility(View.INVISIBLE);
-                yellow.setVisibility(View.INVISIBLE);
-                green.setVisibility(View.VISIBLE);
-                break;
-            case YELLOW:
-                red.setVisibility(View.INVISIBLE);
-                yellow.setVisibility(View.VISIBLE);
-                green.setVisibility(View.INVISIBLE);
-                break;
-            case RED:
-            default:
-                green.setVisibility(View.INVISIBLE);
-                yellow.setVisibility(View.INVISIBLE);
-                red.setVisibility(View.VISIBLE);
-        }
     }
 }

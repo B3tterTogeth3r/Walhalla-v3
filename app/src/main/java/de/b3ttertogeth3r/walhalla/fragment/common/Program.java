@@ -74,6 +74,9 @@ public class Program extends Fragment {
         customToolbar.setVisibility(View.VISIBLE);
         customToolbarTitle.setText(R.string.menu_program);
         customToolbar.setOnClickListener(v -> displayDialog());
+        if (Cache.CACHE_DATA.isBoardMember()) {
+            // TODO: 29.07.22 add menu to add new events
+        }
     }
 
     private void displayDialog() {
@@ -114,6 +117,10 @@ public class Program extends Fragment {
                     }
                     listEvents(result);
                 }).setOnFailListener(e -> {
+                    view.removeAllViewsInLayout();
+                    view.removeAllViews();
+                    view.addView(new Title(requireContext(), getString(R.string.no_event)));
+                    view.invalidate();
                     Toast.makeToast(getContext(), "Loading page content didn't work. Please try again later").show();
                     Log.e(TAG, "Loading the semester program did not work", e);
                 });
@@ -133,7 +140,7 @@ public class Program extends Fragment {
                         public void onClick(View view) {
                             try {
                                 FragmentManager fm = requireActivity().getSupportFragmentManager();
-                                EventDetails.display(fm, DialogSize.FULL_SCREEN, e);
+                                EventDetails.display(fm, DialogSize.FULL_SCREEN, Values.semesterList.get(semesterId), e);
                             } catch (Exception e) {
                                 Log.e("Event", "onClickListener: Opening dialog exception", e);
                             }

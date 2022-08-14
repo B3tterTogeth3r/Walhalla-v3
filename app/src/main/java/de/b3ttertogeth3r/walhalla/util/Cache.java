@@ -17,12 +17,18 @@ package de.b3ttertogeth3r.walhalla.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import de.b3ttertogeth3r.walhalla.R;
+import de.b3ttertogeth3r.walhalla.enums.Charge;
+import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.firebase.Analytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.CacheData;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAnalytics;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
+import de.b3ttertogeth3r.walhalla.object.Log;
 
 /**
  * @author B3tterTogeth3r
@@ -30,12 +36,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
  * @see SharedPreferences
  * @since 3.1
  */
-public class Cache implements IInit, CacheData {
-    private static final String START_PAGE = "start_page";
-    private static final String TAG = "Cache";
-    private static final String CHOSEN_SEMESTER = "chosen_semester";
-    private static final String FIRST_START = "first_start";
-    private static final String START_PAGE_STR = START_PAGE + "_string";
+public class Cache implements CacheData, IInit {
     public static CacheData CACHE_DATA;
     private static SharedPreferences SP;
     private static IAnalytics analytics;
@@ -58,16 +59,16 @@ public class Cache implements IInit, CacheData {
     }
 
     @Override
-    public String getStartPageStr() {
-        return SP.getString(START_PAGE_STR, "Start");
-    }
-
-    @Override
     public void setStartPage(int pageId) {
         SP.edit().putInt(START_PAGE, pageId)
                 .putString(START_PAGE_STR, context.getString(pageId))
                 .apply();
         analytics.changeStartPage(pageId);
+    }
+
+    @Override
+    public String getStartPageStr() {
+        return SP.getString(START_PAGE_STR, "Start");
     }
 
     @Override
@@ -88,6 +89,49 @@ public class Cache implements IInit, CacheData {
     @Override
     public void setChosenSemester(int semId) {
         SP.edit().putInt(CHOSEN_SEMESTER, semId).apply();
+    }
+
+    @Override
+    public boolean isBoardMember() {
+        return SP.getBoolean(BOARD_MEMBER, false);
+    }
+
+    @Override
+    public void setBoardMember(boolean value) {
+        SP.edit().putBoolean(BOARD_MEMBER, value).apply();
+    }
+
+    @Override
+    @Nullable
+    public Charge getCharge() {
+        return Charge.valueOf(SP.getString(CHARGE, "NONE").toUpperCase());
+    }
+
+    @Override
+    public void setCharge(@NonNull Charge charge) {
+        SP.edit().putString(CHARGE, String.valueOf(charge).toUpperCase()).apply();
+    }
+
+    @Override
+    public Rank getRank() {
+        if (getCharge() == Charge.ADMIN) {
+            return Rank.ACTIVE;
+        }
+        try {
+            String result = SP.getString(RANK, Rank.NONE.toString().toUpperCase());
+            Log.i(TAG, "getRank: result == " + result);
+            return Rank.valueOf(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Rank.NONE;
+        }
+    }
+
+    @Override
+    public void setRank(@NonNull Rank rank) {
+        SP.edit()
+                .putString(RANK, rank.toString().toUpperCase())
+                .apply();
     }
 
     @Override

@@ -56,6 +56,7 @@ public interface INews extends Validate{
      *
      * @param context context to create sub views inside the layout
      * @return Layout displaying this entry
+     * @throws NoDataException Exception caught by the implementing class
      * @since 2.0
      */
     LinearLayout getView(Context context) throws NoDataException;

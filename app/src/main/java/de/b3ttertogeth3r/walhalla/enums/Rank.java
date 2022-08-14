@@ -16,6 +16,8 @@ package de.b3ttertogeth3r.walhalla.enums;
 
 import androidx.annotation.NonNull;
 
+import de.b3ttertogeth3r.walhalla.util.Cache;
+
 public enum Rank {
     ACTIVE,
     ACTIVE_B,
@@ -30,7 +32,12 @@ public enum Rank {
     LEFT,
     NONE;
 
+    private final int ADMIN = -1;
+
     public boolean canSee(Visibility visibility) {
+        if (Cache.CACHE_DATA.getCharge() == Charge.ADMIN) {
+            return true;
+        }
         switch (this) {
             case ACTIVE:
             case ACTIVE_B:
@@ -58,8 +65,7 @@ public enum Rank {
      * @return string value of the enum
      */
     @NonNull
-    @Override
-    public String toString() {
+    public String getString() {
         try {
             String name = super.toString().toLowerCase();
             String s1 = name.substring(0, 1).toUpperCase();

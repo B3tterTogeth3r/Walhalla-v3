@@ -95,6 +95,7 @@ public class Loader<T> implements LoaderResultListener<T> {
     /**
      * Download done with no result.
      *
+     * @return Loader this class
      * @since 1.0
      */
     public Loader<T> done() {
@@ -119,6 +120,7 @@ public class Loader<T> implements LoaderResultListener<T> {
      * Download done with a result
      *
      * @param result downloaded value(s)
+     * @return Loader this class
      * @since 1.0
      */
     public Loader<T> done(@Nullable T result) {
@@ -156,6 +158,7 @@ public class Loader<T> implements LoaderResultListener<T> {
      * Download didn't finish successfully.
      *
      * @param e An exception is to be thrown.
+     * @return Loader this class
      * @since 1.0
      */
     public Loader<T> done(Exception e) {

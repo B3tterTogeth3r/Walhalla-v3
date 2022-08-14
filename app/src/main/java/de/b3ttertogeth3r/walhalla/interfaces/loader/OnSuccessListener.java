@@ -28,6 +28,7 @@ import androidx.annotation.Nullable;
 public interface OnSuccessListener<T> {
     /**
      * @param result Result of the download or null
+     * @throws Exception Exception cought by {@link OnFailureListener}
      * @since 1.0
      */
     void onSuccessListener(@Nullable T result) throws Exception;

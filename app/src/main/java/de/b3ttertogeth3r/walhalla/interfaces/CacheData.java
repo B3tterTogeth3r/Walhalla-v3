@@ -16,6 +16,12 @@ package de.b3ttertogeth3r.walhalla.interfaces;
 
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import de.b3ttertogeth3r.walhalla.enums.Charge;
+import de.b3ttertogeth3r.walhalla.enums.Rank;
+
 /**
  * The functions in {@link de.b3ttertogeth3r.walhalla.util.Cache Cache} other classes should have
  * access to. There may be more private functions not declared in here.
@@ -26,6 +32,15 @@ import android.content.SharedPreferences;
  * @since 3.1
  */
 public interface CacheData {
+    String START_PAGE = "start_page";
+    String TAG = "Cache";
+    String CHOSEN_SEMESTER = "chosen_semester";
+    String FIRST_START = "first_start";
+    String START_PAGE_STR = START_PAGE + "_string";
+    String BOARD_MEMBER = "board_member";
+    String CHARGE = "charge";
+    String RANK = "rank";
+
     /**
      * the user can change, if he/she doesn't want the app to collect analytics data. The default
      * value is <code>true</code>.
@@ -86,4 +101,17 @@ public interface CacheData {
     int getChosenSemester();
 
     void setChosenSemester(int semId);
+
+    boolean isBoardMember();
+
+    void setBoardMember(boolean value);
+
+    @Nullable
+    Charge getCharge();
+
+    void setCharge(@NonNull Charge charge);
+
+    Rank getRank();
+
+    void setRank(@NonNull Rank rank);
 }

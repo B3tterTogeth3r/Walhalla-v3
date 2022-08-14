@@ -48,17 +48,16 @@ import de.b3ttertogeth3r.walhalla.object.Movement;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
 /**
- * <h1>This Fragment should only be accessible, if a user is signed in</h1><br>
  * This Fragment displays the current balance of a user and its last movements.
  *
  * @author B3tterTogeth3r
  * @see Fragment
- * @see de.b3ttertogeth3r.walhalla.old.firebase.Firestore Firestore
+ * @see de.b3ttertogeth3r.walhalla.firebase.Firestore Firestore
  * @see <a href="https://www.youtube.com/watch?v=UWnbPp4PedQ">Android Development Tutorial - Google
  * In App Purchase by EDMT Dev</a> (May/30/2022)
- * @see <a href="https://developers.google.com/pay/api/android/overview">Google Pay for Payments ->
+ * @see <a href="https://developers.google.com/pay/api/android/overview">Google Pay for Payments -
  * Android</a> (May/30/2022)
- * @see <a href="https://developer.android.com/google/play/billing">Android developers -> Google
+ * @see <a href="https://developer.android.com/google/play/billing">Android developers - Google
  * Play's Billing System</a> (May/30/2022)
  */
 public class Balance extends Fragment implements View.OnClickListener {
@@ -91,16 +90,18 @@ public class Balance extends Fragment implements View.OnClickListener {
 
     @Override
     public void start() {
-        download.getPersonBalance(uid)
-                .setOnSuccessListener(result -> {
-                    // TODO: 20.07.22 maybe make it into a realtime listener which is connected to the fragments lifecycle
-                    account = result;
-                    getMovements();
-                    String price = "€ " + String.format(Values.LOCALE, "%.2f", account.getAmount()).replace(".", ",");
-                    Log.i(TAG, "start: " + price);
-                    balance.setText(price);
-                })
-                .setOnFailListener(e -> Log.e(TAG, "onFailureListener: Listening to the account did not work", e));
+        try {
+            download.getPersonBalance(requireActivity(), uid)
+                    .setOnSuccessListener(result -> {
+                        account = result;
+                        getMovements();
+                        String price = "€ " + String.format(Values.LOCALE, "%.2f", account.getAmount()).replace(".", ",");
+                        Log.i(TAG, "start: " + price);
+                        balance.setText(price);
+                    })
+                    .setOnFailListener(e -> Log.e(TAG, "onFailureListener: Listening to the account did not work", e));
+        } catch (Exception ignored) {
+        }
     }
 
     private void getMovements() {
@@ -139,7 +140,7 @@ public class Balance extends Fragment implements View.OnClickListener {
         expense.setTitle().setText(R.string.balance_expense);
         Text purpose = titleRow.findViewById(R.id.purpose);
         purpose.setTitle().setText(R.string.balance_purpose);
-        Text add = titleRow.findViewById(R.id.add);
+        Text add = titleRow.findViewById(R.id.info);
         add.setTitle().setText("");
         table.addView(titleRow);
 

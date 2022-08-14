@@ -15,10 +15,12 @@
 package de.b3ttertogeth3r.walhalla.interfaces.firebase;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
+import de.b3ttertogeth3r.walhalla.annotation.SemesterRange;
 import de.b3ttertogeth3r.walhalla.object.Account;
 import de.b3ttertogeth3r.walhalla.object.Address;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
@@ -31,8 +33,6 @@ import de.b3ttertogeth3r.walhalla.object.News;
 import de.b3ttertogeth3r.walhalla.object.Person;
 import de.b3ttertogeth3r.walhalla.object.Semester;
 import de.b3ttertogeth3r.walhalla.object.Text;
-import de.b3ttertogeth3r.walhalla.util.Dev.SemesterRange;
-import de.b3ttertogeth3r.walhalla.util.Paragraph;
 
 /**
  * Persistence interface to call all the necessary functions in
@@ -40,13 +40,13 @@ import de.b3ttertogeth3r.walhalla.util.Paragraph;
  * the Firebase Firestore Database.
  * The functions are:
  * <ul>
- *     <li>{@link #setBoard(int, ArrayList)}</li>
+ *     <li>{@link #setBoard(int, BoardMember)}</li>
  *     <li>{@link #setEvent(int, Event)}</li>
- *     <li>{@link #setEventChore(String, Chore)}</li>
- *     <li>{@link #setEventLocation(String, Location)}</li>
- *     <li>{@link #setEventDescription(String, ArrayList)}</li>
+ *     <li>{@link #setEventChore(int, String, Chore)}</li>
+ *     <li>{@link #setEventLocation(int, String, Location)}</li>
+ *     <li>{@link #setEventDescription(int, String, ArrayList)}</li>
  *     <li>{@link #addSemesterMovement(int, Movement)}</li>
- *     <li>{@link #addSemesterProtocol(int, File)}</li>
+ *     <li>{@link #addSemesterMeetingTranscript(int, File)}</li>
  *     <li>{@link #addNewsEntry(News, ArrayList)}</li>
  *     <li>{@link #setPerson(Person)}</li>
  *     <li>{@link #setPersonAddress(String, ArrayList)}</li>
@@ -57,19 +57,20 @@ import de.b3ttertogeth3r.walhalla.util.Paragraph;
  * </ul>
  *
  * @author B3tterTogeth3r
- * @version 2.0
+ * @version 2.2
  * @since 3.1
  */
 public interface IFirestoreUpload {
-
     //region SEMESTER
 
     /**
      * @param semID        ID of the semester the {@link BoardMember}s belong to.
-     * @param boardMembers List of the {@link BoardMember}s.
+     * @param boardMembers {@link BoardMember} to upload.
      * @return true, if upload was successful <br>false, if not.
+     * @firestorePath Semester/{SemesterID}/Student_Board/{BoardMemberID}
+     * @firestorePath Semester/{SemesterID}/Philistines_Board/{BoardMemberID}
      */
-    Loader<Boolean> setBoard(@SemesterRange int semID, @NonNull ArrayList<BoardMember> boardMembers);
+    Loader<Boolean> setBoard(@SemesterRange int semID, @NonNull BoardMember boardMembers);
 
     //region EVENT
 
@@ -79,6 +80,7 @@ public interface IFirestoreUpload {
      * @param semID ID of the {@link Semester} the {@link Event} belongs to
      * @param event {@link Event} to upload
      * @return true, if upload successful <br>false, if not.
+     * @firestorePath Semester/{SemesterID}/Event/{EventID}
      */
     Loader<Boolean> setEvent(@SemesterRange int semID, @NonNull Event event);
 
@@ -86,29 +88,35 @@ public interface IFirestoreUpload {
      * Upload a {@link Chore} to an {@link Event}. Firebase CF will sync them with the
      * {@link Person} who has to do the {@link Chore}.
      *
+     * @param semID   The id of the selected Semester
      * @param eventID The id of the {@link Event} the {@link Chore} belongs
      * @param chore   The {@link Chore} that has to be fulfilled.
      * @return true, if upload successful <br>false, if not.
+     * @firestorePath Semester/{SemesterID}/Event/{EventID}/Chore/{ChoreID}
      */
-    Loader<Boolean> setEventChore(@NonNull String eventID, @NonNull Chore chore);
+    Loader<Boolean> setEventChore(@SemesterRange int semID, @NonNull String eventID, @NonNull Chore chore);
 
     /**
      * Set the location for an {@link Event}.
      *
+     * @param semID    The id of the selected Semester
      * @param eventID  The ID of the {@link Event} the {@link Location} belongs to
      * @param location The {@link Location} object
      * @return true, if upload successful <br>false, if not.
+     * @firestorePath Semester/{SemesterID}/Event/{EventID}/Location/{LocationID}
      */
-    Loader<Boolean> setEventLocation(@NonNull String eventID, @NonNull Location location);
+    Loader<Boolean> setEventLocation(@SemesterRange int semID, @NonNull String eventID, @NonNull Location location);
 
     /**
      * Set the description of an {@link Event}. Every event can have a description like a {@link News} entry.
      *
+     * @param semID       The id of the selected Semester
      * @param eventID     {@link Event#ID}
      * @param description the description.
      * @return true, if upload successful <br>false, if not.
+     * @firestorePath Semester/{SemesterID}/Event/{EventID}/Description/{TextID}
      */
-    Loader<Boolean> setEventDescription(@NonNull String eventID, @NonNull ArrayList<Paragraph<Text>> description);
+    Loader<Boolean> setEventDescription(@SemesterRange int semID, @NonNull String eventID, @NonNull ArrayList<Text> description);
     //endregion
 
     /**
@@ -118,6 +126,7 @@ public interface IFirestoreUpload {
      * @param semID    {@link Semester#ID}
      * @param movement The {@link Movement} to upload.
      * @return true, if upload successful <br>false, if not.
+     * @firestorePath Semester/{SemesterID}/Account/Account/Movement/{MovementID}
      */
     Loader<Boolean> addSemesterMovement(@SemesterRange int semID, @NonNull Movement movement);
 
@@ -127,9 +136,23 @@ public interface IFirestoreUpload {
      * @param semID {@link Semester#ID}
      * @param file  The {@link File}
      * @return true, if upload successful <br>false, if not.
+     * @firestorePath Semester/{SemesterID}/Transcript/{TranscriptID}
      */
-    Loader<Boolean> addSemesterProtocol(@SemesterRange int semID, @NonNull File file);
+    Loader<Boolean> addSemesterMeetingTranscript(@SemesterRange int semID, @NonNull File file);
     //endregion
+
+    //region News
+
+    /**
+     * Upload a new {@link News} entry filled with an array of {@link Text} objects.
+     *
+     * @param text {@link Text}
+     * @return true, if upload successful <br>false, if not.
+     * @firestorePath News/{NewsID}/Text/{TextID} - get them ordered by {@link Text#getPosition()} ASC
+     */
+    default Loader<Boolean> addNewsEntry(@NonNull ArrayList<Text> text) {
+        return addNewsEntry(null, text);
+    }
 
     /**
      * Upload a new {@link News} entry filled with an array of {@link Text} objects.
@@ -138,7 +161,8 @@ public interface IFirestoreUpload {
      * @param text {@link Text}
      * @return true, if upload successful <br>false, if not.
      */
-    Loader<Boolean> addNewsEntry(@NonNull News news, @NonNull ArrayList<Text> text);
+    Loader<Boolean> addNewsEntry(@Nullable News news, @NonNull ArrayList<Text> text);
+    //endregion
 
     //region Person
 
@@ -147,6 +171,7 @@ public interface IFirestoreUpload {
      *
      * @param person {@link Person} data the user put in
      * @return true, if upload successful <br>false, if not.
+     * @firestorePath Person/{PersonID}
      */
     Loader<Boolean> setPerson(@NonNull Person person);
 
@@ -156,6 +181,7 @@ public interface IFirestoreUpload {
      * @param personID    {@link Person#ID}
      * @param addressList The list of {@link Address}es to upload.
      * @return true, if upload successful <br>false, if not.
+     * @firestorePath Person/{PersonID}/Address/{AddressID}
      */
     Loader<Boolean> setPersonAddress(@NonNull String personID, @NonNull ArrayList<Address> addressList);
 
@@ -166,6 +192,7 @@ public interface IFirestoreUpload {
      * @param personID {@link Person#ID}
      * @param chore    The {@link Chore} the person has to do or changed
      * @return true, if upload successful <br>false, if not.
+     * @firestorePath Person/{PersonID}/Chore/{ChoreID}
      */
     Loader<Boolean> setPersonChore(@NonNull String personID, @NonNull Chore chore);
 
@@ -176,6 +203,7 @@ public interface IFirestoreUpload {
      * @param semester    {@link Semester#ID}.
      * @param boardMember {@link BoardMember} values to upload.
      * @return true, if upload successful <br>false, if not.
+     * @firestorePath Person/{PersonID}/Board/{BoardMemberID}
      */
     Loader<Boolean> setPersonCharge(@NonNull String personID, @SemesterRange int semester, @NonNull BoardMember boardMember);
 
@@ -186,6 +214,7 @@ public interface IFirestoreUpload {
      * @param personID {@link Person#ID}
      * @param movement The {@link Movement} to be added.
      * @return true, if upload successful <br>false, if not.
+     * @firestorePath Person/{PersonID}/Account/Account/Movement/{MovementID}
      */
     Loader<Boolean> addPersonMovement(@NonNull String personID, @NonNull Movement movement);
 
@@ -195,6 +224,7 @@ public interface IFirestoreUpload {
      * @param personID {@link Person#ID}
      * @param file     The {@link File} to upload.
      * @return true, if upload successful <br>false, if not.
+     * @firestorePath Person/{PersonID}/Account/Account/Movement/{MovementID}
      */
     Loader<Boolean> addPersonPicture(@NonNull String personID, @NonNull File file);
     //endregion

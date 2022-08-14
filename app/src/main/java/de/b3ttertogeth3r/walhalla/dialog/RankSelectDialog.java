@@ -73,7 +73,7 @@ public class RankSelectDialog extends Dialog<Rank> {
     private String[] getRankNames() {
         ArrayList<String> names = new ArrayList<>();
         for (Rank r : Rank.values()) {
-            names.add(r.toString());
+            names.add(r.getString());
         }
         return names.toArray(new String[0]);
     }

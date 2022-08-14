@@ -40,7 +40,7 @@ public class Values {
     /**
      * Semester list of all semesters until SS 2064
      *
-     * @see de.b3ttertogeth3r.walhalla.util.Dev.SemesterRange SemesterRange
+     * @see de.b3ttertogeth3r.walhalla.annotation.SemesterRange SemesterRange
      */
     public static final ArrayList<Semester> semesterList = getSemesters();
     public static Semester currentSemester = getCurrentSemester();

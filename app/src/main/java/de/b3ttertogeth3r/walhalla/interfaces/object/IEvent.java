@@ -17,8 +17,8 @@ package de.b3ttertogeth3r.walhalla.interfaces.object;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import de.b3ttertogeth3r.walhalla.annotation.EventValue;
 import de.b3ttertogeth3r.walhalla.object.Event;
-import de.b3ttertogeth3r.walhalla.util.Dev.EventValue;
 
 public interface IEvent extends View<de.b3ttertogeth3r.walhalla.design.Event>, Validate {
     /**

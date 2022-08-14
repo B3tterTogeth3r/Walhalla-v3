@@ -57,6 +57,7 @@ public interface IAuth {
     /**
      * @param email    email address of the user
      * @param password password to use with the sign in
+     * @return Loader A {@link Loader} with an {@link AuthResult}
      * @since 1.0
      */
     Loader<AuthResult> signIn(String email, String password);

@@ -27,8 +27,8 @@ android {
         applicationId "de.b3ttertogeth3r.walhalla"
         minSdk 30
         targetSdk 31
-        versionCode 31
-        versionName "3.1"
+        versionCode 32
+        versionName "3.2"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -80,7 +80,7 @@ dependencies {
     // Firebase imports
     implementation 'com.firebaseui:firebase-ui-auth:7.2.0' // Firebase authentication ui
     implementation 'com.firebaseui:firebase-ui-storage:7.2.0' // FirebaseUI Storage only
-    implementation platform('com.google.firebase:firebase-bom:30.3.0')
+    implementation platform('com.google.firebase:firebase-bom:30.3.1')
     implementation 'com.google.firebase:firebase-config' // Remote Configuration
     implementation 'com.google.firebase:firebase-crashlytics' // Crashlytics
     implementation 'com.google.firebase:firebase-dynamic-links' // Dynamic links
@@ -96,3 +96,21 @@ dependencies {
     implementation 'com.google.firebase:firebase-functions' // Cloud Functions
     implementation 'com.google.android.gms:play-services-auth:20.2.0' // Google Auth
 }
+
+android.applicationVariants.all { variant ->
+    task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
+        description "Generates Javadoc for $variant.name."
+
+        source = variant.javaCompile.source
+        destinationDir = file("/Users/tobi-mac/Documents/WalhallaDoc/android_javadoc")
+        failOnError false
+
+        doFirst {
+            ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+            classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
+
+            options.tags = ["firestorePath:a:'FirestorePath:'"]
+            options.addStringOption "-show-members", "package"
+            options.encoding("UTF-8")
+        }
+    }}

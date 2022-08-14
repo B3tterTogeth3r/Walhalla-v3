@@ -17,7 +17,6 @@ package de.b3ttertogeth3r.walhalla.object;
 import com.google.firebase.Timestamp;
 
 import de.b3ttertogeth3r.walhalla.interfaces.object.ISemester;
-import de.b3ttertogeth3r.walhalla.util.Dev.SemesterRange;
 
 public class Semester implements ISemester {
     /**
@@ -59,12 +58,13 @@ public class Semester implements ISemester {
         this.end = end;
     }
 
-    @SemesterRange
+    @Override
     public int getId() {
         return id;
     }
 
-    public void setId(@SemesterRange int id) {
+    @Override
+    public void setId(int id) {
         this.id = id;
     }
 

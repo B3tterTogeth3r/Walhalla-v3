@@ -15,9 +15,11 @@
 package de.b3ttertogeth3r.walhalla.mock;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import java.util.Map;
 
 import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
+import de.b3ttertogeth3r.walhalla.annotation.SemesterRange;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.enums.Collar;
@@ -51,7 +54,6 @@ import de.b3ttertogeth3r.walhalla.object.Movement;
 import de.b3ttertogeth3r.walhalla.object.News;
 import de.b3ttertogeth3r.walhalla.object.Person;
 import de.b3ttertogeth3r.walhalla.object.Text;
-import de.b3ttertogeth3r.walhalla.util.Dev.SemesterRange;
 import de.b3ttertogeth3r.walhalla.util.List;
 import de.b3ttertogeth3r.walhalla.util.Paragraph;
 import de.b3ttertogeth3r.walhalla.util.ToastList;
@@ -66,7 +68,7 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<ArrayList<File>> getSemesterProtocols(String semesterID) {
+        public Loader<ArrayList<File>> getSemesterProtocols(int semesterID) {
             Loader<ArrayList<File>> loader = new Loader<>();
             ArrayList<File> list = new ArrayList<>();
             return loader.done(list);
@@ -74,8 +76,8 @@ public class FirestoreMock {
 
         @SuppressWarnings("unchecked")
         @Override
-        public Loader<Paragraph<Text>> getSemesterGreeting(String semesterID) {
-            Loader<Paragraph<Text>> loader = new Loader<>();
+        public Loader<ArrayList<Text>> getSemesterGreeting(int semesterID) {
+            Loader<ArrayList<Text>> loader = new Loader<>();
             Paragraph<Text> list = new Paragraph<>();
             Text one = new Text();
             one.setKind(TextType.TITLE);
@@ -102,42 +104,6 @@ public class FirestoreMock {
             list.add(three);
 
             return loader.done(list);
-        }
-
-        @Override
-        public Loader<BoardMember> getSemesterBoardOne(int semesterId, @NonNull Charge charge) {
-            Loader<BoardMember> loader = new Loader<>();
-            if (charge.equals(Charge.AH_X)) {
-                BoardMember bm = new BoardMember();
-                bm.setFull_name("Thilo Berdami");
-                return loader.done(bm);
-            } else if (charge.equals(Charge.X)) {
-                BoardMember bm = new BoardMember();
-                bm.setFull_name("Tobias Tumbrink");
-                return loader.done(bm);
-            }
-            return loader.done(new NoDataException("No charge found in semester " + semesterId));
-        }
-
-        @Override
-        public Loader<ArrayList<Location>> locationList() {
-            @NonNull Loader<ArrayList<Location>> loader = new Loader<>();
-            Location l1 = new Location("Walhalla", new GeoPoint(49.784420, 9.924580));
-            Location l2 = new Location("Normannia", new GeoPoint(449.781190, 9.925320));
-            Location l3 = new Location("Askania-Burgundia", new GeoPoint(52.468660, 13.280510));
-            Location l4 = new Location("Rheno-Frankonia", new GeoPoint(49.792250, 9.935500));
-            Location l5 = new Location("St. Kilians Dom, Würzburg", new GeoPoint(49.793150,
-                    9.931400));
-            Location l6 = new Location("St. Peter und Paul, Würzburg", new GeoPoint(49.791590,
-                    9.931630));
-            return loader.done(new ArrayList<>(Arrays.asList(l1, l2, l3, l4, l5, l6)));
-        }
-
-        @Override
-        public Loader<File> file(@NonNull DocumentReference reference) {
-            Loader<File> loader = new Loader<>();
-            return loader.done();
-
         }
 
         @Override
@@ -207,7 +173,22 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<ArrayList<Chore>> getEventChores(String eventId) {
+        public Loader<BoardMember> getSemesterBoardOne(int semesterId, @NonNull Charge charge) {
+            Loader<BoardMember> loader = new Loader<>();
+            if (charge.equals(Charge.AH_X)) {
+                BoardMember bm = new BoardMember();
+                bm.setFull_name("Thilo Berdami");
+                return loader.done(bm);
+            } else if (charge.equals(Charge.X)) {
+                BoardMember bm = new BoardMember();
+                bm.setFull_name("Tobias Tumbrink");
+                return loader.done(bm);
+            }
+            return loader.done(new NoDataException("No charge found in semester " + semesterId));
+        }
+
+        @Override
+        public Loader<ArrayList<Chore>> getEventChores(int semesterID, String eventId) {
             Loader<ArrayList<Chore>> loader = new Loader<>();
             List<Chore> resultList = new List<>();
             Chore c1 = new Chore();
@@ -239,7 +220,7 @@ public class FirestoreMock {
 
         @SuppressWarnings("unchecked")
         @Override
-        public Loader<ArrayList<Text>> getEventDescription(String eventId) {
+        public Loader<ArrayList<Text>> getEventDescription(int semesterID, String eventId) {
             Loader<ArrayList<Text>> loader = new Loader<>();
             ArrayList<Text> list = new ArrayList<>();
             Text one = new Text();
@@ -267,7 +248,7 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<Location> getEventLocation(String eventId) {
+        public Loader<Location> getEventLocation(int semesterID, String eventId) {
             Loader<Location> loader = new Loader<>();
             Location l1 = new Location("Walhalla", new GeoPoint(49.784420, 9.924580));
             return loader.done(l1);
@@ -354,9 +335,47 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<Account> getPersonBalance(String uid) {
+        public Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester) {
+            Loader<ArrayList<DrinkMovement>> loader = new Loader<>();
+            DrinkMovement dm1 = new DrinkMovement("Martinsbräu Pils", 102, 1,
+                    new Timestamp(new Date()));
+            DrinkMovement dm2 = new DrinkMovement("Martinsbräu Helles", 29, 1,
+                    new Timestamp(new Date()));
+            DrinkMovement dm4 = new DrinkMovement("Martinsbräu Weizen", 120, 1,
+                    new Timestamp(new Date()));
+            DrinkMovement dm5 = new DrinkMovement("Martinsbräu Märzen", 50, 1,
+                    new Timestamp(new Date()));
+            List<DrinkMovement> dml = new List<>();
+            dml.add(dm1);
+            dml.add(dm2);
+            dml.add(dm4);
+            dml.add(dm5);
+            return loader.done(dml);
+        }
+
+        @Override
+        public Loader<Account> getPersonBalance(FragmentActivity activity, String uid) {
             Loader<Account> loader = new Loader<>();
             return loader.done(new Account(4.5f, 6, 15.5f, 11f));
+        }
+
+        @Override
+        public Loader<ArrayList<Movement>> getPersonMovements(String uid) {
+            Loader<ArrayList<Movement>> loader = new Loader<>();
+            Movement m1 = new Movement("1", new Timestamp(new Date()), 5.5, "2 Beer", "Payment", null);
+            Movement m2 = new Movement("2", new Timestamp(new Date()), 6.0, "1 Maß", "Payment", null);
+            Movement m3 = new Movement("3", new Timestamp(new Date()), -11.0, "", "Invoice", null);
+            Movement m4 = new Movement("4", new Timestamp(new Date()), 6.5, "2 Beer", "Payment", null);
+            Movement m5 = new Movement("5", new Timestamp(new Date()), 6.0, "1 Maß", "Payment", null);
+            Movement m6 = new Movement("6", new Timestamp(new Date()), -11.0, "", "Invoice", null);
+            List<Movement> mL = new List<>();
+            mL.add(m1);
+            mL.add(m3);
+            mL.add(m2);
+            mL.add(m4);
+            mL.add(m5);
+            mL.add(m6);
+            return loader.done(mL);
         }
 
         @Override
@@ -378,9 +397,10 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<File> getPersonImage(String uid) {
-            Loader<File> loader = new Loader<>();
-            return loader.done();
+        public Loader<ArrayList<File>> getPersonImage(String uid) {
+            Loader<ArrayList<File>> loader = new Loader<>();
+            ArrayList<File> fileList = new ArrayList<>();
+            return loader.done(fileList);
         }
 
         @Override
@@ -397,26 +417,7 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester) {
-            Loader<ArrayList<DrinkMovement>> loader = new Loader<>();
-            DrinkMovement dm1 = new DrinkMovement("Martinsbräu Pils", 102, 1,
-                    new Timestamp(new Date()));
-            DrinkMovement dm2 = new DrinkMovement("Martinsbräu Helles", 29, 1,
-                    new Timestamp(new Date()));
-            DrinkMovement dm4 = new DrinkMovement("Martinsbräu Weizen", 120, 1,
-                    new Timestamp(new Date()));
-            DrinkMovement dm5 = new DrinkMovement("Martinsbräu Märzen", 50, 1,
-                    new Timestamp(new Date()));
-            List<DrinkMovement> dml = new List<>();
-            dml.add(dm1);
-            dml.add(dm2);
-            dml.add(dm4);
-            dml.add(dm5);
-            return loader.done(dml);
-        }
-
-        @Override
-        public Loader<ArrayList<News>> getNews(Visibility visibility) {
+        public Loader<ArrayList<News>> getNews(FragmentActivity activity, Visibility visibility) {
             Loader<ArrayList<News>> loader = new Loader<>();
             ArrayList<News> newsList = new ArrayList<>(Arrays.asList(
                     new News("First news entry", Visibility.PUBLIC, 3, "MOCK",
@@ -437,25 +438,6 @@ public class FirestoreMock {
                 }
             }
             return loader.done(resultList);
-        }
-
-        @Override
-        public Loader<ArrayList<Movement>> getPersonMovements(String uid) {
-            Loader<ArrayList<Movement>> loader = new Loader<>();
-            Movement m1 = new Movement("1", new Timestamp(new Date()), 5.5, "2 Beer", "Payment", null);
-            Movement m2 = new Movement("2", new Timestamp(new Date()), 6.0, "1 Maß", "Payment", null);
-            Movement m3 = new Movement("3", new Timestamp(new Date()), -11.0, "", "Invoice", null);
-            Movement m4 = new Movement("4", new Timestamp(new Date()), 6.5, "2 Beer", "Payment", null);
-            Movement m5 = new Movement("5", new Timestamp(new Date()), 6.0, "1 Maß", "Payment", null);
-            Movement m6 = new Movement("6", new Timestamp(new Date()), -11.0, "", "Invoice", null);
-            List<Movement> mL = new List<>();
-            mL.add(m1);
-            mL.add(m3);
-            mL.add(m2);
-            mL.add(m4);
-            mL.add(m5);
-            mL.add(m6);
-            return loader.done(mL);
         }
 
         @Override
@@ -485,7 +467,7 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<ArrayList<Person>> getPersonList() {
+        public Loader<ArrayList<Person>> getPersonList(FragmentActivity activity) {
             @NonNull Loader<ArrayList<Person>> loader = new Loader<>();
             ArrayList<Person> result = new ArrayList<>();
             Person p1 = new Person();
@@ -518,6 +500,27 @@ public class FirestoreMock {
 
             return loader.done(result);
         }
+
+        @Override
+        public Loader<ArrayList<Location>> locationList() {
+            @NonNull Loader<ArrayList<Location>> loader = new Loader<>();
+            Location l1 = new Location("Walhalla", new GeoPoint(49.784420, 9.924580));
+            Location l2 = new Location("Normannia", new GeoPoint(449.781190, 9.925320));
+            Location l3 = new Location("Askania-Burgundia", new GeoPoint(52.468660, 13.280510));
+            Location l4 = new Location("Rheno-Frankonia", new GeoPoint(49.792250, 9.935500));
+            Location l5 = new Location("St. Kilians Dom, Würzburg", new GeoPoint(49.793150,
+                    9.931400));
+            Location l6 = new Location("St. Peter und Paul, Würzburg", new GeoPoint(49.791590,
+                    9.931630));
+            return loader.done(new ArrayList<>(Arrays.asList(l1, l2, l3, l4, l5, l6)));
+        }
+
+        @Override
+        public Loader<File> file(@NonNull DocumentReference reference) {
+            Loader<File> loader = new Loader<>();
+            return loader.done();
+
+        }
     }
 
     public static class Upload implements IFirestoreUpload {
@@ -527,17 +530,13 @@ public class FirestoreMock {
             ToastList.addToast(Toast.makeToast(App.getContext(), TAG + "-MOCK-DATA"));
         }
 
+        public FirebaseFirestore getUploader() {
+            return null;
+        }
+
         @Override
-        public Loader<Boolean> setBoard(@SemesterRange int semID, @NonNull ArrayList<BoardMember> boardMembers) {
+        public Loader<Boolean> setBoard(@SemesterRange int semID, @NonNull BoardMember boardMembers) {
             Loader<Boolean> loader = new Loader<>();
-            if (boardMembers.isEmpty()) {
-                return loader.done(false);
-            }
-            for (BoardMember bm : boardMembers) {
-                if (!bm.validate()) {
-                    return loader.done(false);
-                }
-            }
             return loader.done(true);
         }
 
@@ -551,7 +550,7 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<Boolean> setEventChore(@NonNull String eventID, @NonNull Chore chore) {
+        public Loader<Boolean> setEventChore(@SemesterRange int semID, @NonNull String eventID, @NonNull Chore chore) {
             Loader<Boolean> loader = new Loader<>();
             if (eventID.isEmpty()) {
                 loader.done(false);
@@ -562,7 +561,7 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<Boolean> setEventLocation(@NonNull String eventID, @NonNull Location location) {
+        public Loader<Boolean> setEventLocation(@SemesterRange int semID, @NonNull String eventID, @NonNull Location location) {
             Loader<Boolean> loader = new Loader<>();
             if (eventID.isEmpty()) {
                 loader.done(false);
@@ -573,17 +572,10 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<Boolean> setEventDescription(@NonNull String eventID, @NonNull ArrayList<Paragraph<Text>> description) {
+        public Loader<Boolean> setEventDescription(@SemesterRange int semID, @NonNull String eventID, @NonNull ArrayList<Text> description) {
             Loader<Boolean> loader = new Loader<>();
             if (description.isEmpty()) {
                 return loader.done(false);
-            }
-            for (Paragraph<Text> pt : description) {
-                for (Text t : pt) {
-                    if (!t.validate()) {
-                        return loader.done(false);
-                    }
-                }
             }
             return loader.done(true);
         }
@@ -598,7 +590,7 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<Boolean> addSemesterProtocol(@SemesterRange int semID, @NonNull File file) {
+        public Loader<Boolean> addSemesterMeetingTranscript(@SemesterRange int semID, @NonNull File file) {
             Loader<Boolean> loader = new Loader<>();
             if (!file.validate()) {
                 return loader.done(false);

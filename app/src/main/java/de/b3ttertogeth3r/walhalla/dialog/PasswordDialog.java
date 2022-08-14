@@ -62,8 +62,6 @@ public class PasswordDialog extends Dialog<Boolean> {
         MainActivity.hideKeyBoard.hide();
         if (e != null) {
             throw e;
-            /*Log.e(TAG, "done: exception found", e);
-            return null;*/
         } else {
             return true;
         }
@@ -83,9 +81,14 @@ public class PasswordDialog extends Dialog<Boolean> {
             if (password == null || password.isEmpty()) {
                 this.e = new UserDataError("No password written");
             }
-            onDismiss(dialogInterface);
+            super.onClick(dialogInterface, i);
         });
         builder.setNegativeButton(R.string.abort, this);
+    }
+
+    @Override
+    public void configToolbar(@NonNull Toolbar toolbar) {
+        toolbar.setTitle(R.string.password);
     }
 
     @Override
@@ -101,10 +104,5 @@ public class PasswordDialog extends Dialog<Boolean> {
                     this.e = e;
                     super.onDismiss(dialog);
                 });
-    }
-
-    @Override
-    public void configToolbar(@NonNull Toolbar toolbar) {
-        toolbar.setTitle(R.string.password);
     }
 }

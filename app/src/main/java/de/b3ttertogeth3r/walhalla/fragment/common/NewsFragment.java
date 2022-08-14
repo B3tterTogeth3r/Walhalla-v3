@@ -30,11 +30,14 @@ import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
 import de.b3ttertogeth3r.walhalla.design.AdView;
 import de.b3ttertogeth3r.walhalla.design.Button;
+import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
+import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.News;
+import de.b3ttertogeth3r.walhalla.util.Cache;
 
 public class NewsFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "News";
@@ -67,17 +70,20 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void start() {
-        download.getNews(visibility)
-                .setOnSuccessListener(result -> {
-                    newsList = result;
-                    if (result != null) {
-                        max_position = result.size() - 1;
-                    } else {
-                        max_position = 0;
-                    }
-                    loadEntry(0);
-                }).setOnFailListener(e -> {
-                });
+        try {
+            download.getNews(requireActivity(), visibility)
+                    .setOnSuccessListener(result -> {
+                        newsList = result;
+                        if (result != null) {
+                            max_position = result.size() - 1;
+                        } else {
+                            max_position = 0;
+                        }
+                        loadEntry(0);
+                    }).setOnFailListener(e -> {
+                    });
+        } catch (Exception ignored) {
+        }
         int padding;
         try {
             padding = (int) TypedValue.applyDimension(
@@ -93,6 +99,9 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void toolbarContent() {
         toolbar.setTitle(R.string.menu_messages);
+        if (Cache.CACHE_DATA.isBoardMember()) {
+            // TODO: 29.07.22 add menu to add new news
+        }
     }
 
     @Override
@@ -145,13 +154,20 @@ public class NewsFragment extends Fragment implements View.OnClickListener {
     }
 
     private void loadEntry(int number) {
+        if (newsList.isEmpty()) {
+            newsLayout.removeAllViews();
+            newsLayout.removeAllViewsInLayout();
+            newsLayout.addView(new Title(requireContext(), R.string.messages_none));
+            newsLayout.invalidate();
+            return;
+        }
         try {
             newsLayout.removeAllViews();
             newsLayout.removeAllViewsInLayout();
             newsLayout.addView(newsList.get(number).getView(requireContext()));
             newsLayout.invalidate();
         } catch (NoDataException e) {
-            e.printStackTrace();
+            Log.w(TAG, "loadEntry: an error occurred", e);
         }
     }
 

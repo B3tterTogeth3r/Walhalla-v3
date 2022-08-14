@@ -64,11 +64,13 @@ public class Profile extends Fragment implements View.OnClickListener {
     private LinearLayout addressLayout;
     private String personId;
     private ArrayList<Address> addressList;
+    private IFirestoreUpload upload;
 
     @Override
     public void constructor() {
-        download = Firebase.Firestore.download();
         auth = Firebase.authentication();
+        upload = Firebase.Firestore.upload();
+        download = Firebase.Firestore.download();
         if (!auth.isSignIn()) {
             Toast.makeToast(requireContext(), R.string.fui_error_session_expired).show();
             SideNav.changePage(R.string.menu_home, requireActivity().getSupportFragmentManager().beginTransaction());
@@ -114,7 +116,7 @@ public class Profile extends Fragment implements View.OnClickListener {
                     .setOnFailListener(e -> Log.e(TAG, "onFailureListener: ", e));
             download.getPersonImage(personId)
                     .setOnSuccessListener(result -> {
-                        if (result == null || !result.validate()) {
+                        if (result == null || result.isEmpty()) {
                             throw new NoDataException("User has no profile image");
                         }
                         // TODO: 25.07.22 find a way to display the profile image
@@ -193,7 +195,6 @@ public class Profile extends Fragment implements View.OnClickListener {
             throw new InvalidObjectException("Person data is invalid");
         }
         // TODO: 26.07.22 upload data
-        IFirestoreUpload upload = Firebase.Firestore.upload();
         upload.setPerson(person)
                 .setOnSuccessListener(result -> {
                     if (result == null || !result) {

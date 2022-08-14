@@ -51,6 +51,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.loader.LoadingCircle;
 import de.b3ttertogeth3r.walhalla.object.Event;
 import de.b3ttertogeth3r.walhalla.object.File;
 import de.b3ttertogeth3r.walhalla.object.Log;
+import de.b3ttertogeth3r.walhalla.object.Semester;
 import de.b3ttertogeth3r.walhalla.util.ProgressBarAnimation;
 
 public class MainActivity extends AppCompatActivity implements LoadingCircle, ISideNav, OpenExternal,
@@ -214,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
     }
 
     @Override
-    public void saveInCalendar(Event event) {
+    public void saveInCalendar(Semester semester, Event event) {
         if (event == null || !event.validate()) {
             Toast.makeToast(getApplicationContext(), "Event nicht gültig").show();
             Log.e(TAG, "Tried to save an incomplete event");
@@ -225,9 +226,9 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
         //load the location and the full event description
         Toast errorToast = new Toast(getApplicationContext());
         IFirestoreDownload downloader = Firebase.Firestore.download();
-        downloader.getEventDescription(event.getId())
+        downloader.getEventDescription(semester.getId(), event.getId())
                 .setOnSuccessListener(description -> {
-                    downloader.getEventLocation(event.getId())
+                    downloader.getEventLocation(semester.getId(), event.getId())
                             .setOnSuccessListener(eventLocation -> {
                                 Intent calendarIntent = new Intent(Intent.ACTION_INSERT);
                                 calendarIntent.setData(CalendarContract.Events.CONTENT_URI);

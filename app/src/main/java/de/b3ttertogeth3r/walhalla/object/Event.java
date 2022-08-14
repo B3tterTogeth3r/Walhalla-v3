@@ -20,12 +20,12 @@ import androidx.fragment.app.FragmentActivity;
 import com.google.firebase.Timestamp;
 
 import de.b3ttertogeth3r.walhalla.abstract_generic.MyObject;
+import de.b3ttertogeth3r.walhalla.annotation.EventValue;
 import de.b3ttertogeth3r.walhalla.enums.Collar;
 import de.b3ttertogeth3r.walhalla.enums.Punctuality;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.interfaces.object.IEvent;
 import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
-import de.b3ttertogeth3r.walhalla.util.Dev.EventValue;
 
 /**
  * @author B3tterTogeth3r

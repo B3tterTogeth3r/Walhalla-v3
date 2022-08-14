@@ -17,13 +17,13 @@ package de.b3ttertogeth3r.walhalla.interfaces.activityMain;
 
 import de.b3ttertogeth3r.walhalla.object.Event;
 import de.b3ttertogeth3r.walhalla.object.File;
+import de.b3ttertogeth3r.walhalla.object.Semester;
 
 /**
  * Interface to open external pages, files or apps.
  *
  * @author B3tterTogeth3r
  * @version 3.0
- * @
  * @since 1.0
  */
 public interface OpenExternal {
@@ -45,9 +45,10 @@ public interface OpenExternal {
     /**
      * Save an event in the devices default calendar application.
      *
-     * @param event The {@link Event} to save in the calendar.
+     * @param semester The {@link Semester} the event is from
+     * @param event    The {@link Event} to save in the calendar.
      */
-    void saveInCalendar(Event event);
+    void saveInCalendar(Semester semester, Event event);
 
     /**
      * Open a {@link File} in the devices PDF or gallery.

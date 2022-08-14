@@ -58,6 +58,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.object.Chore;
 import de.b3ttertogeth3r.walhalla.object.Location;
 import de.b3ttertogeth3r.walhalla.object.Log;
+import de.b3ttertogeth3r.walhalla.object.Semester;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
 /**
@@ -74,18 +75,20 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
     private final IFirestoreDownload download;
     private RelativeLayout view;
     private TableLayout choresTable;
+    private final Semester semester;
 
-    public EventDetails(DialogSize size, de.b3ttertogeth3r.walhalla.object.Event event) {
+    public EventDetails(DialogSize size, Semester semester, de.b3ttertogeth3r.walhalla.object.Event event) {
         super(size);
         this.event = event;
+        this.semester = semester;
         this.download = Firebase.Firestore.download();
         this.auth = Firebase.authentication();
     }
 
     @NonNull
-    public static EventDetails display(FragmentManager fragmentManager, DialogSize size, de.b3ttertogeth3r.walhalla.object.Event event) throws CreateDialogException {
+    public static EventDetails display(FragmentManager fragmentManager, DialogSize size, Semester semester, de.b3ttertogeth3r.walhalla.object.Event event) throws CreateDialogException {
         try {
-            EventDetails dialog = new EventDetails(size, event);
+            EventDetails dialog = new EventDetails(size, semester, event);
             dialog.show(fragmentManager, TAG);
             return dialog;
         } catch (Exception e) {
@@ -174,7 +177,7 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
     }
 
     private void loadDescription(LinearLayout description) {
-        download.getEventDescription(event.getId())
+        download.getEventDescription(semester.getId(), event.getId())
                 .setOnSuccessListener(result -> {
                     if (result == null || result.isEmpty()) {
                         return;
@@ -195,7 +198,7 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
     }
 
     private void loadChores() {
-        download.getEventChores(event.getId())
+        download.getEventChores(semester.getId(), event.getId())
                 .setOnSuccessListener(result -> {
                     choresTable.removeAllViewsInLayout();
                     if (result != null && !result.isEmpty()) {
@@ -222,7 +225,7 @@ public class EventDetails extends Dialog<Void> implements OnMapReadyCallback {
         }
 
         try {
-            download.getEventLocation(event.getId())
+            download.getEventLocation(semester.getId(), event.getId())
                     .setOnSuccessListener(location -> {
                         if (location == null || !location.validate()) {
                             // set result to the home a default location
