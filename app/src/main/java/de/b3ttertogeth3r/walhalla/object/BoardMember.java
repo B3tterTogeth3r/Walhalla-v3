@@ -37,9 +37,9 @@ import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.dialog.ChargenDetail;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
-import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
+import de.b3ttertogeth3r.walhalla.interfaces.object.IBoardMember;
 
-public class BoardMember implements Validate {
+public class BoardMember implements IBoardMember {
     private String full_name = "";
     private String mobile = "";
     private String major = "";
@@ -47,7 +47,7 @@ public class BoardMember implements Validate {
     private String from = "";
     @SemesterRange
     private int semester = 0;
-    private Charge charge = Charge.VOP;
+    private Charge charge = Charge.NONE;
     private DocumentReference image = null;
     private String uid = "";
     private String id = "";
@@ -88,6 +88,31 @@ public class BoardMember implements Validate {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getMail() {
+        return mail;
+    }
+
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    @SemesterRange
+    public int getSemester() {
+        return semester;
+    }
+
+    public void setSemester(@SemesterRange int semester) {
+        this.semester = semester;
     }
 
     public RelativeLayout getView(@NonNull FragmentActivity activity) {
@@ -220,31 +245,6 @@ public class BoardMember implements Validate {
 
     public void setCharge(Charge charge) {
         this.charge = charge;
-    }
-
-    public String getMail() {
-        return mail;
-    }
-
-    public void setMail(String mail) {
-        this.mail = mail;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    @SemesterRange
-    public int getSemester() {
-        return semester;
-    }
-
-    public void setSemester(@SemesterRange int semester) {
-        this.semester = semester;
     }
 
     @Override

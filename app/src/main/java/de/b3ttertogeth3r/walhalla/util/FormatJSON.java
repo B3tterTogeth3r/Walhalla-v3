@@ -25,7 +25,6 @@ import de.b3ttertogeth3r.walhalla.enums.TextType;
 import de.b3ttertogeth3r.walhalla.interfaces.loader.LoaderResultListener;
 import de.b3ttertogeth3r.walhalla.interfaces.loader.OnFailureListener;
 import de.b3ttertogeth3r.walhalla.interfaces.loader.OnSuccessListener;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Text;
 
 public class FormatJSON implements LoaderResultListener<ArrayList<Paragraph<Text>>> {

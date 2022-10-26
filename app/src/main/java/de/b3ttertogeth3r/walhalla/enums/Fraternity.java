@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022.
+ * Copyright (c) 2022-2022.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -16,7 +16,7 @@ package de.b3ttertogeth3r.walhalla.enums;
 
 import androidx.annotation.NonNull;
 
-public enum Walhalla {
+public enum Fraternity {
     NAME ("K.St.V. Walhalla im KV zu Würzburg"),
     ADH ("Mergenheimer Straße 32\n97082 Würzburg"),
     WEBSITE ("http://walhalla-wuerzburg.de"),
@@ -30,7 +30,7 @@ public enum Walhalla {
     NAME_2("im KV zu Würzburg");
 
     private final String value;
-    Walhalla (String value) {
+    Fraternity(String value) {
         this.value = value;
     }
 

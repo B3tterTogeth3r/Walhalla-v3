@@ -14,7 +14,6 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="de.b3ttertogeth3r.walhalla"
     android:targetSandboxVersion="1">
 
     <uses-permission android:name="android.permission.INTERNET" />

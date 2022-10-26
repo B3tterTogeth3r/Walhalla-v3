@@ -85,7 +85,7 @@ public class File extends MyObject implements IFile {
 
     @Override
     public boolean validate() {
-        return false;
+        return (!name.isEmpty() && !path.isEmpty());
     }
 
     @Override

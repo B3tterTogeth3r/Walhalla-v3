@@ -86,6 +86,23 @@ public class Person implements IPerson {
         this.password = password;
         this.id = id;
     }
+    public Person(String first_Name, String last_Name, String origin, String major,
+                  String nickname, String passwordString, String mobile, String mail,
+                  int joined, Timestamp birthday, Rank rank, boolean enabled, boolean password) {
+        this.first_Name = first_Name;
+        this.last_Name = last_Name;
+        this.origin = origin;
+        this.major = major;
+        this.nickname = nickname;
+        this.passwordString = passwordString;
+        this.mobile = mobile;
+        this.mail = mail;
+        this.joined = joined;
+        this.birthday = birthday;
+        this.rank = rank;
+        this.enabled = enabled;
+        this.password = password;
+    }
 
     public Person(String first_Name, String last_Name, String origin, String major,
                   String nickname, String mobile, String mail,

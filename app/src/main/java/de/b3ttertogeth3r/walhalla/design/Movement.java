@@ -35,7 +35,7 @@ import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.object.DrinkMovement;
-import de.b3ttertogeth3r.walhalla.object.Log;
+import de.b3ttertogeth3r.walhalla.util.Log;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class Movement {

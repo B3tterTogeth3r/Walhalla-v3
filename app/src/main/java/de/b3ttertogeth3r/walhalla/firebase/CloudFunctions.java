@@ -26,8 +26,8 @@ import de.b3ttertogeth3r.walhalla.design.SideNav;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.ICloudFunctions;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.Cache;
+import de.b3ttertogeth3r.walhalla.util.Log;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class CloudFunctions implements ICloudFunctions, IInit {
@@ -41,7 +41,6 @@ public class CloudFunctions implements ICloudFunctions, IInit {
         Map<String, Object> data = new HashMap<>();
         data.put("semester", Values.currentSemester.getId());
         data.put("uid", uid);
-
         try {
             cloudFunctions
                     .getHttpsCallable("checkBoardMember")

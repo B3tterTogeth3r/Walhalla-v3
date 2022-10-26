@@ -42,8 +42,8 @@ import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.Cache;
+import de.b3ttertogeth3r.walhalla.util.Log;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class Program extends Fragment {
@@ -134,31 +134,38 @@ public class Program extends Fragment {
         view.addView(semester);
         int i = 0;
         for (de.b3ttertogeth3r.walhalla.object.Event e : eventList) {
-            view.addView(Event.create(requireActivity(), null, e)
-                    .addTouchListener(new Touch() {
-                        @Override
-                        public void onClick(View view) {
-                            try {
-                                FragmentManager fm = requireActivity().getSupportFragmentManager();
-                                EventDetails.display(fm, DialogSize.FULL_SCREEN, Values.semesterList.get(semesterId), e);
-                            } catch (Exception e) {
-                                Log.e("Event", "onClickListener: Opening dialog exception", e);
-                            }
-                        }
-                    })
-                    .show());
-            i++;
-            if (i == 5) {
-                i = 0;
-                AdView adView = new AdView(requireContext());
-                adView.setAdSize(AdSize.LARGE_BANNER);
-                adView.setAdUnitId(getString(R.string.adUnitId));
-                MobileAds.initialize(requireContext(), initializationStatus -> {
-                });
+            boolean checker = Cache.CACHE_DATA.getRank().canSee(e.getVisibility());
+            if (checker) {
+                try {
+                    view.addView(Event.create(requireActivity(), null, e)
+                            .addTouchListener(new Touch() {
+                                @Override
+                                public void onClick(View view) {
+                                    try {
+                                        FragmentManager fm = requireActivity().getSupportFragmentManager();
+                                        EventDetails.display(fm, DialogSize.FULL_SCREEN, Values.semesterList.get(semesterId), e);
+                                    } catch (Exception e) {
+                                        Log.e("Event", "onClickListener: Opening dialog exception", e);
+                                    }
+                                }
+                            })
+                            .show());
+                    i++;
+                } catch (Exception exception) {
+                    Log.e(TAG, "displaying event did not work", exception);
+                }
+                if (i == 5) {
+                    i = 0;
+                    AdView adView = new AdView(requireContext());
+                    adView.setAdSize(AdSize.LARGE_BANNER);
+                    adView.setAdUnitId(getString(R.string.adUnitId));
+                    MobileAds.initialize(requireContext(), initializationStatus -> {
+                    });
 
-                AdRequest adRequest = new AdRequest.Builder().build();
-                adView.loadAd(adRequest);
-                view.addView(adView);
+                    AdRequest adRequest = new AdRequest.Builder().build();
+                    adView.loadAd(adRequest);
+                    view.addView(adView);
+                }
             }
         }
     }

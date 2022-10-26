@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
@@ -46,6 +44,7 @@ import de.b3ttertogeth3r.walhalla.object.Account;
 import de.b3ttertogeth3r.walhalla.object.Address;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
 import de.b3ttertogeth3r.walhalla.object.Chore;
+import de.b3ttertogeth3r.walhalla.object.Drink;
 import de.b3ttertogeth3r.walhalla.object.DrinkMovement;
 import de.b3ttertogeth3r.walhalla.object.Event;
 import de.b3ttertogeth3r.walhalla.object.File;
@@ -62,6 +61,26 @@ public class FirestoreMock {
 
     public static class Download implements IFirestoreDownload {
         private static final String TAG = "FirestoreMockDownload";
+
+        @Override
+        public Loader<Account> getEventAccount(FragmentActivity activity, int semesterID, String eventId) {
+            return null;
+        }
+
+        @Override
+        public Loader<ArrayList<Movement>> getEventMovements(int semesterID, String eventId) {
+            return null;
+        }
+
+        @Override
+        public Loader<ArrayList<Text>> getNotes() {
+            return null;
+        }
+
+        @Override
+        public Loader<ArrayList<Drink>> getDrinkKinds() {
+            return null;
+        }
 
         public Download() {
             ToastList.addToast(Toast.makeToast(App.getContext(), TAG + "-MOCK-DATA"));
@@ -314,8 +333,8 @@ public class FirestoreMock {
         }
 
         @Override
-        public Loader<Map<Integer, ArrayList<BoardMember>>> getPersonPastChargen(String uid) {
-            Loader<Map<Integer, ArrayList<BoardMember>>> loader = new Loader<>();
+        public Loader<ArrayList<BoardMember>> getPersonPastChargen(String uid) {
+            Loader<ArrayList<BoardMember>> loader = new Loader<>();
             BoardMember bm1 = new BoardMember(new Person("Tobias", "Tumbrink", "Oberursel (Taunus)",
                     "aer-inf.", "Tobi", "", 316, Timestamp.now(),
                     Rank.ACTIVE, true, true));
@@ -323,15 +342,12 @@ public class FirestoreMock {
             BoardMember bm2 = new BoardMember();
             bm2.setCharge(Charge.XXX);
             bm2.setFull_name("Tobias Tumbrink");
+            bm2.setSemester(317);
 
-            Map<Integer, ArrayList<BoardMember>> result = new HashMap<>();
-            result.put(310, new ArrayList<>(Collections.singletonList(bm1)));
-            result.put(311, new ArrayList<>(Collections.singletonList(bm2)));
-            result.put(312, new ArrayList<>(Collections.singletonList(bm2)));
-            result.put(313, new ArrayList<>(Collections.singletonList(bm2)));
-            result.put(314, new ArrayList<>(Collections.singletonList(bm2)));
-            result.put(315, new ArrayList<>(Collections.singletonList(bm1)));
-            return loader.done(result);
+            ArrayList<BoardMember> resultList = new ArrayList<>();
+            resultList.add(bm1);
+            resultList.add(bm2);
+            return loader.done(resultList);
         }
 
         @Override

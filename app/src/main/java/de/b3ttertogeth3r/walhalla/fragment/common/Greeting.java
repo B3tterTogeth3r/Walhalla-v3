@@ -40,9 +40,9 @@ import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Text;
 import de.b3ttertogeth3r.walhalla.util.Cache;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 public class Greeting extends Fragment {
     private static final String TAG = "Greeting";

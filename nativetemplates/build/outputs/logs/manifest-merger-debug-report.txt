@@ -1,18 +1,18 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml:1:1-8:12
-INJECTED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml:1:1-8:12
-INJECTED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml:1:1-8:12
+ADDED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml:1:1-7:12
 	package
-		ADDED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml:2:3-51
 		INJECTED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml
+		ADDED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml:1:1-7:12
 		INJECTED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml:1:11-69
 application
-ADDED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml:3:3-5:17
+ADDED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml:2:3-4:17
 	android:supportsRtl
-		ADDED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml:3:16-42
+		ADDED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml:2:16-42
 uses-sdk
 INJECTED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/tobi-mac/AndroidStudioProjects/Walhalla/nativetemplates/src/main/AndroidManifest.xml

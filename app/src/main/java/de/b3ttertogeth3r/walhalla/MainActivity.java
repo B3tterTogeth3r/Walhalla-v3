@@ -40,7 +40,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import de.b3ttertogeth3r.walhalla.design.SideNav;
 import de.b3ttertogeth3r.walhalla.design.Toast;
-import de.b3ttertogeth3r.walhalla.enums.Walhalla;
+import de.b3ttertogeth3r.walhalla.enums.Fraternity;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.HideKeyBoard;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.IOnBackPressed;
@@ -50,8 +50,8 @@ import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.loader.LoadingCircle;
 import de.b3ttertogeth3r.walhalla.object.Event;
 import de.b3ttertogeth3r.walhalla.object.File;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Semester;
+import de.b3ttertogeth3r.walhalla.util.Log;
 import de.b3ttertogeth3r.walhalla.util.ProgressBarAnimation;
 
 public class MainActivity extends AppCompatActivity implements LoadingCircle, ISideNav, OpenExternal,
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
     @Override
     public void link(String link) {
         if (link == null || link.isEmpty()) {
-            link(Walhalla.WEBSITE.toString());
+            link(Fraternity.WEBSITE.toString());
             return;
         } else {
             if (!link.startsWith("http://") || !link.startsWith("https://")) {
@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
     @Override
     public void sendEmail(String[] recipient, String subject) {
         if (recipient == null || recipient.length == 0) {
-            sendEmail(new String[]{Walhalla.EMAIL_INFO.toString()}, subject);
+            sendEmail(new String[]{Fraternity.EMAIL_INFO.toString()}, subject);
             return;
         }
         if (subject == null || subject.isEmpty()) {
@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
                                         ContextCompat.getColor(getApplicationContext(),
                                                 R.color.colorPrimary));
                                 calendarIntent.putExtra(CalendarContract.Events.ORGANIZER,
-                                        Walhalla.NAME.toString());
+                                        Fraternity.NAME.toString());
 
                                 if (calendarIntent.resolveActivity(getPackageManager()) != null) {
                                     startActivity(calendarIntent);

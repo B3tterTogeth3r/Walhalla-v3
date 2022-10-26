@@ -24,11 +24,12 @@ import java.util.ArrayList;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.enums.TextType;
 import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 public class Text implements Validate {
-    int position;
-    ArrayList<String> value;
-    TextType kind;
+    private int position;
+    private ArrayList<String> value;
+    private TextType kind;
     private String id;
 
     public Text(int position, ArrayList<String> value, TextType kind) {

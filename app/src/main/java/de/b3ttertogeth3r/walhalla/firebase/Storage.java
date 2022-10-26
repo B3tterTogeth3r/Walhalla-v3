@@ -25,7 +25,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageUpload;
 import de.b3ttertogeth3r.walhalla.object.File;
-import de.b3ttertogeth3r.walhalla.object.Log;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 public class Storage implements IInit {
     private static final String TAG = "Storage";

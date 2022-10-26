@@ -24,6 +24,7 @@ import com.google.firebase.database.Exclude;
 
 import de.b3ttertogeth3r.walhalla.annotation.PersonValue;
 import de.b3ttertogeth3r.walhalla.design.TableRow;
+import de.b3ttertogeth3r.walhalla.design.TrafficLight;
 import de.b3ttertogeth3r.walhalla.enums.TrafficLightColor;
 import de.b3ttertogeth3r.walhalla.object.Person;
 
@@ -79,7 +80,7 @@ public interface IPerson extends Validate {
      * Creates a {@link TableRow} designed like:
      * -------------------------------------------------------------------------------------------<br>
      * | {@link #getFull_Name()} | {@link Person#getNickname()} | {@link Person#getRank()} |
-     * {@link de.b3ttertogeth3r.walhalla.util.TrafficLight TrafficLight} | Arrow right |<br>
+     * {@link TrafficLight TrafficLight} | Arrow right |<br>
      * -------------------------------------------------------------------------------------------<br>
      *
      * @param context {@link Context} to create the row and its content

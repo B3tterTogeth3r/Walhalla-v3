@@ -12,7 +12,7 @@
  *  limitations under the License.
  */
 
-package de.b3ttertogeth3r.walhalla.util;
+package de.b3ttertogeth3r.walhalla.design;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -23,10 +23,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.design.Image;
-import de.b3ttertogeth3r.walhalla.design.LinearLayout;
 import de.b3ttertogeth3r.walhalla.enums.TrafficLightColor;
-import de.b3ttertogeth3r.walhalla.object.Log;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 public class TrafficLight extends LinearLayout {
     private static final String TAG = "TrafficLight";

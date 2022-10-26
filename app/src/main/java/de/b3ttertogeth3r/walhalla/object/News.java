@@ -25,6 +25,7 @@ import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.object.INews;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 /**
  * A news entry. it has nested online the content of the news entry as a list of {@link Text}

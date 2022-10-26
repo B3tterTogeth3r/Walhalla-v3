@@ -30,25 +30,28 @@ public enum Rank {
     GUEST,
     GONE,
     LEFT,
-    NONE;
-
-    private final int ADMIN = -1;
+    NONE,
+    ADMIN;
 
     public boolean canSee(Visibility visibility) {
-        if (Cache.CACHE_DATA.getCharge() == Charge.ADMIN) {
+        if (Cache.CACHE_DATA.getRank() == Rank.ADMIN) {
             return true;
         }
         switch (this) {
             case ACTIVE:
             case ACTIVE_B:
             case ACTIVE_F:
-                return (visibility == Visibility.ACTIVE || visibility == Visibility.SIGNED_IN);
+                return (visibility == Visibility.PUBLIC ||
+                        visibility == Visibility.ACTIVE ||
+                        visibility == Visibility.SIGNED_IN);
             case PHILISTINES:
             case PHILISTINES_B:
             case PHILISTINES_F:
             case PHILISTINES_H:
             case HONOR:
-                return (visibility == Visibility.PHILISTINES || visibility == Visibility.SIGNED_IN);
+                return (visibility == Visibility.PUBLIC ||
+                        visibility == Visibility.PHILISTINES ||
+                        visibility == Visibility.SIGNED_IN);
             case GUEST:
             case GONE:
             case LEFT:

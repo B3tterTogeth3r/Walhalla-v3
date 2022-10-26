@@ -21,7 +21,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 
-public class Crashlytics implements IInit, de.b3ttertogeth3r.walhalla.object.Log.ILog {
+public class Crashlytics implements IInit, de.b3ttertogeth3r.walhalla.interfaces.ILog {
     private static final String TAG = "Crashlytics";
     private FirebaseCrashlytics CRASHLYTICS;
 
@@ -45,7 +45,6 @@ public class Crashlytics implements IInit, de.b3ttertogeth3r.walhalla.object.Log
         }
     }
 
-    @Override
     public void log(int type, String TAG, String message, Throwable e) {
         try {
             CRASHLYTICS.setCustomKey("class_name", TAG);

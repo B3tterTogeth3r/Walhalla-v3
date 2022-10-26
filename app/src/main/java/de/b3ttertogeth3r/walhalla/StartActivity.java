@@ -40,8 +40,8 @@ import de.b3ttertogeth3r.walhalla.firebase.Storage;
 import de.b3ttertogeth3r.walhalla.interfaces.IStartActivity;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.FirebaseInit;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.Cache;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 /**
  * Activity to initialize the app and the necessary APIs.

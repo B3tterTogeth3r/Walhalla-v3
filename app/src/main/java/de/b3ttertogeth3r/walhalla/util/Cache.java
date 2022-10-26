@@ -23,12 +23,12 @@ import androidx.annotation.Nullable;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
+import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.firebase.Analytics;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.CacheData;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAnalytics;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
-import de.b3ttertogeth3r.walhalla.object.Log;
 
 /**
  * @author B3tterTogeth3r
@@ -101,6 +101,22 @@ public class Cache implements CacheData, IInit {
         SP.edit().putBoolean(BOARD_MEMBER, value).apply();
     }
 
+    public Visibility getVisibility() {
+        Visibility v = Visibility.PUBLIC;
+        for (Visibility visibilities : Visibility.values()) {
+            if (visibilities.toString().toUpperCase()
+                    .equals(SP.getString(VISIBILITY, "PUBLIC"))) {
+                return visibilities;
+            }
+        }
+        return v;
+    }
+
+    @Override
+    public void setVisibility(@NonNull Visibility visibility) {
+        SP.edit().putString(VISIBILITY, visibility.toString().toUpperCase()).apply();
+    }
+
     @Override
     @Nullable
     public Charge getCharge() {
@@ -115,12 +131,10 @@ public class Cache implements CacheData, IInit {
     @Override
     public Rank getRank() {
         if (getCharge() == Charge.ADMIN) {
-            return Rank.ACTIVE;
+            return Rank.ADMIN;
         }
         try {
-            String result = SP.getString(RANK, Rank.NONE.toString().toUpperCase());
-            Log.i(TAG, "getRank: result == " + result);
-            return Rank.valueOf(result);
+            return Rank.valueOf(SP.getString(RANK, Rank.NONE.toString().toUpperCase()));
         } catch (Exception e) {
             e.printStackTrace();
             return Rank.NONE;
@@ -129,8 +143,25 @@ public class Cache implements CacheData, IInit {
 
     @Override
     public void setRank(@NonNull Rank rank) {
-        SP.edit()
-                .putString(RANK, rank.toString().toUpperCase())
+        if (getCharge() == Charge.ADMIN) {
+            SP.edit()
+                    .putString(RANK, Rank.ADMIN.toString().toUpperCase())
+                    .apply();
+        } else {
+            SP.edit()
+                    .putString(RANK, rank.toString().toUpperCase())
+                    .apply();
+        }
+    }
+
+    @Override
+    public void reset() {
+        SP.edit().putString(RANK, Rank.NONE.toString().toUpperCase())
+                .putString(CHARGE, Charge.NONE.toString())
+                .putString(BOARD_MEMBER, Charge.NONE.toString())
+                .putInt(CHOSEN_SEMESTER, Values.currentSemester.getId())
+                .putString(START_PAGE_STR, "Start")
+                .putString(VISIBILITY, "PUBLIC")
                 .apply();
     }
 

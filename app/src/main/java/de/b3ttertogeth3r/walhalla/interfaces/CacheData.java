@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 
 import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.enums.Rank;
+import de.b3ttertogeth3r.walhalla.enums.Visibility;
 
 /**
  * The functions in {@link de.b3ttertogeth3r.walhalla.util.Cache Cache} other classes should have
@@ -40,6 +41,7 @@ public interface CacheData {
     String BOARD_MEMBER = "board_member";
     String CHARGE = "charge";
     String RANK = "rank";
+    String VISIBILITY = "";
 
     /**
      * the user can change, if he/she doesn't want the app to collect analytics data. The default
@@ -106,6 +108,10 @@ public interface CacheData {
 
     void setBoardMember(boolean value);
 
+    Visibility getVisibility();
+
+    void setVisibility(@NonNull Visibility visibility);
+
     @Nullable
     Charge getCharge();
 
@@ -114,4 +120,6 @@ public interface CacheData {
     Rank getRank();
 
     void setRank(@NonNull Rank rank);
+
+    void reset();
 }

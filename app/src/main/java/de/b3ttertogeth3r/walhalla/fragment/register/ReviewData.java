@@ -45,9 +45,9 @@ import de.b3ttertogeth3r.walhalla.interfaces.activityMain.IOnBackPressed;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreUpload;
 import de.b3ttertogeth3r.walhalla.object.Address;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Person;
 import de.b3ttertogeth3r.walhalla.util.Cache;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 /**
  * A class to review the data set by the user previously before registering the user.

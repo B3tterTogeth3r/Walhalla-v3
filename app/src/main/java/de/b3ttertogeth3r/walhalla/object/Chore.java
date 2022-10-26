@@ -25,18 +25,27 @@ import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
 public class Chore extends MyObject implements Validate {
     String id;
     DocumentReference toEvent;
+    DocumentReference toPerson;
     boolean done = false;
     de.b3ttertogeth3r.walhalla.enums.Chore chore;
     /**
-     * {@link Event#ID Event.ID} of the event
+     * {@link Event#TITLE Event.ID} of the event
      */
     String event;
     /**
-     * {@link de.b3ttertogeth3r.walhalla.object.Person#ID Person.ID} of the Person
+     * {@link de.b3ttertogeth3r.walhalla.object.Person#FIRST_NAME Person.FULL_NAME} of the Person
      */
     String person;
 
     public Chore() {
+    }
+
+    public DocumentReference getToPerson() {
+        return toPerson;
+    }
+
+    public void setToPerson(DocumentReference toPerson) {
+        this.toPerson = toPerson;
     }
 
     public Timestamp getDueDate() {

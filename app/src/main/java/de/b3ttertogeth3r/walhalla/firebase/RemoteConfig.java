@@ -25,7 +25,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig;
-import de.b3ttertogeth3r.walhalla.object.Log;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 /**
  * @author B3tterTogeth3r

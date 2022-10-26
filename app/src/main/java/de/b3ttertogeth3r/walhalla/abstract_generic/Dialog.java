@@ -34,7 +34,7 @@ import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.interfaces.IDialog;
 import de.b3ttertogeth3r.walhalla.interfaces.loader.OnFailureListener;
 import de.b3ttertogeth3r.walhalla.interfaces.loader.OnSuccessListener;
-import de.b3ttertogeth3r.walhalla.object.Log;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 public abstract class Dialog<T> extends DialogFragment implements DialogInterface.OnClickListener,
         IDialog<T> {

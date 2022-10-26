@@ -37,8 +37,8 @@ import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreUpload;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Person;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 public class allUsers extends Fragment {
     private static final String TAG = "allUsers";

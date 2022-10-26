@@ -25,8 +25,8 @@ import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.interfaces.CacheData;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAnalytics;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.Cache;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 public class Analytics implements IInit, IAnalytics {
     public static final String TAG = "Analytics";

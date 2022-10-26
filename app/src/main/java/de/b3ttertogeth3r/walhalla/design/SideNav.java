@@ -33,8 +33,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import de.b3ttertogeth3r.walhalla.R;
+import de.b3ttertogeth3r.walhalla.enums.Fraternity;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
-import de.b3ttertogeth3r.walhalla.enums.Walhalla;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.fragment.Home;
 import de.b3ttertogeth3r.walhalla.fragment.board.AddChores;
@@ -59,8 +59,8 @@ import de.b3ttertogeth3r.walhalla.fragment.signed_in.Transcript;
 import de.b3ttertogeth3r.walhalla.interfaces.ReloadSideNav;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.ISideNav;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.Cache;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 
 /**
@@ -153,14 +153,14 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
                 city.setText(user.getPhoneNumber());
             } catch (Exception e) {
                 image.setImageResource(R.drawable.wappen_2017);
-                title.setText(Walhalla.NAME.toString());
-                street.setText(Walhalla.ADH.toString());
+                title.setText(Fraternity.NAME.toString());
+                street.setText(Fraternity.ADH.toString());
                 city.setVisibility(View.GONE);
             }
         } else {
             image.setImageResource(R.drawable.wappen_2017);
-            title.setText(Walhalla.NAME.toString());
-            street.setText(Walhalla.ADH.toString());
+            title.setText(Fraternity.NAME.toString());
+            street.setText(Fraternity.ADH.toString());
             city.setVisibility(View.GONE);
         }
     }

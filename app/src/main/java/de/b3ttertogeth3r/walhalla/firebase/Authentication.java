@@ -30,8 +30,9 @@ import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.exception.SignInException;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Person;
+import de.b3ttertogeth3r.walhalla.util.Cache;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 public class Authentication implements IInit, IAuth {
     private static final String TAG = "Authentication";
@@ -94,6 +95,7 @@ public class Authentication implements IInit, IAuth {
 
     @Override
     public void signOut() {
+        Cache.CACHE_DATA.reset();
         AUTH.signOut();
     }
 

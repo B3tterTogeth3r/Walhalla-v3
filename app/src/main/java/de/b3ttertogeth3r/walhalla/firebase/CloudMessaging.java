@@ -26,8 +26,8 @@ import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Person;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 public class CloudMessaging extends FirebaseMessagingService implements IInit {
     private static final String TAG = "CloudMessaging";

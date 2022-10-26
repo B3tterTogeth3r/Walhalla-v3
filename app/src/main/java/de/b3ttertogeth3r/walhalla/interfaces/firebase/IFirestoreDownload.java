@@ -20,7 +20,6 @@ import androidx.fragment.app.FragmentActivity;
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.annotation.SemesterRange;
@@ -31,6 +30,7 @@ import de.b3ttertogeth3r.walhalla.object.Account;
 import de.b3ttertogeth3r.walhalla.object.Address;
 import de.b3ttertogeth3r.walhalla.object.BoardMember;
 import de.b3ttertogeth3r.walhalla.object.Chore;
+import de.b3ttertogeth3r.walhalla.object.Drink;
 import de.b3ttertogeth3r.walhalla.object.DrinkMovement;
 import de.b3ttertogeth3r.walhalla.object.Event;
 import de.b3ttertogeth3r.walhalla.object.File;
@@ -40,7 +40,6 @@ import de.b3ttertogeth3r.walhalla.object.News;
 import de.b3ttertogeth3r.walhalla.object.Person;
 import de.b3ttertogeth3r.walhalla.object.Semester;
 import de.b3ttertogeth3r.walhalla.object.Text;
-import de.b3ttertogeth3r.walhalla.util.Paragraph;
 
 /**
  * Persistence methods to download data from the Firebase firestore database.
@@ -93,25 +92,32 @@ import de.b3ttertogeth3r.walhalla.util.Paragraph;
  */
 public interface IFirestoreDownload {
     //region SEMESTER
+
+    /**
+     * Download the {@link File} objects to the semester Transcripts.
+     *
+     * @param semesterID {@link Semester#ID}
+     * @return {@link Loader} with a {@link File} filled {@link ArrayList}
+     */
     Loader<ArrayList<File>> getSemesterProtocols(int semesterID);
 
     /**
      * Download the greeting of a given semester to display in the
-     * {@link de.b3ttertogeth3r.walhalla.fragment.common.Greeting Greeting Fragment}.  If the list
-     * is empty, return an empty list.
+     * {@link de.b3ttertogeth3r.walhalla.fragment.common.Greeting Greeting Fragment}.
      *
      * @param semesterID {@link Semester#ID}
-     * @return {@link Loader} with a {@link Text} filled {@link Paragraph} list.
+     * @return {@link Loader} with a {@link Text} filled {@link ArrayList} list.
+     * @firestorePath /Semester/{SemesterID}/Greeting/{TextID}
      * @since 1.0
      */
     Loader<ArrayList<Text>> getSemesterGreeting(int semesterID);
 
     /**
-     * Download the notes for the given {@link Semester}. If the download is empty, it returns
-     * an empty list.
+     * Download the notes for the given {@link Semester}.
      *
      * @param semesterID {@link Semester#ID}
      * @return {@link Loader} with a {@link Text} filled {@link ArrayList}
+     * @firestorePath /Semester/{SemesterID}/Notes/{TextID}
      */
     Loader<ArrayList<Text>> getSemesterNotes(@SemesterRange int semesterID);
 
@@ -120,57 +126,75 @@ public interface IFirestoreDownload {
      *
      * @param semesterID {@link Semester#ID}
      * @return {@link Loader} with an {@link Account} Object
+     * @firestorePath /Semester/{SemesterID}/Account/Account
      */
     Loader<Account> getSemesterAccount(@SemesterRange int semesterID);
 
     /**
-     * Download the movements inside the given {@link Semester} If the download is empty, it returns
-     * an empty list.
+     * Download the movements inside the given {@link Semester}.
      *
-     * @param semesterId {@link Semester#ID}
+     * @param semesterID {@link Semester#ID}
      * @return {@link Loader} with a {@link Movement} filled {@link ArrayList}
+     * @firestorePath /Semester/{SemesterID}/Account/Account/Movement/{MovementID}
      */
     Loader<ArrayList<Movement>> getSemesterMovements(@SemesterRange int semesterID);
 
     /**
-     * Download the complete Board of the selected {@link Semester}. If the list is empty, return an empty list.
+     * Download the complete Board of the selected {@link Semester}.
      *
      * @param semesterID id of the semester
      * @param rank       has to be {@link Rank#ACTIVE} or {@link Rank#PHILISTINES}
      * @return {@link Loader} to return the downloaded list
+     * @firestorePath Depending on the rank-value:
+     * @firestorePath /Semester/{SemesterID}/Philistines_Board/{BoardMemberID}
+     * @firestorePath /Semester/{SemesterID}/Student_Board/{BoardMemberID}
      * @since 1.0
      */
     Loader<ArrayList<BoardMember>> getSemesterBoard(@SemesterRange int semesterID, @NonNull Rank rank);
 
     /**
-     * Download one board member of the selected semester.
-     * Which can be chosen by the {@link Charge} value.
+     * Download one board member of the selected semester which can be chosen by the {@link Charge} value.
      *
-     * @param semesterId {@link Semester#ID}
+     * @param semesterID {@link Semester#ID}
      * @param charge     {@link Charge}
      * @return {@link Loader} with one {@link BoardMember}
+     * @firestorePath Depending on the Charge-value:
+     * @firestorePath /Semester/{SemesterID}/Philistines_Board/{BoardMemberID}
+     * @firestorePath /Semester/{SemesterID}/Student_Board/{BoardMemberID}
      */
     Loader<BoardMember> getSemesterBoardOne(int semesterID, @NonNull Charge charge);
+
+    /**
+     * Download the events of the given semester as a list.
+     *
+     * @param semesterID {@link de.b3ttertogeth3r.walhalla.object.Semester#ID}
+     * @return {@link Loader} with an {@link Event} filled {@link ArrayList}
+     * @firestorePath /Semester/{SemesterID}/Event{EventID}
+     * @since 1.0
+     */
+    Loader<ArrayList<Event>> getSemesterEvents(int semesterID);
     //endregion
 
     //region EVENT
 
     /**
-     * Download a list of chores, if the event has any. If the list is empty, return an empty list.
+     * Download a list of chores, if the event has any.
      *
      * @param eventId    {@link Event#ID}
      * @param semesterID {@link Semester#ID}
      * @return A {@link Loader} with a {@link Chore} filled {@link ArrayList}
+     * @firestorePath /Semester/{SemesterID}/Event/{EventID}/Chore/{ChoreID}
      * @since 1.0
      */
     Loader<ArrayList<Chore>> getEventChores(@SemesterRange int semesterID, String eventId);
 
     /**
-     * Download the description of a specific event. If the list is empty, return an empty list.
+     * Download the description of a specific event.
      *
      * @param eventId    {@link Event#ID}
      * @param semesterID {@link Semester#ID}
      * @return {@link Loader} with a {@link Text} filled {@link ArrayList}
+     * @firestorePath /Semester/{SemesterID}/Event/{EventID}/Description/{TextID}
      * @since 1.0
      */
     Loader<ArrayList<Text>> getEventDescription(@SemesterRange int semesterID, String eventId);
@@ -181,6 +205,7 @@ public interface IFirestoreDownload {
      * @param eventId    {@link Event#ID}
      * @param semesterID {@link Semester#ID}
      * @return {@link Loader} with a {@link Location} object.
+     * @firestorePath /Semester/{SemesterID}/Event/{EventID}/Location/{LocationID}
      */
     Loader<Location> getEventLocation(@SemesterRange int semesterID, String eventId);
 
@@ -188,9 +213,14 @@ public interface IFirestoreDownload {
      * Download the next {@link Event} of the current semester.
      *
      * @return {@link Loader} with an {@link Event}
+     * @firestorePath /Semester/{SemesterID}/Event/{EventID}
      * @since 1.0
      */
     Loader<Event> getNextEvent();
+
+    Loader<Account> getEventAccount(FragmentActivity activity, @SemesterRange int semesterID, String eventId);
+
+    Loader<ArrayList<Movement>> getEventMovements(@SemesterRange int semesterID, String eventId);
     //endregion
 
     //region PERSON
@@ -200,6 +230,7 @@ public interface IFirestoreDownload {
      *
      * @param uid {@link Person#ID}
      * @return {@link Loader} with one {@link Person}
+     * @firestorePath /Person/{PersonID}
      */
     Loader<Person> person(String uid);
 
@@ -209,6 +240,7 @@ public interface IFirestoreDownload {
      * @param uid            {@link Person#ID}
      * @param showDoneChores true, if all chores shall be downloaded.
      * @return {@link Loader} with a {@link Chore}s filled {@link ArrayList}
+     * @firestorePath /Person/{PersonID}/Chore/{ChoreID}
      */
     Loader<ArrayList<Chore>> getPersonChores(String uid, boolean showDoneChores);
 
@@ -216,10 +248,10 @@ public interface IFirestoreDownload {
      * Download the past {@link BoardMember Chargen} of a person
      *
      * @param uid {@link Person#ID}
-     * @return {@link Loader} with {@link Map}. The key is an {@link Integer}, the Object ist an
-     * {@link ArrayList} containing {@link BoardMember}s
+     * @return {@link Loader} with an {@link ArrayList} containing {@link BoardMember}s orderd by {@link BoardMember#SEMESTER}
+     * @firestorePath /Person/{PersonID}/Board/{BoardMemberID}
      */
-    Loader<Map<Integer, ArrayList<BoardMember>>> getPersonPastChargen(String uid);
+    Loader<ArrayList<BoardMember>> getPersonPastChargen(String uid);
 
     /**
      * Download the movements of a specific user in a given semester.
@@ -227,14 +259,17 @@ public interface IFirestoreDownload {
      * @param uid      {@link Person#ID}
      * @param semester {@link Semester#ID}
      * @return {@link Loader} with a {@link DrinkMovement} filled {@link ArrayList}
+     * @firestorePath /Person/{PersonID}/Drink/{DrinkMovementID}
      */
     Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester);
 
     /**
      * Download the current balance of a given person.
      *
-     * @param uid {@link Person#ID}
+     * @param uid      {@link Person#ID}
+     * @param activity Fragment the realtime Listener is connected to.
      * @return {@link Loader} with an {@link Account} element
+     * @firestorePath /Person/{PersonID}
      */
     Loader<Account> getPersonBalance(FragmentActivity activity, String uid);
 
@@ -243,6 +278,7 @@ public interface IFirestoreDownload {
      *
      * @param uid {@link Person#ID}
      * @return {@link Loader} with a {@link Movement} filled {@link ArrayList}
+     * @firestorePath /Person/{PersonID}/Account/Account/Movement/{MovementID}
      */
     Loader<ArrayList<Movement>> getPersonMovements(String uid);
 
@@ -251,6 +287,7 @@ public interface IFirestoreDownload {
      *
      * @param uid {@link Person#ID}
      * @return {@link Loader} with an {@link Address} filled {@link ArrayList}
+     * @firestorePath /Person/{PersonID}/Address/{AddressID}
      */
     Loader<ArrayList<Address>> personAddress(String uid);
 
@@ -259,6 +296,7 @@ public interface IFirestoreDownload {
      *
      * @param uid {@link Person#ID}
      * @return {@link Loader} with a list of {@link File}
+     * @firestorePath /Person/{PersonID}/Image/{ImageID}
      */
     Loader<ArrayList<File>> getPersonImage(String uid);
     //endregion
@@ -267,32 +305,26 @@ public interface IFirestoreDownload {
 
     /**
      * Download the content belonging to a {@link News} object downloaded via
-     * {@link #getNews(FragmentActivity, Visibility)}. If the list is empty, return an empty list.
+     * {@link #getNews(FragmentActivity, Visibility)}.
      *
      * @param newsID {@link News#ID}
      * @return {@link Loader} with a {@link Text} filled {@link ArrayList}
+     * @firestorePath News/News/Text{TextID}
      * @since 1.0
      */
     Loader<ArrayList<Text>> getNewsText(String newsID);
-    //endregion
 
     /**
-     * Download a list of news entries according to their visibility. If the list is empty,
-     * return an empty list.
+     * Download a list of news entries according to their visibility.
      *
-     * @param visibility {@link Rank} group to whom the news entry is visible to
+     * @param visibility {@link Rank} group to whom the news entry is visible to.
+     * @param activity   Fragment the realtime listener is connected to.
      * @return Listener to wait for the result
      */
     Loader<ArrayList<News>> getNews(FragmentActivity activity, Visibility visibility);
+    //endregion
 
-    /**
-     * Download the events of the given semester as a list. If the list is empty, return an empty list.
-     *
-     * @param semesterID {@link de.b3ttertogeth3r.walhalla.object.Semester#ID}
-     * @return {@link Loader} with an {@link Event} filled {@link ArrayList}
-     * @since 1.0
-     */
-    Loader<ArrayList<Event>> getSemesterEvents(int semesterID);
+    //region LISTS
 
     /**
      * Download a list of all {@link Person} persons in Firestore.
@@ -300,23 +332,31 @@ public interface IFirestoreDownload {
      * @param activity FragmentActivity to connect the realtime listener to the activities lifecycle.
      * @return {@link Loader} with a {@link Person} filled {@link ArrayList}
      * @firestorePath Person/{PersonID}
+     * @firestorePath /Person/{PersonID}
      * @since 1.0
      */
     Loader<ArrayList<Person>> getPersonList(FragmentActivity activity);
 
     /**
-     * Download a list of default locations from the Firebase Firestore Database. If the list is empty, return an empty list.
+     * Download a list of default locations from the Firebase Firestore Database.
      *
      * @return A {@link Loader} with an {@link ArrayList} filled with {@link Location}s.
+     * @firestorePath /Location/{LocationID}
      * @since 1.0
      */
     Loader<ArrayList<Location>> locationList();
+
+    Loader<ArrayList<Text>> getNotes();
+
+    Loader<ArrayList<Drink>> getDrinkKinds();
+    //endregion
 
     /**
      * Download a {@link File} according to the {@link DocumentReference} given.
      *
      * @param reference {@link DocumentReference} of the path.
      * @return {@link Loader} with a {@link File} object.
+     * @firestorePath at the given reference
      * @since 1.1
      */
     Loader<File> file(@NonNull DocumentReference reference);

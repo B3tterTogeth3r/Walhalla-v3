@@ -14,7 +14,6 @@
 
 package de.b3ttertogeth3r.walhalla.object;
 
-import de.b3ttertogeth3r.walhalla.abstract_generic.MyObject;
 import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
 
 /**
@@ -24,7 +23,7 @@ import de.b3ttertogeth3r.walhalla.interfaces.object.Validate;
  * @version 1.0
  * @since 1.0
  */
-public class Drink extends MyObject implements Validate {
+public class Drink implements Validate {
     private static final String TAG = "Drink";
     /**
      * name of the drink.

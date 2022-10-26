@@ -203,7 +203,7 @@ public interface IFirestoreUpload {
      * @param semester    {@link Semester#ID}.
      * @param boardMember {@link BoardMember} values to upload.
      * @return true, if upload successful <br>false, if not.
-     * @firestorePath Person/{PersonID}/Board/{BoardMemberID}
+     * @firestorePath Person/{PersonID}/Board/{semester} -&#64; {@link BoardMember}-Object
      */
     Loader<Boolean> setPersonCharge(@NonNull String personID, @SemesterRange int semester, @NonNull BoardMember boardMember);
 
@@ -219,12 +219,13 @@ public interface IFirestoreUpload {
     Loader<Boolean> addPersonMovement(@NonNull String personID, @NonNull Movement movement);
 
     /**
-     * Add a picture {@link File} to a {@link Person}
+     * Add a picture {@link File} to a {@link Person}. If the value "uploadedBy" is empty, it will
+     * be set by CF after the upload.
      *
      * @param personID {@link Person#ID}
      * @param file     The {@link File} to upload.
      * @return true, if upload successful <br>false, if not.
-     * @firestorePath Person/{PersonID}/Account/Account/Movement/{MovementID}
+     * @firestorePath Person/{PersonID}/Image/{ImageID}
      */
     Loader<Boolean> addPersonPicture(@NonNull String personID, @NonNull File file);
     //endregion

@@ -39,9 +39,9 @@ import de.b3ttertogeth3r.walhalla.abstract_generic.Dialog;
 import de.b3ttertogeth3r.walhalla.design.ProfileRow;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.object.Person;
 import de.b3ttertogeth3r.walhalla.object.Semester;
+import de.b3ttertogeth3r.walhalla.util.Log;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class FullProfileDialog extends Dialog<Person> implements View.OnClickListener {

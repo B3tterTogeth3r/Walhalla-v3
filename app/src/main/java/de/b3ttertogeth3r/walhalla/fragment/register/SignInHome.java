@@ -44,8 +44,8 @@ import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.fragment.Home;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.IOnBackPressed;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
-import de.b3ttertogeth3r.walhalla.object.Log;
 import de.b3ttertogeth3r.walhalla.util.Cache;
+import de.b3ttertogeth3r.walhalla.util.Log;
 
 public class SignInHome extends Fragment implements IOnBackPressed {
     private static final String TAG = "SignInHome";

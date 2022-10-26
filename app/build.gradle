@@ -47,12 +47,14 @@ android {
     buildFeatures {
         viewBinding true
     }
+    namespace 'de.b3ttertogeth3r.walhalla'
 }
 
 dependencies {
     implementation 'com.android.support:multidex:1.0.3' // Flutter Multidex
     implementation project(':nativetemplates') // Google ads template
 
+    //noinspection GradleDependency
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -80,7 +82,7 @@ dependencies {
     // Firebase imports
     implementation 'com.firebaseui:firebase-ui-auth:7.2.0' // Firebase authentication ui
     implementation 'com.firebaseui:firebase-ui-storage:7.2.0' // FirebaseUI Storage only
-    implementation platform('com.google.firebase:firebase-bom:30.3.1')
+    implementation platform('com.google.firebase:firebase-bom:30.4.0')
     implementation 'com.google.firebase:firebase-config' // Remote Configuration
     implementation 'com.google.firebase:firebase-crashlytics' // Crashlytics
     implementation 'com.google.firebase:firebase-dynamic-links' // Dynamic links
@@ -109,7 +111,7 @@ android.applicationVariants.all { variant ->
             ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
             classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
 
-            options.tags = ["firestorePath:a:'FirestorePath:'"]
+            options.tags = ["firestorePath:a:'FirestorePath:'", "todo:a:'TODO:'"]
             options.addStringOption "-show-members", "package"
             options.encoding("UTF-8")
         }

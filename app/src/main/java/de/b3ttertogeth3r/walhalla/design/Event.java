@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.firebase.Timestamp;
@@ -35,6 +36,7 @@ import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Touch;
 import de.b3ttertogeth3r.walhalla.enums.Collar;
 import de.b3ttertogeth3r.walhalla.enums.Punctuality;
+import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.object.Chore;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
@@ -43,7 +45,8 @@ public class Event {
     private Timestamp timestamp;
     private TextView year, day, month, time, col, pun, description;
     private Title title;
-    private RelativeLayout view;
+    private RelativeLayout view, date_view;
+    @SuppressLint("StaticFieldLeak")
     private static Event dEvent;
 
     private Event() {
@@ -58,6 +61,7 @@ public class Event {
         time = view.findViewById(R.id.item_event_time);
         col = view.findViewById(R.id.item_event_collar);
         pun = view.findViewById(R.id.item_event_pun);
+        date_view = view.findViewById(R.id.item_event_date);
         LinearLayout titleLayout = view.findViewById(R.id.item_event_title_layout);
         description = new TextView(context);
         title = new Title(context);
@@ -77,6 +81,13 @@ public class Event {
         dEvent.setPun(event.getPunctuality());
         dEvent.setDescription(event.getDescription());
         dEvent.setTitle(event.getTitle());
+        if(event.getVisibility().equals(Visibility.PHILISTINES)) {
+            dEvent.date_view.setBackgroundColor(ContextCompat.getColor(context, R.color.red));
+        } else if (event.getVisibility().equals(Visibility.ACTIVE)) {
+            dEvent.date_view.setBackgroundColor(ContextCompat.getColor(context, R.color.green));
+        } else if (event.getVisibility().equals(Visibility.SIGNED_IN)) {
+            dEvent.date_view.setAlpha(0.8f);
+        }
         return dEvent;
     }
 
