@@ -24,7 +24,6 @@ import androidx.core.content.ContextCompat;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.enums.TrafficLightColor;
-import de.b3ttertogeth3r.walhalla.util.Log;
 
 public class TrafficLight extends LinearLayout {
     private static final String TAG = "TrafficLight";
@@ -49,7 +48,6 @@ public class TrafficLight extends LinearLayout {
     }
 
     public void setLight() {
-        Log.i(TAG, "setLight: " + tlc.name());
         light.setVisibility(View.VISIBLE);
         switch (tlc) {
             case GREEN:
@@ -65,6 +63,7 @@ public class TrafficLight extends LinearLayout {
             default:
                 light.setColorFilter(ContextCompat.getColor(context, R.color.red));
         }
+        // Log.i(TAG, "setLight: " + tlc.name());
     }
 
     public TrafficLight(Context context, @Nullable AttributeSet attrs, int defStyleAttr, TrafficLightColor tlc) {

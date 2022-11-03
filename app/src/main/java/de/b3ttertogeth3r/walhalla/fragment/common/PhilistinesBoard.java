@@ -39,10 +39,12 @@ import de.b3ttertogeth3r.walhalla.object.BoardMember;
 import de.b3ttertogeth3r.walhalla.object.Semester;
 import de.b3ttertogeth3r.walhalla.util.Cache;
 import de.b3ttertogeth3r.walhalla.util.Log;
+import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class PhilistinesBoard extends Fragment {
     private static final String TAG = "PhilistinesBoard";
     private LinearLayout view;
+    private int semesterID;
 
     @Override
     public String analyticsProperties() {
@@ -51,18 +53,20 @@ public class PhilistinesBoard extends Fragment {
 
     @Override
     public void start() {
-        download(Cache.CACHE_DATA.getChosenSemester());
+        semesterID = Cache.CACHE_DATA.getChosenSemester();
+        download(semesterID);
     }
 
     @Override
     public void toolbarContent() {
         toolbar.setTitle("");
         customToolbar.setVisibility(View.VISIBLE);
-        customToolbarTitle.setText(R.string.menu_chargen_phil);
+        String title = getString(R.string.menu_chargen_phil) + " " + Values.semesterList.get(semesterID).getName_short();
+        customToolbarTitle.setText(title);
         customToolbar.setOnClickListener(v -> {
             try {
                 ChangeSemester.display(getParentFragmentManager(),
-                                new Semester(Cache.CACHE_DATA.getChosenSemester()))
+                                new Semester(semesterID))
                         .setOnSuccessListener(result -> {
                             assert result != null;
                             download(result);

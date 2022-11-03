@@ -67,6 +67,8 @@ public class AboutUs extends Fragment {
     }
 
     private void fillView(ArrayList<Paragraph<Text>> result) {
+        view.removeAllViewsInLayout();
+        view.removeAllViews();
         if (result == null || result.isEmpty() || view == null) {
             return;
         }

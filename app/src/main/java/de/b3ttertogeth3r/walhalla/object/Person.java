@@ -340,7 +340,7 @@ public class Person implements IPerson {
             join.setId(R.id.joined);
             String semName = context.getString(R.string.dialog_semester_select);
             if (getJoined() != -1) {
-                semName = Values.semesterList.get(getJoined()).getName_long();
+                semName = Values.semesterList.get(getJoined()).getName_short();
             }
             join.setTitle(R.string.joined).setContent(semName).setOnClickListener(listener);
             layout.addView(join);

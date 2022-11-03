@@ -15,6 +15,7 @@
 package de.b3ttertogeth3r.walhalla.dialog;
 
 import android.app.AlertDialog;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
@@ -30,6 +31,16 @@ public class InfoDialog extends Dialog<Void> {
     private static final String TAG = "InfoDialog";
     private final String text;
 
+    public InfoDialog() {
+        super(DialogSize.WRAP_CONTENT);
+        String t = "";
+        try {
+            t = requireContext().getString(R.string.info);
+        } catch (Exception ignored) {
+        }
+        this.text = t;
+    }
+
     public InfoDialog(String text) {
         super(DialogSize.WRAP_CONTENT);
         this.text = text;
@@ -38,7 +49,7 @@ public class InfoDialog extends Dialog<Void> {
     @Override
     public void createDialog(@NonNull RelativeLayout container, @NonNull LayoutInflater inflater) {
         Text content = new Text(requireContext());
-        content.setText(text);
+        content.setText(Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY));
         container.addView(content);
     }
 

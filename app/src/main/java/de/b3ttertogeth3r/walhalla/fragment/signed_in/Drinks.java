@@ -78,6 +78,7 @@ public class Drinks extends Fragment {
                 .setOnSuccessListener(result -> {
                     if (result == null || result.isEmpty()) {
                         throw new NoDataException("No drink movements found");
+                        // write in both that there were no drinks found
                     }
                     displayDrinksGroup(result);
                     displayDrinks(result);

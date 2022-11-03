@@ -45,6 +45,8 @@ public class Donation extends Fragment {
 
     @Override
     public void createView(@NonNull LinearLayout view) {
+        view.removeAllViewsInLayout();
+        view.removeAllViews();
         ClipboardManager clipboard = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         de.b3ttertogeth3r.walhalla.design.LinearLayout l1 = new de.b3ttertogeth3r.walhalla.design.LinearLayout(requireActivity());
         de.b3ttertogeth3r.walhalla.design.LinearLayout l2 = new de.b3ttertogeth3r.walhalla.design.LinearLayout(requireActivity());

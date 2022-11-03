@@ -45,8 +45,8 @@ import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
-import de.b3ttertogeth3r.walhalla.util.Cache;
 import de.b3ttertogeth3r.walhalla.util.Log;
+import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class Home extends Fragment implements View.OnClickListener {
     private static final String TAG = "Home";
@@ -130,7 +130,7 @@ public class Home extends Fragment implements View.OnClickListener {
         greeting.setId(R.id.greeting);
 
         // Add icon
-        firestoreDownload.getSemesterBoard(Cache.CACHE_DATA.getChosenSemester(), Rank.ACTIVE)
+        firestoreDownload.getSemesterBoard(Values.currentSemester.getId(), Rank.ACTIVE)
                 .setOnSuccessListener(result -> {
                     if (result == null || result.size() == 0) {
                         throw new NoDataException("Download of chargen did not work");

@@ -57,8 +57,10 @@ import de.b3ttertogeth3r.walhalla.object.Location;
 import de.b3ttertogeth3r.walhalla.object.Movement;
 import de.b3ttertogeth3r.walhalla.object.News;
 import de.b3ttertogeth3r.walhalla.object.Person;
+import de.b3ttertogeth3r.walhalla.object.PersonLight;
 import de.b3ttertogeth3r.walhalla.object.Text;
 import de.b3ttertogeth3r.walhalla.util.Log;
+import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class Firestore implements IInit {
     private static final String TAG = "Firestore";
@@ -243,12 +245,13 @@ public class Firestore implements IInit {
                             for (DocumentSnapshot ds : qds) {
                                 try {
                                     BoardMember bm = ds.toObject(BoardMember.class);
-                                    if (bm != null && (bm.getCharge() != Charge.ADMIN ||
-                                            bm.getCharge() != Charge.NONE ||
-                                            bm.getCharge() != Charge.VOP ||
-                                            bm.getCharge() != Charge.VVOP))
+                                    if (bm != null && !(bm.getCharge() == Charge.ADMIN |
+                                            bm.getCharge() == Charge.NONE |
+                                            bm.getCharge() == Charge.VOP |
+                                            bm.getCharge() == Charge.VVOP)) {
                                         bm.setId(ds.getId());
-                                    memberList.add(bm);
+                                        memberList.add(bm);
+                                    }
                                 } catch (Exception e) {
                                     Log.e(TAG, "getSemesterBoard: done: parsing object into Chore did not work.", e);
                                 }
@@ -290,6 +293,10 @@ public class Firestore implements IInit {
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, BoardMember>(loader) {
                         @Override
                         public void done(QuerySnapshot qds) {
+                            if (qds.isEmpty()) {
+                                loader.done(new NoDataException("No " + charge + " board member in semester" + semesterID + " found."));
+                                return;
+                            }
                             try {
                                 BoardMember bm = qds.getDocuments().get(0).toObject(BoardMember.class);
                                 bm.setId(qds.getDocuments().get(0).getId());
@@ -413,7 +420,7 @@ public class Firestore implements IInit {
         public Loader<Event> getNextEvent() {
             Loader<Event> loader = new Loader<>();
             FBFS.collection("Semester")
-                    .document(Firebase.remoteConfig().getString(RemoteConfig.CURRENT_SEMESTER))
+                    .document("" + Values.currentSemester.getId())
                     .collection("Event")
                     .whereGreaterThan("time", new Timestamp(Calendar.getInstance().getTime()))
                     .limit(1)
@@ -428,8 +435,7 @@ public class Firestore implements IInit {
                                     loader.done(e);
                                 } catch (Exception e) {
                                     Log.e(TAG, "getNextEvent: done: Loading the next event of the " +
-                                            "current semester " +
-                                            Firebase.remoteConfig().getString(RemoteConfig.CURRENT_SEMESTER) +
+                                            "current semester " + Values.currentSemester.getId() +
                                             " didn't work.", e);
                                     loader.done(e);
                                 }
@@ -746,11 +752,10 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<ArrayList<Person>> getPersonList(FragmentActivity activity) {
-            Loader<ArrayList<Person>> loader = new Loader<>();
+        public Loader<ArrayList<PersonLight>> getPersonList(FragmentActivity activity) {
+            Loader<ArrayList<PersonLight>> loader = new Loader<>();
             try {
-                FBFS.collection("Person")
-                        .orderBy("joined", Query.Direction.DESCENDING)
+                FBFS.collection("PersonListTotal")
                         .addSnapshotListener(activity, (values, error) -> {
                             if (error != null) {
                                 loader.done(error);
@@ -760,10 +765,10 @@ public class Firestore implements IInit {
                                 loader.done(new NoDataException("No persons downloaded"));
                                 return;
                             }
-                            ArrayList<Person> personList = new ArrayList<>();
+                            ArrayList<PersonLight> personList = new ArrayList<>();
                             for (DocumentSnapshot ds : values.getDocuments()) {
                                 try {
-                                    Person p = ds.toObject(Person.class);
+                                    PersonLight p = ds.toObject(PersonLight.class);
                                     p.setId(ds.getId());
                                     personList.add(p);
                                 } catch (Exception e) {

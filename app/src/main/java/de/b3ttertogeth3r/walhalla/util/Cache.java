@@ -93,6 +93,10 @@ public class Cache implements CacheData, IInit {
 
     @Override
     public boolean isBoardMember() {
+        if (getCharge() == Charge.ADMIN ||
+                getRank() == Rank.ADMIN) {
+            return true;
+        }
         return SP.getBoolean(BOARD_MEMBER, false);
     }
 

@@ -22,8 +22,8 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -76,9 +76,9 @@ public class FullProfileDialog extends Dialog<Person> implements View.OnClickLis
 
     @Override
     public void createDialog(@NonNull RelativeLayout container, @NonNull LayoutInflater inflater) {
-        LinearLayout layout = new LinearLayout(requireContext());
-        layout.setOrientation(LinearLayout.VERTICAL);
-        person.getViewEdit(requireContext(), this);
+        ScrollView layout = new ScrollView(requireContext());
+        layout.addView(person.getViewEdit(requireContext(), this));
+        container.addView(layout);
     }
 
     @Override

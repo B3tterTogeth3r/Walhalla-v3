@@ -56,7 +56,8 @@ public class CloudFunctions implements ICloudFunctions, IInit {
                         try {
                             SideNav.reload.reload();
                             Cache.CACHE_DATA.setBoardMember(task.getResult());
-                        } catch (Exception ignored) {
+                        } catch (Exception exception) {
+                            Log.d(TAG, "checkBoardMember: ", exception);
                         }
                         loader.done(task.getResult());
                     });

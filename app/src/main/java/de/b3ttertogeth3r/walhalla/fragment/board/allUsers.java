@@ -32,19 +32,18 @@ import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.dialog.FullProfileDialog;
 import de.b3ttertogeth3r.walhalla.dialog.InfoDialog;
-import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreUpload;
-import de.b3ttertogeth3r.walhalla.object.Person;
+import de.b3ttertogeth3r.walhalla.object.PersonLight;
 import de.b3ttertogeth3r.walhalla.util.Log;
 
 public class allUsers extends Fragment {
     private static final String TAG = "allUsers";
     private IFirestoreDownload download;
     private IFirestoreUpload upload;
-    private ArrayList<Person> personList;
+    private ArrayList<PersonLight> personList;
     private de.b3ttertogeth3r.walhalla.design.LinearLayout personView;
 
     @Override
@@ -105,34 +104,38 @@ public class allUsers extends Fragment {
         }
         personView.removeAllViewsInLayout();
         TableLayout table = new TableLayout(requireContext());
-        for (Person p : personList) {
-            View row = p.getViewAll(requireContext());
+        for (PersonLight p : personList) {
+            View row = p.getView(requireContext());
             table.addView(row);
             row.setOnTouchListener(new Touch() {
                 @Override
                 public void onClick(View view) {
-                    // Open full screen dialog with the ability to edit the person
-                    try {
-                        FullProfileDialog.display(getChildFragmentManager(), p)
-                                .setOnSuccessListener(person -> {
-                                    // Upload changes, if there are any
-                                    if (person != null && person != p && person.validate()) {
-                                        upload.setPerson(person).setOnSuccessListener(result -> {
-                                                    if (result == null || !result) {
-                                                        throw new NullPointerException();
-                                                    }
-                                                    Toast.makeToast(requireContext(), R.string.upload_complete).show();
-                                                })
-                                                .setOnFailListener(e -> {
-                                                    Toast.makeToast(requireContext(), e.getMessage()).show();
-                                                    Log.e(TAG, "FullProfileDialog: onSuccessListener: uploadPerson: onFailureListener", e);
-                                                });
-                                    }
-                                })
-                                .onFailureListener(e -> Log.e(TAG, "onFailureListener: ", e));
-                    } catch (CreateDialogException e) {
-                        Log.e(TAG, "onClick: ", e);
-                    }
+                    /* Download the person from the database and then
+                     * Open full screen dialog with the ability to edit this person
+                     */
+                    Firebase.Firestore.download().person(p.getId())
+                            .setOnSuccessListener(res -> {
+                                if (res == null) {
+                                    throw new NoDataException("Downloading person with uid " + p.getId() + " didn't work");
+                                }
+                                FullProfileDialog.display(getChildFragmentManager(), res)
+                                        .setOnSuccessListener(person -> {
+                                            // Upload changes, if there are any
+                                            if (person != null && person != res && person.validate()) {
+                                                upload.setPerson(person).setOnSuccessListener(result -> {
+                                                            if (result == null || !result) {
+                                                                throw new NullPointerException();
+                                                            }
+                                                            Toast.makeToast(requireContext(), R.string.upload_complete).show();
+                                                        })
+                                                        .setOnFailListener(e -> {
+                                                            Toast.makeToast(requireContext(), e.getMessage()).show();
+                                                            Log.e(TAG, "FullProfileDialog: onSuccessListener: uploadPerson: onFailureListener", e);
+                                                        });
+                                            }
+                                        })
+                                        .onFailureListener(e -> Log.e(TAG, "onFailureListener: ", e));
+                            }).setOnFailListener(e -> Log.e(TAG, "onClick: ", e));
                 }
             });
         }

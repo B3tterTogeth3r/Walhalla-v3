@@ -130,51 +130,51 @@ public class BoardMember implements IBoardMember {
                 ViewGroup.LayoutParams.WRAP_CONTENT
         );
         layout.setLayoutParams(params);
-        LinearLayout llayout = new LinearLayout(activity);
+        LinearLayout lLayout = new LinearLayout(activity);
         RelativeLayout.LayoutParams linearParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
                 RelativeLayout.LayoutParams.WRAP_CONTENT
         );
         linearParams.addRule(ALIGN_PARENT_START);
-        llayout.setBackground(null);
+        lLayout.setBackground(null);
 
         Title title = new Title(activity, getCharge().toLongString());
-        llayout.addView(title);
+        lLayout.addView(title);
 
         Text name = new Text(activity, getFull_name());
         name.setPadding(name.getPaddingLeft(), 0, 0, 0);
-        llayout.addView(name);
+        lLayout.addView(name);
 
         Text major = new Text(activity);
         major.setPadding(major.getPaddingLeft(), 0, 0, 0);
         String majorStr = activity.getString(R.string.major_short) + " " + getMajor();
         major.setText(majorStr);
-        llayout.addView(major);
+        lLayout.addView(major);
 
         Text PoB = new Text(activity);
         PoB.setPadding(PoB.getPaddingLeft(), 0, 0, 0);
         String from = activity.getString(R.string.from) + " " + getFrom();
         PoB.setText(from);
-        llayout.addView(PoB);
+        lLayout.addView(PoB);
 
         Text mobile = new Text(activity, getMobile());
         mobile.setPadding(mobile.getPaddingLeft(), 0, 0, 0);
-        llayout.addView(mobile);
+        lLayout.addView(mobile);
 
         RelativeLayout.LayoutParams imageParams = new RelativeLayout.LayoutParams(
                 padding, padding);
         imageParams.addRule(ALIGN_PARENT_END);
-        imageParams.setMargins(0, (padding / 12), (padding / 12), 0);
+        imageParams.setMargins((padding / 12), (padding / 12), (padding / 12), (padding / 12));
 
         RelativeLayout imageView = new RelativeLayout(activity);
         imageView.setBackground(ContextCompat.getDrawable(activity, R.drawable.border_round));
         ImageView image = new ImageView(activity);
         image.setPadding(4, 4, 4, 4);
-        image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        image.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         image.setImageDrawable(ContextCompat.getDrawable(activity, R.drawable.wappen_2017));
 
         imageView.addView(image);
-        layout.addView(llayout, linearParams);
+        layout.addView(lLayout, linearParams);
         layout.addView(imageView, imageParams);
 
         if (getImage() != null) {

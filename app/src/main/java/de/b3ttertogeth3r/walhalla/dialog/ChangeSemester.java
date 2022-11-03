@@ -28,11 +28,9 @@ import androidx.fragment.app.FragmentManager;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Dialog;
 import de.b3ttertogeth3r.walhalla.annotation.SemesterRange;
-import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.object.Semester;
@@ -51,7 +49,6 @@ public class ChangeSemester extends Dialog<Integer> {
     public static ChangeSemester display(FragmentManager fragmentManager,
                                          Semester semester) throws CreateDialogException {
         try {
-            Toast.makeToast(App.getContext(), "MOCK-SEMESTER-DATA").show();
             ChangeSemester dialog = new ChangeSemester(semester);
             dialog.show(fragmentManager, TAG);
             return dialog;
@@ -105,10 +102,10 @@ public class ChangeSemester extends Dialog<Integer> {
         }
         if ((semId % 2) == 0) {
             np_year.setDisplayedValues(createYearsWS());
-            np_year.setValue(((int) (semId / 2f)) + 1);
+            np_year.setValue(((int) (semId / 2f)));
         } else {
             np_sem_kind.setValue(1);
-            np_year.setValue((semId / 2) + 1);
+            np_year.setValue((semId / 2));
         }
         np_sem_kind.setOnValueChangedListener((picker, oldVal, newVal) -> {
             if (newVal == 0) {

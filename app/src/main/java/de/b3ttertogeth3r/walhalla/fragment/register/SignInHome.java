@@ -14,6 +14,9 @@
 
 package de.b3ttertogeth3r.walhalla.fragment.register;
 
+import static de.b3ttertogeth3r.walhalla.firebase.Firebase.Firestore.download;
+import static de.b3ttertogeth3r.walhalla.firebase.Firebase.cloudFunctions;
+
 import android.annotation.SuppressLint;
 import android.text.InputType;
 import android.util.TypedValue;
@@ -164,30 +167,24 @@ public class SignInHome extends Fragment implements IOnBackPressed {
                         Toast.makeToast(requireActivity(), R.string.sign_in_complete).show();
                         String uid = Firebase.authentication().getUser().getUid();
                         try {
-                            Firebase.Firestore.download().person(uid)
+                            download()
+                                    .person(uid)
                                     .setOnSuccessListener(result2 -> {
                                         if (result2 != null) {
                                             Cache.CACHE_DATA.setRank(result2.getRank());
+                                            cloudFunctions()
+                                                    .checkBoardMember(result2.getId())
+                                                    .setOnSuccessListener(result3 -> {
+                                                        if (result3 == null) {
+                                                            Cache.CACHE_DATA.setBoardMember(false);
+                                                            return;
+                                                        }
+                                                        Cache.CACHE_DATA.setBoardMember(result3);
+                                                    });
                                         }
                                     });
                         } catch (Exception e) {
                             Log.e(TAG, "Firestore: ", e);
-                        }
-                        try {
-                            Firebase.cloudFunctions().checkBoardMember(uid)
-                                    .setOnSuccessListener(result1 -> {
-                                        if (result1 != null) {
-                                            Cache.CACHE_DATA.setBoardMember(result1);
-                                            Log.i(TAG, "CF: setBoardMember: " + result1);
-                                            return;
-                                        }
-                                        Cache.CACHE_DATA.setBoardMember(false);
-                                    }).setOnFailListener(e -> {
-                                        Log.e(TAG, "onFailureListener: CF: ", e);
-                                        Cache.CACHE_DATA.setBoardMember(false);
-                                    });
-                        } catch (Exception e) {
-                            Log.e(TAG, "signIn: CloudFunctions ", e);
                         }
                     }).onFailureListener(e -> {
                                 if (e.getMessage() != null && e.getMessage().contains("invalid")) {
@@ -206,7 +203,7 @@ public class SignInHome extends Fragment implements IOnBackPressed {
 
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        //uid = cArR58nHmYs9wrDuMRet
+
     }
 
     @Override

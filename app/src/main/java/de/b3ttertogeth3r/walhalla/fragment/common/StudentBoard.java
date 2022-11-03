@@ -39,6 +39,7 @@ import de.b3ttertogeth3r.walhalla.object.BoardMember;
 import de.b3ttertogeth3r.walhalla.object.Semester;
 import de.b3ttertogeth3r.walhalla.util.Cache;
 import de.b3ttertogeth3r.walhalla.util.Log;
+import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class StudentBoard extends Fragment {
     private static final String TAG = "StudentBoard";
@@ -66,7 +67,8 @@ public class StudentBoard extends Fragment {
     public void toolbarContent() {
         toolbar.setTitle("");
         customToolbar.setVisibility(View.VISIBLE);
-        customToolbarTitle.setText(R.string.menu_chargen);
+        String title = getString(R.string.menu_chargen) + " " + Values.semesterList.get(semesterID).getName_short();
+        customToolbarTitle.setText(title);
         customToolbar.setOnClickListener(v -> {
             try {
                 ChangeSemester.display(getParentFragmentManager(),

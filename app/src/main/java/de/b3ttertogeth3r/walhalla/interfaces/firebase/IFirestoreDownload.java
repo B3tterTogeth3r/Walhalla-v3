@@ -38,6 +38,7 @@ import de.b3ttertogeth3r.walhalla.object.Location;
 import de.b3ttertogeth3r.walhalla.object.Movement;
 import de.b3ttertogeth3r.walhalla.object.News;
 import de.b3ttertogeth3r.walhalla.object.Person;
+import de.b3ttertogeth3r.walhalla.object.PersonLight;
 import de.b3ttertogeth3r.walhalla.object.Semester;
 import de.b3ttertogeth3r.walhalla.object.Text;
 
@@ -335,7 +336,7 @@ public interface IFirestoreDownload {
      * @firestorePath /Person/{PersonID}
      * @since 1.0
      */
-    Loader<ArrayList<Person>> getPersonList(FragmentActivity activity);
+    Loader<ArrayList<PersonLight>> getPersonList(FragmentActivity activity);
 
     /**
      * Download a list of default locations from the Firebase Firestore Database.

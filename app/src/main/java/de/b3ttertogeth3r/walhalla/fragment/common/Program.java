@@ -50,7 +50,7 @@ public class Program extends Fragment {
     private static final String TAG = "ProgramFragment";
     private IFirestoreDownload download;
     private LinearLayout view;
-    private int semesterId;
+    private int semesterID;
 
     @Override
     public void constructor() {
@@ -64,15 +64,16 @@ public class Program extends Fragment {
 
     @Override
     public void start() {
-        semesterId = Cache.CACHE_DATA.getChosenSemester();
-        download(semesterId);
+        semesterID = Cache.CACHE_DATA.getChosenSemester();
+        download(semesterID);
     }
 
     @Override
     public void toolbarContent() {
         toolbar.setTitle("");
         customToolbar.setVisibility(View.VISIBLE);
-        customToolbarTitle.setText(R.string.menu_program);
+        String title = getString(R.string.menu_program) + " " + Values.semesterList.get(semesterID).getName_short();
+        customToolbarTitle.setText(title);
         customToolbar.setOnClickListener(v -> displayDialog());
         if (Cache.CACHE_DATA.isBoardMember()) {
             // TODO: 29.07.22 add menu to add new events
@@ -81,7 +82,7 @@ public class Program extends Fragment {
 
     private void displayDialog() {
         try {
-            ChangeSemester.display(getParentFragmentManager(), Values.semesterList.get(semesterId))
+            ChangeSemester.display(getParentFragmentManager(), Values.semesterList.get(semesterID))
                     .setOnSuccessListener(result -> {
                         assert result != null;
                         download(result);
@@ -104,7 +105,7 @@ public class Program extends Fragment {
     private void download(int semId) {
         download.getSemesterEvents(semId)
                 .setOnSuccessListener(result -> {
-                    semesterId = semId;
+                    semesterID = semId;
                     if (result == null) {
                         throw new NoDataException("Download failed");
                     } else if (result.isEmpty()) {
@@ -130,7 +131,7 @@ public class Program extends Fragment {
         view.removeAllViewsInLayout();
         view.removeAllViews();
         Title semester = new Title(requireContext());
-        semester.setTitle(Values.semesterList.get(semesterId).getName_long());
+        semester.setTitle(Values.semesterList.get(semesterID).getName_long());
         view.addView(semester);
         int i = 0;
         for (de.b3ttertogeth3r.walhalla.object.Event e : eventList) {
@@ -143,7 +144,7 @@ public class Program extends Fragment {
                                 public void onClick(View view) {
                                     try {
                                         FragmentManager fm = requireActivity().getSupportFragmentManager();
-                                        EventDetails.display(fm, DialogSize.FULL_SCREEN, Values.semesterList.get(semesterId), e);
+                                        EventDetails.display(fm, DialogSize.FULL_SCREEN, Values.semesterList.get(semesterID), e);
                                     } catch (Exception e) {
                                         Log.e("Event", "onClickListener: Opening dialog exception", e);
                                     }

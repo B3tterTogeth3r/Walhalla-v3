@@ -263,6 +263,14 @@
     <string name="transcript_no_files">Keine Protokolle vorhanden</string>
     <string name="greeting_no_data">Für dieses Semester wurde keine Begrüßung erstellt.</string>
     <string name="messages_none">Es existieren keine Mitteilungen</string>
-    <string name="traffic_explanation">TODO Explain 4 different colors</string>
+    <string name="traffic_explanation"><![CDATA[
+    <p>Die Punkte haben folgende Bedeutung:
+    <ul>
+    <li>&nbsp;<font color=black>Schwarz:</font><br><i>Die Daten sind unvollständig</i></li>
+    <li>&nbsp;<font color=red>Rot:</font><br><i>Der Daten sind vollständig, der Nutzer aber nicht aktiviert</i></li>
+    <li>&nbsp;<font color=yellow>Gelb:</font><br><i>Der Nutzer ist aktiviert, hat aber noch kein eigenes Passwort festgelegt</i></li>
+    <li>&nbsp;<font color=green>Grün:</font><br><i>Der Nutzer ist aktiviert und hat ein eigenes Passwort.</i></li>
+    </ul>
+    </p>]]></string>
 
 </resources>

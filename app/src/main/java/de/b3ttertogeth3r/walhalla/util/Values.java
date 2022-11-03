@@ -51,6 +51,7 @@ public class Values {
         for (Semester s : Values.semesterList) {
             if (s.getStart().toDate().before(time.toDate()) &&
                     s.getEnd().toDate().after(time.toDate())) {
+                Log.e("VALUES", "getCurrentSemester: semester-id: " + s.getId());
                 return s;
             }
         }
