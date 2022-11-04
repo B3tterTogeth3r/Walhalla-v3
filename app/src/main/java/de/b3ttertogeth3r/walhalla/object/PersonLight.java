@@ -48,7 +48,7 @@ public class PersonLight {
     @Exclude
     public View getView(@NonNull Context context) {
         if (this.color == null) {
-            return new ProfileRow(context, this.full_Name, this.nickname, TrafficLightColor.BLACK);
+            return new ProfileRow(context, this.full_Name, this.nickname);
         } else {
             return new ProfileRow(context, this.full_Name, this.nickname, this.color);
         }

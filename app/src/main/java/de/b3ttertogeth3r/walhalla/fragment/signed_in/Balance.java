@@ -14,6 +14,8 @@
 
 package de.b3ttertogeth3r.walhalla.fragment.signed_in;
 
+import static de.b3ttertogeth3r.walhalla.util.Cache.CACHE_DATA;
+
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +40,6 @@ import de.b3ttertogeth3r.walhalla.design.TableLayout;
 import de.b3ttertogeth3r.walhalla.design.Text;
 import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.design.Toast;
-import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
@@ -96,7 +97,7 @@ public class Balance extends Fragment implements View.OnClickListener {
                         account = result;
                         getMovements();
                         String price = "€ " + String.format(Values.LOCALE, "%.2f", account.getAmount()).replace(".", ",");
-                        Log.i(TAG, "start: " + price);
+                        Log.i(TAG, "start: found a balance.");
                         balance.setText(price);
                     })
                     .setOnFailListener(e -> Log.e(TAG, "onFailureListener: Listening to the account did not work", e));
@@ -107,13 +108,10 @@ public class Balance extends Fragment implements View.OnClickListener {
     private void getMovements() {
         download.getPersonMovements(uid)
                 .setOnSuccessListener(result -> {
-                    if (result == null) {
-                        throw new NoDataException("User has no movements");
-                    } else if (result.isEmpty()) {
-                        Movement m = new Movement();
-                        m.setPurpose("No movements");
-                        movementList.add(m);
-                        movementTable();
+                    if (result == null || result.isEmpty()) {
+                        movements.removeAllViewsInLayout();
+                        movements.addView(new Title(requireContext(), "You have no movements so far."));
+                        Log.i(TAG, "getMovements: user has no movements so far.");
                         return;
                     }
                     movementList = result;
@@ -160,6 +158,18 @@ public class Balance extends Fragment implements View.OnClickListener {
     @Override
     public void toolbarContent() {
         toolbar.setTitle(R.string.menu_balance);
+        toolbar.getMenu().clear();
+        if (CACHE_DATA.isBoardMember()) {
+            toolbar.inflateMenu(R.menu.add);
+            toolbar.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.add) {
+                    // TODO: 03.11.22 add menu with ability to add movements to a person
+                    Toast.makeToast(requireContext(), R.string.error_dev).show();
+                    return true;
+                }
+                return false;
+            });
+        }
     }
 
     @Override

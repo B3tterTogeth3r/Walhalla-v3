@@ -16,6 +16,7 @@ package de.b3ttertogeth3r.walhalla.fragment.register;
 
 import static de.b3ttertogeth3r.walhalla.firebase.Firebase.Firestore.download;
 import static de.b3ttertogeth3r.walhalla.firebase.Firebase.cloudFunctions;
+import static de.b3ttertogeth3r.walhalla.util.Cache.CACHE_DATA;
 
 import android.annotation.SuppressLint;
 import android.text.InputType;
@@ -43,11 +44,11 @@ import de.b3ttertogeth3r.walhalla.design.EditText;
 import de.b3ttertogeth3r.walhalla.design.Image;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.dialog.PasswordDialog;
+import de.b3ttertogeth3r.walhalla.enums.Charge;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.fragment.Home;
 import de.b3ttertogeth3r.walhalla.interfaces.activityMain.IOnBackPressed;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
-import de.b3ttertogeth3r.walhalla.util.Cache;
 import de.b3ttertogeth3r.walhalla.util.Log;
 
 public class SignInHome extends Fragment implements IOnBackPressed {
@@ -171,15 +172,20 @@ public class SignInHome extends Fragment implements IOnBackPressed {
                                     .person(uid)
                                     .setOnSuccessListener(result2 -> {
                                         if (result2 != null) {
-                                            Cache.CACHE_DATA.setRank(result2.getRank());
-                                            cloudFunctions()
-                                                    .checkBoardMember(result2.getId())
+                                            CACHE_DATA.setRank(result2.getRank());
+                                            cloudFunctions().getCharge(result2.getId())
                                                     .setOnSuccessListener(result3 -> {
                                                         if (result3 == null) {
-                                                            Cache.CACHE_DATA.setBoardMember(false);
-                                                            return;
+                                                            CACHE_DATA.setBoardMember(false);
+                                                            CACHE_DATA.setCharge(Charge.NONE);
+                                                        } else {
+                                                            CACHE_DATA.setBoardMember(true);
+                                                            CACHE_DATA.setCharge(result3);
                                                         }
-                                                        Cache.CACHE_DATA.setBoardMember(result3);
+                                                    }).setOnFailListener(e -> {
+                                                        Log.e(TAG, "SIGN IN HOME ERROR", e);
+                                                        CACHE_DATA.setBoardMember(false);
+                                                        CACHE_DATA.setCharge(Charge.NONE);
                                                     });
                                         }
                                     });

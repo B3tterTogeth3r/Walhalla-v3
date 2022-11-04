@@ -41,7 +41,7 @@ public interface CacheData {
     String BOARD_MEMBER = "board_member";
     String CHARGE = "charge";
     String RANK = "rank";
-    String VISIBILITY = "";
+    String VISIBILITY = "visibility";
 
     /**
      * the user can change, if he/she doesn't want the app to collect analytics data. The default

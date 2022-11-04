@@ -17,6 +17,7 @@ package de.b3ttertogeth3r.walhalla.dialog;
 import android.app.AlertDialog;
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,7 @@ import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 public class InfoDialog extends Dialog<Void> {
     private static final String TAG = "InfoDialog";
     private final String text;
+    private View view;
 
     public InfoDialog() {
         super(DialogSize.WRAP_CONTENT);
@@ -41,6 +43,12 @@ public class InfoDialog extends Dialog<Void> {
         this.text = t;
     }
 
+    public InfoDialog(View view) {
+        super(DialogSize.FULL_SCREEN);
+        this.text = "";
+        this.view = view;
+    }
+
     public InfoDialog(String text) {
         super(DialogSize.WRAP_CONTENT);
         this.text = text;
@@ -48,9 +56,13 @@ public class InfoDialog extends Dialog<Void> {
 
     @Override
     public void createDialog(@NonNull RelativeLayout container, @NonNull LayoutInflater inflater) {
-        Text content = new Text(requireContext());
-        content.setText(Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY));
-        container.addView(content);
+        if (view == null) {
+            Text content = new Text(requireContext());
+            content.setText(Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY));
+            container.addView(content);
+        } else {
+            container.addView(view);
+        }
     }
 
     @Override

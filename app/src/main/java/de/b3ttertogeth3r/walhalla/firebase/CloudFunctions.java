@@ -51,15 +51,16 @@ public class CloudFunctions implements ICloudFunctions, IInit {
                             Exception e = task.getException();
                             loader.done(e);
                             return;
+                        } else if (task.isSuccessful()) {
+                            Log.i(TAG, "checkBoardMember: " + task.getResult());
+                            try {
+                                SideNav.reload.reload();
+                            } catch (Exception exception) {
+                                Log.d(TAG, "checkBoardMember: ", exception);
+                            }
+                            loader.done(task.getResult());
                         }
-                        Log.i(TAG, "checkBoardMember: " + task.getResult());
-                        try {
-                            SideNav.reload.reload();
-                            Cache.CACHE_DATA.setBoardMember(task.getResult());
-                        } catch (Exception exception) {
-                            Log.d(TAG, "checkBoardMember: ", exception);
-                        }
-                        loader.done(task.getResult());
+                        loader.done();
                     });
         } catch (Exception e) {
             return loader.done(false);
@@ -87,7 +88,7 @@ public class CloudFunctions implements ICloudFunctions, IInit {
                         try {
                             String result = task.getResult().toUpperCase();
                             Charge c = Charge.valueOf(result);
-                            Log.i(TAG, "getCharge: found charge is " + c);
+                            Log.i(TAG, "getCharge: found charge");
                             SideNav.reload.reload();
                             Cache.CACHE_DATA.setCharge(c);
                             loader.done(c);

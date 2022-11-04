@@ -93,8 +93,7 @@ public class Cache implements CacheData, IInit {
 
     @Override
     public boolean isBoardMember() {
-        if (getCharge() == Charge.ADMIN ||
-                getRank() == Rank.ADMIN) {
+        if (getRank() == Rank.ADMIN) {
             return true;
         }
         return SP.getBoolean(BOARD_MEMBER, false);
@@ -129,12 +128,13 @@ public class Cache implements CacheData, IInit {
 
     @Override
     public void setCharge(@NonNull Charge charge) {
-        SP.edit().putString(CHARGE, String.valueOf(charge).toUpperCase()).apply();
+        SP.edit().putString(CHARGE, charge.toString().toUpperCase()).apply();
     }
 
     @Override
     public Rank getRank() {
-        if (getCharge() == Charge.ADMIN) {
+        Charge c = getCharge();
+        if (c == Charge.ADMIN) {
             return Rank.ADMIN;
         }
         try {

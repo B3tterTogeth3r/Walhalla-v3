@@ -48,6 +48,19 @@ public class ProfileRow extends RelativeLayout {
         addView(arrow);
     }
 
+    public ProfileRow(Context context, String full_name, String nickname) {
+        super(context);
+        this.title = new Text(context, full_name);
+        this.content = new Text(context, nickname);
+        trafficLight = new TrafficLight(context, TrafficLightColor.GREEN);
+        this.arrow = new ImageView(context);
+        designAll();
+        addView(title);
+        addView(content);
+        //addView(trafficLight);
+        addView(arrow);
+    }
+
     public ProfileRow(Context context, boolean isEdit) {
         super(context);
         this.title = new Text(context);

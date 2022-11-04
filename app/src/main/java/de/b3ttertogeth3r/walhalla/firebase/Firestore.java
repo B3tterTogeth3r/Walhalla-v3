@@ -315,6 +315,7 @@ public class Firestore implements IInit {
             Loader<ArrayList<Event>> loader = new Loader<>();
             getSemesterReference(semesterID)
                     .collection("Event")
+                    .orderBy("time", Query.Direction.ASCENDING)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<Event>>(loader) {
                         @Override
@@ -422,6 +423,7 @@ public class Firestore implements IInit {
             FBFS.collection("Semester")
                     .document("" + Values.currentSemester.getId())
                     .collection("Event")
+                    .whereEqualTo("visibility", "PUBLIC")
                     .whereGreaterThan("time", new Timestamp(Calendar.getInstance().getTime()))
                     .limit(1)
                     .get()
@@ -631,6 +633,10 @@ public class Firestore implements IInit {
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<Movement>>(loader) {
                         @Override
                         public void done(QuerySnapshot qds) {
+                            if (qds.isEmpty()) {
+                                loader.done();
+                                return;
+                            }
                             ArrayList<Movement> movementList = new ArrayList<>();
                             for (DocumentSnapshot ds : qds.getDocuments()) {
                                 try {

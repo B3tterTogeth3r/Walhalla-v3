@@ -34,10 +34,10 @@ import com.google.firebase.auth.FirebaseUser;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.enums.Fraternity;
-import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.fragment.Home;
 import de.b3ttertogeth3r.walhalla.fragment.board.AddChores;
+import de.b3ttertogeth3r.walhalla.fragment.board.allGreenUsers;
 import de.b3ttertogeth3r.walhalla.fragment.board.allUsers;
 import de.b3ttertogeth3r.walhalla.fragment.common.AboutUs;
 import de.b3ttertogeth3r.walhalla.fragment.common.Donation;
@@ -218,7 +218,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
                         .commit();
                 break;
             case R.string.menu_kartei:
-                transaction.replace(container, new allUsers())
+                transaction.replace(container, new allGreenUsers())
                         .addToBackStack(TAG)
                         .commit();
                 break;
@@ -343,7 +343,7 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
             loginMenu.add(0, R.string.menu_balance, 0, R.string.menu_balance);
 
             //Only visible to members of the fraternity
-            if (Cache.CACHE_DATA.getRank().canSee(Visibility.SIGNED_IN)) {
+            if (Firebase.authentication().isSignIn()) {
                 Menu menuLogin = menu.addSubMenu(R.string.menu_intern);
                 menuLogin.add(0, R.string.menu_transcript, 0, R.string.menu_transcript).setIcon(R.drawable.ic_scriptor);
                 menuLogin.add(0, R.string.menu_kartei, 0, R.string.menu_kartei).setIcon(R.drawable.ic_contacts);

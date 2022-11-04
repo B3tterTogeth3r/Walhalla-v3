@@ -16,6 +16,7 @@ package de.b3ttertogeth3r.walhalla.fragment;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -103,9 +104,9 @@ public class Home extends Fragment implements View.OnClickListener {
                 .setOnSuccessListener(result -> {
                     if (result != null /*&& result.validate()*/ && !result.getTitle().isEmpty()) {
                         String string;
-                        try {
-                            string = result.getTitle().substring(0, 20);
-                        } catch (Exception e) {
+                        if (result.getTitle().length() >= 12) {
+                            string = result.getTitle().substring(0, 12) + "...";
+                        } else {
                             string = result.getTitle();
                         }
                         program.addView(text(string));
@@ -306,8 +307,8 @@ public class Home extends Fragment implements View.OnClickListener {
         params.setMargins(5, 0, 5, 75);
         text.setLayoutParams(params);
         text.setGravity(Gravity.CENTER_HORIZONTAL);
-        text.setTextAppearance(android.R.style.TextAppearance_Material_Subhead);
-
+        text.setAutoSizeTextTypeUniformWithConfiguration(
+                1, 28, 1, TypedValue.COMPLEX_UNIT_DIP);
         text.setText(value);
         return text;
     }
