@@ -134,7 +134,7 @@ public class allUsers extends Fragment {
                                                         });
                                             }
                                         })
-                                        .onFailureListener(e -> Log.e(TAG, "onFailureListener: ", e));
+                                        .setOnFailureListener(e -> Log.e(TAG, "onFailureListener: ", e));
                             }).setOnFailListener(e -> Log.e(TAG, "onClick: ", e));
                 }
             });

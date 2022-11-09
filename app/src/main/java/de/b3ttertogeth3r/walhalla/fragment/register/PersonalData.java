@@ -122,7 +122,7 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
                                             person.setFirst_Name(result.toString());
                                         }
                                     })
-                                    .onFailureListener(e -> Log.e(TAG, "onFailureListener: ProfileEditDialog Error", e));
+                                    .setOnFailureListener(e -> Log.e(TAG, "onFailureListener: ProfileEditDialog Error", e));
                         } catch (CreateDialogException e) {
                             e.printStackTrace();
                         }
@@ -145,7 +145,7 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
                                             person.setLast_Name(result.toString());
                                         }
                                     })
-                                    .onFailureListener(e -> Log.e(TAG, "onFailureListener: something went wrong with the ProfileEditDialog", e));
+                                    .setOnFailureListener(e -> Log.e(TAG, "onFailureListener: something went wrong with the ProfileEditDialog", e));
                         } catch (CreateDialogException e) {
                             e.printStackTrace();
                         }
@@ -175,7 +175,7 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
                                         }
                                         throw new UnsupportedAddressTypeException();
                                     })
-                                    .onFailureListener(e -> {
+                                    .setOnFailureListener(e -> {
                                         Log.e(TAG, "onFailureListener: something went wrong with the AddressDialog", e);
                                         Toast.makeToast(requireContext(), R.string.error_address).show();
                                     });
@@ -201,7 +201,7 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
                                             person.setMobile(result.toString());
                                         }
                                     })
-                                    .onFailureListener(e -> Log.e(TAG, "onFailureListener: something went wrong with the ProfileEditDialog", e));
+                                    .setOnFailureListener(e -> Log.e(TAG, "onFailureListener: something went wrong with the ProfileEditDialog", e));
                         } catch (CreateDialogException e) {
                             e.printStackTrace();
                         }
@@ -241,7 +241,7 @@ public class PersonalData extends Fragment implements IOnBackPressed, DatePicker
                                             person.setMajor(result.toString());
                                         }
                                     })
-                                    .onFailureListener(e -> Log.e(TAG, "onFailureListener: something went wrong with the ProfileEditDialog", e));
+                                    .setOnFailureListener(e -> Log.e(TAG, "onFailureListener: something went wrong with the ProfileEditDialog", e));
                         } catch (CreateDialogException e) {
                             e.printStackTrace();
                         }

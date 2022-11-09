@@ -300,7 +300,7 @@ public class Profile extends Fragment implements View.OnClickListener {
                                             }
                                             throw new UnsupportedAddressTypeException();
                                         })
-                                        .onFailureListener(e -> {
+                                        .setOnFailureListener(e -> {
                                             Log.e(TAG, "onFailureListener: something went wrong with the AddressDialog", e);
                                             Toast.makeToast(requireContext(), R.string.error_address).show();
                                         });

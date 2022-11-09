@@ -127,7 +127,7 @@ public abstract class Dialog<T> extends DialogFragment implements DialogInterfac
         }
     }
 
-    public Dialog<T> onFailureListener(OnFailureListener<T> onFailureListener) {
+    public Dialog<T> setOnFailureListener(OnFailureListener<Exception> onFailureListener) {
         loader.setOnFailListener(onFailureListener);
         if (e != null) {
             loader.done(e);

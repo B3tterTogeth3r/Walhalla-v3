@@ -138,7 +138,7 @@ public class Movement extends MyObject implements Validate {
 
     @Override
     public boolean validate() {
-        return false;
+        return (time != null && amount != null);
     }
 
     @NonNull

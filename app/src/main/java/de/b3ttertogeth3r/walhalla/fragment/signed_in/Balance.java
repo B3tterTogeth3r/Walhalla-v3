@@ -14,9 +14,13 @@
 
 package de.b3ttertogeth3r.walhalla.fragment.signed_in;
 
+import static de.b3ttertogeth3r.walhalla.firebase.Firebase.Firestore.download;
+import static de.b3ttertogeth3r.walhalla.firebase.Firebase.Firestore.upload;
+import static de.b3ttertogeth3r.walhalla.firebase.Firebase.authentication;
 import static de.b3ttertogeth3r.walhalla.util.Cache.CACHE_DATA;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +31,7 @@ import android.widget.TableRow;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -40,9 +45,9 @@ import de.b3ttertogeth3r.walhalla.design.TableLayout;
 import de.b3ttertogeth3r.walhalla.design.Text;
 import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.design.Toast;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase;
-import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
-import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
+import de.b3ttertogeth3r.walhalla.dialog.NumericDialog;
+import de.b3ttertogeth3r.walhalla.dialog.PersonSearchDialog;
+import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.object.Account;
 import de.b3ttertogeth3r.walhalla.object.Movement;
 import de.b3ttertogeth3r.walhalla.util.Log;
@@ -64,7 +69,6 @@ import de.b3ttertogeth3r.walhalla.util.Values;
 public class Balance extends Fragment implements View.OnClickListener {
     private static final String TAG = "Balance";
     private Button subscribe, payBill;
-    private IFirestoreDownload download;
     private Account account;
     private Title balance;
     private LinearLayout movements;
@@ -74,14 +78,12 @@ public class Balance extends Fragment implements View.OnClickListener {
     @Override
     public void constructor() {
         movementList = new ArrayList<>();
-        download = Firebase.Firestore.download();
-        IAuth auth = Firebase.authentication();
-        if (!auth.isSignIn()) {
+        if (!authentication().isSignIn()) {
             Toast.makeToast(requireContext(), R.string.fui_error_session_expired).show();
             SideNav.changePage(R.string.menu_home, requireActivity().getSupportFragmentManager().beginTransaction());
             return;
         }
-        uid = auth.getUser().getUid();
+        uid = authentication().getUser().getUid();
     }
 
     @Override
@@ -92,7 +94,7 @@ public class Balance extends Fragment implements View.OnClickListener {
     @Override
     public void start() {
         try {
-            download.getPersonBalance(requireActivity(), uid)
+            download().getPersonBalance(requireActivity(), uid)
                     .setOnSuccessListener(result -> {
                         account = result;
                         getMovements();
@@ -106,7 +108,7 @@ public class Balance extends Fragment implements View.OnClickListener {
     }
 
     private void getMovements() {
-        download.getPersonMovements(uid)
+        download().getPersonMovements(uid)
                 .setOnSuccessListener(result -> {
                     if (result == null || result.isEmpty()) {
                         movements.removeAllViewsInLayout();
@@ -163,13 +165,44 @@ public class Balance extends Fragment implements View.OnClickListener {
             toolbar.inflateMenu(R.menu.add);
             toolbar.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.add) {
-                    // TODO: 03.11.22 add menu with ability to add movements to a person
-                    Toast.makeToast(requireContext(), R.string.error_dev).show();
+                    AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                            .setTitle("Einnahme hinzufügen")
+                            .setMessage("Soll eine Einnahme einem Nutzer hinzugefügt werden?")
+                            .setPositiveButton(R.string.yes, (dialogInterface, i) -> showPersonDialog())
+                            .setNegativeButton(R.string.no, null)
+                            .create();
+                    dialog.show();
                     return true;
                 }
                 return false;
             });
         }
+    }
+
+    private void showPersonDialog() {
+        android.widget.Toast.makeText(requireContext(), "Loading person list",
+                android.widget.Toast.LENGTH_SHORT).show();
+        PersonSearchDialog.create(requireActivity())
+                .setOnSuccessListener(result -> {
+                    if (result == null) {
+                        Toast.makeToast(requireContext(), R.string.fui_error_unknown).show();
+                        return;
+                    }
+                    showAmountDialog(result.getId());
+                }).setOnFailListener(e -> Toast.makeToast(requireContext(), R.string.fui_error_unknown).show());
+    }
+
+    private void showAmountDialog(String uid) throws CreateDialogException {
+        NumericDialog.display(getParentFragmentManager())
+                .setOnSuccessListener(result -> {
+                    if (result == null) {
+                        throw new NullPointerException("result of 'NumericDialog' cannot be 'null'");
+                    }
+                    Log.e(TAG, "Amount to add as a new Movement is " + result);
+                    upload().addPersonMovement(uid, new Movement(Timestamp.now(), Double.valueOf(result), "", "Einzahlung", null));
+                    // TODO: 09.11.22 add input field to add a purpose
+                })
+                .setOnFailureListener(e -> Log.e(TAG, "Something went wrong", e));
     }
 
     @Override

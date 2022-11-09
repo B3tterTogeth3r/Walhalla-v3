@@ -272,5 +272,20 @@
     <li>&nbsp;<font color=green>Grün:</font><br><i>Der Nutzer ist aktiviert und hat ein eigenes Passwort.</i></li>
     </ul>
     </p>]]></string>
+    <string name="deleteNumbers">Delete Number</string>
+    <string name="numbers_deleteNumbers">Delete Number</string>
+    <string name="numbers_one">One</string>
+    <string name="numbers_two">Two</string>
+    <string name="numbers_three">Three</string>
+    <string name="numbers_four">Four</string>
+    <string name="numbers_five">Five</string>
+    <string name="numbers_six">Six</string>
+    <string name="numbers_seven">Seven</string>
+    <string name="numbers_eight">Eight</string>
+    <string name="numbers_nine">Nine</string>
+    <string name="numbers_dot">Dott</string>
+    <string name="numbers_zero">Zero</string>
+    <string name="numbers_double_zero">Double Zero</string>
+    <string name="numbers_set_value">Set value</string>
 
 </resources>

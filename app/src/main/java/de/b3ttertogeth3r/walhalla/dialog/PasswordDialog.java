@@ -14,6 +14,8 @@
 
 package de.b3ttertogeth3r.walhalla.dialog;
 
+import static de.b3ttertogeth3r.walhalla.firebase.Firebase.authentication;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.text.InputType;
@@ -31,18 +33,14 @@ import de.b3ttertogeth3r.walhalla.design.EditText;
 import de.b3ttertogeth3r.walhalla.enums.DialogSize;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
 import de.b3ttertogeth3r.walhalla.exception.UserDataError;
-import de.b3ttertogeth3r.walhalla.firebase.Authentication;
-import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 
 public class PasswordDialog extends Dialog<Boolean> {
     private static final String TAG = "PasswordDialog";
-    private final IAuth auth;
     private final String email;
     private EditText passwordET;
 
     public PasswordDialog(DialogSize size, String email) {
         super(size);
-        auth = new Authentication();
         this.email = email;
     }
 
@@ -93,7 +91,7 @@ public class PasswordDialog extends Dialog<Boolean> {
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
-        auth.signIn(email, passwordET.getText())
+        authentication().signIn(email, passwordET.getText())
                 .setOnSuccessListener(result -> {
                     if (result != null && result.getUser() != null) {
                         super.onDismiss(dialog);

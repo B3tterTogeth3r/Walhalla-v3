@@ -192,7 +192,7 @@ public class SignInHome extends Fragment implements IOnBackPressed {
                         } catch (Exception e) {
                             Log.e(TAG, "Firestore: ", e);
                         }
-                    }).onFailureListener(e -> {
+                    }).setOnFailureListener(e -> {
                                 if (e.getMessage() != null && e.getMessage().contains("invalid")) {
                                     Toast.makeToast(requireActivity(), R.string.fui_error_invalid_password).show();
                                     return;

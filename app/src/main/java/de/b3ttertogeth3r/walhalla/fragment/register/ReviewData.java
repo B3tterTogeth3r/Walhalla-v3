@@ -164,7 +164,7 @@ public class ReviewData extends Fragment implements IOnBackPressed {
                             return;
                         }
                         throw new BadPasswordException("Password is null");
-                    }).onFailureListener(e -> {
+                    }).setOnFailureListener(e -> {
                         Log.e(TAG, "onFailureListener: SetPasswordDialog Error", e);
                         Toast.makeToast(requireContext(), R.string.fui_error_invalid_password).show();
                     });

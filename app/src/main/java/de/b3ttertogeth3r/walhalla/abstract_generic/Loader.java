@@ -34,7 +34,7 @@ public class Loader<T> implements LoaderResultListener<T> {
     private static final String TAG = "Loader";
     private final boolean startLoadingCircle;
     private OnSuccessListener<T> resultListenerSuccess;
-    private OnFailureListener<T> resultListenerFail;
+    private OnFailureListener<Exception> resultListenerFail;
     private T result;
     private boolean hasResult = false;
     private Exception e;
@@ -173,7 +173,7 @@ public class Loader<T> implements LoaderResultListener<T> {
         return this;
     }
 
-    public Loader<T> setOnFailListener(OnFailureListener<T> onFailureListener) {
+    public Loader<T> setOnFailListener(OnFailureListener<Exception> onFailureListener) {
         this.resultListenerFail = onFailureListener;
         if (e != null) {
             onFailureListener.onFailureListener(e);

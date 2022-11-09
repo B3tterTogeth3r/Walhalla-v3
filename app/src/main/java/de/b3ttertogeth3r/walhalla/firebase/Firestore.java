@@ -14,6 +14,28 @@
 
 package de.b3ttertogeth3r.walhalla.firebase;
 
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.ACCOUNT;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.ADDRESS;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.BOARD;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.CHORE;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.DESCRIPTION;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.DRINK;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.DRINK_MOVEMENT;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.EVENT;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.GREETING;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.IMAGE;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.LOCATION;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.MOVEMENT;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.NEWS;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.NOTES;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.PERSON;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.PERSON_LIST_TOTAL;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.PHILISTINES_BOARD;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.SEMESTER;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.STUDENT_BOARD;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.TEXT;
+import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.TRANSCRIPT;
+
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -91,8 +113,99 @@ public class Firestore implements IInit {
         }
     }
 
+    /**
+     * An enum to extinct typos in collection reference paths.
+     */
+    protected enum CollectionName {
+
+        SEMESTER("Semester"),
+        STUDENT_BOARD("Student_Board"),
+        PHILISTINES_BOARD("Philistines_Board"),
+        EVENT("Event"),
+        CHORE("Chore"),
+        DESCRIPTION("Description"),
+        ACCOUNT("Account"),
+        MOVEMENT("Movement"),
+        TRANSCRIPT("Transcript"),
+        NOTES("Notes"),
+        GREETING("Greeting"),
+        PUBLISHED("Published"),
+        DRINK("Drink"),
+        PERSON("Person"),
+        IMAGE("Image"),
+        BOARD("Board"),
+        LOCATION("Location"),
+        NEWS("News"),
+        TEXT("Text"),
+        FCM_DATA("FCM_Data"),
+        PERSON_LIST_TOTAL("PersonListTotal"),
+        ADDRESS("address"),
+        DRINK_MOVEMENT("DrinkMovement");
+
+        private final String description;
+
+        CollectionName(String description) {
+            this.description = description;
+        }
+
+        public String get() {
+            return description;
+        }
+    }
+
+    private abstract class References {
+        @NonNull
+        protected CollectionReference studentPath(int semesterID) {
+            return getSemesterReference(semesterID).collection(STUDENT_BOARD.get());
+        }
+
+        @NonNull
+        protected DocumentReference getSemesterReference(int semesterID) {
+            return FBFS.collection(SEMESTER.get())
+                    .document(String.valueOf(semesterID));
+        }
+
+        @NonNull
+        protected CollectionReference philPath(int semesterID) {
+            return getSemesterReference(semesterID).collection(PHILISTINES_BOARD.get());
+        }
+
+        @NonNull
+        protected DocumentReference getEventReference(int semesterID, String eventID) {
+            return eventPath(semesterID).document(eventID);
+        }
+
+        @NonNull
+        protected CollectionReference eventPath(int semID) {
+            return getSemesterReference(semID)
+                    .collection(EVENT.get());
+        }
+
+        @NonNull
+        protected DocumentReference getPersonReference(String uid) {
+            return FBFS.collection(PERSON.get())
+                    .document(uid);
+
+        }
+
+        @NonNull
+        CollectionReference getMovementSubRef(@NonNull DocumentReference ref) {
+            return ref.collection(ACCOUNT.get())
+                    .document(ACCOUNT.get())
+                    .collection(MOVEMENT.get());
+        }
+    }
+
+    /**
+     * Actual download the data from the Firebase firestore database
+     *
+     * @author B3tterTogeth3r
+     * @version 2.1
+     * @see de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload
+     * @since 2.9
+     */
     @SuppressWarnings("ConstantConditions")
-    public class Download implements IFirestoreDownload {
+    public class Download extends References implements IFirestoreDownload {
         public Download() {
             download = this;
         }
@@ -101,7 +214,7 @@ public class Firestore implements IInit {
         public Loader<ArrayList<File>> getSemesterProtocols(int semesterID) {
             Loader<ArrayList<File>> loader = new Loader<>();
             getSemesterReference(semesterID)
-                    .collection("Greeting")
+                    .collection(TRANSCRIPT.get())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<File>>(loader) {
                         @Override
@@ -122,17 +235,11 @@ public class Firestore implements IInit {
             return loader;
         }
 
-        @NonNull
-        private DocumentReference getSemesterReference(int semesterID) {
-            return FBFS.collection("Semester")
-                    .document(String.valueOf(semesterID));
-        }
-
         @Override
         public Loader<ArrayList<Text>> getSemesterGreeting(int semesterID) {
             Loader<ArrayList<Text>> loader = new Loader<>();
             getSemesterReference(semesterID)
-                    .collection("Greeting")
+                    .collection(GREETING.get())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<Text>>(loader) {
                         @Override
@@ -157,7 +264,7 @@ public class Firestore implements IInit {
         public Loader<ArrayList<Text>> getSemesterNotes(int semesterID) {
             Loader<ArrayList<Text>> loader = new Loader<>();
             getSemesterReference(semesterID)
-                    .collection("Notes")
+                    .collection(NOTES.get())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<Text>>(loader) {
                         @Override
@@ -182,8 +289,8 @@ public class Firestore implements IInit {
         public Loader<Account> getSemesterAccount(int semesterID) {
             Loader<Account> loader = new Loader<>();
             getSemesterReference(semesterID)
-                    .collection("Account")
-                    .document("Account")
+                    .collection(ACCOUNT.get())
+                    .document(ACCOUNT.get())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot, Account>(loader) {
                         @Override
@@ -229,10 +336,10 @@ public class Firestore implements IInit {
             CollectionReference colRef;
             switch (rank) {
                 case ACTIVE:
-                    colRef = getSemesterReference(semesterID).collection("Student_Board");
+                    colRef = studentPath(semesterID);
                     break;
                 case PHILISTINES:
-                    colRef = getSemesterReference(semesterID).collection("Philistines_Board");
+                    colRef = philPath(semesterID);
                     break;
                 default:
                     return loader.done();
@@ -274,14 +381,14 @@ public class Firestore implements IInit {
                 case VX:
                 case XX:
                 case XXX:
-                    colRef = getSemesterReference(semesterID).collection("Student_Board");
+                    colRef = studentPath(semesterID);
                     break;
                 case AH_XXX:
                 case AH_XX:
                 case AH_HW:
                 case AH_X:
                 case ADMIN:
-                    colRef = getSemesterReference(semesterID).collection("Philistines_Board");
+                    colRef = philPath(semesterID);
                     break;
                 case NONE:
                 default:
@@ -313,8 +420,7 @@ public class Firestore implements IInit {
         @Override
         public Loader<ArrayList<Event>> getSemesterEvents(int semesterID) {
             Loader<ArrayList<Event>> loader = new Loader<>();
-            getSemesterReference(semesterID)
-                    .collection("Event")
+            eventPath(semesterID)
                     .orderBy("time", Query.Direction.ASCENDING)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<Event>>(loader) {
@@ -340,7 +446,7 @@ public class Firestore implements IInit {
         public Loader<ArrayList<Chore>> getEventChores(int semesterID, String eventId) {
             Loader<ArrayList<Chore>> loader = new Loader<>();
             getEventReference(semesterID, eventId)
-                    .collection("Chore")
+                    .collection(CHORE.get())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<Chore>>(loader) {
                         @Override
@@ -361,17 +467,11 @@ public class Firestore implements IInit {
             return loader;
         }
 
-        @NonNull
-        private DocumentReference getEventReference(int semesterID, String eventID) {
-            return getSemesterReference(semesterID).collection("Event")
-                    .document(eventID);
-        }
-
         @Override
         public Loader<ArrayList<Text>> getEventDescription(@SemesterRange int semesterID, String eventId) {
             Loader<ArrayList<Text>> loader = new Loader<>();
             getEventReference(semesterID, eventId)
-                    .collection("Description")
+                    .collection(DESCRIPTION.get())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<Text>>(loader) {
                         @Override
@@ -396,7 +496,7 @@ public class Firestore implements IInit {
         public Loader<Location> getEventLocation(@SemesterRange int semesterID, String eventId) {
             Loader<Location> loader = new Loader<>();
             getEventReference(semesterID, eventId)
-                    .collection("Location")
+                    .collection(LOCATION.get())
                     .limit(1)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, Location>(loader) {
@@ -420,9 +520,7 @@ public class Firestore implements IInit {
         @Override
         public Loader<Event> getNextEvent() {
             Loader<Event> loader = new Loader<>();
-            FBFS.collection("Semester")
-                    .document("" + Values.currentSemester.getId())
-                    .collection("Event")
+            eventPath(Values.currentSemester.getId())
                     .whereEqualTo("visibility", "PUBLIC")
                     .whereGreaterThan("time", new Timestamp(Calendar.getInstance().getTime()))
                     .limit(1)
@@ -453,8 +551,8 @@ public class Firestore implements IInit {
         public Loader<Account> getEventAccount(FragmentActivity activity, int semesterID, String eventId) {
             Loader<Account> loader = new Loader<>();
             getEventReference(semesterID, eventId)
-                    .collection("Account")
-                    .document("Account")
+                    .collection(ACCOUNT.get())
+                    .document(ACCOUNT.get())
                     .addSnapshotListener(activity, (value, error) -> {
                         if (error != null) {
                             loader.done(error);
@@ -522,7 +620,7 @@ public class Firestore implements IInit {
         public Loader<ArrayList<Chore>> getPersonChores(String uid, boolean showDoneChores) {
             Loader<ArrayList<Chore>> loader = new Loader<>();
             CollectionReference ref = getPersonReference(uid)
-                    .collection("Chore");
+                    .collection(CHORE.get());
             Task<QuerySnapshot> result;
             if (showDoneChores) {
                 result = ref.get();
@@ -552,7 +650,7 @@ public class Firestore implements IInit {
         public Loader<ArrayList<BoardMember>> getPersonPastChargen(String uid) {
             Loader<ArrayList<BoardMember>> loader = new Loader<>();
             getPersonReference(uid)
-                    .collection("BoardMember")
+                    .collection(BOARD.get())
                     .orderBy("semester", Query.Direction.DESCENDING)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<BoardMember>>(loader) {
@@ -578,7 +676,9 @@ public class Firestore implements IInit {
         public Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester) {
             Loader<ArrayList<DrinkMovement>> loader = new Loader<>();
             getPersonReference(uid)
-                    .collection("Drinks")
+                    .collection(DRINK.get())
+                    .document(ACCOUNT.get())
+                    .collection(DRINK_MOVEMENT.get())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<DrinkMovement>>(loader) {
                         @Override
@@ -604,8 +704,8 @@ public class Firestore implements IInit {
         public Loader<Account> getPersonBalance(FragmentActivity activity, String uid) {
             Loader<Account> loader = new Loader<>();
             getPersonReference(uid)
-                    .collection("Account")
-                    .document("Account")
+                    .collection(ACCOUNT.get())
+                    .document(ACCOUNT.get())
                     .addSnapshotListener(activity, (value, error) -> {
                         if (error != null) {
                             loader.done(error);
@@ -657,7 +757,7 @@ public class Firestore implements IInit {
         public Loader<ArrayList<Address>> personAddress(String uid) {
             Loader<ArrayList<Address>> loader = new Loader<>();
             getPersonReference(uid)
-                    .collection("Address")
+                    .collection(ADDRESS.get())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<Address>>(loader) {
                         @Override
@@ -682,7 +782,7 @@ public class Firestore implements IInit {
         public Loader<ArrayList<File>> getPersonImage(String uid) {
             Loader<ArrayList<File>> loader = new Loader<>();
             getPersonReference(uid)
-                    .collection("Image")
+                    .collection(IMAGE.get())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<File>>(loader) {
                         @Override
@@ -706,9 +806,9 @@ public class Firestore implements IInit {
         @Override
         public Loader<ArrayList<Text>> getNewsText(String newsID) {
             Loader<ArrayList<Text>> loader = new Loader<>();
-            FBFS.collection("News")
+            FBFS.collection(NEWS.get())
                     .document(newsID)
-                    .collection("Text")
+                    .collection(TEXT.get())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<Text>>(loader) {
                         @Override
@@ -732,7 +832,7 @@ public class Firestore implements IInit {
         @Override
         public Loader<ArrayList<News>> getNews(FragmentActivity activity, Visibility visibility) {
             Loader<ArrayList<News>> loader = new Loader<>();
-            FBFS.collection("News")
+            FBFS.collection(NEWS.get())
                     .addSnapshotListener(activity, (value, error) -> {
                         if (error != null) {
                             loader.done(error);
@@ -761,7 +861,7 @@ public class Firestore implements IInit {
         public Loader<ArrayList<PersonLight>> getPersonList(FragmentActivity activity) {
             Loader<ArrayList<PersonLight>> loader = new Loader<>();
             try {
-                FBFS.collection("PersonListTotal")
+                FBFS.collection(PERSON_LIST_TOTAL.get())
                         .addSnapshotListener(activity, (values, error) -> {
                             if (error != null) {
                                 loader.done(error);
@@ -792,7 +892,7 @@ public class Firestore implements IInit {
         @Override
         public Loader<ArrayList<Location>> locationList() {
             Loader<ArrayList<Location>> loader = new Loader<>();
-            FBFS.collection("Location")
+            FBFS.collection(LOCATION.get())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<Location>>(loader) {
                         @Override
@@ -816,7 +916,7 @@ public class Firestore implements IInit {
         @Override
         public Loader<ArrayList<Text>> getNotes() {
             Loader<ArrayList<Text>> loader = new Loader<>();
-            FBFS.collection("Notes")
+            FBFS.collection(NOTES.get())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<Text>>(loader) {
                         @Override
@@ -840,7 +940,7 @@ public class Firestore implements IInit {
         @Override
         public Loader<ArrayList<Drink>> getDrinkKinds() {
             Loader<ArrayList<Drink>> loader = new Loader<>();
-            FBFS.collection("Drink")
+            FBFS.collection(DRINK.get())
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, ArrayList<Drink>>(loader) {
                         @Override
@@ -875,23 +975,17 @@ public class Firestore implements IInit {
                     });
             return loader;
         }
-
-        @NonNull
-        private DocumentReference getPersonReference(String uid) {
-            return FBFS.collection("Person")
-                    .document(uid);
-
-        }
-
-        @NonNull
-        private CollectionReference getMovementSubRef(@NonNull DocumentReference ref) {
-            return ref.collection("Account")
-                    .document("Account")
-                    .collection("Movement");
-        }
     }
 
-    public class Upload implements IFirestoreUpload {
+    /**
+     * The actual upload of the data to the Firebase firestore database.
+     *
+     * @author B3tterTogeth3r
+     * @version 2.1
+     * @see de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreUpload
+     * @since 2.9
+     */
+    public class Upload extends References implements IFirestoreUpload {
         public Upload() {
             upload = this;
         }
@@ -909,9 +1003,7 @@ public class Firestore implements IInit {
                 case VOP:
                 case VVOP:
                     // upload into "Student_Board"
-                    colRef[0] = FBFS.collection("Semester")
-                            .document(String.valueOf(semID))
-                            .collection("Student_Board");
+                    colRef[0] = studentPath(semID);
                     uploadToBoard(boardMember, colRef[0], loader);
                     break;
                 case AH_X:
@@ -919,26 +1011,18 @@ public class Firestore implements IInit {
                 case AH_XX:
                 case AH_XXX:
                     // upload into "Philistines_Board"
-                    colRef[0] = FBFS.collection("Semester")
-                            .document(String.valueOf(semID))
-                            .collection("Philistines_Board");
+                    colRef[0] = philPath(semID);
                     uploadToBoard(boardMember, colRef[0], loader);
                     break;
                 case ADMIN:
                     // upload into both
-                    colRef[0] = FBFS.collection("Semester")
-                            .document(String.valueOf(semID))
-                            .collection("Philistines_Board");
+                    colRef[0] = philPath(semID);
                     uploadToBoard(boardMember, colRef[0], new Loader<Boolean>()
                             .setOnSuccessListener(result -> {
-                                colRef[0] = FBFS.collection("Semester")
-                                        .document(String.valueOf(semID))
-                                        .collection("Student_Board");
+                                colRef[0] = studentPath(semID);
                                 uploadToBoard(boardMember, colRef[0], loader);
                             }).setOnFailListener(e -> {
-                                colRef[0] = FBFS.collection("Semester")
-                                        .document(String.valueOf(semID))
-                                        .collection("Student_Board");
+                                colRef[0] = studentPath(semID);
                                 uploadToBoard(boardMember, colRef[0], loader);
                             }));
                     break;
@@ -996,10 +1080,7 @@ public class Firestore implements IInit {
             if (event.validate()) {
                 if (event.getId() != null) {
                     // edit event
-                    FBFS.collection("Semester")
-                            .document(String.valueOf(semID))
-                            .collection("Event")
-                            .document(event.getId())
+                    eventPath(semID).document(event.getId())
                             .set(event)
                             .addOnCompleteListener(task -> {
                                 if (task.getException() != null) {
@@ -1010,10 +1091,7 @@ public class Firestore implements IInit {
                             });
                 } else {
                     // add new event
-                    FBFS.collection("Semester")
-                            .document(String.valueOf(semID))
-                            .collection("Event")
-                            .add(event)
+                    eventPath(semID).add(event)
                             .addOnCompleteListener(task -> {
                                 if (task.getException() != null) {
                                     loader.done(new NoDataException("Upload of new event unsuccessful", task.getException()));
@@ -1035,11 +1113,9 @@ public class Firestore implements IInit {
         @Override
         public Loader<Boolean> setEventChore(@SemesterRange int semID, @NonNull String eventID, @NonNull Chore chore) {
             Loader<Boolean> loader = new Loader<>();
-            CollectionReference ref = FBFS.collection("Semester")
-                    .document(String.valueOf(semID))
-                    .collection("Event")
+            CollectionReference ref = eventPath(semID)
                     .document(eventID)
-                    .collection("Chore");
+                    .collection(CHORE.get());
             if (!chore.validate()) {
                 return loader.done(new NotValidObjectException("Chore object not valid"));
             }
@@ -1075,11 +1151,12 @@ public class Firestore implements IInit {
         @Override
         public Loader<Boolean> setEventLocation(@SemesterRange int semID, @NonNull String eventID, @NonNull Location location) {
             Loader<Boolean> loader = new Loader<>();
-            CollectionReference ref = FBFS.collection("Semester")
-                    .document(String.valueOf(semID))
-                    .collection("Event")
+            if (eventID.isEmpty()) {
+                return loader.done(new NoDataException("No event given"));
+            }
+            CollectionReference ref = eventPath(semID)
                     .document(eventID)
-                    .collection("Location");
+                    .collection(LOCATION.get());
             if (!location.validate()) {
                 return loader.done(new NotValidObjectException("Location object not valid."));
             }
@@ -1127,12 +1204,9 @@ public class Firestore implements IInit {
                             + t.getPosition() + " - stopping download"));
                 }
             }
-            CollectionReference ref =
-                    FBFS.collection("Semester")
-                            .document(String.valueOf(semID))
-                            .collection("Event")
-                            .document(eventID)
-                            .collection("Description");
+            CollectionReference ref = eventPath(semID)
+                    .document(eventID)
+                    .collection(DESCRIPTION.get());
             ref.get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot, DocumentSnapshot>(null) {
                         @Override
@@ -1153,24 +1227,23 @@ public class Firestore implements IInit {
         @Override
         public Loader<Boolean> addSemesterMovement(@SemesterRange int semID, @NonNull Movement movement) {
             Loader<Boolean> loader = new Loader<>();
-            CollectionReference ref = FBFS.collection("Semester")
-                    .document(String.valueOf(semID))
-                    .collection("Account")
-                    .document("Account")
-                    .collection("Movement");
+            CollectionReference ref = getSemesterReference(semID)
+                    .collection(ACCOUNT.get())
+                    .document(ACCOUNT.get())
+                    .collection(MOVEMENT.get());
             if (!movement.validate()) {
                 return loader.done(new NotValidObjectException("Movement object is not valid."));
             }
             if (movement.getId().isEmpty()) {
                 // set a new movement
                 ref.add(movement)
-                    .addOnSuccessListener(reference -> loader.done(true))
-                    .addOnFailureListener(loader::done);
+                        .addOnSuccessListener(reference -> loader.done(true))
+                        .addOnFailureListener(loader::done);
             } else {
                 // update existing movement
                 ref.add(movement)
-                    .addOnSuccessListener(reference -> loader.done(true))
-                    .addOnFailureListener(loader::done);
+                        .addOnSuccessListener(reference -> loader.done(true))
+                        .addOnFailureListener(loader::done);
             }
             return loader;
         }
@@ -1178,9 +1251,8 @@ public class Firestore implements IInit {
         @Override
         public Loader<Boolean> addSemesterMeetingTranscript(@SemesterRange int semID, @NonNull File file) {
             Loader<Boolean> loader = new Loader<>();
-            CollectionReference reference = FBFS.collection("Semester")
-                    .document(String.valueOf(semID))
-                    .collection("Transcript");
+            CollectionReference reference = getSemesterReference(semID)
+                    .collection(TRANSCRIPT.get());
             if (!file.validate()) {
                 return loader.done(new NotValidObjectException("Meeting transcript file object is not valid."));
             }
@@ -1205,11 +1277,11 @@ public class Firestore implements IInit {
         @Override
         public Loader<Boolean> addNewsEntry(@Nullable News news, @NonNull ArrayList<Text> text) {
             Loader<Boolean> loader = new Loader<>();
-            CollectionReference ref = FBFS.collection("News");
+            CollectionReference ref = FBFS.collection(NEWS.get());
             if (news == null) {
                 // upload new entry
                 ref.add(new News()).addOnSuccessListener(reference -> {
-                    CollectionReference textPath = reference.collection("Text");
+                    CollectionReference textPath = reference.collection(TEXT.get());
                     for (Text t : text) {
                         textPath.add(t);
                     }
@@ -1220,7 +1292,7 @@ public class Firestore implements IInit {
                 for (Text t : text) {
                     if (!t.getId().isEmpty()) {
                         ref.document(news.getId())
-                                .collection("Text")
+                                .collection(TEXT.get())
                                 .document(t.getId())
                                 .set(t);
                     }
@@ -1233,7 +1305,7 @@ public class Firestore implements IInit {
         @Override
         public Loader<Boolean> setPerson(@NonNull Person person) {
             Loader<Boolean> loader = new Loader<>();
-            CollectionReference ref = FBFS.collection("Person");
+            CollectionReference ref = FBFS.collection(PERSON.get());
             if (!person.validate()) {
                 return loader.done(new NotValidObjectException("Person not valid"));
             }
@@ -1262,12 +1334,11 @@ public class Firestore implements IInit {
         public Loader<Boolean> setPersonAddress(@NonNull String personID, @NonNull ArrayList<Address> addressList) {
             Loader<Boolean> loader = new Loader<>();
             // Only one address is allowed at the moment.
-            if(addressList.size() != 1) {
+            if (addressList.size() != 1) {
                 loader.done(new IndexOutOfBoundsException("Only one address is allowed."));
             }
-            FBFS.collection("Person")
-                    .document(personID)
-                    .collection("Address")
+            getPersonReference(personID)
+                    .collection(ADDRESS.get())
                     .document("Home")
                     .set(addressList.get(0))
                     .addOnFailureListener(loader::done)
@@ -1278,9 +1349,8 @@ public class Firestore implements IInit {
         @Override
         public Loader<Boolean> setPersonChore(@NonNull String personID, @NonNull Chore chore) {
             Loader<Boolean> loader = new Loader<>();
-            CollectionReference ref = FBFS.collection("Person")
-                    .document(personID)
-                    .collection("Chore");
+            CollectionReference ref = getPersonReference(personID)
+                    .collection(CHORE.get());
             if (chore.getId().isEmpty()) {
                 // upload new object
                 ref.add(chore)
@@ -1307,9 +1377,8 @@ public class Firestore implements IInit {
         @Override
         public Loader<Boolean> setPersonCharge(@NonNull String personID, @SemesterRange int semester, @NonNull BoardMember boardMember) {
             Loader<Boolean> loader = new Loader<>();
-            FBFS.collection("Person")
-                    .document(personID)
-                    .collection("Board")
+            getPersonReference(personID)
+                    .collection(BOARD.get())
                     .document(String.valueOf(semester))
                     .set(boardMember)
                     .addOnCompleteListener(new OnCompleteListener<Void, Boolean>(loader) {
@@ -1327,12 +1396,11 @@ public class Firestore implements IInit {
             if (!movement.validate()) {
                 return loader.done(new NotValidObjectException("Movement object not valid."));
             }
-            CollectionReference ref = FBFS.collection("Person")
-                    .document(personID)
-                    .collection("Account")
+            CollectionReference ref = getPersonReference(personID)
+                    .collection(ACCOUNT.get())
                     .document("Account")
-                    .collection("Movement");
-            if (movement.getId().isEmpty()) {
+                    .collection(MOVEMENT.get());
+            if (movement.getId() == null || movement.getId().isEmpty()) {
                 ref.add(movement)
                         .addOnCompleteListener(new OnCompleteListener<DocumentReference, Boolean>(loader) {
                             @Override
@@ -1359,9 +1427,8 @@ public class Firestore implements IInit {
             if (!file.validate()) {
                 return loader.done(new NotValidObjectException("File object invalid"));
             }
-            CollectionReference ref = FBFS.collection("Person")
-                    .document(personID)
-                    .collection("Image");
+            CollectionReference ref = getPersonReference(personID)
+                    .collection(IMAGE.get());
             if (file.getId().isEmpty()) {
                 // upload new file object
                 ref.add(file)

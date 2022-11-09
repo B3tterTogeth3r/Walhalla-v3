@@ -147,7 +147,7 @@ public class FraternityData extends Fragment implements IOnBackPressed {
                                             person.setRank(result);
                                         }
                                     })
-                                    .onFailureListener(e -> Log.e(TAG, "onFailureListener: RankSelectDialog Error", e));
+                                    .setOnFailureListener(e -> Log.e(TAG, "onFailureListener: RankSelectDialog Error", e));
                         } catch (Exception e) {
                             Log.e(TAG, "onClick: rank", e);
                         }
@@ -168,7 +168,7 @@ public class FraternityData extends Fragment implements IOnBackPressed {
                                             person.setNickname(result.toString());
                                         }
                                     })
-                                    .onFailureListener(e -> Log.e(TAG, "onFailureListener: something went wrong with the ProfileEditDialog", e));
+                                    .setOnFailureListener(e -> Log.e(TAG, "onFailureListener: something went wrong with the ProfileEditDialog", e));
                         } catch (CreateDialogException e) {
                             Log.e(TAG, "onClick: nickname", e);
                         }
