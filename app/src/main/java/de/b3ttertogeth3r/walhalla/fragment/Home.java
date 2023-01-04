@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -13,6 +13,8 @@
  */
 
 package de.b3ttertogeth3r.walhalla.fragment;
+
+import static de.b3ttertogeth3r.walhalla.firebase.Firebase.Firestore.download;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -45,14 +47,12 @@ import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
-import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.util.Log;
 import de.b3ttertogeth3r.walhalla.util.Values;
 
 public class Home extends Fragment implements View.OnClickListener {
     private static final String TAG = "Home";
     private final IAuth auth;
-    private final IFirestoreDownload firestoreDownload;
     private int boxWidth;
     private int boxHeight;
     private RelativeLayout program;
@@ -67,7 +67,6 @@ public class Home extends Fragment implements View.OnClickListener {
 
     public Home() {
         auth = Firebase.authentication();
-        firestoreDownload = Firebase.Firestore.download();
     }
 
     @Override
@@ -80,7 +79,6 @@ public class Home extends Fragment implements View.OnClickListener {
         RelativeLayout frame = new RelativeLayout(requireContext());
         frame.setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
                 , ViewGroup.LayoutParams.MATCH_PARENT));
-
         Display display =
                 ((WindowManager) requireContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
         int width = display.getWidth();
@@ -100,7 +98,7 @@ public class Home extends Fragment implements View.OnClickListener {
         program.addView(image(AppCompatResources.getDrawable(requireContext(),
                 R.drawable.ic_calendar), false));
         // Add description
-        firestoreDownload.getNextEvent()
+        download().getNextEvent()
                 .setOnSuccessListener(result -> {
                     if (result != null /*&& result.validate()*/ && !result.getTitle().isEmpty()) {
                         String string;
@@ -131,7 +129,7 @@ public class Home extends Fragment implements View.OnClickListener {
         greeting.setId(R.id.greeting);
 
         // Add icon
-        firestoreDownload.getSemesterBoard(Values.currentSemester.getId(), Rank.ACTIVE)
+        download().getSemesterBoard(Values.currentSemester.getId(), Rank.ACTIVE)
                 .setOnSuccessListener(result -> {
                     if (result == null || result.size() == 0) {
                         throw new NoDataException("Download of chargen did not work");
@@ -253,6 +251,17 @@ public class Home extends Fragment implements View.OnClickListener {
             login.setOnClickListener(this);
         } catch (Exception ignored) {
         }
+        toolbarContent();
+    }
+
+    @Override
+    public void toolbarContent() {
+        toolbar = requireActivity().findViewById(R.id.toolbar);
+        toolbar.setTitle("Walhalla");
+        toolbar.getMenu().clear();
+        customToolbar = toolbar.findViewById(R.id.custom_title);
+        customToolbar.setVisibility(View.GONE);
+        customToolbarTitle = customToolbar.findViewById(R.id.action_bar_title);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -24,8 +24,6 @@ import java.util.Locale;
 
 import de.b3ttertogeth3r.walhalla.App;
 import de.b3ttertogeth3r.walhalla.R;
-import de.b3ttertogeth3r.walhalla.firebase.Firebase;
-import de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig;
 import de.b3ttertogeth3r.walhalla.object.Semester;
 
 public class Values {
@@ -51,11 +49,11 @@ public class Values {
         for (Semester s : Values.semesterList) {
             if (s.getStart().toDate().before(time.toDate()) &&
                     s.getEnd().toDate().after(time.toDate())) {
-                Log.e("VALUES", "getCurrentSemester: semester-id: " + s.getId());
+                Log.i("VALUES", "getCurrentSemester: semester-id: " + s.getId());
                 return s;
             }
         }
-        return getSemesters().get(Firebase.remoteConfig().getInt(IRemoteConfig.CURRENT_SEMESTER));
+        return new Semester(316);
     }
 
     @NonNull

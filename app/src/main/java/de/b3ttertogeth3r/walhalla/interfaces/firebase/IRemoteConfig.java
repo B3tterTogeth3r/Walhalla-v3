@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -24,7 +24,6 @@ import de.b3ttertogeth3r.walhalla.annotation.RemoteConfigKeys;
  * @since 2.0
  */
 public interface IRemoteConfig {
-    String CURRENT_SEMESTER = "current_semester_id";
     String SEMESTER_NOTES = "semester_notes";
     String FRATERNITY_GERMANY = "fraternity_germany";
     String FRATERNITY_CITY = "fraternity_wuerzburg";

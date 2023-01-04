@@ -21,7 +21,7 @@ plugins {
 
 android {
     compileSdk 31
-    compileOptions.encoding ="UTF-8"
+    compileOptions.encoding = "UTF-8"
 
     defaultConfig {
         applicationId "de.b3ttertogeth3r.walhalla"
@@ -54,11 +54,16 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3' // Flutter Multidex
     implementation project(':nativetemplates') // Google ads template
 
+    //region Testing
+    // Required -- JUnit 4 framework
+    testImplementation "junit:junit:4.13.2"
+    // Optional -- Robolectric environment
+    testImplementation "androidx.test:core:1.5.0"
+    //endregion
+
     //noinspection GradleDependency
     implementation 'androidx.appcompat:appcompat:1.4.2'
-    implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0' // Firebase AppCheck
     implementation 'org.jetbrains:annotations:15.0'
     implementation 'androidx.work:work-runtime:2.7.1'
     implementation 'androidx.annotation:annotation:1.4.0'
@@ -70,16 +75,24 @@ dependencies {
     implementation 'com.xw.repo:bubbleseekbar:3.20' // BubbleSeekBar
     implementation 'de.hdodenhof:circleimageview:3.1.0' // CircleImageView
     implementation 'com.github.mirrajabi:search-dialog:1.2.4' // search-dialog
-    implementation 'com.github.smarteist:autoimageslider:1.4.0-appcompat' // automatic image slide view
-    implementation 'com.github.douglasjunior:android-simple-tooltip:1.0.0-rc.0' //Custom Tooltip window
+    implementation 'com.github.smarteist:autoimageslider:1.4.0-appcompat'
+    // automatic image slide view
+    implementation 'com.github.douglasjunior:android-simple-tooltip:1.0.0-rc.0'
+    //Custom Tooltip window
 
     implementation 'com.twitter.sdk.android:twitter:3.0.0' // Twitter login
     implementation 'com.itextpdf:itextg:5.5.10' //iTextG
+
+    //region Google
     implementation 'com.android.billingclient:billing:5.0.0' // Google In-App payment
     implementation 'com.google.android.gms:play-services-maps:18.1.0' // Google-Maps-API
     implementation 'com.google.android.gms:play-services-ads:21.1.0' // Google Ads
+    implementation 'com.google.android.gms:play-services-auth:20.2.0' // Google Auth
+    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.0' // Firebase AppCheck
+    //endregion
 
-    // Firebase imports
+    // region Firebase imports
     implementation 'com.firebaseui:firebase-ui-auth:7.2.0' // Firebase authentication ui
     implementation 'com.firebaseui:firebase-ui-storage:7.2.0' // FirebaseUI Storage only
     implementation platform('com.google.firebase:firebase-bom:30.4.0')
@@ -96,9 +109,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-inappmessaging' // In-App Messaging
     implementation 'com.google.firebase:firebase-inappmessaging-display' // In-App Messaging Display
     implementation 'com.google.firebase:firebase-functions' // Cloud Functions
-    implementation 'com.google.android.gms:play-services-auth:20.2.0' // Google Auth
+    //endregion
 }
 
+// generate JDoc
 android.applicationVariants.all { variant ->
     task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
         description "Generates Javadoc for $variant.name."
@@ -115,4 +129,5 @@ android.applicationVariants.all { variant ->
             options.addStringOption "-show-members", "package"
             options.encoding("UTF-8")
         }
-    }}
+    }
+}

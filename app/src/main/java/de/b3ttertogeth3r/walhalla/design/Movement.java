@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -119,20 +119,22 @@ public class Movement {
         if (dAmount == 0) {
             movement.setIncome(0);
             movement.setExpense(0);
-        } else if (dAmount < 0) {
+        } else if (dAmount > 0) {
             movement.setIncome(0);
             movement.setExpense(Math.abs(dAmount));
-        } else if (dAmount > 0) {
+        } else if (dAmount < 0) {
             movement.setIncome(Math.abs(dAmount));
             movement.setExpense(0);
         }
         if (!m.getPurpose().isEmpty()) {
             movement.setPurpose(m.getPurpose());
+        } else {
+            movement.setPurpose("");
         }
         if (!m.getAdd().isEmpty()) {
             movement.setAdd(m.getAdd());
         } else {
-            movement.setAdd(String.valueOf(m.getAmount()));
+            movement.setAdd("");
         }
         if (m.getRecipe() != null) {
             movement.setRecipe(m.getRecipe());
@@ -162,7 +164,7 @@ public class Movement {
         if (amount == 0) {
             return;
         }
-        String s = "&#128; " + String.format(Values.LOCALE, "%.2f", amount).replace(".", ",");
+        String s = "€ " + String.format(Values.LOCALE, "%.2f", amount).replace(".", ",");
         this.income.setVisibility(View.VISIBLE);
         this.income.setText(s);
     }

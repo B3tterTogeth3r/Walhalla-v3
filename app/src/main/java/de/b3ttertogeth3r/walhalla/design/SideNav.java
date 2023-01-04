@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -34,6 +34,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.enums.Fraternity;
+import de.b3ttertogeth3r.walhalla.enums.Response;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.fragment.Home;
 import de.b3ttertogeth3r.walhalla.fragment.board.AddChores;
@@ -134,7 +135,16 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
         fillSideNav();
     }
 
-    private void fillHeadView() {
+    public SideNav(@NonNull Context context, @Nullable AttributeSet attrs) {
+        super(context, attrs);
+        reload = this;
+        auth = Firebase.authentication();
+        setNavigationItemSelectedListener(this);
+        fillHeadView();
+        fillSideNav();
+    }
+
+    Response fillHeadView() {
         View view = getHeaderView(0);
         ImageView image = view.findViewById(R.id.nav_headder);
         TextView title = view.findViewById(R.id.nav_title);
@@ -157,159 +167,14 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
                 street.setText(Fraternity.ADH.toString());
                 city.setVisibility(View.GONE);
             }
-        } else {
-            image.setImageResource(R.drawable.wappen_2017);
-            title.setText(Fraternity.NAME.toString());
-            street.setText(Fraternity.ADH.toString());
-            city.setVisibility(View.GONE);
+            return Response.FULL_SUCCESS;
         }
-    }
+        image.setImageResource(R.drawable.wappen_2017);
+        title.setText(Fraternity.NAME.toString());
+        street.setText(Fraternity.ADH.toString());
+        city.setVisibility(View.GONE);
+        return Response.OK;
 
-    @SuppressLint("NonConstantResourceId")
-    public static void changePage(int string_value_id, FragmentTransaction transaction) {
-        int container = R.id.fragment_container;
-        switch (string_value_id) {
-            case R.string.menu_login:
-                transaction.replace(container, new SignInHome())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.id.program:
-            case R.string.menu_program:
-                transaction.replace(container, new Program())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_rooms:
-                transaction.replace(container, new Rooms())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.id.greeting:
-            case R.string.menu_greeting:
-                transaction.replace(container, new Greeting())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_profile:
-                transaction.replace(container, new Profile())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_balance:
-                transaction.replace(container, new Balance())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.id.chargen:
-            case R.string.menu_chargen:
-                transaction.replace(container, new StudentBoard())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_chargen_phil:
-                transaction.replace(container, new PhilistinesBoard())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_drinks:
-                transaction.replace(container, new Drinks())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_kartei:
-                transaction.replace(container, new allGreenUsers())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_about_us:
-                transaction.replace(container, new AboutUs())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_more_history:
-                transaction.replace(container, new OwnHistory())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_more_frat_wue:
-                transaction.replace(container, new Fraternities_city())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_more_frat_organisation:
-                transaction.replace(container, new Fraternities_germany())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_all_profiles:
-                transaction.replace(container, new allUsers())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.id.news:
-            case R.string.menu_messages:
-                transaction.replace(container, new NewsFragment())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_donate:
-                transaction.replace(container, new Donation())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_chores:
-                transaction.replace(container, new Chores(false))
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.string.menu_transcript:
-                transaction.replace(container, new Transcript())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-            case R.id.row2first:
-                if (auth.isSignIn()) {
-                    changePage(R.string.menu_balance, transaction);
-                } else {
-                    changePage(R.string.menu_rooms, transaction);
-                }
-                break;
-            case R.id.login:
-                if (auth.isSignIn()) {
-                    changePage(R.string.menu_logout, transaction);
-                } else {
-                    changePage(R.string.menu_login, transaction);
-                }
-                break;
-            case R.string.menu_logout:
-            case R.id.logout:
-                auth.signOut();
-            case R.string.menu_home:
-            default:
-                transaction.replace(container, new Home())
-                        .addToBackStack(TAG)
-                        .commit();
-                break;
-        }
-    }
-
-    public SideNav(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        reload = this;
-        auth = Firebase.authentication();
-        setNavigationItemSelectedListener(this);
-        fillHeadView();
-        fillSideNav();
-    }
-
-    public SideNav(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        reload = this;
-        auth = Firebase.authentication();
-        setNavigationItemSelectedListener(this);
-        fillHeadView();
-        fillSideNav();
     }
 
     private void fillSideNav() {
@@ -384,14 +249,135 @@ public class SideNav extends NavigationView implements NavigationView.OnNavigati
         invalidate();
     }
 
+    public SideNav(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        reload = this;
+        auth = Firebase.authentication();
+        setNavigationItemSelectedListener(this);
+        fillHeadView();
+        fillSideNav();
+    }
+
+    public static void goHome(FragmentTransaction manager) {
+        changePage(R.string.menu_home, manager);
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    public static int changePage(int string_value_id, FragmentTransaction transaction) {
+        int container = R.id.fragment_container;
+        switch (string_value_id) {
+            case R.string.menu_login:
+                return transaction.replace(container, new SignInHome())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.id.program:
+            case R.string.menu_program:
+                return transaction.replace(container, new Program())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_rooms:
+                return transaction.replace(container, new Rooms())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.id.greeting:
+            case R.string.menu_greeting:
+                return transaction.replace(container, new Greeting())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_profile:
+                return transaction.replace(container, new Profile())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_balance:
+                return transaction.replace(container, new Balance())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.id.chargen:
+            case R.string.menu_chargen:
+                return transaction.replace(container, new StudentBoard())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_chargen_phil:
+                return transaction.replace(container, new PhilistinesBoard())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_drinks:
+                return transaction.replace(container, new Drinks())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_kartei:
+                return transaction.replace(container, new allGreenUsers())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_about_us:
+                return transaction.replace(container, new AboutUs())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_more_history:
+                return transaction.replace(container, new OwnHistory())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_more_frat_wue:
+                return transaction.replace(container, new Fraternities_city())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_more_frat_organisation:
+                return transaction.replace(container, new Fraternities_germany())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_all_profiles:
+                return transaction.replace(container, new allUsers())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.id.news:
+            case R.string.menu_messages:
+                return transaction.replace(container, new NewsFragment())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_donate:
+                return transaction.replace(container, new Donation())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_chores:
+                return transaction.replace(container, new Chores(false))
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.string.menu_transcript:
+                return transaction.replace(container, new Transcript())
+                        .addToBackStack(TAG)
+                        .commit();
+            case R.id.row2first:
+                if (auth.isSignIn()) {
+                    return changePage(R.string.menu_balance, transaction);
+                } else {
+                    return changePage(R.string.menu_rooms, transaction);
+                }
+            case R.id.login:
+                if (auth.isSignIn()) {
+                    return changePage(R.string.menu_logout, transaction);
+                } else {
+                    return changePage(R.string.menu_login, transaction);
+                }
+            case R.string.menu_logout:
+            case R.id.logout:
+                auth.signOut();
+            case R.string.menu_home:
+            default:
+                return transaction.replace(container, new Home())
+                        .addToBackStack(TAG)
+                        .commit();
+        }
+    }
+
     @Override
     public void reload() {
         fillHeadView();
         fillSideNav();
     }
 
-    public void setListener(ISideNav listener) {
+    public boolean setListener(ISideNav listener) {
         this.listener = listener;
+        return true;
     }
 
     @Override

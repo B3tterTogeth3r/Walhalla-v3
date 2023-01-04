@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -15,7 +15,6 @@
 package de.b3ttertogeth3r.walhalla.interfaces.firebase;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 
 import com.google.firebase.firestore.DocumentReference;
 
@@ -49,8 +48,8 @@ import de.b3ttertogeth3r.walhalla.object.Text;
  * Ungrouped:
  * <ul>
  *     <li>{@link #getSemesterEvents(int)}</li>
- *     <li>{@link #getPersonList(FragmentActivity)}</li>
- *     <li>{@link #getNews(FragmentActivity, Visibility)}</li>
+ *     <li>{@link #getPersonList()}</li>
+ *     <li>{@link #getNews(Visibility)}</li>
  *     <li>{@link #locationList()}</li>
  *     <li>{@link #file(DocumentReference)}</li>
  * </ul>
@@ -77,7 +76,7 @@ import de.b3ttertogeth3r.walhalla.object.Text;
  *     <li>{@link #getPersonChores(String, boolean)}</li>
  *     <li>{@link #getPersonPastChargen(String)}</li>
  *     <li>{@link #getPersonDrinkMovement(String, int)}</li>
- *     <li>{@link #getPersonBalance(FragmentActivity, String)}</li>
+ *     <li>{@link #getPersonBalance(String)}</li>
  *     <li>{@link #getPersonMovements(String)}</li>
  *     <li>{@link #personAddress(String)}</li>
  *     <li>{@link #getPersonImage(String)}</li>
@@ -219,7 +218,7 @@ public interface IFirestoreDownload {
      */
     Loader<Event> getNextEvent();
 
-    Loader<Account> getEventAccount(FragmentActivity activity, @SemesterRange int semesterID, String eventId);
+    Loader<Account> getEventAccount(@SemesterRange int semesterID, String eventId);
 
     Loader<ArrayList<Movement>> getEventMovements(@SemesterRange int semesterID, String eventId);
     //endregion
@@ -249,7 +248,7 @@ public interface IFirestoreDownload {
      * Download the past {@link BoardMember Chargen} of a person
      *
      * @param uid {@link Person#ID}
-     * @return {@link Loader} with an {@link ArrayList} containing {@link BoardMember}s orderd by {@link BoardMember#SEMESTER}
+     * @return {@link Loader} with an {@link ArrayList} containing {@link BoardMember}s ordered by {@link BoardMember#SEMESTER}
      * @firestorePath /Person/{PersonID}/Board/{BoardMemberID}
      */
     Loader<ArrayList<BoardMember>> getPersonPastChargen(String uid);
@@ -265,14 +264,13 @@ public interface IFirestoreDownload {
     Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester);
 
     /**
-     * Download the current balance of a given person.
+     * Download the current balance of a given person and return it as a realtime listener
      *
-     * @param uid      {@link Person#ID}
-     * @param activity Fragment the realtime Listener is connected to.
+     * @param uid {@link Person#ID}
      * @return {@link Loader} with an {@link Account} element
      * @firestorePath /Person/{PersonID}
      */
-    Loader<Account> getPersonBalance(FragmentActivity activity, String uid);
+    Loader<Account> getPersonBalance(String uid);
 
     /**
      * Download all {@link Movement}s of a person.
@@ -306,7 +304,7 @@ public interface IFirestoreDownload {
 
     /**
      * Download the content belonging to a {@link News} object downloaded via
-     * {@link #getNews(FragmentActivity, Visibility)}.
+     * {@link #getNews(Visibility)}.
      *
      * @param newsID {@link News#ID}
      * @return {@link Loader} with a {@link Text} filled {@link ArrayList}
@@ -319,10 +317,9 @@ public interface IFirestoreDownload {
      * Download a list of news entries according to their visibility.
      *
      * @param visibility {@link Rank} group to whom the news entry is visible to.
-     * @param activity   Fragment the realtime listener is connected to.
      * @return Listener to wait for the result
      */
-    Loader<ArrayList<News>> getNews(FragmentActivity activity, Visibility visibility);
+    Loader<ArrayList<News>> getNews(Visibility visibility);
     //endregion
 
     //region LISTS
@@ -330,13 +327,12 @@ public interface IFirestoreDownload {
     /**
      * Download a list of all {@link Person} persons in Firestore.
      *
-     * @param activity FragmentActivity to connect the realtime listener to the activities lifecycle.
      * @return {@link Loader} with a {@link Person} filled {@link ArrayList}
      * @firestorePath Person/{PersonID}
      * @firestorePath /Person/{PersonID}
      * @since 1.0
      */
-    Loader<ArrayList<PersonLight>> getPersonList(FragmentActivity activity);
+    Loader<ArrayList<PersonLight>> getPersonList();
 
     /**
      * Download a list of default locations from the Firebase Firestore Database.

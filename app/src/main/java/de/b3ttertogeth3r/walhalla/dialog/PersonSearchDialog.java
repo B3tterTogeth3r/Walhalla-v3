@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -15,6 +15,7 @@
 package de.b3ttertogeth3r.walhalla.dialog;
 
 import static de.b3ttertogeth3r.walhalla.firebase.Firebase.Firestore.download;
+import static de.b3ttertogeth3r.walhalla.interfaces.RealtimeListeners.stopRealtimeListener;
 
 import android.content.Context;
 import android.widget.Filter;
@@ -45,7 +46,7 @@ public class PersonSearchDialog extends SimpleSearchDialogCompat<SearchModel> {
     public static Loader<PersonLight> create(FragmentActivity activity) {
         Loader<PersonLight> loader = new Loader<>();
         download()
-                .getPersonList(activity)
+                .getPersonList()
                 .setOnSuccessListener(result -> {
                     if (result == null || result.isEmpty()) {
                         throw new NoDataException("No person was downloaded.");
@@ -70,5 +71,11 @@ public class PersonSearchDialog extends SimpleSearchDialogCompat<SearchModel> {
                     loader.done(e);
                 });
         return loader;
+    }
+
+    @Override
+    protected void onStop() {
+        stopRealtimeListener();
+        super.onStop();
     }
 }

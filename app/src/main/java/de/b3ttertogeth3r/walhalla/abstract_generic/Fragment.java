@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -115,6 +115,7 @@ public abstract class Fragment extends androidx.fragment.app.Fragment implements
         try {
             super.onStart();
             start();
+        } catch (Exception ignored) {
         } finally {
             analytics.screenChange(analyticsProperties());
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -21,6 +21,8 @@ import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.ICloudFunctions;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreUpload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IRealtimeDownload;
+import de.b3ttertogeth3r.walhalla.interfaces.firebase.IRealtimeUpload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IRemoteConfig;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IStorageUpload;
@@ -168,6 +170,17 @@ public interface Firebase {
         static IStorageUpload upload() {
             return new StorageMock.Upload();
             //return de.b3ttertogeth3r.walhalla.firebase.Storage.upload;
+        }
+    }
+
+    interface Realtime {
+
+        static IRealtimeUpload upload() {
+            return de.b3ttertogeth3r.walhalla.firebase.Realtime.upload;
+        }
+
+        static IRealtimeDownload download() {
+            return de.b3ttertogeth3r.walhalla.firebase.Realtime.download;
         }
     }
 }

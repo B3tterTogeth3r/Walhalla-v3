@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -94,4 +94,11 @@ public interface FirebaseInit {
      * @param context Application context
      */
     void Storage(Context context);
+
+    /**
+     * Initialize the given firebase service
+     *
+     * @param context Application context
+     */
+    void Realtime(Context context);
 }

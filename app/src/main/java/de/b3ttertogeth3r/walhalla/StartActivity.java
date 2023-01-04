@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -35,6 +35,7 @@ import de.b3ttertogeth3r.walhalla.firebase.DynamicLinks;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
 import de.b3ttertogeth3r.walhalla.firebase.Firestore;
 import de.b3ttertogeth3r.walhalla.firebase.InAppMessaging;
+import de.b3ttertogeth3r.walhalla.firebase.Realtime;
 import de.b3ttertogeth3r.walhalla.firebase.RemoteConfig;
 import de.b3ttertogeth3r.walhalla.firebase.Storage;
 import de.b3ttertogeth3r.walhalla.interfaces.IStartActivity;
@@ -52,7 +53,7 @@ import de.b3ttertogeth3r.walhalla.util.Log;
  */
 public class StartActivity extends AppCompatActivity implements IStartActivity {
     private static final String TAG = "StartActivity";
-    public int TOTAL = 13;
+    public int TOTAL = 14;
     public int COUNTER = 0;
     public int PROGRESS = 0;
     private ProgressBar progressBar;
@@ -64,7 +65,21 @@ public class StartActivity extends AppCompatActivity implements IStartActivity {
         progressBar = findViewById(R.id.progressBar);
         progressBar.setProgress(0);
         progressBar.setVisibility(View.VISIBLE);
+        // TODO: 17.12.22 check if auth is still valid. if not, sign out
         start();
+        checkAuth();
+    }
+
+    private boolean checkAuth() {
+        try {
+            if (!Firebase.authentication().checkUser()) {
+                Firebase.authentication().signOut();
+            }
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "An error occurred while checking the auth status", e);
+            return false;
+        }
     }
 
     @Override
@@ -114,6 +129,7 @@ public class StartActivity extends AppCompatActivity implements IStartActivity {
         firebaseInit.InAppMessaging(getApplicationContext());
         firebaseInit.RemoteConfig(getApplicationContext());
         firebaseInit.Storage(getApplicationContext());
+        firebaseInit.Realtime(getApplicationContext());
     }
 
     @Override
@@ -188,8 +204,8 @@ public class StartActivity extends AppCompatActivity implements IStartActivity {
     @Override
     public void Analytics(Context context) {
         if (new Analytics().init(context, IS_EMULATOR)) {
-            updateProgressbar();
             Log.i(TAG, "Analytics init complete");
+            updateProgressbar();
             return;
         }
         Log.e(TAG, "Analytics init incomplete");
@@ -198,8 +214,8 @@ public class StartActivity extends AppCompatActivity implements IStartActivity {
     @Override
     public void Authentication(Context context) {
         if (new Authentication().init(context, IS_EMULATOR)) {
-            updateProgressbar();
             Log.i(TAG, "Authentication init complete");
+            updateProgressbar();
             return;
         }
         Log.e(TAG, "Authentication init incomplete");
@@ -208,8 +224,8 @@ public class StartActivity extends AppCompatActivity implements IStartActivity {
     @Override
     public void CloudMessaging(Context context) {
         if (new CloudMessaging().init(context, IS_EMULATOR)) {
-            updateProgressbar();
             Log.i(TAG, "CloudMessaging init complete");
+            updateProgressbar();
             return;
         }
         Log.e(TAG, "CloudMessaging init incomplete");
@@ -218,8 +234,8 @@ public class StartActivity extends AppCompatActivity implements IStartActivity {
     @Override
     public void Crashlytics(Context context) {
         if (new Crashlytics().init(context, IS_EMULATOR)) {
-            updateProgressbar();
             Log.i(TAG, "Crashlytics init complete");
+            updateProgressbar();
             return;
         }
         Log.e(TAG, "Crashlytics init incomplete");
@@ -228,8 +244,8 @@ public class StartActivity extends AppCompatActivity implements IStartActivity {
     @Override
     public void CloudFunctions(Context context) {
         if (new CloudFunctions().init(context, IS_EMULATOR)) {
-            updateProgressbar();
             Log.i(TAG, "CloudFunctions init complete");
+            updateProgressbar();
             return;
         }
         Log.e(TAG, "CloudFunctions init incomplete");
@@ -238,8 +254,8 @@ public class StartActivity extends AppCompatActivity implements IStartActivity {
     @Override
     public void DynamicLinks(Context context) {
         if (new DynamicLinks().init(context, IS_EMULATOR)) {
-            updateProgressbar();
             Log.i(TAG, "DynamicLinks init complete");
+            updateProgressbar();
             return;
         }
         Log.e(TAG, "DynamicLinks init incomplete");
@@ -248,8 +264,8 @@ public class StartActivity extends AppCompatActivity implements IStartActivity {
     @Override
     public void Firestore(Context context) {
         if (new Firestore().init(context, IS_EMULATOR)) {
-            updateProgressbar();
             Log.i(TAG, "Firestore init complete");
+            updateProgressbar();
             return;
         }
         Log.e(TAG, "Firestore init incomplete");
@@ -258,8 +274,8 @@ public class StartActivity extends AppCompatActivity implements IStartActivity {
     @Override
     public void InAppMessaging(Context context) {
         if (new InAppMessaging().init(context, IS_EMULATOR)) {
-            updateProgressbar();
             Log.i(TAG, "InAppMessaging init complete");
+            updateProgressbar();
             return;
         }
         Log.e(TAG, "InAppMessaging init incomplete");
@@ -270,8 +286,8 @@ public class StartActivity extends AppCompatActivity implements IStartActivity {
         if (new RemoteConfig().init(context, IS_EMULATOR)) {
             Firebase.remoteConfig().apply();
             Firebase.remoteConfig().update();
-            updateProgressbar();
             Log.i(TAG, "RemoteConfig init complete");
+            updateProgressbar();
             return;
         }
         Log.e(TAG, "RemoteConfig init incomplete");
@@ -280,10 +296,20 @@ public class StartActivity extends AppCompatActivity implements IStartActivity {
     @Override
     public void Storage(Context context) {
         if (new Storage().init(context, IS_EMULATOR)) {
-            updateProgressbar();
             Log.i(TAG, "Storage init complete");
+            updateProgressbar();
             return;
         }
         Log.e(TAG, "Storage init incomplete");
+    }
+
+    @Override
+    public void Realtime(Context context) {
+        if (new Realtime().init(context, IS_EMULATOR)) {
+            Log.i(TAG, "Realtime init complete");
+            updateProgressbar();
+            return;
+        }
+        Log.e(TAG, "Realtime init incomplete");
     }
 }

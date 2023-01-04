@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -35,12 +35,12 @@ import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.SEMES
 import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.STUDENT_BOARD;
 import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.TEXT;
 import static de.b3ttertogeth3r.walhalla.firebase.Firestore.CollectionName.TRANSCRIPT;
+import static de.b3ttertogeth3r.walhalla.interfaces.RealtimeListeners.listener;
 
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -63,6 +63,7 @@ import de.b3ttertogeth3r.walhalla.enums.Rank;
 import de.b3ttertogeth3r.walhalla.enums.Visibility;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
 import de.b3ttertogeth3r.walhalla.exception.NotValidObjectException;
+import de.b3ttertogeth3r.walhalla.exception.UserDataError;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreUpload;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IInit;
@@ -98,6 +99,7 @@ public class Firestore implements IInit {
             FBFS = FirebaseFirestore.getInstance();
             download = new Download();
             upload = new Upload();
+
             if (isEmulator) {
                 FBFS.useEmulator("10.0.2.2", 8080);
 
@@ -108,7 +110,7 @@ public class Firestore implements IInit {
             }
             return true;
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage(), e);
+            Log.e(TAG, "init: ", e);
             return false;
         }
     }
@@ -206,6 +208,8 @@ public class Firestore implements IInit {
      */
     @SuppressWarnings("ConstantConditions")
     public class Download extends References implements IFirestoreDownload {
+        private static final String TAG = "Firestore.Download";
+
         public Download() {
             download = this;
         }
@@ -548,12 +552,12 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<Account> getEventAccount(FragmentActivity activity, int semesterID, String eventId) {
+        public Loader<Account> getEventAccount(int semesterID, String eventId) {
             Loader<Account> loader = new Loader<>();
-            getEventReference(semesterID, eventId)
+            listener.add(getEventReference(semesterID, eventId)
                     .collection(ACCOUNT.get())
                     .document(ACCOUNT.get())
-                    .addSnapshotListener(activity, (value, error) -> {
+                    .addSnapshotListener((value, error) -> {
                         if (error != null) {
                             loader.done(error);
                             return;
@@ -568,7 +572,7 @@ public class Firestore implements IInit {
                         } catch (Exception e) {
                             loader.done(e);
                         }
-                    });
+                    }));
             return loader;
         }
 
@@ -675,6 +679,9 @@ public class Firestore implements IInit {
         @Override
         public Loader<ArrayList<DrinkMovement>> getPersonDrinkMovement(String uid, int semester) {
             Loader<ArrayList<DrinkMovement>> loader = new Loader<>();
+            if (uid == null) {
+                return loader.done(new UserDataError("no user is singed in"));
+            }
             getPersonReference(uid)
                     .collection(DRINK.get())
                     .document(ACCOUNT.get())
@@ -701,12 +708,12 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<Account> getPersonBalance(FragmentActivity activity, String uid) {
+        public Loader<Account> getPersonBalance(String uid) {
             Loader<Account> loader = new Loader<>();
-            getPersonReference(uid)
+            listener.add(getPersonReference(uid)
                     .collection(ACCOUNT.get())
                     .document(ACCOUNT.get())
-                    .addSnapshotListener(activity, (value, error) -> {
+                    .addSnapshotListener((value, error) -> {
                         if (error != null) {
                             loader.done(error);
                             return;
@@ -721,7 +728,7 @@ public class Firestore implements IInit {
                         } catch (Exception e) {
                             loader.done(e);
                         }
-                    });
+                    }));
             return loader;
         }
 
@@ -830,10 +837,10 @@ public class Firestore implements IInit {
         }
 
         @Override
-        public Loader<ArrayList<News>> getNews(FragmentActivity activity, Visibility visibility) {
+        public Loader<ArrayList<News>> getNews(Visibility visibility) {
             Loader<ArrayList<News>> loader = new Loader<>();
-            FBFS.collection(NEWS.get())
-                    .addSnapshotListener(activity, (value, error) -> {
+            listener.add(FBFS.collection(NEWS.get())
+                    .addSnapshotListener((value, error) -> {
                         if (error != null) {
                             loader.done(error);
                             return;
@@ -853,16 +860,17 @@ public class Firestore implements IInit {
                             }
                         }
                         loader.done(newsList);
-                    });
+                    }));
             return loader;
         }
 
         @Override
-        public Loader<ArrayList<PersonLight>> getPersonList(FragmentActivity activity) {
+        public Loader<ArrayList<PersonLight>> getPersonList() {
             Loader<ArrayList<PersonLight>> loader = new Loader<>();
             try {
-                FBFS.collection(PERSON_LIST_TOTAL.get())
-                        .addSnapshotListener(activity, (values, error) -> {
+                listener.add(FBFS.collection(PERSON_LIST_TOTAL.get())
+                        .orderBy("full_Name", Query.Direction.ASCENDING)
+                        .addSnapshotListener((values, error) -> {
                             if (error != null) {
                                 loader.done(error);
                                 return;
@@ -882,7 +890,7 @@ public class Firestore implements IInit {
                                 }
                             }
                             loader.done(personList);
-                        });
+                        }));
                 return loader;
             } catch (Exception e) {
                 return loader.done(e);
@@ -986,6 +994,8 @@ public class Firestore implements IInit {
      * @since 2.9
      */
     public class Upload extends References implements IFirestoreUpload {
+        private static final String TAG = "Upload.Upload";
+
         public Upload() {
             upload = this;
         }

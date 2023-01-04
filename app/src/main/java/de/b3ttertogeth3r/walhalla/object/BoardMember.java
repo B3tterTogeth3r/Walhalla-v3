@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -122,6 +122,8 @@ public class BoardMember implements IBoardMember {
                 activity.getResources().getDisplayMetrics()
         );
         RelativeLayout layout = new RelativeLayout(activity);
+
+        layout.setId(getCharge().ordinal());
 
         layout.setBackground(ContextCompat.getDrawable(activity, R.drawable.border_bottom_black));
 
@@ -249,6 +251,6 @@ public class BoardMember implements IBoardMember {
 
     @Override
     public boolean validate() {
-        return true;
+        return (!this.full_name.isEmpty() && this.charge != null);
     }
 }

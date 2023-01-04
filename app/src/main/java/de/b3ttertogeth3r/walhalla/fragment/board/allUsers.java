@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -60,8 +60,7 @@ public class allUsers extends Fragment {
 
     @Override
     public void start() {
-        // TODO: 12.08.22 fix, that I can pass on the fragment activity
-        download.getPersonList(requireActivity())
+        download.getPersonList()
                 .setOnSuccessListener(result -> {
                     if (result == null || result.isEmpty()) {
                         throw new NoDataException("No persons found");

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -52,11 +52,11 @@ public class CloudFunctions implements ICloudFunctions, IInit {
                             loader.done(e);
                             return;
                         } else if (task.isSuccessful()) {
-                            Log.i(TAG, "checkBoardMember: " + task.getResult());
                             try {
                                 SideNav.reload.reload();
                             } catch (Exception exception) {
-                                Log.d(TAG, "checkBoardMember: ", exception);
+                                Log.d(TAG, "checkBoardMember: Reloading the side nav did not " +
+                                        "work, even if the result is " + task.getResult() + ". It will work after a relaunch of the app.");
                             }
                             loader.done(task.getResult());
                         }

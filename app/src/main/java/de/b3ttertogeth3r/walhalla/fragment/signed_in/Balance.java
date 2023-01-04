@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -17,6 +17,7 @@ package de.b3ttertogeth3r.walhalla.fragment.signed_in;
 import static de.b3ttertogeth3r.walhalla.firebase.Firebase.Firestore.download;
 import static de.b3ttertogeth3r.walhalla.firebase.Firebase.Firestore.upload;
 import static de.b3ttertogeth3r.walhalla.firebase.Firebase.authentication;
+import static de.b3ttertogeth3r.walhalla.interfaces.RealtimeListeners.stopRealtimeListener;
 import static de.b3ttertogeth3r.walhalla.util.Cache.CACHE_DATA;
 
 import android.annotation.SuppressLint;
@@ -26,18 +27,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.TableRow;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import de.b3ttertogeth3r.walhalla.R;
 import de.b3ttertogeth3r.walhalla.abstract_generic.Fragment;
+import de.b3ttertogeth3r.walhalla.abstract_generic.Loader;
 import de.b3ttertogeth3r.walhalla.design.Button;
 import de.b3ttertogeth3r.walhalla.design.LinearLayout;
 import de.b3ttertogeth3r.walhalla.design.SideNav;
@@ -45,6 +50,7 @@ import de.b3ttertogeth3r.walhalla.design.TableLayout;
 import de.b3ttertogeth3r.walhalla.design.Text;
 import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.design.Toast;
+import de.b3ttertogeth3r.walhalla.dialog.MovementPurposeDialog;
 import de.b3ttertogeth3r.walhalla.dialog.NumericDialog;
 import de.b3ttertogeth3r.walhalla.dialog.PersonSearchDialog;
 import de.b3ttertogeth3r.walhalla.exception.CreateDialogException;
@@ -93,68 +99,8 @@ public class Balance extends Fragment implements View.OnClickListener {
 
     @Override
     public void start() {
-        try {
-            download().getPersonBalance(requireActivity(), uid)
-                    .setOnSuccessListener(result -> {
-                        account = result;
-                        getMovements();
-                        String price = "€ " + String.format(Values.LOCALE, "%.2f", account.getAmount()).replace(".", ",");
-                        Log.i(TAG, "start: found a balance.");
-                        balance.setText(price);
-                    })
-                    .setOnFailListener(e -> Log.e(TAG, "onFailureListener: Listening to the account did not work", e));
-        } catch (Exception ignored) {
-        }
-    }
-
-    private void getMovements() {
-        download().getPersonMovements(uid)
-                .setOnSuccessListener(result -> {
-                    if (result == null || result.isEmpty()) {
-                        movements.removeAllViewsInLayout();
-                        movements.addView(new Title(requireContext(), "You have no movements so far."));
-                        Log.i(TAG, "getMovements: user has no movements so far.");
-                        return;
-                    }
-                    movementList = result;
-                    movementTable();
-                })
-                .setOnFailListener(e ->
-                        Log.e(TAG, "Downloading the movements didn't work", e));
-    }
-
-    private void movementTable() {
-        movements.removeAllViewsInLayout();
-        movements.setLayoutParams(new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        ));
-        TableLayout table = new TableLayout(requireContext());
-        TableRow titleRow = (TableRow) LayoutInflater.from(requireContext()).inflate(R.layout.movement_layout, null);
-        Text date = titleRow.findViewById(R.id.date);
-        date.setTitle()
-                .setText(R.string.balance_date);
-        Text income = titleRow.findViewById(R.id.income);
-        income.setTitle().setText(R.string.balance_income);
-        Text expense = titleRow.findViewById(R.id.expense);
-        expense.setTitle().setText(R.string.balance_expense);
-        Text purpose = titleRow.findViewById(R.id.purpose);
-        purpose.setTitle().setText(R.string.balance_purpose);
-        Text add = titleRow.findViewById(R.id.info);
-        add.setTitle().setText("");
-        table.addView(titleRow);
-
-        if (!movementList.isEmpty()) {
-            for (Movement m : movementList) {
-                table.addView(
-                        de.b3ttertogeth3r.walhalla.design.Movement.create(
-                                        requireActivity(), null, m)
-                                .show()
-                );
-            }
-        }
-        movements.addView(table);
-        movements.invalidate();
+        balance();
+        getMovements();
     }
 
     @Override
@@ -179,32 +125,6 @@ public class Balance extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void showPersonDialog() {
-        android.widget.Toast.makeText(requireContext(), "Loading person list",
-                android.widget.Toast.LENGTH_SHORT).show();
-        PersonSearchDialog.create(requireActivity())
-                .setOnSuccessListener(result -> {
-                    if (result == null) {
-                        Toast.makeToast(requireContext(), R.string.fui_error_unknown).show();
-                        return;
-                    }
-                    showAmountDialog(result.getId());
-                }).setOnFailListener(e -> Toast.makeToast(requireContext(), R.string.fui_error_unknown).show());
-    }
-
-    private void showAmountDialog(String uid) throws CreateDialogException {
-        NumericDialog.display(getParentFragmentManager())
-                .setOnSuccessListener(result -> {
-                    if (result == null) {
-                        throw new NullPointerException("result of 'NumericDialog' cannot be 'null'");
-                    }
-                    Log.e(TAG, "Amount to add as a new Movement is " + result);
-                    upload().addPersonMovement(uid, new Movement(Timestamp.now(), Double.valueOf(result), "", "Einzahlung", null));
-                    // TODO: 09.11.22 add input field to add a purpose
-                })
-                .setOnFailureListener(e -> Log.e(TAG, "Something went wrong", e));
-    }
-
     @Override
     @SuppressLint("DefaultLocale")
     public void createView(@NonNull android.widget.LinearLayout view) {
@@ -213,7 +133,7 @@ public class Balance extends Fragment implements View.OnClickListener {
         balance = new Title(getContext());
         view.addView(balance);
 
-        //payButtons(view);
+        payButtons(view);
 
         //region movement list
         movements = new LinearLayout(requireContext());
@@ -221,11 +141,6 @@ public class Balance extends Fragment implements View.OnClickListener {
         hsv.addView(movements);
         view.addView(hsv);
         //endregion
-    }
-
-    @Override
-    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
-        return requireActivity();
     }
 
     /**
@@ -245,6 +160,210 @@ public class Balance extends Fragment implements View.OnClickListener {
         view.addView(paymentButtons);
         subscribe.setOnClickListener(this);
         payBill.setOnClickListener(this);
+    }
+
+    @Override
+    public void stop() {
+        stopRealtimeListener();
+    }
+
+    @Override
+    public FragmentActivity authStatusChanged(FirebaseAuth firebaseAuth) {
+        return requireActivity();
+    }
+
+    /**
+     * Download the movements
+     */
+    private void getMovements() {
+        download().getPersonMovements(uid)
+                .setOnSuccessListener(result -> {
+                    if (result == null || result.isEmpty()) {
+                        movements.removeAllViewsInLayout();
+                        movements.addView(new Title(requireContext(), "You have no movements so far."));
+                        Log.i(TAG, "getMovements: user has no movements so far.");
+                        return;
+                    }
+                    movementList = result;
+                    movementTable();
+                })
+                .setOnFailListener(e ->
+                        Log.e(TAG, "Downloading the movements didn't work", e));
+    }
+
+    /**
+     * Format the downloaded movements into a table and display it.
+     */
+    @SuppressLint("InflateParams")
+    private void movementTable() {
+        movements.removeAllViewsInLayout();
+        movements.setLayoutParams(new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+        TableLayout table = new TableLayout(requireContext());
+        TableRow titleRow = (TableRow) LayoutInflater.from(requireContext()).inflate(R.layout.movement_layout, null);
+        Text date = titleRow.findViewById(R.id.date);
+        date.setTitle()
+                .setText(R.string.balance_date);
+        Text income = titleRow.findViewById(R.id.income);
+        income.setTitle().setText(R.string.balance_income);
+        Text expense = titleRow.findViewById(R.id.expense);
+        expense.setTitle().setText(R.string.balance_expense);
+        Text purpose = titleRow.findViewById(R.id.purpose);
+        purpose.setTitle().setText(R.string.balance_purpose);
+        Text add = titleRow.findViewById(R.id.info);
+        add.setTitle().setText("");
+        titleRow.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.border_bottom_black));
+        table.addView(titleRow);
+
+        if (!movementList.isEmpty()) {
+            for (int i = 0; i < movementList.size(); i++) {
+                Movement m = movementList.get(i);
+                TableRow row = (TableRow) LayoutInflater.from(requireContext()).inflate(R.layout.movement_layout, null);
+                SimpleDateFormat day = new SimpleDateFormat("dd.MM.yyyy", Values.LOCALE);
+                ((Text) row.findViewById(R.id.date)).setText(day.format(m.getTime().toDate()));
+                double dAmount = m.getAmount();
+                String value = String.format(Values.LOCALE, "%.2f", dAmount);
+                if (dAmount == 0) {
+                    ((Text) row.findViewById(R.id.income)).setText("€ 0,-");
+                    ((Text) row.findViewById(R.id.expense)).setText("€ 0,-");
+                } else if (dAmount < 0) {
+                    ((Text) row.findViewById(R.id.income)).setText("€ 0,-");
+                    ((Text) row.findViewById(R.id.expense)).setText(String.format("€ %s", value));
+                } else if (dAmount > 0) {
+                    ((Text) row.findViewById(R.id.income)).setText(String.format("€ %s", value));
+                    ((Text) row.findViewById(R.id.expense)).setText("€ 0,-");
+                }
+                if (m.getPurpose() != null && !m.getPurpose().isEmpty()) {
+                    ((Text) row.findViewById(R.id.purpose)).setText(m.getPurpose());
+                } else {
+                    ((Text) row.findViewById(R.id.purpose)).setText("");
+                }
+                if (!m.getAdd().isEmpty()) {
+                    ((Text) row.findViewById(R.id.info)).setText(m.getAdd());
+                } else {
+                    ((Text) row.findViewById(R.id.info)).setText(m.getAdd());
+                }
+                if (m.getRecipe() != null) {
+                    ImageView recipe = row.findViewById(R.id.recipe);
+                    recipe.setVisibility(View.VISIBLE);
+                    recipe.setOnClickListener(view -> {
+                        // TODO: 10.11.22 open dialog with the recipe displayed.
+                    });
+                }
+                if (i == movementList.size() - 1) {
+                    row.setBackground(null);
+                }
+
+                if (CACHE_DATA.isBoardMember()) {
+                    row.setOnLongClickListener(view -> {
+                        // TODO: 02.12.22 open dialog to change the the movement
+                        return false;
+                    });
+                }
+                table.addView(row);
+            }
+        }
+        movements.addView(table);
+        movements.invalidate();
+    }
+
+    private void showPersonDialog() {
+        android.widget.Toast.makeText(requireContext(), "Loading person list",
+                android.widget.Toast.LENGTH_SHORT).show();
+        PersonSearchDialog.create(requireActivity())
+                .setOnSuccessListener(result -> {
+                    if (result == null) {
+                        Toast.makeToast(requireContext(), R.string.fui_error_unknown).show();
+                        return;
+                    }
+                    showAmountDialog(result.getId());
+                }).setOnFailListener(e -> Toast.makeToast(requireContext(), R.string.fui_error_unknown).show());
+    }
+
+    private void showAmountDialog(String uid) throws CreateDialogException {
+        NumericDialog.display(getParentFragmentManager())
+                .setOnSuccessListener(result -> {
+                    if (result == null) {
+                        throw new NullPointerException("result of 'NumericDialog' cannot be 'null'");
+                    }
+                    Log.i(TAG, "showAmountDialog: Amount to add as a new Movement is " + result);
+                    // Add input field to add a purpose
+                    addPurpose(result, uid);
+                })
+                .setOnFailureListener(e -> Log.e(TAG, "showAmountDialog: Something went wrong", e));
+    }
+
+    private void addPurpose(Float amount, String uid) throws CreateDialogException {
+        //TODO Why is this dialog only displayed once?
+        try {
+            MovementPurposeDialog.display(getChildFragmentManager(), new Loader<>())
+                    .setOnSuccessListener(result -> {
+                        Log.i(TAG, "addPurpose: purpose is: " + result);
+                        if (result == null) {
+                            result = "Einzahlung";
+                        }
+                        upload()
+                                .addPersonMovement(uid,
+                                        new Movement(Timestamp.now(), Double.valueOf(amount), "", result, null));
+                        //TODO This part is working. But the synchronization and the update of the
+                        // users balance in Firebase via CF does not. I'll have to fix that next.
+                    })
+                    .setOnFailListener(e -> {
+                        if (e != null) {
+                            try {
+                                addPurpose(amount, uid);
+                            } catch (Exception ignored) {
+                            }
+                        }/*
+                        upload()
+                                .addPersonMovement(uid,
+                                        new Movement(Timestamp.now(), Double.valueOf(amount), "", "Einzahlung", null));
+                                        */
+                    });
+        } catch (Exception e) {
+            Log.e(TAG, "addPurpose: an error was found", e);
+            throw e;
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        balance();
+        getMovements();
+    }
+
+    /**
+     * Download the users balance
+     */
+    private void balance() {
+        try {
+            download().getPersonBalance(uid)
+                    .setOnSuccessListener(result -> {
+                        if (result == null) {
+                            throw new NullPointerException();
+                        }
+                        account = result;
+                        String price = "€ " + String.format(Values.LOCALE, "%.2f", account.getAmount()).replace(".", ",");
+                        Log.i(TAG, "start: found a balance.");
+                        balance.setText(price);
+                        if (account.getAmount() <= 0) {
+                            try {
+                                payBill.setVisibility(View.GONE);
+                            } catch (Exception ignored) {
+                            }
+                        }
+                        getMovements();
+                    })
+                    .setOnFailListener(e -> Log.e(TAG, "onFailureListener: Listening to the account did not work", e));
+        } catch (Exception e) {
+            // TODO: 02.12.22 reload a bit later when activity is build and/or
+            //  fragmentManager isn't doing anything anymore
+            balance.setText(R.string.error_reload);
+            Log.e(TAG, "Activity still running", e);
+        }
     }
 
     @Override

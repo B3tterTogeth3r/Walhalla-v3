@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -13,6 +13,8 @@
  */
 
 package de.b3ttertogeth3r.walhalla;
+
+import static de.b3ttertogeth3r.walhalla.interfaces.RealtimeListeners.stopRealtimeListener;
 
 import android.content.Context;
 import android.content.Intent;
@@ -66,6 +68,13 @@ public class MainActivity extends AppCompatActivity implements LoadingCircle, IS
     private boolean doubleBackToExit = false;
     private DrawerLayout drawerLayout;
     private FirebaseAuth.AuthStateListener authStateListener;
+
+
+    @Override
+    protected void onStop() {
+        stopRealtimeListener();
+        super.onStop();
+    }
 
     public void hide() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

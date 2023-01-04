@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -13,6 +13,8 @@
  */
 
 package de.b3ttertogeth3r.walhalla.fragment.signed_in;
+
+import static de.b3ttertogeth3r.walhalla.firebase.Firebase.authentication;
 
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -33,8 +35,8 @@ import de.b3ttertogeth3r.walhalla.design.TableLayout;
 import de.b3ttertogeth3r.walhalla.design.Title;
 import de.b3ttertogeth3r.walhalla.design.Toast;
 import de.b3ttertogeth3r.walhalla.exception.NoDataException;
+import de.b3ttertogeth3r.walhalla.exception.UserDataError;
 import de.b3ttertogeth3r.walhalla.firebase.Firebase;
-import de.b3ttertogeth3r.walhalla.interfaces.firebase.IAuth;
 import de.b3ttertogeth3r.walhalla.interfaces.firebase.IFirestoreDownload;
 import de.b3ttertogeth3r.walhalla.object.DrinkMovement;
 import de.b3ttertogeth3r.walhalla.util.Log;
@@ -51,7 +53,6 @@ import de.b3ttertogeth3r.walhalla.util.Values;
  */
 public class Drinks extends Fragment {
     private static final String TAG = "Drinks";
-    private String uid;
     private de.b3ttertogeth3r.walhalla.design.LinearLayout movements;
     private de.b3ttertogeth3r.walhalla.design.LinearLayout groupTable;
     private IFirestoreDownload download;
@@ -59,12 +60,10 @@ public class Drinks extends Fragment {
     @Override
     public void constructor() {
         download = Firebase.Firestore.download();
-        IAuth auth = Firebase.authentication();
-        if (!auth.isSignIn()) {
+        if (!authentication().isSignIn()) {
             Toast.makeToast(requireContext(), R.string.fui_error_session_expired).show();
             SideNav.changePage(R.string.menu_home, requireActivity().getSupportFragmentManager().beginTransaction());
         }
-        uid = auth.getUser().getUid();
     }
 
     @Override
@@ -74,16 +73,26 @@ public class Drinks extends Fragment {
 
     @Override
     public void start() {
-        download.getPersonDrinkMovement(uid, Values.currentSemester.getId())
+        download.getPersonDrinkMovement(authentication().getUser().getUid(), Values.currentSemester.getId())
                 .setOnSuccessListener(result -> {
                     if (result == null || result.isEmpty()) {
                         throw new NoDataException("No drink movements found");
-                        // write in both that there were no drinks found
                     }
                     displayDrinksGroup(result);
                     displayDrinks(result);
                 })
-                .setOnFailListener(e -> Log.e(TAG, "start: ", e));
+                .setOnFailListener(e -> {
+                    if (e instanceof UserDataError) {
+                        // No user signed in -> change site to home
+                        SideNav.goHome(getParentFragmentManager().beginTransaction());
+                        return;
+                    } else if (e instanceof NoDataException) {
+                        // TODO: 13.12.22 e typeof NoDataException -> write in both that there were no drinks found
+                        Log.e(TAG, "start: no data found. Read todo in code");
+                        return;
+                    }
+                    Log.e(TAG, "start: ", e);
+                });
     }
 
     @SuppressWarnings("ConstantConditions")

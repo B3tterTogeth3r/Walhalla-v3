@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -59,18 +59,22 @@ public class Authentication implements IInit, IAuth {
         Loader<AuthResult> loader = new Loader<>();
         AtomicInteger run = new AtomicInteger();
         if (AUTH != null) {
-            AUTH.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(task -> {
-                        if (run.get() == 0) {
-                            run.set(1);
-                            if (task.getException() != null) {
-                                Exception e = task.getException();
-                                loader.done(e);
-                                return;
+            try {
+                AUTH.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(task -> {
+                            if (run.get() == 0) {
+                                run.set(1);
+                                if (task.getException() != null) {
+                                    Exception e = task.getException();
+                                    loader.done(e);
+                                    return;
+                                }
+                                loader.done(task.getResult());
                             }
-                            loader.done(task.getResult());
-                        }
-                    });
+                        });
+            } catch (Exception e) {
+                loader.done(e);
+            }
         } else {
             return loader.done(new NullPointerException("Auth == null"));
         }
@@ -190,5 +194,10 @@ public class Authentication implements IInit, IAuth {
     @Override
     public void removeAuthListener(FirebaseAuth.AuthStateListener authStateListener) {
         AUTH.removeAuthStateListener(authStateListener);
+    }
+
+    @Override
+    public boolean checkUser() {
+        return AUTH.getCurrentUser() != null;
     }
 }

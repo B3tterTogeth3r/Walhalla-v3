@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -80,6 +81,10 @@ public class Chores extends Fragment {
                 .setOnFailListener(e -> {
                     Chore c = new Chore();
                     c.setEvent(getString(R.string.chore_none));
+                    c.setTime(Timestamp.now());
+                    ArrayList<Chore> smallList = new ArrayList<>();
+                    smallList.add(c);
+                    loadChores(smallList);
                 });
     }
 
@@ -90,7 +95,7 @@ public class Chores extends Fragment {
                 layout.addView(
                         Event.create(requireActivity(), null, c, false)
                                 .addTouchListener(new Touch() {
-
+                                    // TODO: 13.12.22 add edit dialog
                                 }).show());
 
             }

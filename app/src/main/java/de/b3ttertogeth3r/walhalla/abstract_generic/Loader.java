@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2022.
+ * Copyright (c) 2022-2023.
  *
  * Licensed under the Apace License, Version 2.0 (the "Licence"); you may not use this file
  * except in compliance with the License. You may obtain a copy of the License at
@@ -141,6 +141,12 @@ public class Loader<T> implements LoaderResultListener<T> {
         return this;
     }
 
+    /**
+     * Add a listener to get the result of the loaded data.
+     *
+     * @param onSuccessListener result listener
+     * @return Loader
+     */
     public Loader<T> setOnSuccessListener(OnSuccessListener<T> onSuccessListener) {
         this.resultListenerSuccess = onSuccessListener;
         if (hasResult) {
@@ -173,6 +179,12 @@ public class Loader<T> implements LoaderResultListener<T> {
         return this;
     }
 
+    /**
+     * Add a listener to get the errors occurring during the download.
+     *
+     * @param onFailureListener result listener
+     * @return Loader
+     */
     public Loader<T> setOnFailListener(OnFailureListener<Exception> onFailureListener) {
         this.resultListenerFail = onFailureListener;
         if (e != null) {
